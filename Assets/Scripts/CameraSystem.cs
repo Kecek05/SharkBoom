@@ -2,17 +2,44 @@ using UnityEngine;
 
 public class CameraSystem : MonoBehaviour
 {
+    private bool dragPanMoveActive = false; 
+    private Vector3 startMousePos;
+    private Vector3 lastMousePos; 
+     [SerializeField] private float dragSpeed = 1f;
 
-    private void Update()
+    void Update()
     {
-        Vector3 moveDir = new Vector3(0, 0, 0);
+        HandleInput();
+        MoveCamera();
+    }
 
-        if(Input.GetKey(KeyCode.W)) moveDir.y = +1;
-        if(Input.GetKey(KeyCode.S)) moveDir.y = -1;
-        if(Input.GetKey(KeyCode.A)) moveDir.x = -1;
-        if(Input.GetKey(KeyCode.D)) moveDir.x = +1;
-        
-        float moveSpeed = 10;
-        transform.position += moveDir * moveSpeed * Time.deltaTime;
+    private void HandleInput()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            dragPanMoveActive = true;
+            Ray rayStart = Camera.main.ScreenPointToRay(Input.mousePosition);
+            startMousePos = rayStart.origin; 
+            lastMousePos = startMousePos;
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            dragPanMoveActive = false;
+        }
+    }
+
+    private void MoveCamera()
+    {
+        if (dragPanMoveActive)
+        {
+            Ray rayCurrent = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Vector3 currentMousePos = rayCurrent.origin;
+
+            Vector3 mouseMovementDelta = currentMousePos - lastMousePos;
+            Vector3 moveDir = new Vector3(-mouseMovementDelta.x, -mouseMovementDelta.y, 0);
+            transform.position += moveDir * dragSpeed;
+            lastMousePos = currentMousePos;
+        }
     }
 }

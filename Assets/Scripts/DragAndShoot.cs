@@ -28,7 +28,7 @@ public class DragAndShoot : MonoBehaviour
             Ray rayStart = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             
-            if (Physics.Raycast(rayStart, out hit) && hit.collider.gameObject == gameObject)
+            if (Physics.Raycast(rayStart, out hit) && hit.collider.gameObject == this.gameObject)
             {
                 startPos = rayStart.origin;
                 isDragging = true;
