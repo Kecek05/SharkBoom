@@ -7,8 +7,6 @@ public class CameraSystemMobile : MonoBehaviour
 
     [SerializeField] private float dragSpeed = 1f;
     [SerializeField] private float zoomSpeed = 0.5f;
-    [SerializeField] private float minZoom = 5f;
-    [SerializeField] private float maxZoom = 20f;
     private bool dragPanMoveActive = false;
     private Vector2 lastTouchPosition;
 
