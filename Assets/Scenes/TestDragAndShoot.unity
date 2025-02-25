@@ -667,7 +667,7 @@ MonoBehaviour:
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
-    ModeOverride: 1
+    ModeOverride: 2
     PhysicalProperties:
       GateFit: 2
       SensorSize: {x: 21.946, y: 16.002}
@@ -1089,7 +1089,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37650195f4ed4e941bb1f6b7ba868e0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dragSpeed: 1
+  dragSpeed: 1.1
+  cameraBoundsX: {x: -10, y: 10}
+  cameraBoundsY: {x: -10, y: 10}
 --- !u!4 &1668177987
 Transform:
   m_ObjectHideFlags: 0
