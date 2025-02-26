@@ -1069,7 +1069,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1668177987}
-  - component: {fileID: 1668177986}
   - component: {fileID: 1668177989}
   - component: {fileID: 1668177988}
   m_Layer: 0
@@ -1079,19 +1078,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1668177986
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1668177985}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37650195f4ed4e941bb1f6b7ba868e0f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dragSpeed: 1.1
 --- !u!4 &1668177987
 Transform:
   m_ObjectHideFlags: 0
@@ -1121,7 +1107,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
   cameraSystem: {fileID: 1668177987}
-  pinchSpeed: 10
+  pinchSpeed: 100
 --- !u!114 &1668177989
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1129,11 +1115,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1668177985}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee20daabf706ed944b3266a70d973d81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
+  pinchZoomDetection: {fileID: 1668177988}
   dragSpeed: 1
 --- !u!1 &1700457202
 GameObject:

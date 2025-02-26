@@ -92,10 +92,10 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             ""id"": ""3923c034-00da-40d8-8673-53c9105639cd"",
             ""actions"": [
                 {
-                    ""name"": ""Touch"",
+                    ""name"": ""TouchPress"",
                     ""type"": ""Value"",
                     ""id"": ""0e6e344c-fd49-4a61-bcf3-c4a8d0468519"",
-                    ""expectedControlType"": """",
+                    ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
@@ -132,11 +132,11 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""e4653c6b-84a0-4e4a-956b-30960b72ace6"",
-                    ""path"": ""<Touchscreen>/primaryTouch"",
+                    ""path"": ""<Touchscreen>/touch0/position"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Touch"",
+                    ""action"": ""TouchPress"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -180,7 +180,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
 }");
         // Game
         m_Game = asset.FindActionMap("Game", throwIfNotFound: true);
-        m_Game_Touch = m_Game.FindAction("Touch", throwIfNotFound: true);
+        m_Game_TouchPress = m_Game.FindAction("TouchPress", throwIfNotFound: true);
         m_Game_PrimaryFingerPosition = m_Game.FindAction("PrimaryFingerPosition", throwIfNotFound: true);
         m_Game_SecondaryFingerPosition = m_Game.FindAction("SecondaryFingerPosition", throwIfNotFound: true);
         m_Game_SecondaryTouchContact = m_Game.FindAction("SecondaryTouchContact", throwIfNotFound: true);
@@ -264,7 +264,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     // Game
     private readonly InputActionMap m_Game;
     private List<IGameActions> m_GameActionsCallbackInterfaces = new List<IGameActions>();
-    private readonly InputAction m_Game_Touch;
+    private readonly InputAction m_Game_TouchPress;
     private readonly InputAction m_Game_PrimaryFingerPosition;
     private readonly InputAction m_Game_SecondaryFingerPosition;
     private readonly InputAction m_Game_SecondaryTouchContact;
@@ -280,9 +280,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// </summary>
         public GameActions(@Controls wrapper) { m_Wrapper = wrapper; }
         /// <summary>
-        /// Provides access to the underlying input action "Game/Touch".
+        /// Provides access to the underlying input action "Game/TouchPress".
         /// </summary>
-        public InputAction @Touch => m_Wrapper.m_Game_Touch;
+        public InputAction @TouchPress => m_Wrapper.m_Game_TouchPress;
         /// <summary>
         /// Provides access to the underlying input action "Game/PrimaryFingerPosition".
         /// </summary>
@@ -321,9 +321,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_GameActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_GameActionsCallbackInterfaces.Add(instance);
-            @Touch.started += instance.OnTouch;
-            @Touch.performed += instance.OnTouch;
-            @Touch.canceled += instance.OnTouch;
+            @TouchPress.started += instance.OnTouchPress;
+            @TouchPress.performed += instance.OnTouchPress;
+            @TouchPress.canceled += instance.OnTouchPress;
             @PrimaryFingerPosition.started += instance.OnPrimaryFingerPosition;
             @PrimaryFingerPosition.performed += instance.OnPrimaryFingerPosition;
             @PrimaryFingerPosition.canceled += instance.OnPrimaryFingerPosition;
@@ -344,9 +344,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// <seealso cref="GameActions" />
         private void UnregisterCallbacks(IGameActions instance)
         {
-            @Touch.started -= instance.OnTouch;
-            @Touch.performed -= instance.OnTouch;
-            @Touch.canceled -= instance.OnTouch;
+            @TouchPress.started -= instance.OnTouchPress;
+            @TouchPress.performed -= instance.OnTouchPress;
+            @TouchPress.canceled -= instance.OnTouchPress;
             @PrimaryFingerPosition.started -= instance.OnPrimaryFingerPosition;
             @PrimaryFingerPosition.performed -= instance.OnPrimaryFingerPosition;
             @PrimaryFingerPosition.canceled -= instance.OnPrimaryFingerPosition;
@@ -397,12 +397,12 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     public interface IGameActions
     {
         /// <summary>
-        /// Method invoked when associated input action "Touch" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "TouchPress" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnTouch(InputAction.CallbackContext context);
+        void OnTouchPress(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "PrimaryFingerPosition" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>

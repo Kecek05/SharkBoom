@@ -1,9 +1,22 @@
+using Sortify;
+using System;
 using Unity.Cinemachine;
 using UnityEngine;
 
 public class CameraSystemMobile : MonoBehaviour
 {
+    #region References
+
+    [BetterHeader("References")]
+
+    [SerializeField] private InputReader inputReader;
+    [SerializeField] private PinchZoomDetection pinchZoomDetection;
+
+    #endregion
+
     #region Variables 
+
+    [BetterHeader("Variables")]
 
     [SerializeField] private float dragSpeed = 1f;
     // [SerializeField] private float zoomSpeed = 0.5f;
@@ -13,50 +26,47 @@ public class CameraSystemMobile : MonoBehaviour
     #endregion
 
 
-
-    void Update()
+    private void Start()
     {
-        HandleInput();
-        MoveCamera();
+        inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
     }
 
-    private void HandleInput()
+    private void OnDisable()
     {
-        if (Input.touchCount == 1)
-        {
-            Touch touch = Input.GetTouch(0);
+        inputReader.OnTouchPressEvent -= InputReader_OnTouchPressEvent;
+    }
 
-            if (touch.phase == TouchPhase.Began)
-            {
-                dragPanMoveActive = true;
-                lastTouchPosition = touch.position;
-            }
-            else if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
-            {
-                dragPanMoveActive = false;
-            }
+    private void InputReader_OnTouchPressEvent(UnityEngine.InputSystem.InputAction.CallbackContext context)
+    {
+
+        if(Input.touchCount != 1)
+        {
+            return;
         }
 
+        if (context.started)
+        {
+            dragPanMoveActive = true;
+            lastTouchPosition = context.ReadValue<Vector2>();
+            MoveCamera();
+        }
+        else if (context.canceled)
+        {
+            dragPanMoveActive = false;
+        }
     }
 
     private void MoveCamera()
     {
-        if (dragPanMoveActive)
+        if (!dragPanMoveActive || Input.touchCount != 1 || pinchZoomDetection.zoomCourotine != null)
         {
             Vector2 movementDelta = Vector2.zero;
-
-            if (Input.touchCount == 1)
-            {
-                Touch touch = Input.GetTouch(0);
-                movementDelta = touch.position - lastTouchPosition;
-                lastTouchPosition = touch.position;
-            }
-
+            Touch touch = Input.GetTouch(0);
+            movementDelta = touch.position - lastTouchPosition;
+            lastTouchPosition = touch.position;
             Vector3 moveDir = new Vector3(-movementDelta.x, -movementDelta.y, 0) * dragSpeed * Time.deltaTime;
             transform.position += moveDir;
-
         }
     }
-
-
+ 
 }

@@ -6,10 +6,14 @@ using UnityEngine.InputSystem;
 
 public class PinchZoomDetection : MonoBehaviour
 {
+    #region References
+
     [BetterHeader("References")]
 
     [SerializeField] private InputReader inputReader;
-    [SerializeField] private Transform cameraSystem;
+    [SerializeField] private Transform cameraSystem; // object that camera is following
+
+    #endregion
 
     #region Variables
 
@@ -21,7 +25,9 @@ public class PinchZoomDetection : MonoBehaviour
     private Vector2 primaryFingerPosition;
     private Vector2 secondaryFingerPosition;
 
-    [SerializeField] private float pinchSpeed = 10f;
+    [BetterHeader("Variables")]
+
+    [SerializeField] private float pinchSpeed = 100f;
 
     #endregion
 
@@ -32,22 +38,29 @@ public class PinchZoomDetection : MonoBehaviour
         inputReader.OnSecondaryFingerPositionEvent += InputReader_OnSecondaryFingerPositionEvent;
     }
 
+    private void OnDisable()
+    {
+        inputReader.OnSecondaryTouchContactEvent -= InputReader_OnSecondaryTouchContactEvent;
+        inputReader.OnPrimaryFingerPositionEvent -= InputReader_OnPrimaryFingerPositionEvent;
+        inputReader.OnSecondaryFingerPositionEvent -= InputReader_OnSecondaryFingerPositionEvent;
+    }
+
     private void InputReader_OnSecondaryTouchContactEvent(InputAction.CallbackContext context)
     {
         if (context.started)
         {
-            ZoomStarted();
+            ZoomStarted(); // when we have two fingers on the screen
         }
 
         if (context.canceled)
         {
-            ZoomEnded();
+            ZoomEnded(); 
         }
     }
 
     private void InputReader_OnSecondaryFingerPositionEvent(InputAction.CallbackContext context)
     {
-        primaryFingerPosition = context.ReadValue<Vector2>();
+        primaryFingerPosition = context.ReadValue<Vector2>(); // just grab the position of the first finger
 
     }
 
@@ -80,13 +93,13 @@ public class PinchZoomDetection : MonoBehaviour
         {
             currentDistance = Vector2.Distance(primaryFingerPosition, secondaryFingerPosition);
             
-            if(currentDistance > previousDistance)
+            if(currentDistance > previousDistance) // zoom in
             {
                 Vector3 targetPosition = cameraSystem.position;
-                targetPosition.z -= 1;
-                cameraSystem.position = Vector3.Lerp(cameraSystem.position, targetPosition, Time.deltaTime * pinchSpeed);
+                targetPosition.z -= 1; 
+                cameraSystem.position = Vector3.Lerp(cameraSystem.position, targetPosition, Time.deltaTime * pinchSpeed); 
             }
-            else if (currentDistance < previousDistance)
+            else if (currentDistance < previousDistance) // zoom out
             {
                 Vector3 targetPosition = cameraSystem.position;
                 targetPosition.z += 1;
@@ -97,4 +110,6 @@ public class PinchZoomDetection : MonoBehaviour
             yield return null;
         }
     }
+
+    public Coroutine zoomCourotine { get => zoomCoroutine; }
 }
