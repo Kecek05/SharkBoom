@@ -33,11 +33,17 @@ namespace Sortify
         static SortifyObjectManager()
         {
             EditorSceneManager.sceneSaving += OnSceneSaving;
-            EditorSceneManager.sceneOpened += OnSceneOpened;
             EditorSceneManager.sceneClosing += OnSceneClosing;
+            EditorSceneManager.sceneOpened += OnSceneOpened;
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
         }
 
         private static void OnSceneSaving(Scene scene, string path)
+        {
+            SaveObjectsToFile();
+        }
+
+        private static void OnSceneClosing(Scene scene, bool removingScene)
         {
             SaveObjectsToFile();
         }
@@ -48,9 +54,17 @@ namespace Sortify
             EditorApplication.RepaintHierarchyWindow();
         }
 
-        private static void OnSceneClosing(Scene scene, bool removingScene)
+        private static void OnPlayModeStateChanged(PlayModeStateChange state)
         {
-            _dataLoaded = false;
+            if (state == PlayModeStateChange.ExitingEditMode)
+            {
+                SaveObjectsToFile();
+            }
+            else if (state == PlayModeStateChange.EnteredEditMode)
+            {
+                LoadObjectsDataFromFile();
+                EditorApplication.RepaintHierarchyWindow();
+            }
         }
 
         #region Icons
@@ -104,8 +118,6 @@ namespace Sortify
         #region Colors
         public static Color? LoadColor(GameObject obj)
         {
-
-
             LoadDataIfNeeded();
             return _cachedColors.TryGetValue(obj, out Color color) ? (Color?)color : null;
         }
@@ -212,8 +224,11 @@ namespace Sortify
         }
         #endregion
 
-        private static void LoadDataIfNeeded()
+        public static void LoadDataIfNeeded(bool forceLoad = false)
         {
+            if (forceLoad)
+                _dataLoaded = false;
+
             if (!_dataLoaded)
             {
                 LoadObjectsDataFromFile();

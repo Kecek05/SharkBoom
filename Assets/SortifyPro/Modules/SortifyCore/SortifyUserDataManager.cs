@@ -51,8 +51,11 @@ namespace Sortify
             SortifyFileManager.SaveToFile(USERDATA_FILE_NAME, dataSerializer);
         }
 
-        private static void LoadUserDataIfNeeded()
+        public static void LoadUserDataIfNeeded(bool forceLoad = false)
         {
+            if (forceLoad)
+                _dataLoaded = false;
+
             if (!_dataLoaded)
             {
                 LoadUserDataFromFile();
