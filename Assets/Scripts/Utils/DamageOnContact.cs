@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 
 public class DamageOnContact : MonoBehaviour
@@ -6,10 +7,14 @@ public class DamageOnContact : MonoBehaviour
     public float Damage => damage;
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.rigidbody.TryGetComponent(out IDamageable damageableObject))
+        if(collision.rigidbody != null)
         {
-            damageableObject.DealDamage(damage);
-            Debug.Log("Dealt " + damage + " damage to " + collision.gameObject.name);
+            if(collision.rigidbody.TryGetComponent(out IDamageable damageableObject))
+            {
+                damageableObject.TakeDamage(damage);
+                Debug.Log("Dealt " + damage + " damage to " + collision.gameObject.name);
+                DestroyOnServerRpc();
+            }
         }
     }
 
@@ -18,5 +23,10 @@ public class DamageOnContact : MonoBehaviour
         damage = newDamage;
     }
 
+    [Rpc(SendTo.Server)]
+    private void DestroyOnServerRpc()
+    {
+        Destroy(gameObject);
+    }
 
 }
