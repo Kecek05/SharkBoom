@@ -10,6 +10,9 @@ public class InputReader : ScriptableObject, IGameActions
     private Controls controls;
 
     public event Action<InputAction.CallbackContext> OnTouchEvent;
+    public event Action<InputAction.CallbackContext> OnPrimaryFingerPositionEvent;
+    public event Action<InputAction.CallbackContext> OnSecondaryFingerPositionEvent;
+    public event Action<InputAction.CallbackContext> OnSecondaryTouchContactEvent;
 
 
 
@@ -29,4 +32,18 @@ public class InputReader : ScriptableObject, IGameActions
         OnTouchEvent?.Invoke(context);
     }
 
+    public void OnPrimaryFingerPosition(InputAction.CallbackContext context)
+    {
+        OnPrimaryFingerPositionEvent?.Invoke(context);
+    }
+
+    public void OnSecondaryFingerPosition(InputAction.CallbackContext context)
+    {
+        OnSecondaryFingerPositionEvent?.Invoke(context);
+    }
+
+    public void OnSecondaryTouchContact(InputAction.CallbackContext context)
+    {
+        OnSecondaryTouchContactEvent?.Invoke(context);   
+    }
 }
