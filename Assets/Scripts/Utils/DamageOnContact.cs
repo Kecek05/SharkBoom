@@ -2,15 +2,12 @@ using UnityEngine;
 
 public class DamageOnContact : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private float damage;
+    private void OnCollisionEnter(Collision collision)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if(collision.rigidbody.TryGetComponent(out IDamageable damageableObject))
+        {
+            damageableObject.DealDamage(1);
+        }
     }
 }
