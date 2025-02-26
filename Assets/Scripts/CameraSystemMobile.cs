@@ -6,7 +6,7 @@ public class CameraSystemMobile : MonoBehaviour
     #region Variables 
 
     [SerializeField] private float dragSpeed = 1f;
-    [SerializeField] private float zoomSpeed = 0.5f;
+    // [SerializeField] private float zoomSpeed = 0.5f;
     private bool dragPanMoveActive = false;
     private Vector2 lastTouchPosition;
 

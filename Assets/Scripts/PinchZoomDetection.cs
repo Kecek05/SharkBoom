@@ -21,7 +21,7 @@ public class PinchZoomDetection : MonoBehaviour
     private Vector2 primaryFingerPosition;
     private Vector2 secondaryFingerPosition;
 
-    private float pinchSpeed;
+    [SerializeField] private float pinchSpeed = 10f;
 
     #endregion
 
