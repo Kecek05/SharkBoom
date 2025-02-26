@@ -1090,8 +1090,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragSpeed: 1.1
-  cameraBoundsX: {x: -10, y: 10}
-  cameraBoundsY: {x: -10, y: 10}
 --- !u!4 &1668177987
 Transform:
   m_ObjectHideFlags: 0
@@ -1120,6 +1118,7 @@ GameObject:
   - component: {fileID: 1700457203}
   - component: {fileID: 1700457206}
   - component: {fileID: 1700457207}
+  - component: {fileID: 1700457208}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1277,6 +1276,20 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   CustomBlends: {fileID: 0}
+--- !u!114 &1700457208
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1700457202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c59edc9372ea9114ebab069b371c02a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
+  cameraSystem: {fileID: 1668177986}
 --- !u!1 &1736368650
 GameObject:
   m_ObjectHideFlags: 0
