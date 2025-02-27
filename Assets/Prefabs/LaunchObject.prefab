@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5523617967623040963}
   - component: {fileID: 6007548581019581241}
   - component: {fileID: 1507878252957775585}
+  - component: {fileID: 668759142759725134}
   m_Layer: 0
   m_Name: LaunchObject
   m_TagString: Untagged
@@ -153,8 +154,27 @@ MonoBehaviour:
   spawnPos: {fileID: 0}
   shperePos: {fileID: 2594228288869015521}
   rb: {fileID: 6007548581019581241}
-  trajectory: {fileID: 9209678410501076711}
-  smoothTime: 0.1
+  inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
+  trajectory: {fileID: 0}
+  playerCam: {fileID: 0}
+  maxForceMultiplier: 100
+  smoothTime: 1
+--- !u!114 &668759142759725134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 144724576180581300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf9c225c897875f48931fca03767c00f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dotsParent: {fileID: 6714022453253668220}
+  dotPrefab: {fileID: 5853752768223258356, guid: b6ba945d48498b34aa65883dacb32325, type: 3}
+  dotsNumber: 30
+  dotSpacing: 0.05
 --- !u!1 &1958479458538586591
 GameObject:
   m_ObjectHideFlags: 0
@@ -164,7 +184,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1620245396498635274}
-  - component: {fileID: 9209678410501076711}
   m_Layer: 0
   m_Name: Trajectory
   m_TagString: Untagged
@@ -188,22 +207,6 @@ Transform:
   - {fileID: 5272008551436836628}
   m_Father: {fileID: 2594228288869015521}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &9209678410501076711
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1958479458538586591}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf9c225c897875f48931fca03767c00f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dotsNumber: 30
-  dotsParent: {fileID: 6714022453253668220}
-  dotPrefab: {fileID: 5853752768223258356, guid: b6ba945d48498b34aa65883dacb32325, type: 3}
-  dotSpacing: 0.05
 --- !u!1 &6714022453253668220
 GameObject:
   m_ObjectHideFlags: 0
