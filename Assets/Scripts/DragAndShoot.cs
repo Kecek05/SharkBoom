@@ -2,66 +2,66 @@ using UnityEngine;
 
 public class DragAndShoot : MonoBehaviour
 {
-    private Vector3 startPos;
-    private Vector3 endPos;
+     private Vector3 startPos;
+     private Vector3 endPos;
 
-    private float forceMultiplier;
-    private float maxForceMultiplier = 100;
-    private bool isDragging = false;
+     private float forceMultiplier;
+     private float maxForceMultiplier = 100;
+     private bool isDragging = false;
 
-    [SerializeField] private Transform spawnPos;
-    [SerializeField] private Transform shperePos;
-    
-    [SerializeField] private Rigidbody rb;
+     [SerializeField] private Transform spawnPos;
+     [SerializeField] private Transform shperePos;
+
+     [SerializeField] private Rigidbody rb;
 
 
-    private void Update()
-    {
-        StartDrag();
-        MouseDrag();
-    }
+     private void Update()
+     {
+         StartDrag();
+         MouseDrag();
+     }
 
-    private void StartDrag()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Ray rayStart = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            
-            if (Physics.Raycast(rayStart, out hit) && hit.collider.gameObject == this.gameObject)
-            {
-                startPos = rayStart.origin;
-                isDragging = true;
-            }
-        }
+     private void StartDrag()
+     {
+         if (Input.GetMouseButtonDown(0))
+         {
+             Ray rayStart = Camera.main.ScreenPointToRay(Input.mousePosition);
+             RaycastHit hit;
 
-        if(Input.GetKeyDown(KeyCode.R))
-        {
-            shperePos.position = spawnPos.position;
-        }
-    }
+             if (Physics.Raycast(rayStart, out hit) && hit.collider.gameObject == this.gameObject)
+             {
+                 startPos = rayStart.origin;
+                 isDragging = true;
+             }
+         }
 
-    private void MouseDrag()
-    {
-        if (isDragging && Input.GetMouseButtonUp(0))
-        {
-            Ray rayEnd = Camera.main.ScreenPointToRay(Input.mousePosition);
-            endPos = rayEnd.origin;
-            ReleaseDrag();
-        }
-    }
+         if(Input.GetKeyDown(KeyCode.R))
+         {
+             shperePos.position = spawnPos.position;
+         }
+     }
 
-    private void ReleaseDrag()
-    {
-        Vector3 direction = (startPos - endPos).normalized;
-        forceMultiplier = Vector3.Distance(startPos, endPos);
+     private void MouseDrag()
+     {
+         if (isDragging && Input.GetMouseButtonUp(0))
+         {
+             Ray rayEnd = Camera.main.ScreenPointToRay(Input.mousePosition);
+             endPos = rayEnd.origin;
+             ReleaseDrag();
+         }
+     }
 
-        if (forceMultiplier > 0.15) 
-        {
-            forceMultiplier = 0.15f;
-        }
+     private void ReleaseDrag()
+     {
+         Vector3 direction = (startPos - endPos).normalized;
+         forceMultiplier = Vector3.Distance(startPos, endPos);
 
-        rb.AddForce(direction * forceMultiplier * maxForceMultiplier, ForceMode.Impulse);
-        isDragging = false;
-    }
+         if (forceMultiplier > 0.15) 
+         {
+             forceMultiplier = 0.15f;
+         }
+
+         rb.AddForce(direction * forceMultiplier * maxForceMultiplier, ForceMode.Impulse);
+         isDragging = false;
+     } 
 }
