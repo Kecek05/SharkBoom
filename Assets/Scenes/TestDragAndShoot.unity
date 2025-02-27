@@ -710,7 +710,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TrackerSettings:
     BindingMode: 4
-    PositionDamping: {x: 0, y: 0, z: 2}
+    PositionDamping: {x: 1, y: 1, z: 1}
     AngularDampingMode: 0
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
@@ -1107,7 +1107,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
   cameraSystem: {fileID: 1668177987}
-  pinchSpeed: 100
+  pinchSpeed: 28
 --- !u!114 &1668177989
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1121,7 +1121,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
-  pinchZoomDetection: {fileID: 1668177988}
   dragSpeed: 1
 --- !u!1 &1700457202
 GameObject:
