@@ -28,6 +28,8 @@ public class Health : NetworkBehaviour, IDamageable
     {
         if(isDead) return;
 
+        if(!IsServer) return;
+
         ModifyHealth(-damage);
     }
 

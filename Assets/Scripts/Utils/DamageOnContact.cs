@@ -13,6 +13,7 @@ public class DamageOnContact : MonoBehaviour
             {
                 damageableObject.TakeDamage(damage);
                 Debug.Log("Dealt " + damage + " damage to " + collision.gameObject.name);
+
                 DestroyOnServerRpc();
             }
         }
@@ -26,7 +27,9 @@ public class DamageOnContact : MonoBehaviour
     [Rpc(SendTo.Server)]
     private void DestroyOnServerRpc()
     {
-        Destroy(gameObject);
+        Debug.Log("Destroying object on server");
+        gameObject.transform.GetComponent<NetworkObject>().Despawn(true);
+        //Destroy(gameObject);
     }
 
 }
