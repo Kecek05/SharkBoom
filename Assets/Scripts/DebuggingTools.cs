@@ -3,7 +3,7 @@ using Sortify;
 using Unity.Netcode;
 using UnityEngine;
 
-public class DebuggingTools : MonoBehaviour
+public class DebuggingTools : NetworkBehaviour
 {
 
     [BetterHeader("References")]
