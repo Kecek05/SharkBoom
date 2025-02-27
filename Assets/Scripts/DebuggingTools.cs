@@ -13,15 +13,20 @@ public class DebuggingTools : MonoBehaviour
     [Command("debug-spawnProjectile")]
     public void SpawnProjectile()
     {
-        SpawnProjectileServerRpc();
+        SpawnProjectileRpc();
     }
 
     [Rpc(SendTo.Server)]
-    private void SpawnProjectileServerRpc()
+    private void SpawnProjectileRpc()
+    {
+        SpawnProjectileClientsRpc();
+        Debug.Log("Server");
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void SpawnProjectileClientsRpc()
     {
         GameObject projectileSpawned = Instantiate(projectilePrefab, Vector3.zero, Quaternion.identity);
-
-        projectileSpawned.GetComponent<NetworkObject>().Spawn(true);
 
         Debug.Log("Projectile spawned");
     }

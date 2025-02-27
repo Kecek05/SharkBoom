@@ -7,14 +7,25 @@ public class DamageOnContact : MonoBehaviour
     public float Damage => damage;
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.rigidbody != null)
+
+        if (collision.rigidbody != null)
         {
             if(collision.rigidbody.TryGetComponent(out IDamageable damageableObject))
             {
-                damageableObject.TakeDamage(damage);
-                Debug.Log("Dealt " + damage + " damage to " + collision.gameObject.name);
-
-                DestroyOnServerRpc();
+                if(NetworkManager.Singleton.IsServer)
+                {
+                    damageableObject.TakeDamage(damage);
+                    Debug.Log("Dealt " + damage + " damage to " + collision.gameObject.name);
+                } else if (NetworkManager.Singleton.IsHost)
+                {
+                    Debug.Log("IsHost");
+                }
+                else if (NetworkManager.Singleton.IsClient)
+                {
+                    Debug.Log("IsClient");
+                }
+                Destroy(gameObject);
+                //DestroyRpc();
             }
         }
     }
@@ -25,7 +36,7 @@ public class DamageOnContact : MonoBehaviour
     }
 
     [Rpc(SendTo.Server)]
-    private void DestroyOnServerRpc()
+    private void DestroyRpc()
     {
         Debug.Log("Destroying object on server");
         gameObject.transform.GetComponent<NetworkObject>().Despawn(true);
