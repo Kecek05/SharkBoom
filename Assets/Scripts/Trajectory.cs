@@ -1,14 +1,18 @@
+using Sortify;
 using UnityEngine;
 
 public class Trajectory : MonoBehaviour
 {
-    [SerializeField] private int dotsNumber;
+    [BetterHeader("References")]
     [SerializeField] private GameObject dotsParent;
     [SerializeField] private GameObject dotPrefab;
+
+    [BetterHeader("Settings")]
+    [SerializeField] private int dotsNumber;
     [SerializeField] private float dotSpacing;
 
     private Vector3 dotPos;
-    private float timeStamp;
+    private float timeStamp; // Position of dots along the trajectory
     private Transform[] dotsList;
 
     private void Start()
@@ -17,30 +21,29 @@ public class Trajectory : MonoBehaviour
         Hide();
     }
 
-    private void PrepareDots()
+    public void PrepareDots()
     {
         dotsList = new Transform[dotsNumber];
         for (int i = 0; i < dotsNumber; i++)
         {
-            dotsList[i] = Instantiate(dotPrefab, dotsParent.transform).transform;
-            dotsList[i].position = dotsParent.transform.position; // Garante que os pontos iniciem na posição correta
+            dotsList[i] = Instantiate(dotPrefab, dotsParent.transform).transform; // Create dots based on the number of dots variable
+            dotsList[i].position = dotsParent.transform.position; // set the dots position to the parent position (in player)
         }
     }
 
     public void UpdateDots(Vector3 objectPos, Vector3 forceApplied)
     {
-        timeStamp = dotSpacing;
+        timeStamp = dotSpacing; 
         for (int i = 0; i < dotsNumber; i++)
         {
-            dotPos.x = objectPos.x + forceApplied.x * timeStamp;
+            dotPos.x = objectPos.x + forceApplied.x * timeStamp; // Formula to calculate the position of the dots along the trajectory
             dotPos.y = objectPos.y + forceApplied.y * timeStamp + (0.5f * Physics.gravity.y * timeStamp * timeStamp);
-            dotPos.z = objectPos.z + forceApplied.z * timeStamp; // Para considerar 3D
+            dotPos.z = objectPos.z + forceApplied.z * timeStamp; // we have to maintain the z position, for the dots to be in the same plane as the player
 
             dotsList[i].position = dotPos;
-            timeStamp += dotSpacing;
+            timeStamp += dotSpacing; // increase the time stamp to move the dots further along the trajectory
         }
     }
-
 
     public void Show()
     {
