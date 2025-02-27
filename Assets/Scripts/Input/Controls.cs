@@ -93,11 +93,11 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             ""actions"": [
                 {
                     ""name"": ""TouchPress"",
-                    ""type"": ""Value"",
+                    ""type"": ""Button"",
                     ""id"": ""0e6e344c-fd49-4a61-bcf3-c4a8d0468519"",
-                    ""expectedControlType"": ""Vector2"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
-                    ""interactions"": """",
+                    ""interactions"": ""Press"",
                     ""initialStateCheck"": true
                 },
                 {
@@ -132,7 +132,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""e4653c6b-84a0-4e4a-956b-30960b72ace6"",
-                    ""path"": ""<Touchscreen>/touch0/position"",
+                    ""path"": ""<Touchscreen>/touch0/press"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

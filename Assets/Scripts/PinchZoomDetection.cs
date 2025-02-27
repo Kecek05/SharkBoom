@@ -38,7 +38,7 @@ public class PinchZoomDetection : MonoBehaviour
         inputReader.OnSecondaryFingerPositionEvent += InputReader_OnSecondaryFingerPositionEvent;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         inputReader.OnSecondaryTouchContactEvent -= InputReader_OnSecondaryTouchContactEvent;
         inputReader.OnPrimaryFingerPositionEvent -= InputReader_OnPrimaryFingerPositionEvent;
@@ -111,5 +111,5 @@ public class PinchZoomDetection : MonoBehaviour
         }
     }
 
-    public Coroutine zoomCourotine { get => zoomCoroutine; }
+   
 }

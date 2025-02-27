@@ -27,7 +27,10 @@ public class InputReader : ScriptableObject, IGameActions
         controls.Game.Enable();
     }
 
-    
+    private void OnDisable()
+    {
+        controls.Game.Disable();
+    }
 
     public void OnPrimaryFingerPosition(InputAction.CallbackContext context)
     {
