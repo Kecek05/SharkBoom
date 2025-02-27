@@ -8,7 +8,7 @@ public class DebuggingTools : NetworkBehaviour
 
     [BetterHeader("References")]
     [SerializeField] private GameObject projectilePrefab;
-
+    [SerializeField] private Transform spawnProjectilePos;
 
     [Command("debug-spawnProjectile")]
     public void SpawnProjectile()
@@ -26,7 +26,7 @@ public class DebuggingTools : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost)]
     private void SpawnProjectileClientsRpc()
     {
-        GameObject projectileSpawned = Instantiate(projectilePrefab, Vector3.zero, Quaternion.identity);
+        GameObject projectileSpawned = Instantiate(projectilePrefab, spawnProjectilePos.position, Quaternion.identity);
 
         Debug.Log("Projectile spawned");
     }
