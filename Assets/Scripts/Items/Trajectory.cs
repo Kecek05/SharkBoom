@@ -1,12 +1,10 @@
 using Sortify;
-using System;
 using UnityEngine;
 
 public class Trajectory : MonoBehaviour
 {
     [BetterHeader("References")]
     [SerializeField] private GameObject dotPrefab;
-    [SerializeField] private DragAndShoot dragAndShoot;
 
     [BetterHeader("Settings")]
     [Range(3, 50)]
@@ -29,8 +27,7 @@ public class Trajectory : MonoBehaviour
 
     private void PrepareDots()
     {
-
-        dotsList = new Transform[dotsNumber * (int)dragAndShoot.Force];
+        dotsList = new Transform[dotsNumber];
         for (int i = 0; i < dotsNumber; i++)
         {
             dotsList[i] = Instantiate(dotPrefab, dotsParent.transform).transform; // Create dots based on the number of dots variable
