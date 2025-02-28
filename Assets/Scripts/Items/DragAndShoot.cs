@@ -7,6 +7,11 @@ public class DragAndShoot : MonoBehaviour
 {
     public event Action OnDragRelease;
     public event Action OnDragStart;
+    public event EventHandler<OnDraggingEventArgs> OnDragging;
+    public class OnDraggingEventArgs : EventArgs
+    {
+        public Vector3 _direction;
+    }
 
     [BetterHeader("References")]
 
@@ -49,6 +54,7 @@ public class DragAndShoot : MonoBehaviour
 
     private bool canDrag = true;
     public bool CanDrag => canDrag;
+
 
 
     public void Initialize() //Setup
@@ -105,7 +111,7 @@ public class DragAndShoot : MonoBehaviour
 
 
             trajectory.UpdateDots(transform.position, direction * force); // update the dots position 
-
+            OnDragging?.Invoke(this, new OnDraggingEventArgs { _direction = direction });
             //REFACTOR LATTER
 
             for (int i = 0; i < force % 10; i++)
