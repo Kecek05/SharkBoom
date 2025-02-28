@@ -7,7 +7,9 @@ public class Trajectory : MonoBehaviour
     [SerializeField] private GameObject dotPrefab;
 
     [BetterHeader("Settings")]
+    [Range(3, 50)]
     [SerializeField] private int dotsNumber;
+    [RangeStep(0.01f, 1f, 0.01f)]
     [SerializeField] private float dotSpacing;
 
     private Vector3 dotPos;
@@ -30,6 +32,7 @@ public class Trajectory : MonoBehaviour
         {
             dotsList[i] = Instantiate(dotPrefab, dotsParent.transform).transform; // Create dots based on the number of dots variable
             dotsList[i].position = dotsParent.transform.position; // set the dots position to the parent position (in player)
+            Debug.Log($"Dots Created in: {gameObject.name}");
         }
     }
 

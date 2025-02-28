@@ -287,8 +287,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
-  trajectory: {fileID: 668759142759725134, guid: b2369f3af4b58d2428544e55af6e3b34, type: 3}
-  maxForceMultiplier: 70
+  trajectory: {fileID: 800024870368675109}
+  maxForceMultiplier: 25
   minForceMultiplier: 5
   smoothTime: 0.01
   offsetForceMultiplier: 3
@@ -306,8 +306,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dotPrefab: {fileID: 5853752768223258356, guid: b6ba945d48498b34aa65883dacb32325, type: 3}
-  dotsNumber: 30
-  dotSpacing: 0.05
+  dotsNumber: 8
+  dotSpacing: 0.07
 --- !u!114 &5795781004935212288
 MonoBehaviour:
   m_ObjectHideFlags: 0
