@@ -101,6 +101,7 @@ GameObject:
   - component: {fileID: 1901372310542160898}
   - component: {fileID: 1756939882215120300}
   - component: {fileID: 2871544100916734757}
+  - component: {fileID: 6377254783256832976}
   - component: {fileID: 2138181675319397629}
   - component: {fileID: 800024870368675109}
   - component: {fileID: 5795781004935212288}
@@ -274,6 +275,19 @@ MonoBehaviour:
   playerCollider: {fileID: 4585798541678627608}
   clientProjectilePrefabDebug: {fileID: 8383273951765277301, guid: ba148075d149fe442b225eeafe799df4, type: 3}
   serverProjectileDebug: {fileID: 1416198623344933440, guid: f2315e52c08a4564193fd87de9dbd174, type: 3}
+--- !u!114 &6377254783256832976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1244250245066138330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2fa930db8365534c8df008d86cb9980, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemsListSO: {fileID: 11400000, guid: 0512cb21a29af2e4b88962e2cb6a1605, type: 2}
 --- !u!114 &2138181675319397629
 MonoBehaviour:
   m_ObjectHideFlags: 0

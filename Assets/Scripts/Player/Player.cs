@@ -9,6 +9,7 @@ public class Player : NetworkBehaviour
 
     [BetterHeader("References")]
     [SerializeField] private Transform spawnThrowablePos;
+    [SerializeField] private PlayerInventory playerInventory;
     [SerializeField] private DragAndShoot dragAndShoot;
     [SerializeField] private Collider playerCollider;
     [SerializeField] private GameObject clientProjectilePrefabDebug;
