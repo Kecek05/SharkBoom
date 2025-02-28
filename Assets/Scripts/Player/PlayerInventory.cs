@@ -18,6 +18,8 @@ public class PlayerInventory : MonoBehaviour
         SetPlayerItems();
     }
 
+    // FALTA SYNCAR COM O SERVER E O SERVER Q RANDOMIZA OS ITEMS E QTDS
+
     private void SetPlayerItems() //Set the items that player have
     {
         for (int i = 0; i < itemsListSO.allItemsList.Count; i++)
