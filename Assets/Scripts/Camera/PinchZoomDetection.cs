@@ -11,7 +11,7 @@ public class PinchZoomDetection : MonoBehaviour
     [BetterHeader("References")]
 
     [SerializeField] private InputReader inputReader;
-    [SerializeField] private Transform cameraSystem; // object that camera is following
+    [SerializeField] private Transform cameraObjectToFollow; // object that camera is following
 
     #endregion
 
@@ -107,11 +107,11 @@ public class PinchZoomDetection : MonoBehaviour
 
     public void ChangeZoom(float value)
     {
-        cameraSystemPosition = cameraSystem.position;
+        cameraSystemPosition = cameraObjectToFollow.position;
         cameraSystemPosition.z += value;
 
         cameraSystemPosition.z = Mathf.Clamp(cameraSystemPosition.z, -10f, -2f);
-        cameraSystem.position = Vector3.Lerp(cameraSystem.position, cameraSystemPosition, Time.deltaTime * pinchSpeed);
+        cameraObjectToFollow.position = Vector3.Lerp(cameraObjectToFollow.position, cameraSystemPosition, Time.deltaTime * pinchSpeed);
     }
 
     private void OnDestroy()

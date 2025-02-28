@@ -30,6 +30,9 @@ public class DragAndShoot : MonoBehaviour
     [Tooltip("Center position of the drag")]
     [SerializeField]private Transform startDragPos;
 
+    /// <summary>
+    /// Vai receber um input das propriedades o item, como: Massa. Reajustar  a trajetória baseado nos valores
+    /// </summary>
 
     private Vector3 velocity = Vector3.zero; //cache
 

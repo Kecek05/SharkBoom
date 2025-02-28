@@ -9,6 +9,7 @@ public class CameraSystemMobile : MonoBehaviour
 {
     [BetterHeader("References")]
     [SerializeField] private InputReader inputReader;
+    [SerializeField] private Transform cameraObjectToFollow; // object that camera is following
 
     [BetterHeader("Settings")]
     [SerializeField] private float dragSpeed = 1f;
@@ -71,7 +72,7 @@ public class CameraSystemMobile : MonoBehaviour
     private void MoveCamera(Vector2 movementDelta)
     {
         Vector3 moveDir = new Vector3(-movementDelta.x, -movementDelta.y, 0) * dragSpeed * Time.deltaTime; 
-        transform.position += moveDir;
+        cameraObjectToFollow.position += moveDir;
     }
 }
 

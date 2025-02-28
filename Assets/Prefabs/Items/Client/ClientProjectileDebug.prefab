@@ -50,7 +50,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8360590805627951754, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
       propertyPath: m_Name
-      value: BaseProjectileDebug
+      value: ClientProjectileDebug
+      objectReference: {fileID: 0}
+    - target: {fileID: 8841218437626745952, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
+      propertyPath: m_Mass
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8841218437626745952, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
+      propertyPath: m_UseGravity
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
