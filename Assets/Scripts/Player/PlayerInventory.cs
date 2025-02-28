@@ -7,11 +7,10 @@ public class PlayerInventory : MonoBehaviour
 {
     [SerializeField] private ItemsListSO itemsListSO;
 
-    private Dictionary<int, ItemSO> playerItemsByIndex = new();
-    private Dictionary<int, int> playerItemsCountByIndex = new();
+    private Dictionary<int, ItemData> playerItemDataByIndex = new();
 
-    private ItemSO selectedItemSO;
-    public ItemSO SelectedItemSO => selectedItemSO;
+    private ItemData selectedItemData;
+    public ItemData SelectedItemData => selectedItemData;
 
     private void Awake()
     {
@@ -24,40 +23,46 @@ public class PlayerInventory : MonoBehaviour
     {
         for (int i = 0; i < itemsListSO.allItemsList.Count; i++)
         {
-            playerItemsByIndex[i] = itemsListSO.allItemsList[i];
-            playerItemsCountByIndex[i] = Random.Range(1,4); //Random qtd of the item for now
-            Debug.Log($"Player: {gameObject.name} Creating Items... Item: {playerItemsByIndex[i]} Qtd: {playerItemsCountByIndex[i]}");
+            playerItemDataByIndex[i] = new ItemData
+            {
+                itemSO = itemsListSO.allItemsList[i],
+                itemIndex = i,
+                itemUsesLeft = Random.Range(1, 4), //Random qtd of the item for now
+                itemCanBeUsed = true
+            };
+
+            Debug.Log($"Player: {gameObject.name} Creating Items... Item: {playerItemDataByIndex[i].itemSO.name} Qtd: {playerItemDataByIndex[i].itemUsesLeft}");
         }
     }
 
 
-    [Command("playerInventory-selectItemByIndex")]
-    public void SelectItemByIndex(int itemIndex) // Select a item to use, UI will call this
+    [Command("playerInventory-selectItemDataByIndex")]
+    public void SelectItemDataByIndex(int itemIndex) // Select a item to use, UI will call this
     {
-        if (playerItemsByIndex.TryGetValue(itemIndex, out ItemSO itemSO)) 
+        if (playerItemDataByIndex.TryGetValue(itemIndex, out ItemData itemData)) 
         {
-            selectedItemSO = itemSO;
-            Debug.Log($"Selected Item: {selectedItemSO}");
+            selectedItemData = itemData;
+            Debug.Log($"Selected Item: {selectedItemData}");
         }
     }
 
     [Command("playerInventory-useItemByIndex")]
     public void UseItemByIndex(int itemIndex, int usedCount = 1) // Use the item, Player wil call this
     {
-        if(playerItemsCountByIndex.TryGetValue(itemIndex, out int itemCount))
+        if(playerItemDataByIndex.TryGetValue(itemIndex, out ItemData itemData))
         {
-            playerItemsCountByIndex[itemIndex] -= usedCount;
-            Debug.Log($"New item count: {playerItemsCountByIndex[itemIndex]}");
+            itemData.itemUsesLeft -= usedCount;
+            Debug.Log($"New item count: {playerItemDataByIndex[itemIndex].itemUsesLeft}");
         }
     }
 
     [Command("playerInventory-stillHaveItemCount")]
     public bool StillHaveItemCount(int itemIndex) // Returns if the item can be used
     {
-        if(playerItemsCountByIndex.TryGetValue(itemIndex, out int itemCount))
+        if(playerItemDataByIndex.TryGetValue(itemIndex, out ItemData itemData))
         {
             //Index found
-            return playerItemsCountByIndex[itemIndex] > 0;
+            return playerItemDataByIndex[itemIndex].itemUsesLeft > 0;
         }
 
         Debug.LogWarning("Item Index not found!");
