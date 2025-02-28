@@ -4,11 +4,13 @@ using System.Collections;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static DragAndShoot;
 
 public class CameraSystemMobile : MonoBehaviour
 {
     [BetterHeader("References")]
     [SerializeField] private InputReader inputReader;
+    //[SerializeField] private DragAndShoot dragAndShoot;
 
     [BetterHeader("Settings")]
     [SerializeField] private float dragSpeed = 1f;
@@ -16,12 +18,15 @@ public class CameraSystemMobile : MonoBehaviour
     private Vector2 lastTouchPosition;
     private Vector3 moveDirection;
 
-    public Vector3 MoveDirection => moveDirection;
 
     private void Start()
     {
         inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
         inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
+
+        DragAndShoot dragInstance = FindObjectOfType<DragAndShoot>();
+        dragInstance.OnDragging += DragAndShoot_OnDragging;
+        Debug.Log(dragInstance);
     }
 
     private void OnDestroy()
@@ -74,6 +79,13 @@ public class CameraSystemMobile : MonoBehaviour
     {
         moveDirection = new Vector3(-movementDelta.x, -movementDelta.y, 0) * dragSpeed * Time.deltaTime; 
         transform.position += moveDirection;
+    }
+
+    private void DragAndShoot_OnDragging(object sender, OnDraggingEventArgs e)
+    {
+        Vector3 newPosition = transform.position;
+        newPosition.z += e._direction.z; 
+        transform.position += newPosition;
     }
 }
 
