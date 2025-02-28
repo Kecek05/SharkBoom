@@ -8,18 +8,16 @@ public class DamageOnContact : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
 
-        if (collision.rigidbody != null)
+        if (collision.gameObject.TryGetComponent(out IDamageable damageableObject))
         {
-            if(collision.rigidbody.TryGetComponent(out IDamageable damageableObject))
+            if (NetworkManager.Singleton.IsServer)
             {
-                if(NetworkManager.Singleton.IsServer)
-                {
-                    damageableObject.TakeDamage(damage);
-                    Debug.Log("Dealt " + damage + " damage to " + collision.gameObject.name);
-                }
-                Destroy(gameObject);
+                damageableObject.TakeDamage(damage);
+                Debug.Log("Dealt " + damage + " damage to " + collision.gameObject.name);
             }
+            Destroy(gameObject);
         }
+
     }
 
 }

@@ -26,18 +26,20 @@ public class Health : NetworkBehaviour, IDamageable
     [Command("health-takeDamage")]
     public void TakeDamage(float damage)
     {
-        if(isDead) return;
-
         if(!IsServer) return;
+
+        if(isDead) return;
 
         ModifyHealth(-damage);
     }
 
 
     [Command("health-heal")]
-    public void Heal(float healthToHeal)
+    public void Heal(float healthToHeal) //only server
     {
-        if(isDead) return;
+        if (!IsServer) return;
+
+        if (isDead) return;
 
         ModifyHealth(healthToHeal);
 
@@ -51,13 +53,17 @@ public class Health : NetworkBehaviour, IDamageable
     }
 
 
-    private void ModifyHealth(float value)
+    private void ModifyHealth(float value) //only server
     {
-        if(isDead) return;
+        if (!IsServer) return;
+
+        if (isDead) return;
 
         float newHealth = currentHealth.Value + value;
 
         currentHealth.Value = Mathf.Clamp(newHealth, 0, maxHealth);
+
+        Debug.Log($"Health: {currentHealth.Value}");
 
         if (currentHealth.Value <= 0)
         {
@@ -69,11 +75,15 @@ public class Health : NetworkBehaviour, IDamageable
     [Command("health-die")]
     public void Die()
     {
+        if(!IsServer) return;
+
         OnDie?.Invoke();
-        Destroy(gameObject);
+        //Temp, after will only invoke the event 
+
+        if(gameObject.TryGetComponent(out NetworkObject networkObject))
+        {
+            networkObject.Despawn(true);
+        }
     }
-
-
-
 
 }

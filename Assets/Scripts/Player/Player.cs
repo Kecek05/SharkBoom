@@ -28,15 +28,15 @@ public class Player : NetworkBehaviour
     {
         //REFACTOR
 
-        SpawnProjectileServerRpc(); //Spawn real projectile on server
+        SpawnProjectileServerRpc(dragAndShoot.Force, dragAndShoot.Direction); //Spawn real projectile on server need to send the speed and force values through the network
 
-        SpawnDummyProjectile(); //Spawn fake projectile on client
+        SpawnDummyProjectile(dragAndShoot.Force, dragAndShoot.Direction); //Spawn fake projectile on client
 
         dragAndShoot.ResetDragPos();
     }
 
     [Rpc(SendTo.Server)]
-    private void SpawnProjectileServerRpc() // on server 
+    private void SpawnProjectileServerRpc(float dragForce, Vector3 dragDirection) // on server 
     {
         GameObject gameObject = Instantiate(serverProjectileDebug, spawnThrowablePos.position, Quaternion.identity);
 
@@ -44,21 +44,23 @@ public class Player : NetworkBehaviour
 
         if (gameObject.transform.TryGetComponent(out IDraggable draggable))
         {
-            draggable.Release(dragAndShoot.Force, dragAndShoot.Direction); //Call interface
+            draggable.Release(dragForce, dragDirection); //Call interface
         }
 
-        SpawnProjectileClientRpc();
+        SpawnProjectileClientRpc(dragForce, dragDirection);
     }
 
     [Rpc(SendTo.ClientsAndHost)]
-    private void SpawnProjectileClientRpc() // on client
+    private void SpawnProjectileClientRpc(float dragForce, Vector3 dragDirection) // on client
     {
         if(IsOwner) return; // already spawned
 
-        SpawnDummyProjectile();
+        SpawnDummyProjectile(dragForce, dragDirection); 
+
+        Debug.Log("Spawn Projectile Client");
     }
 
-    private void SpawnDummyProjectile()
+    private void SpawnDummyProjectile(float dragForce, Vector3 dragDirection)
     {
 
         GameObject gameObject = Instantiate(clientProjectilePrefabDebug, spawnThrowablePos.position, Quaternion.identity);
@@ -67,7 +69,7 @@ public class Player : NetworkBehaviour
 
         if (gameObject.transform.TryGetComponent(out IDraggable draggable))
         {
-            draggable.Release(dragAndShoot.Force, dragAndShoot.Direction); //Call interface
+            draggable.Release(dragForce, dragDirection); //Call interface
         }
     }
 
