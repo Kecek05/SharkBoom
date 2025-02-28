@@ -5,81 +5,6 @@ using UnityEngine.InputSystem;
 
 public class DragAndShoot : MonoBehaviour
 {
-    /*
-    private Vector3 startPos;
-    private Vector3 endPos;
-    private Vector3 direction;
-
-    private float forceMultiplier;
-    private float maxForceMultiplier = 100;
-    private bool isDragging = false;
-
-    [SerializeField] private Transform spawnPos;
-    [SerializeField] private Transform shperePos;
-    [SerializeField] private Rigidbody rb;
-    [SerializeField] private Trajectory trajectory;
-
-    private Vector3 velocity = Vector3.zero; 
-    [SerializeField] private float smoothTime = 0.1f; 
-
-    private void Update()
-    {
-        StartDrag();
-        MouseDrag();
-    }
-
-    private void StartDrag()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Ray rayStart = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-
-            if (Physics.Raycast(rayStart, out hit) && hit.collider.gameObject == this.gameObject)
-            {
-                startPos = hit.point; 
-                isDragging = true;
-                trajectory.Show();
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            shperePos.position = spawnPos.position;
-        }
-    }
-
-    private void MouseDrag()
-    {
-        if (isDragging)
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            Plane plane = new Plane(Vector3.forward, startPos);
-            float distance;
-
-            if (plane.Raycast(ray, out distance))
-            {
-                endPos = Vector3.SmoothDamp(endPos, ray.GetPoint(distance), ref velocity, smoothTime);
-
-                direction = (startPos - endPos).normalized;
-                forceMultiplier = Vector3.Distance(startPos, endPos);
-                forceMultiplier = Mathf.Clamp(forceMultiplier, 0, 0.15f);
-                trajectory.UpdateDots(shperePos.position, direction * forceMultiplier * maxForceMultiplier);
-            }
-        }
-
-        if (Input.GetMouseButtonUp(0) && isDragging)
-        {
-            ReleaseDrag();
-        }
-    }
-
-    private void ReleaseDrag()
-    {
-        rb.AddForce(direction * forceMultiplier * maxForceMultiplier, ForceMode.Impulse);
-        isDragging = false;
-        trajectory.Hide();
-    } */
 
     [BetterHeader("References")]
 
@@ -91,8 +16,12 @@ public class DragAndShoot : MonoBehaviour
     [SerializeField] private Camera playerCam;
 
     [BetterHeader("Force Settings")]
-    [SerializeField] private float maxForceMultiplier = 100;
-    [SerializeField] private float smoothTime = 0.1f; // time to smooth the velocity of trajectory
+    [Tooltip("Maximum Force that the Object can go")]
+    [SerializeField] private float maxForceMultiplier = 100f;
+
+    [Tooltip("Time to the trajectories get to the final position")] [RangeStep(0.01f, 0.5f, 0.01f)] [SerializeField] private float smoothTime = 0.1f;
+
+    [Tooltip("Value to be add to not need to drag too far from the object")][SerializeField] private float offsetForceMultiplier = 1f;
 
     private Vector3 velocity = Vector3.zero;
 
@@ -144,7 +73,8 @@ public class DragAndShoot : MonoBehaviour
                 endPos = Vector3.SmoothDamp(endPos, ray.GetPoint(distance), ref velocity, smoothTime);
 
                 direction = (startPos - endPos).normalized; // calculate the direction of the drag
-                forceMultiplier = Vector3.Distance(startPos, endPos);
+                forceMultiplier = Mathf.Pow(Vector3.Distance(startPos, endPos), offsetForceMultiplier);
+                Debug.Log($"ForceMultiplier: {forceMultiplier} and Actual Distance: {Vector3.Distance(startPos, endPos)}");
                 forceMultiplier = Mathf.Clamp(forceMultiplier, 0, maxForceMultiplier); // clamp the force multiplier
                 trajectory.UpdateDots(shperePos.position, direction * forceMultiplier); // update the dots position 
             }

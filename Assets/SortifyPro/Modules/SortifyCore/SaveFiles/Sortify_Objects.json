@@ -22,51 +22,39 @@
             "sceneName": "Tapping"
         },
         {
-            "icons": [],
+            "icons": [
+                {
+                    "objID": "TestDragAndShoot_Main Camera_0",
+                    "iconName": "d_SceneViewCamera"
+                },
+                {
+                    "objID": "TestDragAndShoot_Directional Light_1",
+                    "iconName": "d_Lighting"
+                }
+            ],
             "colors": [],
             "styles": [],
             "showComponents": [],
             "sceneName": "TestDragAndShoot"
         },
         {
-            "icons": [
-                {
-                    "objID": "PlayerScene_Main Camera_9",
-                    "iconName": "d_SceneViewCamera"
-                },
-                {
-                    "objID": "PlayerScene_Directional Light_10",
-                    "iconName": "d_Lighting"
-                },
-                {
-                    "objID": "PlayerScene_DebuggingTools_7",
-                    "iconName": "d_console.warnicon"
-                },
-                {
-                    "objID": "PlayerScene_SpawnPoints_14",
-                    "iconName": "d_Folder Icon"
-                }
-            ],
-            "colors": [
-                {
-                    "objID": "PlayerScene_Managers_0",
-                    "colorValue": "8000FFFF"
-                },
-                {
-                    "objID": "PlayerScene_SCENE_8",
-                    "colorValue": "4040BFFF"
-                }
-            ],
-            "styles": [
-                {
-                    "objID": "PlayerScene_Managers_0",
-                    "styleType": 1
-                },
-                {
-                    "objID": "PlayerScene_SCENE_8",
-                    "styleType": 1
-                }
-            ],
+            "icons": [],
+            "colors": [],
+            "styles": [],
+            "showComponents": [],
+            "sceneName": "SampleScene"
+        },
+        {
+            "icons": [],
+            "colors": [],
+            "styles": [],
+            "showComponents": [],
+            "sceneName": ""
+        },
+        {
+            "icons": [],
+            "colors": [],
+            "styles": [],
             "showComponents": [],
             "sceneName": "PlayerScene"
         }

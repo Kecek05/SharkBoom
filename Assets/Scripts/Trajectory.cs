@@ -53,5 +53,7 @@ public class Trajectory : MonoBehaviour
     public void Hide()
     {
         dotsParent.SetActive(false);
+        // Reset the dots position
+        UpdateDots(transform.position, new Vector3(3,3,3));
     }
 }

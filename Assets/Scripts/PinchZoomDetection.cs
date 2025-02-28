@@ -96,13 +96,13 @@ public class PinchZoomDetection : MonoBehaviour
             if(currentDistance > previousDistance) // zoom in
             {
                 Vector3 targetPosition = cameraSystem.position;
-                targetPosition.z -= 1; 
+                targetPosition.z += 1; 
                 cameraSystem.position = Vector3.Lerp(cameraSystem.position, targetPosition, Time.deltaTime * pinchSpeed); 
             }
             else if (currentDistance < previousDistance) // zoom out
             {
                 Vector3 targetPosition = cameraSystem.position;
-                targetPosition.z += 1;
+                targetPosition.z -= 1;
                 cameraSystem.position = Vector3.Lerp(cameraSystem.position, targetPosition, Time.deltaTime * pinchSpeed);
             }
 
