@@ -10,6 +10,8 @@ public class PlayerInventory : NetworkBehaviour
 
     private Dictionary<int, ItemData> playerItemDataByIndex = new();
 
+    //private NetworkList<ItemData> playerItemData;
+
     private ItemData selectedItemData;
     public ItemData SelectedItemData => selectedItemData;
 
@@ -25,6 +27,8 @@ public class PlayerInventory : NetworkBehaviour
     //    RandomItemServerDebug();
     //}
 
+
+
     public void RandomItemServerDebug()
     {
         if (!IsServer) return; //Only Server
@@ -32,12 +36,12 @@ public class PlayerInventory : NetworkBehaviour
         SetPlayerItems();
     }
 
-    [Command("playerInventory-printPlayerInventory")]
+    [Command("playerInventory-printPlayerInventory", MonoTargetType.All)]
     public void PrintPlayerInventory()
     {
         for (int i = 0; i < playerItemDataByIndex.Count; i++)
         {
-            Debug.Log($"Player: {gameObject.name} Item: {playerItemDataByIndex[i].itemSO.itemName} Qtd: {playerItemDataByIndex[i].itemUsesLeft}");
+            Debug.Log($"Player: {OwnerClientId} Item: {playerItemDataByIndex[i].itemSO.itemName} Qtd: {playerItemDataByIndex[i].itemUsesLeft}");
         }
     }
 
@@ -48,7 +52,7 @@ public class PlayerInventory : NetworkBehaviour
             playerItemDataByIndex[i] = new ItemData
             {
                 itemSO = itemsListSO.allItemsSOList[i],
-                itemIndex = i,
+                itemIndex = i, // itemsListSO.allItemsSOList[i]
                 itemUsesLeft = Random.Range(1, 4), //Random qtd of the item for now
                 itemCanBeUsed = true
             };
