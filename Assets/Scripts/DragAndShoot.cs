@@ -14,17 +14,22 @@ public class DragAndShoot : MonoBehaviour
     [SerializeField] private Trajectory trajectory;
 
     [BetterHeader("Force Settings")]
-    [Tooltip("Maximum Force that the Object can go")]
+    [Tooltip("Maximum Force that the Object can go")] [RangeStep(20f, 100f, 5f)]
     [SerializeField] private float maxForceMultiplier = 100f;
+
+    [Tooltip("Minimum Force that the Object can go")] [RangeStep(0f, 50f, 1f)]
+    [SerializeField] private float minForceMultiplier = 5f;
 
     [Tooltip("Time to the trajectories get to the final position")] [RangeStep(0.01f, 0.5f, 0.01f)] 
     [SerializeField] private float smoothTime = 0.1f;
 
     [Tooltip("Value to be add to not need to drag too far from the object")]
+    [RangeStep(1.1f, 5f, 0.2f)]
     [SerializeField] private float offsetForceMultiplier = 2f;
 
     [Tooltip("Center position of the drag")]
     [SerializeField]private Transform startDragPos;
+
 
     private Vector3 velocity = Vector3.zero; //cache
 
@@ -51,7 +56,7 @@ public class DragAndShoot : MonoBehaviour
         inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
         inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
 
-        trajectory.Initialize();
+        trajectory.Initialize(startDragPos);
     }
 
     private void InputReader_OnTouchPressEvent(InputAction.CallbackContext context)
@@ -67,9 +72,8 @@ public class DragAndShoot : MonoBehaviour
             {
                 isDragging = true;
                 trajectory.Show(); // call the function for show dots
+                OnDragStart?.Invoke();
             }
-
-            OnDragStart?.Invoke();
         }
 
         if (context.canceled && isDragging)
@@ -81,7 +85,7 @@ public class DragAndShoot : MonoBehaviour
 
     private void InputReader_OnPrimaryFingerPositionEvent(InputAction.CallbackContext context)
     {
-        if(!canDrag) return;
+        if(!canDrag || !isDragging) return;
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         Plane plane = new Plane(Vector3.forward, startDragPos.position); // we create the plane to calculate the Z, because a click is a 2D position
@@ -92,24 +96,41 @@ public class DragAndShoot : MonoBehaviour
 
             direction = (startDragPos.position - endPos).normalized; // calculate the direction of the drag
 
-            force = Mathf.Pow(Vector3.Distance(startDragPos.position, endPos), offsetForceMultiplier); //Calculate the force exponentially
-            force = Mathf.Clamp(force, 0, maxForceMultiplier);
+            //force = Mathf.Pow(Vector3.Distance(startDragPos.position, endPos), offsetForceMultiplier); //Calculate the force exponentially
+            force = Vector3.Distance(startDragPos.position, endPos) * offsetForceMultiplier; //Calculate the force linearly
+            force = Mathf.Clamp(force, minForceMultiplier, maxForceMultiplier);
 
             Debug.Log($"ForceMultiplier: {force} and Actual Distance: {Vector3.Distance(startDragPos.position, endPos)}");
 
 
             trajectory.UpdateDots(transform.position, direction * force); // update the dots position 
+
+            //REFACTOR LATTER
+
+            for (int i = 0; i < force % 10; i++)
+            {
+                if(Camera.main.TryGetComponent(out PinchZoomDetection pinchZoomDetection))
+                {
+                    pinchZoomDetection.ChangeZoom(-1f);
+                }
+                //Debug.Log($"Zoom out force: {force}");
+            }
         }
     }
 
 
     public void ReleaseDrag()
     {
-        //rb.AddForce(direction * forceMultiplier, ForceMode.Impulse);
         isDragging = false;
         trajectory.Hide();
     }
 
+    public void ResetDragPos()
+    {
+        // Reset the dots position
+        trajectory.UpdateDots(transform.position, direction * minForceMultiplier);
+        ReleaseDrag();
+    }
 
     public void SetCanDrag(bool value)
     {

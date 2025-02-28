@@ -25,6 +25,8 @@ public class PinchZoomDetection : MonoBehaviour
     private Vector2 primaryFingerPosition;
     private Vector2 secondaryFingerPosition;
 
+    private Vector3 cameraSystemPosition;
+
     [BetterHeader("Variables")]
 
     [SerializeField] private float pinchSpeed = 100f;
@@ -38,12 +40,7 @@ public class PinchZoomDetection : MonoBehaviour
         inputReader.OnSecondaryFingerPositionEvent += InputReader_OnSecondaryFingerPositionEvent;
     }
 
-    private void OnDestroy()
-    {
-        inputReader.OnSecondaryTouchContactEvent -= InputReader_OnSecondaryTouchContactEvent;
-        inputReader.OnPrimaryFingerPositionEvent -= InputReader_OnPrimaryFingerPositionEvent;
-        inputReader.OnSecondaryFingerPositionEvent -= InputReader_OnSecondaryFingerPositionEvent;
-    }
+
 
     private void InputReader_OnSecondaryTouchContactEvent(InputAction.CallbackContext context)
     {
@@ -95,15 +92,11 @@ public class PinchZoomDetection : MonoBehaviour
             
             if(currentDistance > previousDistance) // zoom in
             {
-                Vector3 targetPosition = cameraSystem.position;
-                targetPosition.z += 1; 
-                cameraSystem.position = Vector3.Lerp(cameraSystem.position, targetPosition, Time.deltaTime * pinchSpeed); 
+                ChangeZoom(1f);
             }
             else if (currentDistance < previousDistance) // zoom out
             {
-                Vector3 targetPosition = cameraSystem.position;
-                targetPosition.z -= 1;
-                cameraSystem.position = Vector3.Lerp(cameraSystem.position, targetPosition, Time.deltaTime * pinchSpeed);
+                ChangeZoom(-1f);
             }
 
             previousDistance = currentDistance;
@@ -111,5 +104,20 @@ public class PinchZoomDetection : MonoBehaviour
         }
     }
 
-   
+
+    public void ChangeZoom(float value)
+    {
+        cameraSystemPosition = cameraSystem.position;
+        cameraSystemPosition.z += value;
+
+        cameraSystemPosition.z = Mathf.Clamp(cameraSystemPosition.z, -10f, -2f);
+        cameraSystem.position = Vector3.Lerp(cameraSystem.position, cameraSystemPosition, Time.deltaTime * pinchSpeed);
+    }
+
+    private void OnDestroy()
+    {
+        inputReader.OnSecondaryTouchContactEvent -= InputReader_OnSecondaryTouchContactEvent;
+        inputReader.OnPrimaryFingerPositionEvent -= InputReader_OnPrimaryFingerPositionEvent;
+        inputReader.OnSecondaryFingerPositionEvent -= InputReader_OnSecondaryFingerPositionEvent;
+    }
 }

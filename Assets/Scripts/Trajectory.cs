@@ -4,7 +4,6 @@ using UnityEngine;
 public class Trajectory : MonoBehaviour
 {
     [BetterHeader("References")]
-    [SerializeField] private GameObject dotsParent;
     [SerializeField] private GameObject dotPrefab;
 
     [BetterHeader("Settings")]
@@ -14,9 +13,12 @@ public class Trajectory : MonoBehaviour
     private Vector3 dotPos;
     private float timeStamp; // Position of dots along the trajectory
     private Transform[] dotsList;
+    private GameObject dotsParent;
 
-    public void Initialize()
+
+    public void Initialize(Transform dotsParentTransform)
     {
+        dotsParent = dotsParentTransform.gameObject;
         PrepareDots();
         Hide();
     }
@@ -53,7 +55,5 @@ public class Trajectory : MonoBehaviour
     public void Hide()
     {
         dotsParent.SetActive(false);
-        // Reset the dots position
-        UpdateDots(transform.position, new Vector3(3,3,3));
     }
 }
