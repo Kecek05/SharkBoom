@@ -1154,7 +1154,7 @@ PrefabInstance:
     - target: {fileID: 1507878252957775585, guid: b2369f3af4b58d2428544e55af6e3b34, type: 3}
       propertyPath: trajectory
       value: 
-      objectReference: {fileID: 8983597413286512055}
+      objectReference: {fileID: 0}
     - target: {fileID: 2594228288869015521, guid: b2369f3af4b58d2428544e55af6e3b34, type: 3}
       propertyPath: m_LocalPosition.x
       value: 16.6
@@ -1200,17 +1200,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b2369f3af4b58d2428544e55af6e3b34, type: 3}
---- !u!114 &8983597413286512055 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 668759142759725134, guid: b2369f3af4b58d2428544e55af6e3b34, type: 3}
-  m_PrefabInstance: {fileID: 8983597413286512054}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf9c225c897875f48931fca03767c00f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
