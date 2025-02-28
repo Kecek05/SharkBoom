@@ -38,9 +38,12 @@ public class DragAndShoot : MonoBehaviour
     private Vector3 direction;
     public Vector3 Direction => direction;
 
+    private Plane plane; //Cache for the clicks
+    private bool isShowingDots; //Cache for show dots
 
     private float distance;
 
+    private float lastForce; // used for zoomOut
     private float force;
     public float Force => force;
 
@@ -70,6 +73,11 @@ public class DragAndShoot : MonoBehaviour
 
             if (Physics.Raycast(rayStart, out hit) && hit.collider.gameObject == this.gameObject) // compare if the touch hit on the object
             {
+                //Start Dragging
+                plane = new Plane(Vector3.forward, startDragPos.position); // we create the plane to calculate the Z, because a click is a 2D position
+                isShowingDots = false;
+                lastForce = 0f;
+
                 isDragging = true;
                 //trajectory.Show(); // call the function for show dots, CANT DO HERE BECAUSE WE NEED TO CALCULATE THE DIRECTION FIRST
                 OnDragStart?.Invoke();
@@ -85,11 +93,11 @@ public class DragAndShoot : MonoBehaviour
 
     private void InputReader_OnPrimaryFingerPositionEvent(InputAction.CallbackContext context)
     {
+
         if(!canDrag || !isDragging) return;
 
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        Plane plane = new Plane(Vector3.forward, startDragPos.position); // we create the plane to calculate the Z, because a click is a 2D position
-        bool isShowing = false;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //CHANGE TO CONTEXT
+       
 
         if (plane.Raycast(ray, out distance))
         {
@@ -101,26 +109,35 @@ public class DragAndShoot : MonoBehaviour
             force = Vector3.Distance(startDragPos.position, endPos) * offsetForceMultiplier; //Calculate the force linearly
             force = Mathf.Clamp(force, minForceMultiplier, maxForceMultiplier);
 
-            Debug.Log($"ForceMultiplier: {force} and Actual Distance: {Vector3.Distance(startDragPos.position, endPos)}");
+            // Debug.Log($"ForceMultiplier: {force} and Actual Distance: {Vector3.Distance(startDragPos.position, endPos)}");
 
 
             trajectory.UpdateDots(transform.position, direction * force); // update the dots position 
 
             //REFACTOR LATTER
 
-            for (int i = 0; i < force % 10; i++)
+            if (Camera.main.TryGetComponent(out PinchZoomDetection pinchZoomDetection))
             {
-                if(Camera.main.TryGetComponent(out PinchZoomDetection pinchZoomDetection))
+                
+                if (lastForce > force)
                 {
+                    //Do Zoom In
+                    pinchZoomDetection.ChangeZoom(1f);
+                }
+                else if (lastForce < force)
+                {
+                    //Do Zoom Out
                     pinchZoomDetection.ChangeZoom(-1f);
                 }
-                //Debug.Log($"Zoom out force: {force}");
+
+                Debug.Log($"Last force: {lastForce} and force {force}");
+                lastForce = force;
             }
 
-            if(!isShowing)
+            if(!isShowingDots)
             {
                 trajectory.Show(); // call the function for show dots
-                isShowing = true;
+                isShowingDots = true;
             }
         }
     }
