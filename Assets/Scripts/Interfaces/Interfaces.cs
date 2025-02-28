@@ -6,3 +6,8 @@ public interface IDamageable
 
     public void Die();
 }
+
+public interface IDraggable
+{
+    public void Release(float force, Vector3 direction);
+}

@@ -15,13 +15,13 @@ public class Trajectory : MonoBehaviour
     private float timeStamp; // Position of dots along the trajectory
     private Transform[] dotsList;
 
-    private void Start()
+    public void Initialize()
     {
         PrepareDots();
         Hide();
     }
 
-    public void PrepareDots()
+    private void PrepareDots()
     {
         dotsList = new Transform[dotsNumber];
         for (int i = 0; i < dotsNumber; i++)

@@ -104,6 +104,7 @@ GameObject:
   - component: {fileID: 2138181675319397629}
   - component: {fileID: 800024870368675109}
   - component: {fileID: 5795781004935212288}
+  - component: {fileID: 430504882980921634}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -267,6 +268,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1813131f13c2b9488cd7897133d0d0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  spawnThrowablePos: {fileID: 2498330595957626671}
+  dragAndShoot: {fileID: 2138181675319397629}
+  playerCollider: {fileID: 4585798541678627608}
+  projectilePrefabDebug: {fileID: 8360590805627951754, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
 --- !u!114 &2138181675319397629
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -279,15 +285,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f42a01f228a0fc94e9848a85f5efb744, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnPos: {fileID: 0}
-  shperePos: {fileID: 2594228288869015521, guid: b2369f3af4b58d2428544e55af6e3b34, type: 3}
-  rb: {fileID: 6007548581019581241, guid: b2369f3af4b58d2428544e55af6e3b34, type: 3}
   inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
   trajectory: {fileID: 668759142759725134, guid: b2369f3af4b58d2428544e55af6e3b34, type: 3}
-  playerCam: {fileID: 0}
   maxForceMultiplier: 100
   smoothTime: 0.5
   offsetForceMultiplier: 1
+  startDragPos: {fileID: 2498330595957626671}
 --- !u!114 &800024870368675109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -318,3 +321,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   maxHealth: 100
+--- !u!114 &430504882980921634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1244250245066138330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37bf788c194c21641b1f936acd9a884e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}

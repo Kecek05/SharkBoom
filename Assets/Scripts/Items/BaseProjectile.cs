@@ -1,18 +1,14 @@
+using Sortify;
 using UnityEngine;
 
-public class BaseProjectile : MonoBehaviour
+public class BaseProjectile : MonoBehaviour, IDraggable
 {
-
+    [BetterHeader("References")]
     [SerializeField] private Rigidbody rb;
 
-    void Start()
-    {
-        
-    }
 
-   
-    void Update()
+    public void Release(float force, Vector3 direction)
     {
-        rb.linearVelocity = Vector3.right * 2f;
+        rb.AddForce(direction * force, ForceMode.Impulse);
     }
 }
