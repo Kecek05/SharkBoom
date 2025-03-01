@@ -4,7 +4,10 @@ public class CameraManager : MonoBehaviour
 {
 
     [SerializeField] private InputReader inputReader;
+    [SerializeField] private Transform cameraObjectToFollow;
+
     public InputReader InputReader => inputReader;
+    public Transform CameraObjectToFollow => cameraObjectToFollow;
 
     public static CameraManager Instance { get; private set; }
 

@@ -7,8 +7,6 @@ using UnityEngine.InputSystem;
 
 public class CameraMovement : MonoBehaviour
 {
-    [BetterHeader("References")]
-    [SerializeField] private Transform cameraObjectToFollow; // object that camera is following
 
     [BetterHeader("Settings")]
     [SerializeField] private float dragSpeed = 1f;
@@ -72,7 +70,7 @@ public class CameraMovement : MonoBehaviour
     private void MoveCamera(Vector2 movementDelta)
     {
         Vector3 moveDir = new Vector3(-movementDelta.x, -movementDelta.y, 0) * dragSpeed * Time.deltaTime; 
-        cameraObjectToFollow.position += moveDir;
+        CameraManager.Instance.CameraObjectToFollow.position += moveDir;
     }
 }
 

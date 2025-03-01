@@ -76,8 +76,9 @@ public class DragAndShoot : MonoBehaviour
 
             if (Physics.Raycast(rayStart, out hit) && hit.collider.gameObject == this.gameObject) // compare if the touch hit on the object
             {
-                CameraManager.Instance.SetCameraState(CameraManager.CameraState.Dragging);
                 //Start Dragging
+                CameraManager.Instance.SetCameraState(CameraManager.CameraState.Dragging);
+
                 plane = new Plane(Vector3.forward, startDragPos.position); // we create the plane to calculate the Z, because a click is a 2D position
                 isShowingDots = false;
                 lastForce = 0f;
@@ -123,7 +124,7 @@ public class DragAndShoot : MonoBehaviour
 
             if (Camera.main.TryGetComponent(out CameraZoom pinchZoomDetection))
             {
-                
+
                 if (lastForce > force)
                 {
                     //Do Zoom In
@@ -135,11 +136,11 @@ public class DragAndShoot : MonoBehaviour
                     pinchZoomDetection.ChangeZoom(-1f);
                 }
 
-               // Debug.Log($"Last force: {lastForce} and force {force}");
+                // Debug.Log($"Last force: {lastForce} and force {force}");
                 lastForce = force;
             }
 
-            if(!isShowingDots)
+            if (!isShowingDots)
             {
                 trajectory.Show(); // call the function for show dots
                 isShowingDots = true;

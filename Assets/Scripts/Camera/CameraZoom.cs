@@ -6,14 +6,6 @@ using UnityEngine.InputSystem;
 
 public class CameraZoom : MonoBehaviour
 {
-    #region References
-
-    [BetterHeader("References")]
-    [SerializeField] private Transform cameraObjectToFollow; // object that camera is following
-
-    #endregion
-
-    #region Variables
 
     private Coroutine zoomCoroutine;
     
@@ -29,7 +21,6 @@ public class CameraZoom : MonoBehaviour
 
     [SerializeField] private float pinchSpeed = 100f;
 
-    #endregion
 
     private void Start()
     {
@@ -103,11 +94,16 @@ public class CameraZoom : MonoBehaviour
 
     public void ChangeZoom(float value)
     {
-        cameraSystemPosition = cameraObjectToFollow.position;
+        cameraSystemPosition = CameraManager.Instance.CameraObjectToFollow.position;
         cameraSystemPosition.z += value;
 
         cameraSystemPosition.z = Mathf.Clamp(cameraSystemPosition.z, -10f, -2f);
-        cameraObjectToFollow.position = Vector3.Lerp(cameraObjectToFollow.position, cameraSystemPosition, Time.deltaTime * pinchSpeed);
+        CameraManager.Instance.CameraObjectToFollow.position = Vector3.Lerp(CameraManager.Instance.CameraObjectToFollow.position, cameraSystemPosition, Time.deltaTime * pinchSpeed);
+    }
+
+    private void AdaptZoomOnDrag(float dragForce)
+    {
+
     }
 
     private void OnDestroy()
