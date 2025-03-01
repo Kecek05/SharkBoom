@@ -114,31 +114,27 @@ public class DragAndShoot : MonoBehaviour
             //force = Mathf.Pow(Vector3.Distance(startDragPos.position, endPos), offsetForceMultiplier); //Calculate the force exponentially
             force = Vector3.Distance(startDragPos.position, endPos) * offsetForceMultiplier; //Calculate the force linearly
             force = Mathf.Clamp(force, minForceMultiplier, maxForceMultiplier);
-
+            Debug.Log("Puxando " + force);
             // Debug.Log($"ForceMultiplier: {force} and Actual Distance: {Vector3.Distance(startDragPos.position, endPos)}"); cost much perfomance
 
 
             trajectory.UpdateDots(transform.position, direction * force); // update the dots position 
 
             //REFACTOR LATTER
-
-            if (Camera.main.TryGetComponent(out CameraZoom pinchZoomDetection))
+            if (lastForce > force)
             {
-
-                if (lastForce > force)
-                {
-                    //Do Zoom In
-                    pinchZoomDetection.ChangeZoom(1f);
-                }
-                else if (lastForce < force)
-                {
-                    //Do Zoom Out
-                    pinchZoomDetection.ChangeZoom(-1f);
-                }
-
-                // Debug.Log($"Last force: {lastForce} and force {force}");
-                lastForce = force;
+                CameraManager.Instance.CameraZoom.AdaptZoomOnDrag(force);
+                //Do Zoom In
             }
+            else if (lastForce < force)
+            {
+                CameraManager.Instance.CameraZoom.AdaptZoomOnDrag(-force);
+                //Do Zoom Out
+
+            }
+
+            lastForce = force;
+            // Debug.Log($"Last force: {lastForce} and force {force}");
 
             if (!isShowingDots)
             {

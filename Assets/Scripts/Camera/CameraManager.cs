@@ -5,14 +5,13 @@ public class CameraManager : MonoBehaviour
 
     [SerializeField] private InputReader inputReader;
     [SerializeField] private Transform cameraObjectToFollow;
-
-    public InputReader InputReader => inputReader;
-    public Transform CameraObjectToFollow => cameraObjectToFollow;
-
-    public static CameraManager Instance { get; private set; }
-
     [SerializeField] private CameraMovement cameraMovement;
     [SerializeField] private CameraZoom cameraZoom;
+
+    public static CameraManager Instance { get; private set; }
+    public InputReader InputReader => inputReader;
+    public Transform CameraObjectToFollow => cameraObjectToFollow;
+    public CameraZoom CameraZoom => cameraZoom;
 
     public enum CameraState // Enum for all camera states
     {
@@ -77,6 +76,7 @@ public class CameraManager : MonoBehaviour
     private void Dragging()
     {
         cameraMovement.enabled = false;
+
     }
 
     private void CameraReset()
