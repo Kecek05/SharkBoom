@@ -5,7 +5,7 @@ using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class CameraSystemMobile : MonoBehaviour
+public class CameraMovement : MonoBehaviour
 {
     [BetterHeader("References")]
     [SerializeField] private InputReader inputReader;

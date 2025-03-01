@@ -3,7 +3,7 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class DragAndShoot : MonoBehaviour
+public class CameraDrag : MonoBehaviour
 {
     public event Action OnDragRelease;
     public event Action OnDragStart;
@@ -119,7 +119,7 @@ public class DragAndShoot : MonoBehaviour
 
             //REFACTOR LATTER
 
-            if (Camera.main.TryGetComponent(out PinchZoomDetection pinchZoomDetection))
+            if (Camera.main.TryGetComponent(out CameraZoom pinchZoomDetection))
             {
                 
                 if (lastForce > force)

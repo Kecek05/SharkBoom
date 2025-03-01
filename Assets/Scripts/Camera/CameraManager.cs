@@ -1,0 +1,77 @@
+using UnityEngine;
+
+public class CameraManager : MonoBehaviour
+{
+
+    [SerializeField] public InputReader inputReader { get; private set; }
+
+    public static CameraManager Instance { get; private set; }
+
+    [SerializeField] private CameraMovement cameraMovement;
+    [SerializeField] private CameraZoom cameraZoom;
+    [SerializeField] private CameraDrag cameraDrag;
+
+    public enum CameraState // Enum for all camera states
+    {
+        Move,
+        Zoom,
+        Dragging,
+        FollowTarget
+    }
+
+    private CameraState cameraState;
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+    }
+
+    public void CameraManagerState()
+    {
+        cameraMovement.enabled = false;
+        cameraZoom.enabled = false;
+        cameraDrag.enabled = false;
+
+        switch (cameraState)
+        {
+            case CameraState.Move:
+                Move();
+                break;
+            case CameraState.Zoom:
+                Zoom();
+                break;
+            case CameraState.Dragging:
+                Dragging();
+                break;
+        }
+    }
+
+    public void SetCameraState(CameraState newState) // Function to update the camera state
+    {
+        cameraState = newState;
+        CameraManagerState();
+    }
+
+    private void Move()
+    {
+        cameraMovement.enabled = true;
+    }
+
+    private void Zoom()
+    {
+        cameraZoom.enabled = true;
+    }
+
+    private void Dragging()
+    {
+        cameraDrag.enabled = true;  
+    }
+
+}

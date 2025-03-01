@@ -4,7 +4,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PinchZoomDetection : MonoBehaviour
+public class CameraZoom : MonoBehaviour
 {
     #region References
 
