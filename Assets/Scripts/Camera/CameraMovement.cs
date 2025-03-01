@@ -8,7 +8,6 @@ using UnityEngine.InputSystem;
 public class CameraMovement : MonoBehaviour
 {
     [BetterHeader("References")]
-    [SerializeField] private InputReader inputReader;
     [SerializeField] private Transform cameraObjectToFollow; // object that camera is following
 
     [BetterHeader("Settings")]
@@ -19,14 +18,14 @@ public class CameraMovement : MonoBehaviour
 
     private void Start()
     {
-        inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
-        inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
+        CameraManager.Instance.InputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
+        CameraManager.Instance.InputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
     }
 
     private void OnDestroy()
     {
-        inputReader.OnTouchPressEvent -= InputReader_OnTouchPressEvent;
-        inputReader.OnPrimaryFingerPositionEvent -= InputReader_OnPrimaryFingerPositionEvent;
+        CameraManager.Instance.InputReader.OnTouchPressEvent -= InputReader_OnTouchPressEvent;
+        CameraManager.Instance.InputReader.OnPrimaryFingerPositionEvent -= InputReader_OnPrimaryFingerPositionEvent;
     }
 
     private void InputReader_OnTouchPressEvent(InputAction.CallbackContext context)
@@ -63,7 +62,6 @@ public class CameraMovement : MonoBehaviour
     private void MoveStarted()
     {
         lastTouchPosition = Vector2.zero;
-        Debug.Log("STARTOU EM UM");
     }
 
     private void MoveFinish()

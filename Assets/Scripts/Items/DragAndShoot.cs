@@ -10,7 +10,6 @@ public class DragAndShoot : MonoBehaviour
 
     [BetterHeader("References")]
 
-    [SerializeField] private InputReader inputReader;
     [SerializeField] private Trajectory trajectory;
 
     [BetterHeader("Force Settings")]
@@ -59,8 +58,8 @@ public class DragAndShoot : MonoBehaviour
 
     public void Initialize() //Setup
     {
-        inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
-        inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
+        CameraManager.Instance.InputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
+        CameraManager.Instance.InputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
 
         trajectory.Initialize(startDragPos);
     }
@@ -115,7 +114,7 @@ public class DragAndShoot : MonoBehaviour
             force = Vector3.Distance(startDragPos.position, endPos) * offsetForceMultiplier; //Calculate the force linearly
             force = Mathf.Clamp(force, minForceMultiplier, maxForceMultiplier);
 
-            // Debug.Log($"ForceMultiplier: {force} and Actual Distance: {Vector3.Distance(startDragPos.position, endPos)}");
+            // Debug.Log($"ForceMultiplier: {force} and Actual Distance: {Vector3.Distance(startDragPos.position, endPos)}"); cost much perfomance
 
 
             trajectory.UpdateDots(transform.position, direction * force); // update the dots position 
@@ -136,7 +135,7 @@ public class DragAndShoot : MonoBehaviour
                     pinchZoomDetection.ChangeZoom(-1f);
                 }
 
-                Debug.Log($"Last force: {lastForce} and force {force}");
+               // Debug.Log($"Last force: {lastForce} and force {force}");
                 lastForce = force;
             }
 
@@ -169,7 +168,7 @@ public class DragAndShoot : MonoBehaviour
 
     private void OnDestroy()
     {
-        inputReader.OnTouchPressEvent -= InputReader_OnTouchPressEvent;
-        inputReader.OnPrimaryFingerPositionEvent -= InputReader_OnPrimaryFingerPositionEvent;
+        CameraManager.Instance.InputReader.OnTouchPressEvent -= InputReader_OnTouchPressEvent;
+        CameraManager.Instance.InputReader.OnPrimaryFingerPositionEvent -= InputReader_OnPrimaryFingerPositionEvent;
     }
 }

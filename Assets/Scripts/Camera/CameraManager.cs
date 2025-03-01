@@ -3,7 +3,8 @@ using UnityEngine;
 public class CameraManager : MonoBehaviour
 {
 
-    [SerializeField] public InputReader inputReader { get; private set; }
+    [SerializeField] private InputReader inputReader;
+    public InputReader InputReader => inputReader;
 
     public static CameraManager Instance { get; private set; }
 

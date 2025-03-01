@@ -9,8 +9,6 @@ public class CameraZoom : MonoBehaviour
     #region References
 
     [BetterHeader("References")]
-
-    [SerializeField] private InputReader inputReader;
     [SerializeField] private Transform cameraObjectToFollow; // object that camera is following
 
     #endregion
@@ -35,12 +33,10 @@ public class CameraZoom : MonoBehaviour
 
     private void Start()
     {
-        inputReader.OnSecondaryTouchContactEvent += InputReader_OnSecondaryTouchContactEvent;
-        inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
-        inputReader.OnSecondaryFingerPositionEvent += InputReader_OnSecondaryFingerPositionEvent;
+        CameraManager.Instance.InputReader.OnSecondaryTouchContactEvent += InputReader_OnSecondaryTouchContactEvent;
+        CameraManager.Instance.InputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
+        CameraManager.Instance.InputReader.OnSecondaryFingerPositionEvent += InputReader_OnSecondaryFingerPositionEvent;
     }
-
-
 
     private void InputReader_OnSecondaryTouchContactEvent(InputAction.CallbackContext context)
     {
@@ -116,8 +112,8 @@ public class CameraZoom : MonoBehaviour
 
     private void OnDestroy()
     {
-        inputReader.OnSecondaryTouchContactEvent -= InputReader_OnSecondaryTouchContactEvent;
-        inputReader.OnPrimaryFingerPositionEvent -= InputReader_OnPrimaryFingerPositionEvent;
-        inputReader.OnSecondaryFingerPositionEvent -= InputReader_OnSecondaryFingerPositionEvent;
+        CameraManager.Instance.InputReader.OnSecondaryTouchContactEvent -= InputReader_OnSecondaryTouchContactEvent;
+        CameraManager.Instance.InputReader.OnPrimaryFingerPositionEvent -= InputReader_OnPrimaryFingerPositionEvent;
+        CameraManager.Instance.InputReader.OnSecondaryFingerPositionEvent -= InputReader_OnSecondaryFingerPositionEvent;
     }
 }
