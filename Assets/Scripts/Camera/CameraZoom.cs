@@ -1,6 +1,7 @@
 using Sortify;
 using System;
 using System.Collections;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -23,6 +24,7 @@ public class CameraZoom : MonoBehaviour
     [SerializeField] private float pinchDragSpeed = 10f;
     [SerializeField] private float maxZoomInClamp = -2f;
     [SerializeField] private float maxZoomOutClamp = 10f;
+    [SerializeField] private CinemachineCamera cinemachineCamera;
 
     private void Start()
     {
@@ -107,19 +109,33 @@ public class CameraZoom : MonoBehaviour
 
     public void AdaptZoomInDrag(float dragForce)
     {
-        cameraSystemPosition = CameraManager.Instance.CameraObjectToFollow.position;
-        cameraSystemPosition.z += dragForce;
+        //cameraSystemPosition = CameraManager.Instance.CameraObjectToFollow.position;
+        //cameraSystemPosition.z += dragForce;
 
-        cameraSystemPosition.z = Mathf.Min(cameraSystemPosition.z, maxZoomInClamp); 
-        CameraManager.Instance.CameraObjectToFollow.position = Vector3.Lerp(CameraManager.Instance.CameraObjectToFollow.position, cameraSystemPosition, Time.deltaTime * pinchDragSpeed);
+        //cameraSystemPosition.z = Mathf.Min(cameraSystemPosition.z, maxZoomInClamp); 
+        //CameraManager.Instance.CameraObjectToFollow.position = Vector3.Lerp(CameraManager.Instance.CameraObjectToFollow.position, cameraSystemPosition, Time.deltaTime * pinchDragSpeed);
+        if(cinemachineCamera.Lens.FieldOfView >= 60)
+        {
+            cinemachineCamera.Lens.FieldOfView -= dragForce / 4;
+        }
     }
     public void AdaptZoomOutDrag(float dragForce)
     {
-        cameraSystemPosition = CameraManager.Instance.CameraObjectToFollow.position;
-        cameraSystemPosition.z -= dragForce;
+        //cameraSystemPosition = CameraManager.Instance.CameraObjectToFollow.position;
+        //cameraSystemPosition.z -= dragForce;
 
-        cameraSystemPosition.z = Mathf.Min(cameraSystemPosition.z, maxZoomOutClamp);
-        CameraManager.Instance.CameraObjectToFollow.position = Vector3.Lerp(CameraManager.Instance.CameraObjectToFollow.position, cameraSystemPosition, Time.deltaTime * pinchDragSpeed);
+        //cameraSystemPosition.z = Mathf.Min(cameraSystemPosition.z, maxZoomOutClamp);
+        //CameraManager.Instance.CameraObjectToFollow.position = Vector3.Lerp(CameraManager.Instance.CameraObjectToFollow.position, cameraSystemPosition, Time.deltaTime * pinchDragSpeed);
+        if(cinemachineCamera.Lens.FieldOfView <= 90)
+        {
+            cinemachineCamera.Lens.FieldOfView += dragForce / 4;
+        }
+        
+    }
+
+    public void ResetZoom()
+    {
+        cinemachineCamera.Lens.FieldOfView = 60;
     }
 
     private void OnDestroy()

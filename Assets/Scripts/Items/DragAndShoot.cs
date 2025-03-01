@@ -24,7 +24,7 @@ public class DragAndShoot : MonoBehaviour
 
     [Tooltip("Value to be add to not need to drag too far from the object")]
     [RangeStep(1.1f, 5f, 0.2f)]
-    [SerializeField] private float offsetForceMultiplier = 2f;
+    [SerializeField] private float offsetForceMultiplier = 0.1f;
 
     [Tooltip("Center position of the drag")]
     [SerializeField]private Transform startDragPos;
@@ -55,6 +55,7 @@ public class DragAndShoot : MonoBehaviour
     private bool canDrag = true;
     public bool CanDrag => canDrag;
 
+    [SerializeField] private float zoomThreshold = 0.2f;
 
     public void Initialize() //Setup
     {
@@ -113,21 +114,21 @@ public class DragAndShoot : MonoBehaviour
             //force = Mathf.Pow(Vector3.Distance(startDragPos.position, endPos), offsetForceMultiplier); //Calculate the force exponentially
             force = Vector3.Distance(startDragPos.position, endPos) * offsetForceMultiplier; //Calculate the force linearly
             force = Mathf.Clamp(force, minForceMultiplier, maxForceMultiplier);
-            Debug.Log("Puxando " + force);
             // Debug.Log($"ForceMultiplier: {force} and Actual Distance: {Vector3.Distance(startDragPos.position, endPos)}"); cost much perfomance
 
 
             trajectory.UpdateDots(transform.position, direction * force); // update the dots position 
 
-            if (lastForce > force)
+            if (Mathf.Abs(lastForce - force) > zoomThreshold)
             {
-                CameraManager.Instance.CameraZoom.AdaptZoomInDrag(force);
-                //Do Zoom In
-            }
-            else if (lastForce < force)
-            {
-                CameraManager.Instance.CameraZoom.AdaptZoomOutDrag(force);
-                //Do Zoom Out
+                if (lastForce > force)
+                {
+                    CameraManager.Instance.CameraZoom.AdaptZoomInDrag(force);
+                }
+                else if (lastForce < force)
+                {
+                    CameraManager.Instance.CameraZoom.AdaptZoomOutDrag(force);
+                }
             }
 
             lastForce = force;
@@ -145,6 +146,7 @@ public class DragAndShoot : MonoBehaviour
     public void ReleaseDrag()
     {
         isDragging = false;
+        CameraManager.Instance.CameraZoom.ResetZoom();
         trajectory.Hide();
     }
 
