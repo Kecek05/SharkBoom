@@ -1687,7 +1687,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4845276930943762971, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000061035156
+      value: -0.000030517578
       objectReference: {fileID: 0}
     - target: {fileID: 4845637959249703711, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchorMax.y
@@ -2460,6 +2460,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee20daabf706ed944b3266a70d973d81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
   dragSpeed: 1
 --- !u!114 &1700457210
 MonoBehaviour:
@@ -2473,6 +2474,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a54a885f28cc13244857cbe2c9d9d1cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
   pinchSpeed: 100
   pinchDragSpeed: 2
   maxZoomInClamp: -2
@@ -2490,7 +2492,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45e3bd782b8ddc440bff2b69b68ab99a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
   cameraObjectToFollow: {fileID: 1668177987}
   cameraMovement: {fileID: 1700457209}
   cameraZoom: {fileID: 1700457210}

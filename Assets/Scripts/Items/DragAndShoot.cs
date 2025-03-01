@@ -5,6 +5,8 @@ using UnityEngine.InputSystem;
 
 public class DragAndShoot : MonoBehaviour
 {
+    [SerializeField] private InputReader inputReader;
+
     public event Action OnDragRelease;
     public event Action OnDragStart;
 
@@ -13,10 +15,10 @@ public class DragAndShoot : MonoBehaviour
     [SerializeField] private Trajectory trajectory;
 
     [BetterHeader("Force Settings")]
-    [Tooltip("Maximum Force that the Object can go")] [RangeStep(1f, 100f, 1f)]
+    [Tooltip("Maximum Force that the Object can go")] [RangeStep(1f, 50f, 1f)]
     [SerializeField] private float maxForceMultiplier = 50f;
 
-    [Tooltip("Minimum Force that the Object can go")] [RangeStep(1f, 100f, 1f)]
+    [Tooltip("Minimum Force that the Object can go")] [RangeStep(1f, 50f, 1f)]
     [SerializeField] private float minForceMultiplier = 1f;
 
     [Tooltip("Time to the trajectories get to the final position")] [RangeStep(0.01f, 0.5f, 0.01f)] 
@@ -59,8 +61,8 @@ public class DragAndShoot : MonoBehaviour
 
     public void Initialize() //Setup
     {
-        CameraManager.Instance.InputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
-        CameraManager.Instance.InputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
+        inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
+        inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
 
         trajectory.Initialize(startDragPos);
     }
@@ -116,18 +118,17 @@ public class DragAndShoot : MonoBehaviour
             force = Mathf.Clamp(force, minForceMultiplier, maxForceMultiplier);
             // Debug.Log($"ForceMultiplier: {force} and Actual Distance: {Vector3.Distance(startDragPos.position, endPos)}"); cost much perfomance
 
-
             trajectory.UpdateDots(transform.position, direction * force); // update the dots position 
 
             if (Mathf.Abs(lastForce - force) > zoomThreshold)
             {
                 if (lastForce > force)
                 {
-                    CameraManager.Instance.CameraZoom.AdaptZoomInDrag(force);
+                    CameraManager.Instance.CameraZoom.ChangeZoom(CameraManager.Instance.CameraZoom.CalculateZoomByForce(force));
                 }
                 else if (lastForce < force)
                 {
-                    CameraManager.Instance.CameraZoom.AdaptZoomOutDrag(force);
+                    CameraManager.Instance.CameraZoom.ChangeZoom(CameraManager.Instance.CameraZoom.CalculateZoomByForce(-force));
                 }
             }
 
@@ -146,7 +147,6 @@ public class DragAndShoot : MonoBehaviour
     public void ReleaseDrag()
     {
         isDragging = false;
-        CameraManager.Instance.CameraZoom.ResetZoom();
         trajectory.Hide();
     }
 
@@ -164,7 +164,7 @@ public class DragAndShoot : MonoBehaviour
 
     private void OnDestroy()
     {
-        CameraManager.Instance.InputReader.OnTouchPressEvent -= InputReader_OnTouchPressEvent;
-        CameraManager.Instance.InputReader.OnPrimaryFingerPositionEvent -= InputReader_OnPrimaryFingerPositionEvent;
+        inputReader.OnTouchPressEvent -= InputReader_OnTouchPressEvent;
+        inputReader.OnPrimaryFingerPositionEvent -= InputReader_OnPrimaryFingerPositionEvent;
     }
 }

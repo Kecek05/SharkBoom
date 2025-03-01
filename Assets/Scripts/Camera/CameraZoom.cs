@@ -8,6 +8,8 @@ using UnityEngine.InputSystem;
 public class CameraZoom : MonoBehaviour
 {
 
+    [SerializeField] private InputReader inputReader; 
+
     private Coroutine zoomCoroutine;
 
     private float previousDistance;
@@ -28,9 +30,9 @@ public class CameraZoom : MonoBehaviour
 
     private void Start()
     {
-        CameraManager.Instance.InputReader.OnSecondaryTouchContactEvent += InputReader_OnSecondaryTouchContactEvent;
-        CameraManager.Instance.InputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
-        CameraManager.Instance.InputReader.OnSecondaryFingerPositionEvent += InputReader_OnSecondaryFingerPositionEvent;
+        inputReader.OnSecondaryTouchContactEvent += InputReader_OnSecondaryTouchContactEvent;
+        inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
+        inputReader.OnSecondaryFingerPositionEvent += InputReader_OnSecondaryFingerPositionEvent;
     }
 
     private void InputReader_OnSecondaryTouchContactEvent(InputAction.CallbackContext context)
@@ -107,41 +109,16 @@ public class CameraZoom : MonoBehaviour
         CameraManager.Instance.CameraObjectToFollow.position = Vector3.Lerp(CameraManager.Instance.CameraObjectToFollow.position, cameraSystemPosition, Time.deltaTime * pinchSpeed);
     }
 
-    public void AdaptZoomInDrag(float dragForce)
+    public float CalculateZoomByForce(float force)
     {
-        //cameraSystemPosition = CameraManager.Instance.CameraObjectToFollow.position;
-        //cameraSystemPosition.z += dragForce;
 
-        //cameraSystemPosition.z = Mathf.Min(cameraSystemPosition.z, maxZoomInClamp); 
-        //CameraManager.Instance.CameraObjectToFollow.position = Vector3.Lerp(CameraManager.Instance.CameraObjectToFollow.position, cameraSystemPosition, Time.deltaTime * pinchDragSpeed);
-        if(cinemachineCamera.Lens.FieldOfView >= 60)
-        {
-            cinemachineCamera.Lens.FieldOfView -= dragForce / 4;
-        }
-    }
-    public void AdaptZoomOutDrag(float dragForce)
-    {
-        //cameraSystemPosition = CameraManager.Instance.CameraObjectToFollow.position;
-        //cameraSystemPosition.z -= dragForce;
-
-        //cameraSystemPosition.z = Mathf.Min(cameraSystemPosition.z, maxZoomOutClamp);
-        //CameraManager.Instance.CameraObjectToFollow.position = Vector3.Lerp(CameraManager.Instance.CameraObjectToFollow.position, cameraSystemPosition, Time.deltaTime * pinchDragSpeed);
-        if(cinemachineCamera.Lens.FieldOfView <= 90)
-        {
-            cinemachineCamera.Lens.FieldOfView += dragForce / 4;
-        }
-        
-    }
-
-    public void ResetZoom()
-    {
-        cinemachineCamera.Lens.FieldOfView = 60;
+        return force;
     }
 
     private void OnDestroy()
     {
-        CameraManager.Instance.InputReader.OnSecondaryTouchContactEvent -= InputReader_OnSecondaryTouchContactEvent;
-        CameraManager.Instance.InputReader.OnPrimaryFingerPositionEvent -= InputReader_OnPrimaryFingerPositionEvent;
-        CameraManager.Instance.InputReader.OnSecondaryFingerPositionEvent -= InputReader_OnSecondaryFingerPositionEvent;
+        inputReader.OnSecondaryTouchContactEvent -= InputReader_OnSecondaryTouchContactEvent;
+        inputReader.OnPrimaryFingerPositionEvent -= InputReader_OnPrimaryFingerPositionEvent;
+        inputReader.OnSecondaryFingerPositionEvent -= InputReader_OnSecondaryFingerPositionEvent;
     }
 }

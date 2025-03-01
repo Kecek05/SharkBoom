@@ -3,13 +3,11 @@ using UnityEngine;
 public class CameraManager : MonoBehaviour
 {
 
-    [SerializeField] private InputReader inputReader;
     [SerializeField] private Transform cameraObjectToFollow;
     [SerializeField] private CameraMovement cameraMovement;
     [SerializeField] private CameraZoom cameraZoom;
 
     public static CameraManager Instance { get; private set; }
-    public InputReader InputReader => inputReader;
     public Transform CameraObjectToFollow => cameraObjectToFollow;
     public CameraZoom CameraZoom => cameraZoom;
 

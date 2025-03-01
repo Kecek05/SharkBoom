@@ -8,6 +8,8 @@ using UnityEngine.InputSystem;
 public class CameraMovement : MonoBehaviour
 {
 
+    [SerializeField] private InputReader inputReader;
+
     [BetterHeader("Settings")]
     [SerializeField] private float dragSpeed = 1f;
     private bool dragPanMoveActive = false;
@@ -16,14 +18,14 @@ public class CameraMovement : MonoBehaviour
 
     private void Start()
     {
-        CameraManager.Instance.InputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
-        CameraManager.Instance.InputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
+        inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
+        inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
     }
 
     private void OnDestroy()
     {
-        CameraManager.Instance.InputReader.OnTouchPressEvent -= InputReader_OnTouchPressEvent;
-        CameraManager.Instance.InputReader.OnPrimaryFingerPositionEvent -= InputReader_OnPrimaryFingerPositionEvent;
+        inputReader.OnTouchPressEvent -= InputReader_OnTouchPressEvent;
+        inputReader.OnPrimaryFingerPositionEvent -= InputReader_OnPrimaryFingerPositionEvent;
     }
 
     private void InputReader_OnTouchPressEvent(InputAction.CallbackContext context)
