@@ -3,7 +3,7 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class CameraDrag : MonoBehaviour
+public class DragAndShoot : MonoBehaviour
 {
     public event Action OnDragRelease;
     public event Action OnDragStart;
@@ -73,9 +73,11 @@ public class CameraDrag : MonoBehaviour
         {
             Ray rayStart = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
+            
 
             if (Physics.Raycast(rayStart, out hit) && hit.collider.gameObject == this.gameObject) // compare if the touch hit on the object
             {
+                CameraManager.Instance.SetCameraState(CameraManager.CameraState.Dragging);
                 //Start Dragging
                 plane = new Plane(Vector3.forward, startDragPos.position); // we create the plane to calculate the Z, because a click is a 2D position
                 isShowingDots = false;
@@ -91,6 +93,7 @@ public class CameraDrag : MonoBehaviour
         {
             isDragging = false;
             OnDragRelease?.Invoke();
+            CameraManager.Instance.SetCameraState(CameraManager.CameraState.Default);
         }
     }
 

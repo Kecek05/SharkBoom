@@ -9,14 +9,13 @@ public class CameraManager : MonoBehaviour
 
     [SerializeField] private CameraMovement cameraMovement;
     [SerializeField] private CameraZoom cameraZoom;
-    [SerializeField] private CameraDrag cameraDrag;
 
     public enum CameraState // Enum for all camera states
     {
         Move,
         Zoom,
         Dragging,
-        FollowTarget
+        Default
     }
 
     private CameraState cameraState;
@@ -37,10 +36,12 @@ public class CameraManager : MonoBehaviour
     {
         cameraMovement.enabled = false;
         cameraZoom.enabled = false;
-        cameraDrag.enabled = false;
 
         switch (cameraState)
         {
+            case CameraState.Default:
+                CameraReset();
+                break;
             case CameraState.Move:
                 Move();
                 break;
@@ -71,7 +72,12 @@ public class CameraManager : MonoBehaviour
 
     private void Dragging()
     {
-        cameraDrag.enabled = true;  
+        cameraMovement.enabled = false;
     }
 
+    private void CameraReset()
+    {
+        cameraMovement.enabled = true;
+        cameraZoom.enabled = true;
+    }
 }

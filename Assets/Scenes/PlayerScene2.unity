@@ -1928,7 +1928,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TrackerSettings:
     BindingMode: 4
-    PositionDamping: {x: 1, y: 1, z: 1}
+    PositionDamping: {x: 0.7, y: 0.7, z: 0.7}
     AngularDampingMode: 0
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
@@ -2288,8 +2288,9 @@ GameObject:
   - component: {fileID: 1700457203}
   - component: {fileID: 1700457206}
   - component: {fileID: 1700457207}
-  - component: {fileID: 1700457208}
+  - component: {fileID: 1700457211}
   - component: {fileID: 1700457209}
+  - component: {fileID: 1700457210}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2447,21 +2448,6 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   CustomBlends: {fileID: 0}
---- !u!114 &1700457208
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1700457202}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c59edc9372ea9114ebab069b371c02a6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
-  cameraObjectToFollow: {fileID: 1668177987}
-  pinchSpeed: 100
 --- !u!114 &1700457209
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2477,6 +2463,35 @@ MonoBehaviour:
   inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
   cameraObjectToFollow: {fileID: 1668177987}
   dragSpeed: 1
+--- !u!114 &1700457210
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1700457202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a54a885f28cc13244857cbe2c9d9d1cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
+  cameraObjectToFollow: {fileID: 1668177987}
+  pinchSpeed: 100
+--- !u!114 &1700457211
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1700457202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45e3bd782b8ddc440bff2b69b68ab99a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraMovement: {fileID: 1700457209}
+  cameraZoom: {fileID: 1700457210}
 --- !u!1 &1736368650
 GameObject:
   m_ObjectHideFlags: 0

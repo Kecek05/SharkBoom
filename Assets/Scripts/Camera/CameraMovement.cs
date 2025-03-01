@@ -35,6 +35,7 @@ public class CameraMovement : MonoBehaviour
         {
             dragPanMoveActive = true;
             MoveStarted();
+            
         }
         else if (context.canceled) // When we release the screen
         {
@@ -45,7 +46,7 @@ public class CameraMovement : MonoBehaviour
 
     private void InputReader_OnPrimaryFingerPositionEvent(InputAction.CallbackContext context)
     {
-        if (dragPanMoveActive)
+        if (dragPanMoveActive && this.enabled == true)
         {
             Vector2 currentTouchPosition = context.ReadValue<Vector2>(); // Get the current position of the finger while the finger is on the screen
 
@@ -61,7 +62,8 @@ public class CameraMovement : MonoBehaviour
 
     private void MoveStarted()
     {
-        lastTouchPosition = Vector2.zero; 
+        lastTouchPosition = Vector2.zero;
+        Debug.Log("STARTOU EM UM");
     }
 
     private void MoveFinish()
