@@ -20,7 +20,9 @@ public class CameraZoom : MonoBehaviour
     [BetterHeader("Variables")]
 
     [SerializeField] private float pinchSpeed = 100f;
-
+    [SerializeField] private float pinchDragSpeed = 10f;
+    [SerializeField] private float maxZoomInClamp = -2f;
+    [SerializeField] private float maxZoomOutClamp = 10f;
 
     private void Start()
     {
@@ -98,16 +100,26 @@ public class CameraZoom : MonoBehaviour
     {
         cameraSystemPosition = CameraManager.Instance.CameraObjectToFollow.position;
         cameraSystemPosition.z += value;
-
+        
         cameraSystemPosition.z = Mathf.Clamp(cameraSystemPosition.z, -10f, -2f);
         CameraManager.Instance.CameraObjectToFollow.position = Vector3.Lerp(CameraManager.Instance.CameraObjectToFollow.position, cameraSystemPosition, Time.deltaTime * pinchSpeed);
     }
 
-    public void AdaptZoomOnDrag(float dragForce)
-    { 
+    public void AdaptZoomInDrag(float dragForce)
+    {
+        cameraSystemPosition = CameraManager.Instance.CameraObjectToFollow.position;
         cameraSystemPosition.z += dragForce;
-        cameraSystemPosition.z = Mathf.Clamp(cameraSystemPosition.z, -5f, 10f);
-        CameraManager.Instance.CameraObjectToFollow.position = Vector3.Lerp(CameraManager.Instance.CameraObjectToFollow.position, cameraSystemPosition, Time.deltaTime * pinchSpeed);
+
+        cameraSystemPosition.z = Mathf.Min(cameraSystemPosition.z, maxZoomInClamp); 
+        CameraManager.Instance.CameraObjectToFollow.position = Vector3.Lerp(CameraManager.Instance.CameraObjectToFollow.position, cameraSystemPosition, Time.deltaTime * pinchDragSpeed);
+    }
+    public void AdaptZoomOutDrag(float dragForce)
+    {
+        cameraSystemPosition = CameraManager.Instance.CameraObjectToFollow.position;
+        cameraSystemPosition.z -= dragForce;
+
+        cameraSystemPosition.z = Mathf.Min(cameraSystemPosition.z, maxZoomOutClamp);
+        CameraManager.Instance.CameraObjectToFollow.position = Vector3.Lerp(CameraManager.Instance.CameraObjectToFollow.position, cameraSystemPosition, Time.deltaTime * pinchDragSpeed);
     }
 
     private void OnDestroy()

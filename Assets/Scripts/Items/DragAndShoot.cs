@@ -13,11 +13,11 @@ public class DragAndShoot : MonoBehaviour
     [SerializeField] private Trajectory trajectory;
 
     [BetterHeader("Force Settings")]
-    [Tooltip("Maximum Force that the Object can go")] [RangeStep(20f, 100f, 5f)]
-    [SerializeField] private float maxForceMultiplier = 100f;
+    [Tooltip("Maximum Force that the Object can go")] [RangeStep(1f, 100f, 1f)]
+    [SerializeField] private float maxForceMultiplier = 50f;
 
-    [Tooltip("Minimum Force that the Object can go")] [RangeStep(0f, 50f, 1f)]
-    [SerializeField] private float minForceMultiplier = 5f;
+    [Tooltip("Minimum Force that the Object can go")] [RangeStep(1f, 100f, 1f)]
+    [SerializeField] private float minForceMultiplier = 1f;
 
     [Tooltip("Time to the trajectories get to the final position")] [RangeStep(0.01f, 0.5f, 0.01f)] 
     [SerializeField] private float smoothTime = 0.1f;
@@ -84,7 +84,6 @@ public class DragAndShoot : MonoBehaviour
                 lastForce = 0f;
 
                 isDragging = true;
-                //trajectory.Show(); // call the function for show dots, CANT DO HERE BECAUSE WE NEED TO CALCULATE THE DIRECTION FIRST
                 OnDragStart?.Invoke();
             }
         }
@@ -120,17 +119,15 @@ public class DragAndShoot : MonoBehaviour
 
             trajectory.UpdateDots(transform.position, direction * force); // update the dots position 
 
-            //REFACTOR LATTER
             if (lastForce > force)
             {
-                CameraManager.Instance.CameraZoom.AdaptZoomOnDrag(force);
+                CameraManager.Instance.CameraZoom.AdaptZoomInDrag(force);
                 //Do Zoom In
             }
             else if (lastForce < force)
             {
-                CameraManager.Instance.CameraZoom.AdaptZoomOnDrag(-force);
+                CameraManager.Instance.CameraZoom.AdaptZoomOutDrag(force);
                 //Do Zoom Out
-
             }
 
             lastForce = force;

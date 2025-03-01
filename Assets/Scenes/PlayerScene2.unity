@@ -2474,6 +2474,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pinchSpeed: 100
+  pinchDragSpeed: 2
+  maxZoomInClamp: -2
+  maxZoomOutClamp: 10
 --- !u!114 &1700457211
 MonoBehaviour:
   m_ObjectHideFlags: 0
