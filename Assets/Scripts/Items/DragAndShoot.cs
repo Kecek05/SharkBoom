@@ -58,6 +58,8 @@ public class DragAndShoot : MonoBehaviour
     public bool CanDrag => canDrag;
 
     [SerializeField] private float zoomThreshold = 0.2f;
+    private float dragDistance;
+    private Transform startZoomPos;
 
     public void Initialize() //Setup
     {
@@ -75,12 +77,12 @@ public class DragAndShoot : MonoBehaviour
         {
             Ray rayStart = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            
 
             if (Physics.Raycast(rayStart, out hit) && hit.collider.gameObject == this.gameObject) // compare if the touch hit on the object
             {
                 //Start Dragging
                 CameraManager.Instance.SetCameraState(CameraManager.CameraState.Dragging);
+                startZoomPos = CameraManager.Instance.CameraObjectToFollow;
 
                 plane = new Plane(Vector3.forward, startDragPos.position); // we create the plane to calculate the Z, because a click is a 2D position
                 isShowingDots = false;
@@ -110,7 +112,6 @@ public class DragAndShoot : MonoBehaviour
         if (plane.Raycast(ray, out distance))
         {
             endPos = Vector3.SmoothDamp(endPos, ray.GetPoint(distance), ref velocity, smoothTime);
-
             direction = (startDragPos.position - endPos).normalized; // calculate the direction of the drag
 
             //force = Mathf.Pow(Vector3.Distance(startDragPos.position, endPos), offsetForceMultiplier); //Calculate the force exponentially
@@ -119,16 +120,18 @@ public class DragAndShoot : MonoBehaviour
             // Debug.Log($"ForceMultiplier: {force} and Actual Distance: {Vector3.Distance(startDragPos.position, endPos)}"); cost much perfomance
 
             trajectory.UpdateDots(transform.position, direction * force); // update the dots position 
-
+            dragDistance = Vector3.Distance(startDragPos.position, endPos);
+            Debug.Log(dragDistance);
             if (Mathf.Abs(lastForce - force) > zoomThreshold)
             {
+                
                 if (lastForce > force)
                 {
-                    CameraManager.Instance.CameraZoom.ChangeZoom(CameraManager.Instance.CameraZoom.CalculateZoomByForce(force));
+                    CameraManager.Instance.CameraZoom.ChangeZoom(CameraManager.Instance.CameraZoom.CalculateZoomByForce(force, dragDistance));
                 }
                 else if (lastForce < force)
                 {
-                    CameraManager.Instance.CameraZoom.ChangeZoom(CameraManager.Instance.CameraZoom.CalculateZoomByForce(-force));
+                    CameraManager.Instance.CameraZoom.ChangeZoom(CameraManager.Instance.CameraZoom.CalculateZoomByForce(-force, dragDistance));
                 }
             }
 
@@ -153,8 +156,10 @@ public class DragAndShoot : MonoBehaviour
     public void ResetDragPos()
     {
         // Reset the dots position
+        CameraManager.Instance.CameraZoom.ResetZoom(startZoomPos);
         trajectory.UpdateDots(transform.position, direction * minForceMultiplier);
         ReleaseDrag();
+        
     }
 
     public void SetCanDrag(bool value)

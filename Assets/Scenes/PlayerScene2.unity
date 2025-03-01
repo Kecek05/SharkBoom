@@ -1687,7 +1687,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4845276930943762971, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000030517578
+      value: 0.000030517578
       objectReference: {fileID: 0}
     - target: {fileID: 4845637959249703711, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchorMax.y
@@ -2475,11 +2475,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
-  pinchSpeed: 100
-  pinchDragSpeed: 2
-  maxZoomInClamp: -2
-  maxZoomOutClamp: 10
+  minZoom: -15
+  maxZoom: 1
   cinemachineCamera: {fileID: 1402378577}
+  zoomSensitivity: 0.5
 --- !u!114 &1700457211
 MonoBehaviour:
   m_ObjectHideFlags: 0
