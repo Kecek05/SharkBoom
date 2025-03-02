@@ -10,6 +10,7 @@ public class PlayerInventory : NetworkBehaviour
 
     private Dictionary<int, ItemData> playerItemDataInventoryByIndex = new();
 
+    private NetworkList<ItemDataStruct> playerInventory;
 
     //private NetworkList<ItemData> playerItemData;
 
@@ -23,11 +24,10 @@ public class PlayerInventory : NetworkBehaviour
 
     // FALTA SYNCAR COM O SERVER E O SERVER Q RANDOMIZA OS ITEMS E QTDS
 
-    //public override void OnNetworkSpawn()
-    //{
-    //    RandomItemServerDebug();
-    //}
-
+    private void Awake()
+    {
+        playerInventory = new();
+    }
 
 
     public void RandomItemServerDebug()
@@ -40,9 +40,9 @@ public class PlayerInventory : NetworkBehaviour
     [Command("playerInventory-printPlayerInventory", MonoTargetType.All)]
     public void PrintPlayerInventory()
     {
-        for (int i = 0; i < playerItemDataInventoryByIndex.Count; i++)
+        for (int i = 0; i < playerInventory.Count; i++)
         {
-            Debug.Log($"Player: {OwnerClientId} Item: {GetItemSOByIndex(playerItemDataInventoryByIndex[i].itemSOIndex).itemName} Qtd: {playerItemDataInventoryByIndex[i].itemUsesLeft}");
+            Debug.Log($"Player: {playerInventory[i].playerClientId} Item: {GetItemSOByIndex(playerInventory[i].itemSOIndex).itemName} Cooldown: {GetItemSOByIndex(playerInventory[i].itemSOIndex).cooldown}");
         }
     }
 
@@ -56,8 +56,16 @@ public class PlayerInventory : NetworkBehaviour
         {
             int randomItemSOIndex = Random.Range(0, itemsListSO.allItemsSOList.Count);
 
-            playerItemDataInventoryByIndex.Add(i, new ItemData
+            //playerItemDataInventoryByIndex.Add(i, new ItemData
+            //{
+            //    itemSOIndex = randomItemSOIndex,
+            //    itemCooldownRemaining = 0,
+            //    itemCanBeUsed = true,
+            //});
+
+            playerInventory.Add(new ItemDataStruct
             {
+                playerClientId = NetworkManager.Singleton.LocalClientId,
                 itemSOIndex = randomItemSOIndex,
                 itemCooldownRemaining = 0,
                 itemCanBeUsed = true,
@@ -85,16 +93,16 @@ public class PlayerInventory : NetworkBehaviour
     [Command("playerInventory-useItemByIndex")]
     public void UseItemByIndex(int itemIndex) // Use the item, Player wil call this
     {
-        if(playerItemDataInventoryByIndex.TryGetValue(itemIndex, out ItemData itemData))
+        if(playerItemDataInventoryByIndex.TryGetValue(itemIndex, out ItemData itemData) || ItemCanBeUsed(itemIndex))
         {
             itemData.itemCooldownRemaining = GetItemSOByIndex(playerItemDataInventoryByIndex[itemIndex].itemSOIndex).cooldown;
             itemData.itemCanBeUsed = false;
 
-            Debug.Log($"New item count: {playerItemDataInventoryByIndex[itemIndex].itemCooldownRemaining}");
+            Debug.Log($"Used! Item cooldown remaining: {playerItemDataInventoryByIndex[itemIndex].itemCooldownRemaining}");
         }
     }
 
-    [Command("playerInventory-stillHaveItemCount")]
+    [Command("playerInventory-itemCanBeUsed")]
     public bool ItemCanBeUsed(int itemIndex) // Returns if the item can be used
     {
         if(playerItemDataInventoryByIndex.TryGetValue(itemIndex, out ItemData itemData))
