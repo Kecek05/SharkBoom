@@ -63,6 +63,7 @@ public class DragAndShoot : MonoBehaviour
     private float zoomForce;
     private float lastCheckedForce;
     private bool isPullingBack;
+    private bool isZoomIncreasing;
     [SerializeField] private float zoomMultiplier = 7f;
     [SerializeField] private float checkInterval = 0.001f;
     private float lastZoomForce = 0f; // Store the last zoom force
@@ -131,7 +132,7 @@ public class DragAndShoot : MonoBehaviour
                 isPullingBack = force < lastCheckedForce; // Check if the force is decreasing
 
                 zoomForce = force * zoomMultiplier * dragDistance;
-                bool isZoomIncreasing = zoomForce > lastZoomForce; // Check is zoomForce is increasing
+                isZoomIncreasing = zoomForce > lastZoomForce; // Check is zoomForce is increasing
 
                 if (isZoomIncreasing)
                 {
