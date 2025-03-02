@@ -48,7 +48,6 @@ public class DragAndShoot : MonoBehaviour
 
     private float distance;
 
-    private float lastForce; // used for zoomOut
     private float force;
     public float Force => force;
 
@@ -58,13 +57,16 @@ public class DragAndShoot : MonoBehaviour
     private bool canDrag = true;
     public bool CanDrag => canDrag;
 
-    [SerializeField] private float zoomThreshold = 0.2f;
     private float dragDistance;
     [SerializeField] private float dragSpeed;
     private Transform startZoomPos;
     private float zoomForce;
-
+    private float lastCheckedForce;
     private bool isPullingBack;
+    [SerializeField] private float zoomMultiplier = 1f;
+    [SerializeField] private float checkInterval = 0.001f;
+    private float lastZoomForce = 0f; // Armazena o último zoomForce
+    private float lastCheckTime = 0f; // Controla a frequência de verificação
 
     public void Initialize() //Setup
     {
@@ -87,11 +89,10 @@ public class DragAndShoot : MonoBehaviour
             {
                 //Start Dragging
                 CameraManager.Instance.SetCameraState(CameraManager.CameraState.Dragging);
-                //startZoomPos = CameraManager.Instance.CameraObjectToFollow;
+                startZoomPos = CameraManager.Instance.CameraObjectToFollow;
 
                 plane = new Plane(Vector3.forward, startDragPos.position); // we create the plane to calculate the Z, because a click is a 2D position
                 isShowingDots = false;
-                lastForce = 0f;
 
                 isDragging = true;
                 OnDragStart?.Invoke();
@@ -116,32 +117,37 @@ public class DragAndShoot : MonoBehaviour
 
         if (plane.Raycast(ray, out distance))
         {
-            endPos = Vector3.SmoothDamp(endPos, ray.GetPoint(distance), ref velocity, smoothTime);
-            direction = (startDragPos.position - endPos).normalized; // calculate the direction of the drag
-            dragDistance = Vector3.Distance(startDragPos.position, endPos);
+            endPos = ray.GetPoint(distance); // get the position of the click instantaneously
+            direction = (startDragPos.position - endPos).normalized; // calculate the direction of the drag on Vector3
+            dragDistance = Vector3.Distance(startDragPos.position, endPos); // calculate the distance of the drag on float
 
             force = dragDistance * offsetForceMultiplier; //Calculate the force linearly
             force = Mathf.Clamp(force, minForceMultiplier, maxForceMultiplier);
-            // Debug.Log($"ForceMultiplier: {force} and Actual Distance: {Vector3.Distance(startDragPos.position, endPos)}"); cost much perfomance
 
             trajectory.UpdateDots(transform.position, direction * force); // update the dots position 
 
-            isPullingBack = Vector3.Dot(direction, transform.forward) < 0;
-            zoomForce = force * dragDistance;
-
-            if (isPullingBack)
+            if (Time.time - lastCheckTime >= checkInterval)
             {
-                CameraManager.Instance.CameraZoom.ChangeZoom(-zoomForce, dragSpeed);
-                Debug.Log(isPullingBack);
-            }
-            else
-            {
-                CameraManager.Instance.CameraZoom.ChangeZoom(zoomForce, dragSpeed);
-                Debug.Log("Do outro lado " + isPullingBack);
+                isPullingBack = force < lastCheckedForce; // Verifica se a força está diminuindo
+
+                zoomForce = force * zoomMultiplier * dragDistance;
+                bool isZoomIncreasing = zoomForce > lastZoomForce; // Verifica se o zoomForce está aumentando
+
+                if (isZoomIncreasing)
+                {
+                    CameraManager.Instance.CameraZoom.ChangeZoom(-5f, dragSpeed);
+                }
+                else
+                {
+                    CameraManager.Instance.CameraZoom.ChangeZoom(5f, dragSpeed);
+                }
+
+                lastCheckedForce = force;
+                lastZoomForce = zoomForce; // Atualiza o último zoomForce
+                lastCheckTime = Time.time; // Atualiza o tempo da última verificação
             }
 
-            lastForce = force;
-            // Debug.Log($"Last force: {lastForce} and force {force}");
+
 
             if (!isShowingDots)
             {
@@ -161,7 +167,7 @@ public class DragAndShoot : MonoBehaviour
     public void ResetDragPos()
     {
         // Reset the dots position
-        // CameraManager.Instance.CameraZoom.ResetZoom(startZoomPos);
+        CameraManager.Instance.CameraZoom.ResetZoom(startZoomPos);
         trajectory.UpdateDots(transform.position, direction * minForceMultiplier);
         ReleaseDrag();
         

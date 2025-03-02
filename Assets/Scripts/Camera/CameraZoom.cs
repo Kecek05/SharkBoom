@@ -107,17 +107,17 @@ public class CameraZoom : MonoBehaviour
         cameraSystemPosition.z += value;
 
         cameraSystemPosition.z = Mathf.Clamp(cameraSystemPosition.z, minZoom, maxZoom);
-        CameraManager.Instance.CameraObjectToFollow.position = Vector3.Lerp(CameraManager.Instance.CameraObjectToFollow.position, cameraSystemPosition, Time.deltaTime * zoomSpeed);
+        CameraManager.Instance.CameraObjectToFollow.position = Vector3.MoveTowards(CameraManager.Instance.CameraObjectToFollow.position, cameraSystemPosition, zoomSpeed * Time.deltaTime);
     }
 
 
-    //public void ResetZoom(Transform startDragPos, float zoomSpeed = 100f)
-    //{
-    //    cameraSystemPosition = CameraManager.Instance.CameraObjectToFollow.position;
-    //    cameraSystemPosition.z -= startDragPos.position.z;
+    public void ResetZoom(Transform startDragPos, float zoomSpeed = 100f)
+    {
+        cameraSystemPosition = CameraManager.Instance.CameraObjectToFollow.position;
+        cameraSystemPosition.z -= startDragPos.position.z;
 
-    //    CameraManager.Instance.CameraObjectToFollow.position = Vector3.Lerp(CameraManager.Instance.CameraObjectToFollow.position, cameraSystemPosition, Time.deltaTime * zoomSpeed);
-    //}
+        CameraManager.Instance.CameraObjectToFollow.position = Vector3.Lerp(CameraManager.Instance.CameraObjectToFollow.position, cameraSystemPosition, Time.deltaTime * zoomSpeed);
+    }
 
     private void OnDestroy()
     {

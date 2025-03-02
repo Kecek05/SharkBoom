@@ -554,6 +554,9 @@ PlayerSettings:
   - serializedVersion: 3
     m_BuildTarget: Android
     m_Formats: 03000000
+  - serializedVersion: 3
+    m_BuildTarget: iOS
+    m_Formats: 03000000
   playModeTestRunnerEnabled: 0
   runPlayModeTestAsEditModeTest: 0
   actionOnDotNetUnhandledException: 1
@@ -832,6 +835,7 @@ PlayerSettings:
     VisionOS: SORTIFY;SORTIFY_ATTRIBUTES;SORTIFY_COLLECTIONS;SORTIFY_HIGHLIGHT
     WebGL: SORTIFY;SORTIFY_ATTRIBUTES;SORTIFY_COLLECTIONS;SORTIFY_HIGHLIGHT
     XboxOne: SORTIFY;SORTIFY_ATTRIBUTES;SORTIFY_COLLECTIONS;SORTIFY_HIGHLIGHT
+    iPhone: SORTIFY_HIGHLIGHT;SORTIFY;SORTIFY_COLLECTIONS;SORTIFY_ATTRIBUTES
     tvOS: SORTIFY;SORTIFY_ATTRIBUTES;SORTIFY_COLLECTIONS;SORTIFY_HIGHLIGHT
   additionalCompilerArguments: {}
   platformArchitecture: {}
