@@ -11,4 +11,5 @@ public class ItemSO : ScriptableObject
     [Space(5)]
     public float damage;
     public float mass;
+    public int cooldown;
 }

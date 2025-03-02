@@ -56,10 +56,10 @@ public class PlayerInventory : NetworkBehaviour
         {
             int randomItemSOIndex = Random.Range(0, itemsListSO.allItemsSOList.Count);
 
-            playerItemDataInventoryByIndex.Add(randomItemSOIndex, new ItemData
+            playerItemDataInventoryByIndex.Add(i, new ItemData
             {
                 itemSOIndex = randomItemSOIndex,
-                itemUsesLeft = Random.Range(1, 4), //Random qtd of the item for now
+                itemCooldownRemaining = 0,
                 itemCanBeUsed = true,
             });
         }
@@ -71,7 +71,7 @@ public class PlayerInventory : NetworkBehaviour
     {
         if (playerItemDataInventoryByIndex.TryGetValue(itemIndex, out ItemData itemData)) 
         {
-            if (!itemData.itemCanBeUsed || !StillHaveItemCount(itemIndex))
+            if (!itemData.itemCanBeUsed || !ItemCanBeUsed(itemIndex))
             {
                 Debug.LogWarning("Item can't be used!");
                 return;
@@ -83,22 +83,24 @@ public class PlayerInventory : NetworkBehaviour
     }
 
     [Command("playerInventory-useItemByIndex")]
-    public void UseItemByIndex(int itemIndex, int usedCount = 1) // Use the item, Player wil call this
+    public void UseItemByIndex(int itemIndex) // Use the item, Player wil call this
     {
         if(playerItemDataInventoryByIndex.TryGetValue(itemIndex, out ItemData itemData))
         {
-            itemData.itemUsesLeft -= usedCount;
-            Debug.Log($"New item count: {playerItemDataInventoryByIndex[itemIndex].itemUsesLeft}");
+            itemData.itemCooldownRemaining = GetItemSOByIndex(playerItemDataInventoryByIndex[itemIndex].itemSOIndex).cooldown;
+            itemData.itemCanBeUsed = false;
+
+            Debug.Log($"New item count: {playerItemDataInventoryByIndex[itemIndex].itemCooldownRemaining}");
         }
     }
 
     [Command("playerInventory-stillHaveItemCount")]
-    public bool StillHaveItemCount(int itemIndex) // Returns if the item can be used
+    public bool ItemCanBeUsed(int itemIndex) // Returns if the item can be used
     {
         if(playerItemDataInventoryByIndex.TryGetValue(itemIndex, out ItemData itemData))
         {
             //Index found
-            return playerItemDataInventoryByIndex[itemIndex].itemUsesLeft > 0;
+            return playerItemDataInventoryByIndex[itemIndex].itemCanBeUsed;
         }
 
         Debug.LogWarning("Item Index not found!");
