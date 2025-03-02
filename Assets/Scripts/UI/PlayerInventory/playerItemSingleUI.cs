@@ -39,9 +39,4 @@ public class PlayerItemSingleUI : MonoBehaviour
 
         myIndexItemInventory = indexItemInventory;
     }
-
-    private void Test()
-    {
-
-    }
 }

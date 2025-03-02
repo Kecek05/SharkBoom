@@ -2,17 +2,21 @@ using NUnit.Framework;
 using Sortify;
 using System;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class PlayerInventoryUI : MonoBehaviour
+public class PlayerInventoryUI : NetworkBehaviour
 {
 
     public event Action<int> OnItemSelected;
 
     [BetterHeader("References")]
+    [SerializeField] private GameObject playerInventoryUIBackground;
     [SerializeField] private PlayerInventory playerInventory;
     [SerializeField] private Transform inventoryItemHolder;
     [SerializeField] private GameObject playerItemSingleUIPrefab;
+    [SerializeField] private Button useItemButton;
 
     [SerializeField] private ItemsListSO itemsListSO; //TEMP
 
@@ -20,8 +24,25 @@ public class PlayerInventoryUI : MonoBehaviour
 
     private void Awake()
     {
+        useItemButton.onClick.AddListener(() =>
+        {
+            playerInventory.UseItem();
+            Debug.Log("Use Item Button Clicked");
+        });
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        if (!IsOwner)
+        {
+            Hide();
+            return;
+        }
+
         playerInventory.OnItemChanged += PlayerInventory_OnItemChanged;
     }
+
+
 
     private void PlayerInventory_OnItemChanged(ItemDataStruct itemData)
     {
@@ -35,11 +56,19 @@ public class PlayerInventoryUI : MonoBehaviour
         Debug.Log("Item Added UI");
     }
 
-    private void OnDestroy()
+    private void Hide()
     {
+        playerInventoryUIBackground.SetActive(false);
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        if (!IsOwner) return;
+
         foreach (PlayerItemSingleUI playerItemSingleUI in playerItemSingleUIs)
         {
             playerItemSingleUI.OnItemSingleSelected -= (int index) => OnItemSelected?.Invoke(index);
         }
     }
+
 }

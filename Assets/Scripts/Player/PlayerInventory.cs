@@ -126,8 +126,7 @@ public class PlayerInventory : NetworkBehaviour
     }
 
     [Command("playerInventory-useItem")]
-    [Rpc(SendTo.Server)]
-    public void UseItemRpc() // Use the item, Server will call this when both players ready
+    public void UseItem() // Use the item, Server will call this when both players ready
     {
         if (ItemCanBeUsed(selectedItemIndex))
         {
