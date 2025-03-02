@@ -1,16 +1,20 @@
+using TMPro;
+using Unity.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class playerItemSingleUI : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private TextMeshProUGUI itemNameText;
+    [SerializeField] private Image itemImageIcon;
+    [SerializeField] private TextMeshProUGUI itemCooldownText;
+    [SerializeField] private TextMeshProUGUI ownerDebugText;
+    public void Setup(string itemName, Image itemIcon, string itemCooldown, FixedString32Bytes ownerDebug)
     {
-        
-    }
+        itemNameText.text = itemName;
+        //itemImageIcon.sprite = itemIcon.sprite;
+        itemCooldownText.text = itemCooldown;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        ownerDebugText.text = ownerDebug.ToString();
     }
 }

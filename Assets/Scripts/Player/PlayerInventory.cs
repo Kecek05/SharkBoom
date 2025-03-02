@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PlayerInventory : NetworkBehaviour
 {
@@ -42,7 +43,10 @@ public class PlayerInventory : NetworkBehaviour
         if(IsOwner)
         {
             playerInventory.OnListChanged += PlayerInventory_OnListChanged;
+            Debug.Log("Im the owner");
         }
+
+        gameObject.name = "Player " + UnityEngine.Random.Range(0, 100).ToString();
     }
 
     private void PlayerInventory_OnListChanged(NetworkListEvent<ItemDataStruct> changeEvent)
@@ -51,57 +55,64 @@ public class PlayerInventory : NetworkBehaviour
         {
             case NetworkListEvent<ItemDataStruct>.EventType.Add:
                 Debug.Log("Item Added");
+
                 OnItemChanged?.Invoke(changeEvent.Value);
                 break;
             case NetworkListEvent<ItemDataStruct>.EventType.Value:
                 Debug.Log("Item Value Changed");
-                OnItemChanged?.Invoke(changeEvent.Value);
+                //OnItemChanged?.Invoke(changeEvent.Value);
                 break;
         }
     }
 
-    public void RandomItemServerDebug()
-    {
-        if (!IsServer) return; //Only Server
+    //public void RandomItemDebug()
+    //{
+    //    //if (!IsServer) return; //Only Server
 
-        SetPlayerItems();
-    }
+    //    SetPlayerItems();
+    //}
 
     [Command("playerInventory-printPlayerInventory", MonoTargetType.All)]
     public void PrintPlayerInventory()
     {
         for (int i = 0; i < playerInventory.Count; i++)
         {
-            Debug.Log($"Player: {NetworkManager.Singleton.LocalClientId} Item: {GetItemSOByIndex(playerInventory[i].itemSOIndex).itemName} Cooldown: {GetItemSOByIndex(playerInventory[i].itemSOIndex).cooldown} Can be used: {playerInventory[i].itemCanBeUsed}");
+            Debug.Log($"Player: {gameObject.name} Item: {GetItemSOByIndex(playerInventory[i].itemSOIndex).itemName} Cooldown: {GetItemSOByIndex(playerInventory[i].itemSOIndex).cooldown} Can be used: {playerInventory[i].itemCanBeUsed}");
         }
     }
 
 
-    private void SetPlayerItems() //Set the items that player have
+
+    public void SetPlayerItems(int itemSOIndex) //Set the items that player have
     {
-        int itemsInInventory = UnityEngine.Random.Range(1, itemsListSO.allItemsSOList.Count); //Random qtd of items for now
 
+        //playerItemDataInventoryByIndex.Add(i, new ItemData
+        //{
+        //    itemSOIndex = randomItemSOIndex,
+        //    itemCooldownRemaining = 0,
+        //    itemCanBeUsed = true,
+        //});
 
-        for(int i = 0; i < itemsInInventory; i++)
+        //SetPlayerItemsClient(randomItemSOIndex);
+
+        playerInventory.Add(new ItemDataStruct
         {
-            int randomItemSOIndex = UnityEngine.Random.Range(0, itemsListSO.allItemsSOList.Count);
+            ownerDebug = $"Player {gameObject.name}",
+            itemSOIndex = itemSOIndex,
+            itemCooldownRemaining = 0,
+            itemCanBeUsed = true,
+        });
 
-            //playerItemDataInventoryByIndex.Add(i, new ItemData
-            //{
-            //    itemSOIndex = randomItemSOIndex,
-            //    itemCooldownRemaining = 0,
-            //    itemCanBeUsed = true,
-            //});
+        //OnItemChanged?.Invoke(playerInventory.);
 
-            playerInventory.Add(new ItemDataStruct
-            {
-                itemSOIndex = randomItemSOIndex,
-                itemCooldownRemaining = 0,
-                itemCanBeUsed = true,
-            });
+        Debug.Log("Item Setted");
+    }
+
+    public void SetPlayerItemsClient(int itemSOIndexToAdd)
+    {
+        if(!IsOwner) return;
 
 
-        }
     }
 
 
@@ -117,7 +128,7 @@ public class PlayerInventory : NetworkBehaviour
 
 
         selectedItemData = playerInventory[itemIndex];
-        Debug.Log($"Selected Item: {GetItemSOByIndex(playerInventory[itemIndex].itemSOIndex).itemName}");
+        Debug.Log($"Player: {gameObject.name} Selected Item: {GetItemSOByIndex(playerInventory[itemIndex].itemSOIndex).itemName}");
 
     }
 
@@ -128,7 +139,7 @@ public class PlayerInventory : NetworkBehaviour
         if (ItemCanBeUsed(selectedItemIndex))
         {
             //Item Can be used
-            Debug.Log("Using item!"); //TO DO: Implement item use
+            Debug.Log($"Player: {gameObject.name} Using item!"); //TO DO: Implement item use
 
             playerInventory[selectedItemIndex] = new ItemDataStruct
             {

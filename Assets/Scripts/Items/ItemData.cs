@@ -1,4 +1,5 @@
 using System;
+using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -34,6 +35,7 @@ public struct ItemDataStruct : INetworkSerializable, IEquatable<ItemDataStruct>
     public bool itemCanBeUsed;
     public int itemCooldownRemaining;
 
+    public FixedString32Bytes ownerDebug;
 
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
@@ -41,10 +43,11 @@ public struct ItemDataStruct : INetworkSerializable, IEquatable<ItemDataStruct>
         serializer.SerializeValue(ref itemSOIndex);
         serializer.SerializeValue(ref itemCanBeUsed);
         serializer.SerializeValue(ref itemCooldownRemaining);
+        serializer.SerializeValue(ref ownerDebug);
     }
 
     public bool Equals(ItemDataStruct other)
     {
-        return itemSOIndex == other.itemSOIndex && itemCanBeUsed == other.itemCanBeUsed && itemCooldownRemaining == other.itemCooldownRemaining;
+        return itemSOIndex == other.itemSOIndex && itemCanBeUsed == other.itemCanBeUsed && itemCooldownRemaining == other.itemCooldownRemaining && ownerDebug == other.ownerDebug;
     }
 }
