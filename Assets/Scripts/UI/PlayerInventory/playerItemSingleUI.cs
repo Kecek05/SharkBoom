@@ -1,13 +1,15 @@
 using Sortify;
+using System;
 using TMPro;
 using Unity.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class playerItemSingleUI : MonoBehaviour
+public class PlayerItemSingleUI : MonoBehaviour
 {
-    [BetterHeader("References")]
+    public event Action<int> OnItemSingleSelected;
 
+    [BetterHeader("References")]
     [SerializeField] private TextMeshProUGUI itemNameText;
     [SerializeField] private Image itemImageIcon;
     [SerializeField] private TextMeshProUGUI itemCooldownText;
@@ -15,17 +17,18 @@ public class playerItemSingleUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI itemCanBeUsedText;
     [SerializeField] private Button selectItemButton;
 
-    private int myIndexItemSO;
+    private int myIndexItemInventory;
 
     private void Awake()
     {
         selectItemButton.onClick.AddListener(() =>
         {
-            Debug.Log($"Item {myIndexItemSO} selected");
+            OnItemSingleSelected?.Invoke(myIndexItemInventory);
+            Debug.Log($"Item {myIndexItemInventory} selected");
         });
     }
 
-    public void Setup(string itemName, Image itemIcon, string itemCooldown, FixedString32Bytes ownerDebug, bool itemCanBeUsed, int indexItemSO)
+    public void Setup(string itemName, Image itemIcon, string itemCooldown, FixedString32Bytes ownerDebug, bool itemCanBeUsed, int indexItemInventory)
     {
         itemNameText.text = itemName;
         //itemImageIcon.sprite = itemIcon.sprite;
@@ -34,6 +37,11 @@ public class playerItemSingleUI : MonoBehaviour
         ownerDebugText.text = ownerDebug.ToString();
         itemCanBeUsedText.text = itemCanBeUsed.ToString();
 
-        myIndexItemSO = indexItemSO;
+        myIndexItemInventory = indexItemInventory;
+    }
+
+    private void Test()
+    {
+
     }
 }

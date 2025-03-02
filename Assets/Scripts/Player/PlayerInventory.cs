@@ -8,15 +8,14 @@ using UnityEngine.UIElements;
 
 public class PlayerInventory : NetworkBehaviour
 {
-    public static event Action<ItemDataStruct> OnItemChanged;
+    public event Action<ItemDataStruct> OnItemChanged;
 
     [SerializeField] private ItemsListSO itemsListSO;
+    [SerializeField] private PlayerInventoryUI playerInventoryUI; //TEMP
 
-    //private Dictionary<int, ItemData> playerItemDataInventoryByIndex = new();
 
     private NetworkList<ItemDataStruct> playerInventory;
 
-    //private NetworkList<ItemData> playerItemData;
 
     private ItemDataStruct selectedItemData;
     public ItemDataStruct SelectedItemData => selectedItemData;
@@ -26,16 +25,16 @@ public class PlayerInventory : NetworkBehaviour
     /// </summary>
     private int selectedItemIndex;
 
-    //private void Awake()
-    //{
-    //    SetPlayerItems();
-    //}
-
-    // FALTA SYNCAR COM O SERVER E O SERVER Q RANDOMIZA OS ITEMS E QTDS
 
     private void Awake()
     {
         playerInventory = new();
+        playerInventoryUI.OnItemSelected += PlayerInventoryUI_OnItemSelected;
+    }
+
+    private void PlayerInventoryUI_OnItemSelected(int itemIndex)
+    {
+        SelectItemDataByIndex(itemIndex);
     }
 
     public override void OnNetworkSpawn()
@@ -77,7 +76,7 @@ public class PlayerInventory : NetworkBehaviour
     {
         for (int i = 0; i < playerInventory.Count; i++)
         {
-            Debug.Log($"Player: {gameObject.name} Item: {GetItemSOByIndex(playerInventory[i].itemSOIndex).itemName} Cooldown: {GetItemSOByIndex(playerInventory[i].itemSOIndex).cooldown} Can be used: {playerInventory[i].itemCanBeUsed}");
+            Debug.Log($"Player: {gameObject.name} Item: {GetItemSOByIndex(playerInventory[i].itemSOIndex).itemName} Cooldown: {GetItemSOByIndex(playerInventory[i].itemSOIndex).cooldown} Can be used: {playerInventory[i].itemCanBeUsed} Item Inventory Index: {playerInventory[i].itemInventoryIndex}");
         }
     }
 
@@ -98,6 +97,7 @@ public class PlayerInventory : NetworkBehaviour
         playerInventory.Add(new ItemDataStruct
         {
             ownerDebug = $"Player {gameObject.name}",
+            itemInventoryIndex = playerInventory.Count - 1,
             itemSOIndex = itemSOIndex,
             itemCooldownRemaining = 0,
             itemCanBeUsed = true,
@@ -106,13 +106,6 @@ public class PlayerInventory : NetworkBehaviour
         //OnItemChanged?.Invoke(playerInventory.);
 
         Debug.Log("Item Setted");
-    }
-
-    public void SetPlayerItemsClient(int itemSOIndexToAdd)
-    {
-        if(!IsOwner) return;
-
-
     }
 
 

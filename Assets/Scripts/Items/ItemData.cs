@@ -32,6 +32,7 @@ public class ItemData  //INetworkSerializable, IEquatable<ItemData>
 public struct ItemDataStruct : INetworkSerializable, IEquatable<ItemDataStruct>
 {
     public int itemSOIndex;
+    public int itemInventoryIndex;
     public bool itemCanBeUsed;
     public int itemCooldownRemaining;
 
@@ -44,10 +45,11 @@ public struct ItemDataStruct : INetworkSerializable, IEquatable<ItemDataStruct>
         serializer.SerializeValue(ref itemCanBeUsed);
         serializer.SerializeValue(ref itemCooldownRemaining);
         serializer.SerializeValue(ref ownerDebug);
+        serializer.SerializeValue(ref itemInventoryIndex);
     }
 
     public bool Equals(ItemDataStruct other)
     {
-        return itemSOIndex == other.itemSOIndex && itemCanBeUsed == other.itemCanBeUsed && itemCooldownRemaining == other.itemCooldownRemaining && ownerDebug == other.ownerDebug;
+        return itemSOIndex == other.itemSOIndex && itemCanBeUsed == other.itemCanBeUsed && itemCooldownRemaining == other.itemCooldownRemaining && ownerDebug == other.ownerDebug && itemInventoryIndex == other.itemInventoryIndex;
     }
 }

@@ -4,28 +4,42 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class playerInventoryUI : MonoBehaviour
+public class PlayerInventoryUI : MonoBehaviour
 {
+
+    public event Action<int> OnItemSelected;
+
     [BetterHeader("References")]
+    [SerializeField] private PlayerInventory playerInventory;
     [SerializeField] private Transform inventoryItemHolder;
     [SerializeField] private GameObject playerItemSingleUIPrefab;
 
     [SerializeField] private ItemsListSO itemsListSO; //TEMP
 
-    private List<ItemDataStruct> playerInventory = new();
+    private List<PlayerItemSingleUI> playerItemSingleUIs = new();
 
     private void Awake()
     {
-        PlayerInventory.OnItemChanged += PlayerInventory_OnItemChanged;
+        playerInventory.OnItemChanged += PlayerInventory_OnItemChanged;
     }
 
     private void PlayerInventory_OnItemChanged(ItemDataStruct itemData)
     {
-        GameObject playerItemSingleUI = Instantiate(playerItemSingleUIPrefab, inventoryItemHolder);
-        playerItemSingleUI.GetComponent<playerItemSingleUI>().Setup(itemsListSO.allItemsSOList[itemData.itemSOIndex].itemName, itemsListSO.allItemsSOList[itemData.itemSOIndex].itemIcon, itemData.itemCooldownRemaining.ToString(), itemData.ownerDebug, itemData.itemCanBeUsed, itemData.itemSOIndex);
+        PlayerItemSingleUI playerItemSingleUI = Instantiate(playerItemSingleUIPrefab, inventoryItemHolder).GetComponent<PlayerItemSingleUI>();
+        playerItemSingleUI.Setup(itemsListSO.allItemsSOList[itemData.itemSOIndex].itemName, itemsListSO.allItemsSOList[itemData.itemSOIndex].itemIcon, itemData.itemCooldownRemaining.ToString(), itemData.ownerDebug, itemData.itemCanBeUsed, itemData.itemSOIndex);
 
-        playerInventory.Add(itemData);
+        playerItemSingleUI.OnItemSingleSelected += (int index) => OnItemSelected?.Invoke(index);
+
+        playerItemSingleUIs.Add(playerItemSingleUI);
 
         Debug.Log("Item Added UI");
+    }
+
+    private void OnDestroy()
+    {
+        foreach (PlayerItemSingleUI playerItemSingleUI in playerItemSingleUIs)
+        {
+            playerItemSingleUI.OnItemSingleSelected -= (int index) => OnItemSelected?.Invoke(index);
+        }
     }
 }
