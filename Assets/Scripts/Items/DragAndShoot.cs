@@ -63,10 +63,10 @@ public class DragAndShoot : MonoBehaviour
     private float zoomForce;
     private float lastCheckedForce;
     private bool isPullingBack;
-    [SerializeField] private float zoomMultiplier = 1f;
+    [SerializeField] private float zoomMultiplier = 7f;
     [SerializeField] private float checkInterval = 0.001f;
-    private float lastZoomForce = 0f; // Armazena o último zoomForce
-    private float lastCheckTime = 0f; // Controla a frequência de verificação
+    private float lastZoomForce = 0f; // Store the last zoom force
+    private float lastCheckTime = 0f; // control the time between checks
 
     public void Initialize() //Setup
     {
@@ -128,10 +128,10 @@ public class DragAndShoot : MonoBehaviour
 
             if (Time.time - lastCheckTime >= checkInterval)
             {
-                isPullingBack = force < lastCheckedForce; // Verifica se a força está diminuindo
+                isPullingBack = force < lastCheckedForce; // Check if the force is decreasing
 
                 zoomForce = force * zoomMultiplier * dragDistance;
-                bool isZoomIncreasing = zoomForce > lastZoomForce; // Verifica se o zoomForce está aumentando
+                bool isZoomIncreasing = zoomForce > lastZoomForce; // Check is zoomForce is increasing
 
                 if (isZoomIncreasing)
                 {
@@ -143,8 +143,8 @@ public class DragAndShoot : MonoBehaviour
                 }
 
                 lastCheckedForce = force;
-                lastZoomForce = zoomForce; // Atualiza o último zoomForce
-                lastCheckTime = Time.time; // Atualiza o tempo da última verificação
+                lastZoomForce = zoomForce; // Update the last zoom force
+                lastCheckTime = Time.time; // Update the last check time
             }
 
 

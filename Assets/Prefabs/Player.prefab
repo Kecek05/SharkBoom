@@ -304,13 +304,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
   trajectory: {fileID: 800024870368675109}
-  maxForceMultiplier: 10
+  maxForceMultiplier: 25
   minForceMultiplier: 1
   smoothTime: 0.099999994
   offsetForceMultiplier: 2
   startDragPos: {fileID: 8518103509723896872}
-  zoomThreshold: 0.2
-  dragSpeed: 2
+  dragSpeed: 7
+  zoomMultiplier: 7
+  checkInterval: 0.001
 --- !u!114 &800024870368675109
 MonoBehaviour:
   m_ObjectHideFlags: 0
