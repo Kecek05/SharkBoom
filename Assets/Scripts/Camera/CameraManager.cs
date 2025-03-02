@@ -74,7 +74,7 @@ public class CameraManager : MonoBehaviour
     private void Dragging()
     {
         cameraMovement.enabled = false;
-
+        cameraZoom.enabled = true;
     }
 
     private void CameraReset()

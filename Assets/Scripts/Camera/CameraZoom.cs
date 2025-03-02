@@ -27,7 +27,6 @@ public class CameraZoom : MonoBehaviour
     [Tooltip("Think like a scope of a sniper, max = more close")]
     [SerializeField] private float maxZoom = 1f;
     [SerializeField] private CinemachineCamera cinemachineCamera;
-    [SerializeField] private float zoomSensitivity = 0.1f;
 
     private void Start()
     {
@@ -106,26 +105,19 @@ public class CameraZoom : MonoBehaviour
     {
         cameraSystemPosition = CameraManager.Instance.CameraObjectToFollow.position;
         cameraSystemPosition.z += value;
-        
+
         cameraSystemPosition.z = Mathf.Clamp(cameraSystemPosition.z, minZoom, maxZoom);
         CameraManager.Instance.CameraObjectToFollow.position = Vector3.Lerp(CameraManager.Instance.CameraObjectToFollow.position, cameraSystemPosition, Time.deltaTime * zoomSpeed);
     }
 
-    public float CalculateZoomByForce(float force, float dragDistance)
-    {
-        float normalizedForce = Mathf.Clamp01(force / 50f);
-        float normalizedDistance = Mathf.Clamp01(dragDistance / 10);
-        float zoomFactor = dragDistance * force * zoomSensitivity;
-        return zoomFactor;
-    }
 
-    public void ResetZoom(Transform startDragPos, float zoomSpeed = 100f)
-    {
-        cameraSystemPosition = CameraManager.Instance.CameraObjectToFollow.position;
-        cameraSystemPosition.z -= startDragPos.position.z;
+    //public void ResetZoom(Transform startDragPos, float zoomSpeed = 100f)
+    //{
+    //    cameraSystemPosition = CameraManager.Instance.CameraObjectToFollow.position;
+    //    cameraSystemPosition.z -= startDragPos.position.z;
 
-        CameraManager.Instance.CameraObjectToFollow.position = Vector3.Lerp(CameraManager.Instance.CameraObjectToFollow.position, cameraSystemPosition, Time.deltaTime * zoomSpeed);
-    }
+    //    CameraManager.Instance.CameraObjectToFollow.position = Vector3.Lerp(CameraManager.Instance.CameraObjectToFollow.position, cameraSystemPosition, Time.deltaTime * zoomSpeed);
+    //}
 
     private void OnDestroy()
     {
