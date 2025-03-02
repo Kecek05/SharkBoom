@@ -6,12 +6,23 @@ using UnityEngine;
 public class GameFlowManager : NetworkBehaviour
 {
 
+    [SerializeField] private ItemsListSO itemsListSO;
+
+
     [Command("gameFlowManager-randomizePlayersItems")]
     public void RandomizePlayerItems()
     {
-        foreach (PlayerInventory playerInventory in FindObjectsByType<PlayerInventory>(FindObjectsSortMode.None))
+        int itemsInInventory = Random.Range(1, itemsListSO.allItemsSOList.Count); //Random qtd of items for now
+
+        for(int i = 0; i < itemsInInventory; i++)
         {
-            playerInventory.RandomItemServerDebug();
+            int randomItemSOIndex = Random.Range(0, itemsListSO.allItemsSOList.Count);
+
+            foreach (PlayerInventory playerInventory in FindObjectsByType<PlayerInventory>(FindObjectsSortMode.None))
+            {
+                playerInventory.SetPlayerItems(randomItemSOIndex);
+                Debug.Log($"Player: {playerInventory.gameObject.name}");
+            }
         }
     }
 }

@@ -1,19 +1,30 @@
 using NUnit.Framework;
 using QFSW.QC;
+using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PlayerInventory : NetworkBehaviour
 {
+    public static event Action<ItemDataStruct> OnItemChanged;
+
     [SerializeField] private ItemsListSO itemsListSO;
 
-    private Dictionary<int, ItemData> playerItemDataByIndex = new();
+    //private Dictionary<int, ItemData> playerItemDataInventoryByIndex = new();
+
+    private NetworkList<ItemDataStruct> playerInventory;
 
     //private NetworkList<ItemData> playerItemData;
 
-    private ItemData selectedItemData;
-    public ItemData SelectedItemData => selectedItemData;
+    private ItemDataStruct selectedItemData;
+    public ItemDataStruct SelectedItemData => selectedItemData;
+
+    /// <summary>
+    /// The index of the selected item in the player inventory
+    /// </summary>
+    private int selectedItemIndex;
 
     //private void Awake()
     //{
@@ -22,88 +33,143 @@ public class PlayerInventory : NetworkBehaviour
 
     // FALTA SYNCAR COM O SERVER E O SERVER Q RANDOMIZA OS ITEMS E QTDS
 
-    //public override void OnNetworkSpawn()
-    //{
-    //    RandomItemServerDebug();
-    //}
-
-
-
-    public void RandomItemServerDebug()
+    private void Awake()
     {
-        if (!IsServer) return; //Only Server
-
-        SetPlayerItems();
+        playerInventory = new();
     }
+
+    public override void OnNetworkSpawn()
+    {
+        if(IsOwner)
+        {
+            playerInventory.OnListChanged += PlayerInventory_OnListChanged;
+            Debug.Log("Im the owner");
+        }
+
+        gameObject.name = "Player " + UnityEngine.Random.Range(0, 100).ToString();
+    }
+
+    private void PlayerInventory_OnListChanged(NetworkListEvent<ItemDataStruct> changeEvent)
+    {
+        switch(changeEvent.Type)
+        {
+            case NetworkListEvent<ItemDataStruct>.EventType.Add:
+                Debug.Log("Item Added");
+
+                OnItemChanged?.Invoke(changeEvent.Value);
+                break;
+            case NetworkListEvent<ItemDataStruct>.EventType.Value:
+                Debug.Log("Item Value Changed");
+                OnItemChanged?.Invoke(changeEvent.Value);
+                break;
+        }
+    }
+
+    //public void RandomItemDebug()
+    //{
+    //    //if (!IsServer) return; //Only Server
+
+    //    SetPlayerItems();
+    //}
 
     [Command("playerInventory-printPlayerInventory", MonoTargetType.All)]
     public void PrintPlayerInventory()
     {
-        for (int i = 0; i < playerItemDataByIndex.Count; i++)
+        for (int i = 0; i < playerInventory.Count; i++)
         {
-            Debug.Log($"Player: {OwnerClientId} Item: {playerItemDataByIndex[i].itemSO.itemName} Qtd: {playerItemDataByIndex[i].itemUsesLeft}");
+            Debug.Log($"Player: {gameObject.name} Item: {GetItemSOByIndex(playerInventory[i].itemSOIndex).itemName} Cooldown: {GetItemSOByIndex(playerInventory[i].itemSOIndex).cooldown} Can be used: {playerInventory[i].itemCanBeUsed}");
         }
     }
 
-    private void SetPlayerItems() //Set the items that player have
-    {
-        for (int i = 0; i < itemsListSO.allItemsSOList.Count; i++)
-        {
-            playerItemDataByIndex[i] = new ItemData
-            {
-                itemSO = itemsListSO.allItemsSOList[i],
-                itemIndex = i, // itemsListSO.allItemsSOList[i]
-                itemUsesLeft = Random.Range(1, 4), //Random qtd of the item for now
-                itemCanBeUsed = true
-            };
 
-            Debug.Log($"Player: {gameObject.name} Creating Items... Item: {playerItemDataByIndex[i].itemSO.name} Qtd: {playerItemDataByIndex[i].itemUsesLeft}");
-        }
+
+    public void SetPlayerItems(int itemSOIndex) //Set the items that player have
+    {
+
+        //playerItemDataInventoryByIndex.Add(i, new ItemData
+        //{
+        //    itemSOIndex = randomItemSOIndex,
+        //    itemCooldownRemaining = 0,
+        //    itemCanBeUsed = true,
+        //});
+
+        //SetPlayerItemsClient(randomItemSOIndex);
+
+        playerInventory.Add(new ItemDataStruct
+        {
+            ownerDebug = $"Player {gameObject.name}",
+            itemSOIndex = itemSOIndex,
+            itemCooldownRemaining = 0,
+            itemCanBeUsed = true,
+        });
+
+        //OnItemChanged?.Invoke(playerInventory.);
+
+        Debug.Log("Item Setted");
+    }
+
+    public void SetPlayerItemsClient(int itemSOIndexToAdd)
+    {
+        if(!IsOwner) return;
+
+
     }
 
 
     [Command("playerInventory-selectItemDataByIndex")]
     public void SelectItemDataByIndex(int itemIndex) // Select a item to use, UI will call this
     {
-        if (playerItemDataByIndex.TryGetValue(itemIndex, out ItemData itemData)) 
+
+        if (!ItemCanBeUsed(itemIndex))
         {
-            if (!itemData.itemCanBeUsed || !StillHaveItemCount(itemIndex))
+            Debug.LogWarning("Item can't be used!");
+            return;
+        }
+
+
+        selectedItemData = playerInventory[itemIndex];
+        Debug.Log($"Player: {gameObject.name} Selected Item: {GetItemSOByIndex(playerInventory[itemIndex].itemSOIndex).itemName}");
+
+    }
+
+    [Command("playerInventory-useItem")]
+    [Rpc(SendTo.Server)]
+    public void UseItemRpc() // Use the item, Server will call this when both players ready
+    {
+        if (ItemCanBeUsed(selectedItemIndex))
+        {
+            //Item Can be used
+            Debug.Log($"Player: {gameObject.name} Using item!"); //TO DO: Implement item use
+
+            playerInventory[selectedItemIndex] = new ItemDataStruct
             {
-                Debug.LogWarning("Item can't be used!");
-                return;
-            }
-
-            selectedItemData = itemData;
-            Debug.Log($"Selected Item: {selectedItemData.itemSO.itemName}");
+                itemSOIndex = selectedItemData.itemSOIndex,
+                itemCooldownRemaining = GetItemSOByIndex(selectedItemData.itemSOIndex).cooldown,
+                itemCanBeUsed = false,
+            };
+        } else
+        {
+            Debug.LogWarning("Item can't be used!");
         }
     }
 
-    [Command("playerInventory-useItemByIndex")]
-    public void UseItemByIndex(int itemIndex, int usedCount = 1) // Use the item, Player wil call this
+    [Command("playerInventory-itemCanBeUsed")]
+    public bool ItemCanBeUsed(int itemIndex) // Returns if the item can be used
     {
-        if(playerItemDataByIndex.TryGetValue(itemIndex, out ItemData itemData))
-        {
-            itemData.itemUsesLeft -= usedCount;
-            Debug.Log($"New item count: {playerItemDataByIndex[itemIndex].itemUsesLeft}");
-        }
-    }
 
-    [Command("playerInventory-stillHaveItemCount")]
-    public bool StillHaveItemCount(int itemIndex) // Returns if the item can be used
-    {
-        if(playerItemDataByIndex.TryGetValue(itemIndex, out ItemData itemData))
-        {
-            //Index found
-            return playerItemDataByIndex[itemIndex].itemUsesLeft > 0;
-        }
-
-        Debug.LogWarning("Item Index not found!");
-        return false; //Index not found
+        return playerInventory[itemIndex].itemCanBeUsed;
             
     }
 
     public void UnSelectItem()
     {
-        selectedItemData = null;
+        //selectedItemData = null;
     }
+
+    public ItemSO GetItemSOByIndex(int itemIndex)
+    {
+        return itemsListSO.allItemsSOList[itemIndex];
+    }
+
+
 }
