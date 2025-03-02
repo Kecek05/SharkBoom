@@ -30,7 +30,6 @@ public class ItemData  //INetworkSerializable, IEquatable<ItemData>
 
 public struct ItemDataStruct : INetworkSerializable, IEquatable<ItemDataStruct>
 {
-    public ulong playerClientId;
     public int itemSOIndex;
     public bool itemCanBeUsed;
     public int itemCooldownRemaining;
@@ -39,7 +38,6 @@ public struct ItemDataStruct : INetworkSerializable, IEquatable<ItemDataStruct>
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
-        serializer.SerializeValue(ref playerClientId);
         serializer.SerializeValue(ref itemSOIndex);
         serializer.SerializeValue(ref itemCanBeUsed);
         serializer.SerializeValue(ref itemCooldownRemaining);
@@ -47,6 +45,6 @@ public struct ItemDataStruct : INetworkSerializable, IEquatable<ItemDataStruct>
 
     public bool Equals(ItemDataStruct other)
     {
-        return itemSOIndex == other.itemSOIndex && itemCanBeUsed == other.itemCanBeUsed && itemCooldownRemaining == other.itemCooldownRemaining && playerClientId == other.playerClientId;
+        return itemSOIndex == other.itemSOIndex && itemCanBeUsed == other.itemCanBeUsed && itemCooldownRemaining == other.itemCooldownRemaining;
     }
 }
