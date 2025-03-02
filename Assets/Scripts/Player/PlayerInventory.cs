@@ -60,7 +60,7 @@ public class PlayerInventory : NetworkBehaviour
                 break;
             case NetworkListEvent<ItemDataStruct>.EventType.Value:
                 Debug.Log("Item Value Changed");
-                //OnItemChanged?.Invoke(changeEvent.Value);
+                OnItemChanged?.Invoke(changeEvent.Value);
                 break;
         }
     }
@@ -147,6 +147,9 @@ public class PlayerInventory : NetworkBehaviour
                 itemCooldownRemaining = GetItemSOByIndex(selectedItemData.itemSOIndex).cooldown,
                 itemCanBeUsed = false,
             };
+        } else
+        {
+            Debug.LogWarning("Item can't be used!");
         }
     }
 

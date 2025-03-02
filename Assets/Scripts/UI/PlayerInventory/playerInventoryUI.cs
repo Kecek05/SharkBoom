@@ -22,7 +22,7 @@ public class playerInventoryUI : MonoBehaviour
     private void PlayerInventory_OnItemChanged(ItemDataStruct itemData)
     {
         GameObject playerItemSingleUI = Instantiate(playerItemSingleUIPrefab, inventoryItemHolder);
-        playerItemSingleUI.GetComponent<playerItemSingleUI>().Setup(itemsListSO.allItemsSOList[itemData.itemSOIndex].itemName, itemsListSO.allItemsSOList[itemData.itemSOIndex].itemIcon, itemData.itemCooldownRemaining.ToString(), itemData.ownerDebug);
+        playerItemSingleUI.GetComponent<playerItemSingleUI>().Setup(itemsListSO.allItemsSOList[itemData.itemSOIndex].itemName, itemsListSO.allItemsSOList[itemData.itemSOIndex].itemIcon, itemData.itemCooldownRemaining.ToString(), itemData.ownerDebug, itemData.itemCanBeUsed, itemData.itemSOIndex);
 
         playerInventory.Add(itemData);
 
