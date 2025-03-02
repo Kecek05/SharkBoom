@@ -62,8 +62,6 @@ public class PlayerInventory : NetworkBehaviour
                 itemUsesLeft = Random.Range(1, 4), //Random qtd of the item for now
                 itemCanBeUsed = true,
             });
-
-            Debug.Log($"Player: {gameObject.name} Creating Items... Item: {GetItemSOByIndex(playerItemDataInventoryByIndex[i].itemSOIndex).itemName} Qtd: {playerItemDataInventoryByIndex[i].itemUsesLeft}");
         }
     }
 
