@@ -6,6 +6,7 @@ public class Trajectory : MonoBehaviour
 {
     [BetterHeader("References")]
     [SerializeField] private GameObject dotPrefab;
+    [SerializeField] private DragAndShoot dragAndShoot;
 
     [BetterHeader("Settings")]
     [Range(3, 50)]
@@ -17,6 +18,8 @@ public class Trajectory : MonoBehaviour
     private float timeStamp; // Position of dots along the trajectory
     private Transform[] dotsList;
     private GameObject dotsParent;
+    private Vector3 adjustedForce;
+    private float time;
 
 
     public void Initialize(Transform dotsParentTransform)
@@ -36,14 +39,18 @@ public class Trajectory : MonoBehaviour
         }
     }
 
-    public void UpdateDots(Vector3 objectPos, Vector3 forceApplied)
+    public void UpdateDots(Vector3 objectPos, Vector3 forceApplied, float objectMass = 10f) // add the object mass to calculate the trajectory, we put 10 as default because in item prefabs we change for 10
     {
-        timeStamp = dotSpacing; 
+        timeStamp = dotSpacing;
+        adjustedForce = forceApplied / objectMass; // Adjust the force to the weight of the object
+
         for (int i = 0; i < dotsNumber; i++)
         {
-            dotPos.x = objectPos.x + forceApplied.x * timeStamp; // Formula to calculate the position of the dots along the trajectory
-            dotPos.y = objectPos.y + forceApplied.y * timeStamp + (0.5f * Physics.gravity.y * timeStamp * timeStamp);
-            dotPos.z = objectPos.z + forceApplied.z * timeStamp; // we have to maintain the z position, for the dots to be in the same plane as the player
+            time = timeStamp; // we update the time for each dot
+
+            dotPos.x = objectPos.x + adjustedForce.x * time; // Formula to calculate the position of the dots along the trajectory
+            dotPos.y = objectPos.y + adjustedForce.y * time + (0.5f * Physics.gravity.y * time * time);
+            dotPos.z = objectPos.z + adjustedForce.z * time; // we have to maintain the z position, for the dots to be in the same plane as the player
 
             dotsList[i].position = dotPos;
             timeStamp += dotSpacing; // increase the time stamp to move the dots further along the trajectory
