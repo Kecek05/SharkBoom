@@ -11,8 +11,11 @@ public class CameraMovement : MonoBehaviour
     [SerializeField] private InputReader inputReader;
 
     [BetterHeader("Settings")]
-    [SerializeField] private float dragSpeed = 1f;
-    private bool dragPanMoveActive = false;
+
+    [Tooltip("Velocity of camera movement on drag")] [Range(0, 50)]
+    [SerializeField] private float dragMoveSpeed = 1f;
+
+    private bool dragMoveActive = false; // hold if the drag move is active
     private Vector2 lastTouchPosition;
 
 
@@ -32,24 +35,24 @@ public class CameraMovement : MonoBehaviour
     {
         if (context.started) // When we press the screen
         {
-            dragPanMoveActive = true;
+            dragMoveActive = true;
             MoveStarted();
             
         }
         else if (context.canceled) // When we release the screen
         {
-            dragPanMoveActive = false;
+            dragMoveActive = false;
             MoveFinish();
         }
     }
 
     private void InputReader_OnPrimaryFingerPositionEvent(InputAction.CallbackContext context)
     {
-        if (dragPanMoveActive && this.enabled == true)
+        if (dragMoveActive && this.enabled == true) // this.enabled is to check if the camera state is on move
         {
             Vector2 currentTouchPosition = context.ReadValue<Vector2>(); // Get the current position of the finger while the finger is on the screen
 
-            if (lastTouchPosition != Vector2.zero)
+            if (lastTouchPosition != Vector2.zero) // if the touch is moving
             {
                 Vector2 movementDelta = currentTouchPosition - lastTouchPosition;
                 MoveCamera(movementDelta); // move the camera with the diffence between the last touch position and the current touch position
@@ -71,7 +74,7 @@ public class CameraMovement : MonoBehaviour
 
     private void MoveCamera(Vector2 movementDelta)
     {
-        Vector3 moveDir = new Vector3(-movementDelta.x, -movementDelta.y, 0) * dragSpeed * Time.deltaTime; 
+        Vector3 moveDir = new Vector3(-movementDelta.x, -movementDelta.y, 0) * dragMoveSpeed * Time.deltaTime; // we put a negative value to invert the movement, making the sensation of dragging the camera
         CameraManager.Instance.CameraObjectToFollow.position += moveDir;
     }
 }

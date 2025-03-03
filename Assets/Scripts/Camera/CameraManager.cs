@@ -21,7 +21,7 @@ public class CameraManager : MonoBehaviour
 
     private CameraState cameraState;
 
-    private void Awake()
+    private void Awake() // Singleton
     {
         if (Instance == null)
         {
@@ -35,7 +35,7 @@ public class CameraManager : MonoBehaviour
 
     public void CameraManagerState()
     {
-        cameraMovement.enabled = false;
+        cameraMovement.enabled = false; // We reset all camera Behaviours to false and enable them based on the state
         cameraZoom.enabled = false;
 
         switch (cameraState)
@@ -55,7 +55,7 @@ public class CameraManager : MonoBehaviour
         }
     }
 
-    public void SetCameraState(CameraState newState) // Function to update the camera state
+    public void SetCameraState(CameraState newState) // Function to update the camera state, parameter for set new state from other scripts
     {
         cameraState = newState;
         CameraManagerState();
