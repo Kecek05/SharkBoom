@@ -304,16 +304,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e282c4373cfe18245a15bac5e12eb355, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
   trajectory: {fileID: 800024870368675109}
+  inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
+  startDragPos: {fileID: 8518103509723896872}
   maxForceMultiplier: 25
   minForceMultiplier: 1
-  smoothTime: 0.099999994
   offsetForceMultiplier: 2
-  startDragPos: {fileID: 8518103509723896872}
-  dragSpeed: 7
+  zoomDragSpeed: 7
   zoomMultiplier: 7
-  checkInterval: 0.001
 --- !u!114 &800024870368675109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -330,7 +328,6 @@ MonoBehaviour:
   dragAndShoot: {fileID: 5330386554425838414}
   dotsNumber: 15
   dotSpacing: 0.07
-  objectMass: 10
 --- !u!114 &5795781004935212288
 MonoBehaviour:
   m_ObjectHideFlags: 0
