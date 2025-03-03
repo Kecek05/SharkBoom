@@ -18,13 +18,13 @@ public class CameraZoom : MonoBehaviour
     private Vector2 primaryFingerPosition;
     private Vector2 secondaryFingerPosition;
 
-    private Vector3 cameraSystemPosition;
+    private Vector3 cameraObjectFollowPos;
 
     [BetterHeader("Variables")]
 
-    [Tooltip("Think like a scope of a sniper, min = more distant")]
+    [Tooltip("Think like a scope of a sniper, min = more distant of player")]
     [SerializeField] private float minZoom = -15f;
-    [Tooltip("Think like a scope of a sniper, max = more close")]
+    [Tooltip("Think like a scope of a sniper, max = more close of player")]
     [SerializeField] private float maxZoom = 1f;
     [SerializeField] private CinemachineCamera cinemachineCamera;
 
@@ -47,14 +47,12 @@ public class CameraZoom : MonoBehaviour
         {
             ZoomEnded();
             CameraManager.Instance.SetCameraState(CameraManager.CameraState.Default);
-
         }
     }
 
     private void InputReader_OnSecondaryFingerPositionEvent(InputAction.CallbackContext context)
     {
         primaryFingerPosition = context.ReadValue<Vector2>(); // just grab the position of the first finger
-
     }
 
     private void InputReader_OnPrimaryFingerPositionEvent(InputAction.CallbackContext context)
@@ -70,16 +68,6 @@ public class CameraZoom : MonoBehaviour
             zoomCoroutine = StartCoroutine(ZoomDectection());
         }
     }
-
-    private void ZoomEnded()
-    {
-        if (zoomCoroutine != null)
-        {
-            StopCoroutine(zoomCoroutine);
-            zoomCoroutine = null;
-        }
-    }
-
     private IEnumerator ZoomDectection()
     {
         while (true)
@@ -100,23 +88,37 @@ public class CameraZoom : MonoBehaviour
         }
     }
 
+    private void ZoomEnded()
+    {
+        if (zoomCoroutine != null)
+        {
+            StopCoroutine(zoomCoroutine);
+            zoomCoroutine = null;
+        }
+    }
+    
 
+    /// <summary>
+    /// Function for update the zoom of the camera
+    /// </summary>
+    /// <param name="value">Amount to zoom in/out (negative = zoom out, positive = zoom in)</param>
+    /// <param name="zoomSpeed">Speed of the zoom transition</param>
     public void ChangeZoom(float value, float zoomSpeed = 100f)
     {
-        cameraSystemPosition = CameraManager.Instance.CameraObjectToFollow.position;
-        cameraSystemPosition.z += value;
+        cameraObjectFollowPos = CameraManager.Instance.CameraObjectToFollow.position; // get the current position of the camera
+        cameraObjectFollowPos.z += value; // add the values for move the camera
 
-        cameraSystemPosition.z = Mathf.Clamp(cameraSystemPosition.z, minZoom, maxZoom);
-        CameraManager.Instance.CameraObjectToFollow.position = Vector3.MoveTowards(CameraManager.Instance.CameraObjectToFollow.position, cameraSystemPosition, zoomSpeed * Time.deltaTime);
+        cameraObjectFollowPos.z = Mathf.Clamp(cameraObjectFollowPos.z, minZoom, maxZoom);
+        CameraManager.Instance.CameraObjectToFollow.position = Vector3.MoveTowards(CameraManager.Instance.CameraObjectToFollow.position, cameraObjectFollowPos, zoomSpeed * Time.deltaTime); // Move towards is better for movimentation
     }
 
 
     public void ResetZoom(Transform startDragPos, float zoomSpeed = 100f)
     {
-        cameraSystemPosition = CameraManager.Instance.CameraObjectToFollow.position;
-        cameraSystemPosition.z -= startDragPos.position.z;
+        cameraObjectFollowPos = CameraManager.Instance.CameraObjectToFollow.position;
+        cameraObjectFollowPos.z -= startDragPos.position.z;
 
-        CameraManager.Instance.CameraObjectToFollow.position = Vector3.Lerp(CameraManager.Instance.CameraObjectToFollow.position, cameraSystemPosition, Time.deltaTime * zoomSpeed);
+        CameraManager.Instance.CameraObjectToFollow.position = Vector3.Lerp(CameraManager.Instance.CameraObjectToFollow.position, cameraObjectFollowPos, Time.deltaTime * zoomSpeed); // We use lerp because the move is automatic, so we need to control the velocity
     }
 
     private void OnDestroy()

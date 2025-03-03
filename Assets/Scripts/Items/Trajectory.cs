@@ -19,8 +19,7 @@ public class Trajectory : MonoBehaviour
     private Transform[] dotsList;
     private GameObject dotsParent;
     private Vector3 adjustedForce;
-    private float time;
-
+    private float time; // current time of the dots
 
     public void Initialize(Transform dotsParentTransform)
     {
@@ -66,6 +65,4 @@ public class Trajectory : MonoBehaviour
     {
         dotsParent.SetActive(false);
     }
-
-
 }
