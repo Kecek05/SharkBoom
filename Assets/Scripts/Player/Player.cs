@@ -89,6 +89,7 @@ public class Player : NetworkBehaviour
 
         if (selectedItemSO == null) // check if the itemSO is null for not break the code
         {
+            Debug.LogWarning("Item have no Mass!");
             return 0f;
         }
 

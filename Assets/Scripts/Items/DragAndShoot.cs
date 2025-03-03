@@ -164,6 +164,7 @@ public class DragAndShoot : MonoBehaviour
         CameraManager.Instance.CameraZoom.ResetZoom(startZoomPos); // Reset the zoom for start position
         trajectory.UpdateDots(transform.position, directionOfDrag * minForceMultiplier);
         ReleaseDrag();
+
     }
 
     public void SetCanDrag(bool value)

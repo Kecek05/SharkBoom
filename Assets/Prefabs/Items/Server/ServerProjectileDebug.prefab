@@ -58,10 +58,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8841218437626745952, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
       propertyPath: m_Mass
-      value: 10
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 3196075323839971445, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8360590805627951754, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
