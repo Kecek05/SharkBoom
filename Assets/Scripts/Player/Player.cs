@@ -82,4 +82,16 @@ public class Player : NetworkBehaviour
         dragAndShoot.OnDragRelease -= DragAndShoot_OnDragRelease;
     }
 
+    public float GetSelectedItemMass() // used for get the mass, // used for get the mass, probably we will refactor for get all the itemSO, but for now 
+    {
+
+        ItemSO selectedItemSO = playerInventory.GetItemSOByIndex(playerInventory.SelectedItemData.itemSOIndex); // get the itemSO from the player inventory and the index
+
+        if (selectedItemSO == null) // check if the itemSO is null for not break the code
+        {
+            return 0f;
+        }
+
+        return selectedItemSO.mass; // get the mass of the itemSO
+    }
 }

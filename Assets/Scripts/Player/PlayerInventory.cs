@@ -163,5 +163,5 @@ public class PlayerInventory : NetworkBehaviour
         return itemsListSO.allItemsSOList[itemIndex];
     }
 
-
+    
 }

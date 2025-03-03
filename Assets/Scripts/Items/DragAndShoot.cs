@@ -14,6 +14,7 @@ public class DragAndShoot : MonoBehaviour
 
     [SerializeField] private Trajectory trajectory;
     [SerializeField] private InputReader inputReader;
+    [SerializeField] private Player player;
     [Tooltip("Center position of the drag")]
     [SerializeField] private Transform startDragPos;
 
@@ -120,7 +121,7 @@ public class DragAndShoot : MonoBehaviour
             dragForce = dragDistance * offsetForceMultiplier; //Calculate the force linearly
             dragForce = Mathf.Clamp(dragForce, minForceMultiplier, maxForceMultiplier);
 
-            trajectory.UpdateDots(transform.position, directionOfDrag * dragForce); // update the dots position 
+            trajectory.UpdateDots(transform.position, directionOfDrag * dragForce, player.GetSelectedItemMass()); // update the dots position 
 
             if (Time.time - lastCheckTime >= checkMovementInterval)
             {
