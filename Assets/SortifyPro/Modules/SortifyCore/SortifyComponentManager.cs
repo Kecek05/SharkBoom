@@ -101,8 +101,11 @@ namespace Sortify
             }
         }
 
-        private static void LoadComponentListIfNeeded()
+        public static void LoadComponentListIfNeeded(bool forceLoad = false)
         {
+            if (forceLoad)
+                _dataLoaded = false;
+
             if (!_dataLoaded)
             {
                 LoadComponentListFromFile();
@@ -112,6 +115,8 @@ namespace Sortify
 
         private static void LoadUserComponentsIfNeeded()
         {
+            
+
             if (_cachedUserComponents.Count == 0)
             {
                 foreach (var typeName in _cachedComponentList.customComponents)

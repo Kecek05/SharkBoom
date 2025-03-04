@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
-using UnityEditor.Build;
 using UnityEngine;
 
 namespace Sortify
@@ -14,6 +13,7 @@ namespace Sortify
         private const string VERSION = "Pro";
         private const string CONSENT_KEY = "Sortify_ConsentGiven";
         private const string DONT_SHOW_KEY = "Sortify_DontShowOnStart";
+        private const string SAVE_IN_PROJECT_KEY = "Sortify_SaveInProject";
 
         private SortifyChangeLog _changeLog;
         private string[] _tabs = { "Welcome", "Features", "Modules", "Settings", "Support" };
@@ -60,7 +60,7 @@ namespace Sortify
 
         private void InitializeModuleStatus()
         {
-            string defines = PlayerSettings.GetScriptingDefineSymbols(NamedBuildTarget.FromBuildTargetGroup(EditorUserBuildSettings.selectedBuildTargetGroup));
+            string defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
             _isSortifyEnabled = defines.Contains("SORTIFY");
             _isSortifyAttributesEnabled = defines.Contains("SORTIFY_ATTRIBUTES");
             _isSortifyCollectionsEnabled = defines.Contains("SORTIFY_COLLECTIONS");
@@ -196,7 +196,7 @@ namespace Sortify
 
             foreach (var buildTargetGroup in targetGroups)
             {
-                string defines = PlayerSettings.GetScriptingDefineSymbols(NamedBuildTarget.FromBuildTargetGroup(buildTargetGroup));
+                string defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup);
                 HashSet<string> defineSymbols = new HashSet<string>(defines.Split(';'));
 
                 if (_isSortifyEnabled)
@@ -236,7 +236,7 @@ namespace Sortify
                 }
 
                 string updatedDefines = string.Join(";", defineSymbols.Where(s => !string.IsNullOrEmpty(s)).ToArray());
-                PlayerSettings.SetScriptingDefineSymbols(NamedBuildTarget.FromBuildTargetGroup(buildTargetGroup), updatedDefines);
+                PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, updatedDefines);
             }
         }
 
@@ -585,6 +585,22 @@ namespace Sortify
 
             if (showDefaultComponents != SortifyUserDataManager.GetUserSetting("ShowDefaultComponents", true))
                 SortifyUserDataManager.SaveUserSetting("ShowDefaultComponents", showDefaultComponents);
+
+            GUILayout.Space(5);
+            bool saveInProject = EditorPrefs.GetBool(SAVE_IN_PROJECT_KEY, false);
+            DrawToggle("Save in Project", ref saveInProject,
+                "If enabled, Sortify save data will be stored in the project folder. If disabled, data is stored locally.");
+
+            if (saveInProject != EditorPrefs.GetBool(SAVE_IN_PROJECT_KEY, false))
+            {
+                EditorPrefs.SetBool(SAVE_IN_PROJECT_KEY, saveInProject);
+                SortifyFileManager.MigrateData(saveInProject);
+                SortifyComponentManager.LoadComponentListIfNeeded(true);
+                SortifyFavoritesManager.LoadFavoritesIfNeeded(true);
+                SortifyObjectManager.LoadDataIfNeeded(true);
+                SortifyUserDataManager.LoadUserDataIfNeeded(true);
+                SortifyInitializer.Refresh();
+            }
 
             EditorGUILayout.EndScrollView();
             EditorGUILayout.EndVertical();

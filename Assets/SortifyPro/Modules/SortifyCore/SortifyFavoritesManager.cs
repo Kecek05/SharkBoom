@@ -76,8 +76,11 @@ namespace Sortify
             SaveFavoritesToFile();
         }
 
-        private static void LoadFavoritesIfNeeded()
+        public static void LoadFavoritesIfNeeded(bool forceLoad = false)
         {
+            if (forceLoad)
+                _dataLoaded = false;
+
             if (!_dataLoaded)
             {
                 LoadFavoritesFromFile();

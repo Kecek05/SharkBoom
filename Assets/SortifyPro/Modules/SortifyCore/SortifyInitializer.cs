@@ -18,11 +18,8 @@ namespace Sortify
             EditorApplication.update += ResetLabelDrawn;
         }
 
-        private static void ResetLabelDrawn()
-        {
-            _labelDrawn = false;
-        }
-
+        public static void Refresh() => EditorApplication.RepaintHierarchyWindow();
+        private static void ResetLabelDrawn() => _labelDrawn = false;
         private static void OnHierarchyGUI(int instanceID, Rect selectionRect)
         {
             if (EditorApplication.isPlaying)

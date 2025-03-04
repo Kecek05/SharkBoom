@@ -19,6 +19,7 @@ namespace Sortify
             public string ErrorMessage;
             public Type KeyType;
             public Type ValueType;
+            public int LastKnownArraySize = -1;
         }
 
         private Dictionary<string, PropertyData> _propertyData = new Dictionary<string, PropertyData>();
@@ -27,6 +28,17 @@ namespace Sortify
         {
             var data = GetPropertyData(property);
             InitializeTypes(property, data);
+            EnsureReorderableList(property, data);
+
+            if (data.EntriesProperty != null)
+            {
+                int currentSize = data.EntriesProperty.arraySize;
+                if (currentSize != data.LastKnownArraySize)
+                {
+                    property.serializedObject.Update();
+                    data.LastKnownArraySize = currentSize;
+                }
+            }
 
             EditorGUI.BeginProperty(position, label, property);
 
@@ -38,11 +50,10 @@ namespace Sortify
             if (property.isExpanded)
             {
                 EditorGUI.indentLevel++;
-                EnsureReorderableList(property, data);
-
                 if (data.ReorderableList == null)
                 {
                     EditorGUI.EndProperty();
+                    property.serializedObject.ApplyModifiedProperties();
                     return;
                 }
 
@@ -56,20 +67,30 @@ namespace Sortify
             }
 
             EditorGUI.EndProperty();
+            property.serializedObject.ApplyModifiedProperties();
         }
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
+            var data = GetPropertyData(property);
+            InitializeTypes(property, data);
+            EnsureReorderableList(property, data);
+
+            if (data.EntriesProperty != null)
+            {
+                int currentSize = data.EntriesProperty.arraySize;
+                if (currentSize != data.LastKnownArraySize)
+                {
+                    property.serializedObject.Update();
+                    data.LastKnownArraySize = currentSize;
+                }
+            }
+
             if (!property.isExpanded)
                 return EditorGUIUtility.singleLineHeight;
 
-            var data = GetPropertyData(property);
-            EnsureReorderableList(property, data);
-
             if (data.ReorderableList == null)
-            {
                 return EditorGUIUtility.singleLineHeight;
-            }
 
             float headerHeight = CalculateHeaderHeight(data);
             data.ReorderableList.headerHeight = headerHeight;
@@ -195,7 +216,7 @@ namespace Sortify
                     GUI.Box(boxRect, GUIContent.none, EditorStyles.helpBox);
 
                     Rect keyLabelRect = new Rect(rect.x, rect.y + yOffset, 150, lineHeight);
-                    Rect keyFieldRect = new Rect(rect.x + rect.width / 4f, rect.y + yOffset, rect.width - (rect.width / 4f + 5) , lineHeight);
+                    Rect keyFieldRect = new Rect(rect.x + rect.width / 4f, rect.y + yOffset, rect.width - (rect.width / 4f + 5), lineHeight);
                     EditorGUI.LabelField(keyLabelRect, "Key:");
                     data.NewKey = DrawFieldForType(keyFieldRect, data.KeyType, data.NewKey, "");
 

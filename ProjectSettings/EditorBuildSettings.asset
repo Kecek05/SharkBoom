@@ -6,9 +6,24 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/PlayerScene3.unity
+    guid: 82ab4848476cf51458683385366153cd
+  - enabled: 1
+    path: Assets/Scenes/PlayerScene.unity
+    guid: 7816ee80e7aa7094e8660b304f62db47
+  - enabled: 1
+    path: Assets/Scenes/TestDragAndShoot.unity
+    guid: 6f7fa7254b9e98442b8167b9dd69d58c
+  - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/PlayerScene2.unity
+    guid: 69467b90e4d1f3e4fb77f6edb6b54de5
   m_configObjects:
+    com.unity.adaptiveperformance.google.android.provider_settings: {fileID: 11400000, guid: ec7432e224261ca418cf3059d0a599b1, type: 2}
+    com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: 31c58dcd31d6b9f43877e3853c6d9696, type: 2}
+    com.unity.adaptiveperformance.samsung.android.provider_settings: {fileID: 11400000, guid: 449e6e1f79e6bda49b6ea9ef126a1d82, type: 2}
     com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000, guid: c281f872ea9568f42b7869d6721ec856, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
