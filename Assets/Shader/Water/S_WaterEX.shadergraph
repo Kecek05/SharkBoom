@@ -17,6 +17,9 @@
         },
         {
             "m_Id": "70d762b80e994b18a6dd0826cae5fcab"
+        },
+        {
+            "m_Id": "2ce4d647b36847efbaf9fa5211c53385"
         }
     ],
     "m_Keywords": [],
@@ -89,6 +92,9 @@
         },
         {
             "m_Id": "5216938058cc49049d2b6002a55d6dd2"
+        },
+        {
+            "m_Id": "9677e82d04564cc083d42b44e2c5d415"
         }
     ],
     "m_GroupDatas": [],
@@ -225,6 +231,20 @@
                     "m_Id": "29d8e91ae5d04f8f81674edbad1f497a"
                 },
                 "m_SlotId": 0
+            }
+        },
+        {
+            "m_OutputSlot": {
+                "m_Node": {
+                    "m_Id": "9677e82d04564cc083d42b44e2c5d415"
+                },
+                "m_SlotId": 0
+            },
+            "m_InputSlot": {
+                "m_Node": {
+                    "m_Id": "be140669a18046888329f59da884256c"
+                },
+                "m_SlotId": 1
             }
         },
         {
@@ -473,6 +493,9 @@
         },
         {
             "m_Id": "70d762b80e994b18a6dd0826cae5fcab"
+        },
+        {
+            "m_Id": "2ce4d647b36847efbaf9fa5211c53385"
         }
     ]
 }
@@ -831,6 +854,34 @@
     "m_PreviewMode": 0,
     "m_CustomColors": {
         "m_SerializableColors": []
+    }
+}
+
+{
+    "m_SGVersion": 1,
+    "m_Type": "UnityEditor.ShaderGraph.Internal.Vector1ShaderProperty",
+    "m_ObjectId": "2ce4d647b36847efbaf9fa5211c53385",
+    "m_Guid": {
+        "m_GuidSerialized": "761ea56d-0bef-4b62-959d-9c86e5017cd9"
+    },
+    "m_Name": "Wiggle",
+    "m_DefaultRefNameVersion": 1,
+    "m_RefNameGeneratedByDisplayName": "Wiggle",
+    "m_DefaultReferenceName": "_Wiggle",
+    "m_OverrideReferenceName": "",
+    "m_GeneratePropertyBlock": true,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
+    "m_DismissedVersion": 0,
+    "m_Precision": 0,
+    "overrideHLSLDeclaration": false,
+    "hlslDeclarationOverride": 0,
+    "m_Hidden": false,
+    "m_Value": 4.0,
+    "m_FloatType": 0,
+    "m_RangeValues": {
+        "x": 0.0,
+        "y": 1.0
     }
 }
 
@@ -1587,6 +1638,42 @@
     },
     "m_Labels": [],
     "m_Space": 0
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.PropertyNode",
+    "m_ObjectId": "9677e82d04564cc083d42b44e2c5d415",
+    "m_Group": {
+        "m_Id": ""
+    },
+    "m_Name": "Property",
+    "m_DrawState": {
+        "m_Expanded": true,
+        "m_Position": {
+            "serializedVersion": "2",
+            "x": -2345.600341796875,
+            "y": 48.80000686645508,
+            "width": 111.199951171875,
+            "height": 33.59999465942383
+        }
+    },
+    "m_Slots": [
+        {
+            "m_Id": "f830ccea10d14e12bfeaa0c75d57edb1"
+        }
+    ],
+    "synonyms": [],
+    "m_Precision": 0,
+    "m_PreviewExpanded": true,
+    "m_DismissedVersion": 0,
+    "m_PreviewMode": 0,
+    "m_CustomColors": {
+        "m_SerializableColors": []
+    },
+    "m_Property": {
+        "m_Id": "2ce4d647b36847efbaf9fa5211c53385"
+    }
 }
 
 {
@@ -2620,6 +2707,21 @@
     "m_SlotType": 1,
     "m_Hidden": false,
     "m_ShaderOutputName": "Cosine Time",
+    "m_StageCapability": 3,
+    "m_Value": 0.0,
+    "m_DefaultValue": 0.0,
+    "m_Labels": []
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
+    "m_ObjectId": "f830ccea10d14e12bfeaa0c75d57edb1",
+    "m_Id": 0,
+    "m_DisplayName": "Wiggle",
+    "m_SlotType": 1,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "Out",
     "m_StageCapability": 3,
     "m_Value": 0.0,
     "m_DefaultValue": 0.0,
