@@ -17,7 +17,20 @@ public class MainMenuController : MonoBehaviour
         hostButton.onClick.AddListener(async () =>
         {
             hostButton.interactable = false;
-            HostSingleton.Instance.Star
+            await HostSingleton.Instance.GameManager.StartHostAsync();
+            hostButton.interactable = true;
+        });
+
+        exitButton.onClick.AddListener(() =>
+        {
+            Application.Quit();
+        });
+
+        clientButton.onClick.AddListener(async() =>
+        {
+            clientButton.interactable = false;
+            await ClientSingleton.Instance.GameManager.StartClientAsync(lobbyCodeInputField.text);
+            clientButton.interactable = true;
         });
     }
 }
