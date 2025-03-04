@@ -45,12 +45,14 @@ public class PlayerInventoryUI : NetworkBehaviour
 
     private void PlayerInventory_OnItemChanged(ItemDataStruct itemData)
     {
-        foreach(PlayerItemSingleUI playerItemSingleUI in playerItemSingleUIs)
+        //Update item on list
+        foreach (PlayerItemSingleUI playerItemSingleUI in playerItemSingleUIs)
         {
-            if (playerItemSingleUI.ItemIndex == itemData.itemSOIndex)
+            if (playerItemSingleUI.ItemIndex == itemData.itemInventoryIndex)
             {
                 playerItemSingleUI.UpdateCooldown(itemData.itemCooldownRemaining.ToString());
                 playerItemSingleUI.UpdateCanBeUsed(itemData.itemCanBeUsed);
+                Debug.Log($"Item Updated UI: {playerItemSingleUI.ItemIndex}");
                 return;
             }
         }
@@ -58,8 +60,9 @@ public class PlayerInventoryUI : NetworkBehaviour
 
     private void PlayerInventory_OnItemAdded(ItemDataStruct itemData)
     {
+        //Add item on list
         PlayerItemSingleUI playerItemSingleUI = Instantiate(playerItemSingleUIPrefab, inventoryItemHolder).GetComponent<PlayerItemSingleUI>();
-        playerItemSingleUI.Setup(itemsListSO.allItemsSOList[itemData.itemSOIndex].itemName, itemsListSO.allItemsSOList[itemData.itemSOIndex].itemIcon, itemData.itemCooldownRemaining.ToString(), itemData.ownerDebug, itemData.itemCanBeUsed, itemData.itemSOIndex);
+        playerItemSingleUI.Setup(itemsListSO.allItemsSOList[itemData.itemSOIndex].itemName, itemsListSO.allItemsSOList[itemData.itemSOIndex].itemIcon, itemData.itemCooldownRemaining.ToString(), itemData.ownerDebug, itemData.itemCanBeUsed, itemData.itemInventoryIndex);
         playerItemSingleUI.OnItemSingleSelected += (int index) => OnItemSelected?.Invoke(index);
         playerItemSingleUIs.Add(playerItemSingleUI);
         Debug.Log("Item Added UI");

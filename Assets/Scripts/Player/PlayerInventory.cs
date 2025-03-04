@@ -79,7 +79,7 @@ public class PlayerInventory : NetworkBehaviour
         playerInventory.Add(new ItemDataStruct
         {
             ownerDebug = $"Player {gameObject.name}",
-            itemInventoryIndex = playerInventory.Count - 1,
+            itemInventoryIndex = playerInventory.Count - 1, //get the index
             itemSOIndex = itemSOIndex,
             itemCooldownRemaining = 0,
             itemCanBeUsed = true,
@@ -90,18 +90,18 @@ public class PlayerInventory : NetworkBehaviour
 
 
     [Command("playerInventory-selectItemDataByIndex")]
-    public void SelectItemDataByIndex(int itemIndex) // Select a item to use, UI will call this
+    public void SelectItemDataByIndex(int itemInventoryIndex) // Select a item to use, UI will call this
     {
 
-        if (!ItemCanBeUsed(itemIndex))
+        if (!ItemCanBeUsed(itemInventoryIndex))
         {
             Debug.LogWarning("Item can't be used!");
             return;
         }
 
-        selectedItemIndex = itemIndex;
-        selectedItemData = playerInventory[itemIndex];
-        Debug.Log($"Player: {gameObject.name} Selected Item: {GetItemSOByIndex(playerInventory[itemIndex].itemSOIndex).itemName}");
+        selectedItemIndex = itemInventoryIndex;
+        selectedItemData = playerInventory[itemInventoryIndex];
+        Debug.Log($"Player: {gameObject.name} Selected Item: {GetItemSOByIndex(playerInventory[itemInventoryIndex].itemSOIndex).itemName}");
 
     }
 
@@ -126,10 +126,10 @@ public class PlayerInventory : NetworkBehaviour
     }
 
     [Command("playerInventory-itemCanBeUsed")]
-    public bool ItemCanBeUsed(int itemIndex) // Returns if the item can be used
+    public bool ItemCanBeUsed(int itemInventoryIndex) // Returns if the item can be used
     {
 
-        return playerInventory[itemIndex].itemCanBeUsed;
+        return playerInventory[itemInventoryIndex].itemCanBeUsed;
             
     }
 
