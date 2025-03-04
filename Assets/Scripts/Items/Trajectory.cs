@@ -19,6 +19,7 @@ public class Trajectory : MonoBehaviour
     private Transform[] dotsList;
     private GameObject dotsParent;
     private Vector3 adjustedForce;
+    private Vector3 adjustedForceDamping;
     private float time; // current time of the dots
 
     public void Initialize(Transform dotsParentTransform)
@@ -42,8 +43,10 @@ public class Trajectory : MonoBehaviour
     {
         timeStamp = dotSpacing;
         adjustedForce = forceApplied / itemSO.mass; // Adjust the force to the weight of the object
+        adjustedForceDamping = forceApplied / itemSO.linearDamping; // Adjust the force to the linear damping of the object
 
-        if(itemSO.linearDamping > 0)
+
+        if (itemSO.linearDamping > 0)
         {
             for (int i = 0; i < dotsNumber; i++)
             {
@@ -51,12 +54,13 @@ public class Trajectory : MonoBehaviour
 
                 float expDecay = Mathf.Exp(-itemSO.linearDamping * time);
 
-                dotPos.x = objectPos.x + adjustedForce.x * time * expDecay; // Formula to calculate the position of the dots along the trajectory
+                dotPos.x = objectPos.x + adjustedForce.x * time; // Formula to calculate the position of the dots along the trajectory
                 dotPos.y = objectPos.y + adjustedForce.y * time * expDecay + (0.5f * Physics.gravity.y * time * time);
-                dotPos.z = objectPos.z + adjustedForce.z * time * expDecay; // we have to maintain the z position, for the dots to be in the same plane as the player
+                dotPos.z = objectPos.z + adjustedForce.z * time; // we have to maintain the z position, for the dots to be in the same plane as the player
 
                 dotsList[i].position = dotPos;
                 timeStamp += dotSpacing; // increase the time stamp to move the dots further along the trajectory
+                Debug.Log("Adjusted Force " + adjustedForce + "dot.pos.y " + dotPos.y + "ExpDecay " + expDecay + "Time.Stamp " + timeStamp);
             }
         }
         else
@@ -71,6 +75,7 @@ public class Trajectory : MonoBehaviour
 
                 dotsList[i].position = dotPos;
                 timeStamp += dotSpacing; // increase the time stamp to move the dots further along the trajectory
+                Debug.Log("errado");
             }
         }  
     }
