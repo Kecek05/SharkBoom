@@ -1,5 +1,6 @@
 using Sortify;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Trajectory : MonoBehaviour
@@ -22,6 +23,10 @@ public class Trajectory : MonoBehaviour
     private Vector3 adjustedForceDamping;
     private float time; // current time of the dots
 
+    private List<Vector3> trajectoryPoints = new List<Vector3>();
+    private bool isSimulating;
+    
+
     public void Initialize(Transform dotsParentTransform)
     {
         dotsParent = dotsParentTransform.gameObject;
@@ -39,46 +44,49 @@ public class Trajectory : MonoBehaviour
         }
     }
 
-    public void UpdateDots(Vector3 objectPos, Vector3 forceApplied, ItemSO itemSO) // add the object mass to calculate the trajectory, we put 10 as default because in item prefabs we change for 10
+    public void UpdateDots(Vector3 objectPos, Vector3 forceApplied, ItemSO itemSO) 
     {
-        timeStamp = dotSpacing;
-        adjustedForce = forceApplied / itemSO.mass; // Adjust the force to the weight of the object
-        adjustedForceDamping = forceApplied / itemSO.linearDamping; // Adjust the force to the linear damping of the object
+        trajectoryPoints.Add(objectPos);
+        SimulateTrajectory(objectPos, forceApplied, itemSO);
 
-
-        if (itemSO.linearDamping > 0)
+        for (int i = 0; i < dotsNumber && i < trajectoryPoints.Count; i++)
         {
-            for (int i = 0; i < dotsNumber; i++)
-            {
-                time = timeStamp; // we update the time for each dot
-
-                float expDecay = Mathf.Exp(-itemSO.linearDamping * time);
-
-                dotPos.x = objectPos.x + adjustedForce.x * time; // Formula to calculate the position of the dots along the trajectory
-                dotPos.y = objectPos.y + adjustedForce.y * time * expDecay + (0.5f * Physics.gravity.y * time * time);
-                dotPos.z = objectPos.z + adjustedForce.z * time; // we have to maintain the z position, for the dots to be in the same plane as the player
-
-                dotsList[i].position = dotPos;
-                timeStamp += dotSpacing; // increase the time stamp to move the dots further along the trajectory
-                Debug.Log("Adjusted Force " + adjustedForce + "dot.pos.y " + dotPos.y + "ExpDecay " + expDecay + "Time.Stamp " + timeStamp);
-            }
+            dotsList[i].position = trajectoryPoints[i];
         }
-        else
-        {
-            for (int i = 0; i < dotsNumber; i++)
-            {
-                time = timeStamp; // we update the time for each dot
-
-                dotPos.x = objectPos.x + adjustedForce.x * time; // Formula to calculate the position of the dots along the trajectory
-                dotPos.y = objectPos.y + adjustedForce.y * time + (0.5f * Physics.gravity.y * time * time);
-                dotPos.z = objectPos.z + adjustedForce.z * time; // we have to maintain the z position, for the dots to be in the same plane as the player
-
-                dotsList[i].position = dotPos;
-                timeStamp += dotSpacing; // increase the time stamp to move the dots further along the trajectory
-                Debug.Log("errado");
-            }
-        }  
     }
+
+    private void SimulateTrajectory(Vector3 objectPos, Vector3 forceApplied, ItemSO itemSO)
+    {
+        if (!isSimulating) return;
+
+        Physics.simulationMode = SimulationMode.Script;
+
+        GameObject ghostObj = new GameObject("Ghost");
+        Rigidbody ghost = ghostObj.AddComponent<Rigidbody>();
+
+        ghost.mass = itemSO.rb.mass;
+        ghost.linearDamping = itemSO.rb.linearDamping;
+        ghost.angularDamping = itemSO.rb.angularDamping;
+        ghost.useGravity = itemSO.rb.useGravity;
+        ghost.position = objectPos;
+        ghost.linearVelocity = forceApplied / ghost.mass;
+        ghost.isKinematic = false;
+
+        trajectoryPoints.Clear();
+        
+
+        for (int i = 0; i < dotsNumber; i++)
+        {
+            float timeStep = Time.fixedDeltaTime;
+            trajectoryPoints.Add(ghost.position);
+            Physics.Simulate(timeStep);
+        }
+
+        Physics.simulationMode = SimulationMode.FixedUpdate;
+        Destroy(ghostObj);
+
+    }
+
 
     public void Show()
     {
@@ -88,5 +96,10 @@ public class Trajectory : MonoBehaviour
     public void Hide()
     {
         dotsParent.SetActive(false);
+    }
+
+    public void SetSimulation(bool _isSimulating)
+    {
+        isSimulating = _isSimulating;
     }
 }

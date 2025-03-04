@@ -17,7 +17,5 @@ MonoBehaviour:
   itemName: Gun
   itemIcon: {fileID: 0}
   damage: 20
-  mass: 1
-  linearDamping: 1.1
-  gravity: 0
+  rb: {fileID: 722649557693459620, guid: 0af05afc402465c4fa7fc89a97b72687, type: 3}
   cooldown: 3
