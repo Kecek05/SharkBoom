@@ -11,7 +11,7 @@ public class GameFlowManager : NetworkBehaviour
     [Command("gameFlowManager-randomizePlayersItems")]
     public void RandomizePlayerItems()
     {
-        int itemsInInventory = Random.Range(1, itemsListSO.allItemsSOList.Count); //Random qtd of items for now
+        int itemsInInventory = Random.Range(2, itemsListSO.allItemsSOList.Count); //Random qtd of items for now
 
         for(int i = 0; i < itemsInInventory; i++)
         {

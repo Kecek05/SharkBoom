@@ -26,7 +26,7 @@ public class PlayerInventoryUI : NetworkBehaviour
     {
         useItemButton.onClick.AddListener(() =>
         {
-            playerInventory.UseItem();
+            playerInventory.UseItemRpc();
             Debug.Log("Use Item Button Clicked");
         });
     }
@@ -52,7 +52,7 @@ public class PlayerInventoryUI : NetworkBehaviour
             {
                 playerItemSingleUI.UpdateCooldown(itemData.itemCooldownRemaining.ToString());
                 playerItemSingleUI.UpdateCanBeUsed(itemData.itemCanBeUsed);
-                Debug.Log($"Item Updated UI: {playerItemSingleUI.ItemIndex}");
+                Debug.Log($"Item Updated UI SingleUIIndex: {playerItemSingleUI.ItemIndex} ItemDataInventoryIndex: {itemData.itemInventoryIndex} ");
                 return;
             }
         }

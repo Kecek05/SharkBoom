@@ -23,22 +23,21 @@ public class PlayerInventory : NetworkBehaviour
     /// </summary>
     private int selectedItemIndex;
 
-
     private void Awake()
     {
         playerInventory = new();
-        playerInventoryUI.OnItemSelected += PlayerInventoryUI_OnItemSelected;
     }
 
     private void PlayerInventoryUI_OnItemSelected(int itemIndex)
     {
-        SelectItemDataByIndex(itemIndex);
+        SelectItemDataByIndexRpc(itemIndex);
     }
 
     public override void OnNetworkSpawn()
     {
         if(IsOwner)
         {
+            playerInventoryUI.OnItemSelected += PlayerInventoryUI_OnItemSelected;
             playerInventory.OnListChanged += PlayerInventory_OnListChanged;
             Debug.Log("Im the owner");
         }
@@ -63,14 +62,18 @@ public class PlayerInventory : NetworkBehaviour
     }
 
     [Command("playerInventory-printPlayerInventory", MonoTargetType.All)]
-    public void PrintPlayerInventory()
+    public void PrintPlayerInventory() //DEBUG
     {
         for (int i = 0; i < playerInventory.Count; i++)
         {
             Debug.Log($"Player: {gameObject.name} Item: {GetItemSOByIndex(playerInventory[i].itemSOIndex).itemName} Cooldown: {GetItemSOByIndex(playerInventory[i].itemSOIndex).cooldown} Can be used: {playerInventory[i].itemCanBeUsed} Item Inventory Index: {playerInventory[i].itemInventoryIndex}");
         }
     }
-
+    [Command("playerInventory-printPlayerSelectedItem", MonoTargetType.All)]
+    public void PrintPlayerSelectedItem() //DEBUG
+    {
+        Debug.Log($"Player: {gameObject.name} Selected Item: {GetItemSOByIndex(selectedItemData.itemSOIndex).itemName}");
+    }
 
 
     public void SetPlayerItems(int itemSOIndex) //Set the items that player have
@@ -79,7 +82,7 @@ public class PlayerInventory : NetworkBehaviour
         playerInventory.Add(new ItemDataStruct
         {
             ownerDebug = $"Player {gameObject.name}",
-            itemInventoryIndex = playerInventory.Count - 1, //get the index
+            itemInventoryIndex = playerInventory.Count, //get the index
             itemSOIndex = itemSOIndex,
             itemCooldownRemaining = 0,
             itemCanBeUsed = true,
@@ -90,7 +93,8 @@ public class PlayerInventory : NetworkBehaviour
 
 
     [Command("playerInventory-selectItemDataByIndex")]
-    public void SelectItemDataByIndex(int itemInventoryIndex) // Select a item to use, UI will call this
+    [Rpc(SendTo.Server)]
+    public void SelectItemDataByIndexRpc(int itemInventoryIndex) // Select a item to use, UI will call this
     {
 
         if (!ItemCanBeUsed(itemInventoryIndex))
@@ -106,7 +110,8 @@ public class PlayerInventory : NetworkBehaviour
     }
 
     [Command("playerInventory-useItem")]
-    public void UseItem() // Use the item, Server will call this when both players ready
+    [Rpc(SendTo.Server)]
+    public void UseItemRpc() // Use the item, Server will call this when both players ready
     {
         if (ItemCanBeUsed(selectedItemIndex))
         {
@@ -115,6 +120,7 @@ public class PlayerInventory : NetworkBehaviour
 
             playerInventory[selectedItemIndex] = new ItemDataStruct
             {
+                itemInventoryIndex = selectedItemData.itemInventoryIndex, //do not lose the index
                 itemSOIndex = selectedItemData.itemSOIndex,
                 itemCooldownRemaining = GetItemSOByIndex(selectedItemData.itemSOIndex).cooldown,
                 itemCanBeUsed = false,
