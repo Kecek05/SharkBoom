@@ -1,8 +1,6 @@
 using Sortify;
-using System;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class Player : NetworkBehaviour
 {
@@ -82,17 +80,17 @@ public class Player : NetworkBehaviour
         dragAndShoot.OnDragRelease -= DragAndShoot_OnDragRelease;
     }
 
-    public float GetSelectedItemMass() // used for get the mass, // used for get the mass, probably we will refactor for get all the itemSO, but for now 
+    public ItemSO GetSelectedItemSO() // used for get the mass, // used for get the mass, probably we will refactor for get all the itemSO, but for now 
     {
 
         ItemSO selectedItemSO = playerInventory.GetItemSOByIndex(playerInventory.SelectedItemData.itemSOIndex); // get the itemSO from the player inventory and the index
 
         if (selectedItemSO == null) // check if the itemSO is null for not break the code
         {
-            Debug.LogWarning("Item have no Mass!");
-            return 0f;
+            Debug.LogWarning("Didnt found the ItemSO!");
+            return null;
         }
 
-        return selectedItemSO.mass; // get the mass of the itemSO
+        return selectedItemSO; // get the mass of the itemSO
     }
 }

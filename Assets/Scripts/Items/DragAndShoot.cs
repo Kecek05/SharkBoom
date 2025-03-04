@@ -121,7 +121,7 @@ public class DragAndShoot : MonoBehaviour
             dragForce = dragDistance * offsetForceMultiplier; //Calculate the force linearly
             dragForce = Mathf.Clamp(dragForce, minForceMultiplier, maxForceMultiplier);
 
-            trajectory.UpdateDots(transform.position, directionOfDrag * dragForce, player.GetSelectedItemMass()); // update the dots position 
+            trajectory.UpdateDots(transform.position, directionOfDrag * dragForce, player.GetSelectedItemSO()); // update the dots position 
 
             if (Time.time - lastCheckTime >= checkMovementInterval)
             {
@@ -162,7 +162,7 @@ public class DragAndShoot : MonoBehaviour
     {
         // Reset the dots position
         //CameraManager.Instance.CameraZoom.ResetZoom(startZoomPos); // Reset the zoom for start position
-        trajectory.UpdateDots(transform.position, directionOfDrag * minForceMultiplier);
+        trajectory.UpdateDots(transform.position, directionOfDrag * minForceMultiplier, player.GetSelectedItemSO());
         ReleaseDrag();
 
     }

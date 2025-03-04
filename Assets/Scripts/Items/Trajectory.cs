@@ -38,10 +38,10 @@ public class Trajectory : MonoBehaviour
         }
     }
 
-    public void UpdateDots(Vector3 objectPos, Vector3 forceApplied, float objectMass = 1f) // add the object mass to calculate the trajectory, we put 10 as default because in item prefabs we change for 10
+    public void UpdateDots(Vector3 objectPos, Vector3 forceApplied, ItemSO itemSO) // add the object mass to calculate the trajectory, we put 10 as default because in item prefabs we change for 10
     {
         timeStamp = dotSpacing;
-        adjustedForce = forceApplied / objectMass; // Adjust the force to the weight of the object
+        adjustedForce = forceApplied / itemSO.mass; // Adjust the force to the weight of the object
 
         for (int i = 0; i < dotsNumber; i++)
         {

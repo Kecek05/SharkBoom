@@ -16,8 +16,10 @@ public class PlayerItemSingleUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI ownerDebugText;
     [SerializeField] private TextMeshProUGUI itemCanBeUsedText;
     [SerializeField] private Button selectItemButton;
+    [SerializeField] private TextMeshProUGUI itemInventoryIndexText;
 
     private int myIndexItemInventory;
+    public int ItemIndex => myIndexItemInventory;
 
     private void Awake()
     {
@@ -38,5 +40,17 @@ public class PlayerItemSingleUI : MonoBehaviour
         itemCanBeUsedText.text = itemCanBeUsed.ToString();
 
         myIndexItemInventory = indexItemInventory;
+
+        itemInventoryIndexText.text = indexItemInventory.ToString();
+    }
+
+    internal void UpdateCooldown(string newCooldown)
+    {
+        itemCooldownText.text = newCooldown;
+    }
+
+    internal void UpdateCanBeUsed(bool itemCanBeUsed)
+    {
+        itemCanBeUsedText.text = itemCanBeUsed.ToString();
     }
 }
