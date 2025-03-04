@@ -1,16 +1,43 @@
+using System.Threading.Tasks;
 using UnityEngine;
 
-public class ClientSingleton : MonoBehaviour
+public class ClientSingleton : MonoBehaviour //Responsable for the client logic
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private static ClientSingleton instance;
+
+    public static ClientSingleton Instance
     {
-        
+        get
+        {
+            if (instance != null) return instance;
+
+            instance = FindFirstObjectByType<ClientSingleton>();
+
+            if (instance == null)
+            {
+                Debug.LogError("No ClientSingleton found in the scene.");
+                return null;
+            }
+
+            return instance;
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+
+    private ClientGameManager gameManager;
+    public ClientGameManager GameManager => gameManager;
+
+
+    private void Start()
     {
-        
+        DontDestroyOnLoad(gameObject);
     }
+
+    public async Task CreateClient()
+    {
+        gameManager = new ClientGameManager();
+
+        await gameManager.InitAsync();
+    }
+
 }

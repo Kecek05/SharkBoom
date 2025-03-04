@@ -3,12 +3,12 @@ using System.Threading.Tasks;
 using Unity.Netcode;
 using UnityEngine;
 
-public class ApplicationController : MonoBehaviour
+public class ApplicationController : MonoBehaviour //Responsable of launching the game in the correct mode
 {
 
     [BetterHeader("Singletons")]
-    //[SerializeField] private ClientSingleton clientPrefab;
-    //[SerializeField] private HostSingleton hostPrefab;
+    [SerializeField] private ClientSingleton clientPrefab;
+    [SerializeField] private HostSingleton hostPrefab;
     //[SerializeField] private ServerSingleton serverPrefab;
 
     [SerializeField] private NetworkObject playerPrefab;
@@ -28,8 +28,10 @@ public class ApplicationController : MonoBehaviour
         } else
         {
             //Host and Client Code
+            ClientSingleton clientSingleton = Instantiate(clientPrefab);
+            await clientSingleton.CreateClient();
 
-
+            //Go to main menu
         }
     }
 
