@@ -1,8 +1,6 @@
 using Sortify;
-using System;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class Player : NetworkBehaviour
 {

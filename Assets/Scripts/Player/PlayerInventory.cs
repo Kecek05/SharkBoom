@@ -1,13 +1,11 @@
-using NUnit.Framework;
 using QFSW.QC;
 using System;
-using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class PlayerInventory : NetworkBehaviour
 {
+    public event Action<ItemDataStruct> OnItemAdded;
     public event Action<ItemDataStruct> OnItemChanged;
 
     [SerializeField] private ItemsListSO itemsListSO;
@@ -55,7 +53,7 @@ public class PlayerInventory : NetworkBehaviour
             case NetworkListEvent<ItemDataStruct>.EventType.Add:
                 Debug.Log("Item Added");
 
-                OnItemChanged?.Invoke(changeEvent.Value);
+                OnItemAdded?.Invoke(changeEvent.Value);
                 break;
             case NetworkListEvent<ItemDataStruct>.EventType.Value:
                 Debug.Log("Item Value Changed");
@@ -63,13 +61,6 @@ public class PlayerInventory : NetworkBehaviour
                 break;
         }
     }
-
-    //public void RandomItemDebug()
-    //{
-    //    //if (!IsServer) return; //Only Server
-
-    //    SetPlayerItems();
-    //}
 
     [Command("playerInventory-printPlayerInventory", MonoTargetType.All)]
     public void PrintPlayerInventory()
@@ -85,15 +76,6 @@ public class PlayerInventory : NetworkBehaviour
     public void SetPlayerItems(int itemSOIndex) //Set the items that player have
     {
 
-        //playerItemDataInventoryByIndex.Add(i, new ItemData
-        //{
-        //    itemSOIndex = randomItemSOIndex,
-        //    itemCooldownRemaining = 0,
-        //    itemCanBeUsed = true,
-        //});
-
-        //SetPlayerItemsClient(randomItemSOIndex);
-
         playerInventory.Add(new ItemDataStruct
         {
             ownerDebug = $"Player {gameObject.name}",
@@ -102,8 +84,6 @@ public class PlayerInventory : NetworkBehaviour
             itemCooldownRemaining = 0,
             itemCanBeUsed = true,
         });
-
-        //OnItemChanged?.Invoke(playerInventory.);
 
         Debug.Log("Item Setted");
     }
@@ -119,7 +99,7 @@ public class PlayerInventory : NetworkBehaviour
             return;
         }
 
-
+        selectedItemIndex = itemIndex;
         selectedItemData = playerInventory[itemIndex];
         Debug.Log($"Player: {gameObject.name} Selected Item: {GetItemSOByIndex(playerInventory[itemIndex].itemSOIndex).itemName}");
 
@@ -151,11 +131,6 @@ public class PlayerInventory : NetworkBehaviour
 
         return playerInventory[itemIndex].itemCanBeUsed;
             
-    }
-
-    public void UnSelectItem()
-    {
-        //selectedItemData = null;
     }
 
     public ItemSO GetItemSOByIndex(int itemIndex)

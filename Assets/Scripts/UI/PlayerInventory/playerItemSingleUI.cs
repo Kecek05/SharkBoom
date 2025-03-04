@@ -18,6 +18,7 @@ public class PlayerItemSingleUI : MonoBehaviour
     [SerializeField] private Button selectItemButton;
 
     private int myIndexItemInventory;
+    public int ItemIndex => myIndexItemInventory;
 
     private void Awake()
     {
@@ -38,5 +39,15 @@ public class PlayerItemSingleUI : MonoBehaviour
         itemCanBeUsedText.text = itemCanBeUsed.ToString();
 
         myIndexItemInventory = indexItemInventory;
+    }
+
+    internal void UpdateCooldown(string newCooldown)
+    {
+        itemCooldownText.text = newCooldown;
+    }
+
+    internal void UpdateCanBeUsed(bool itemCanBeUsed)
+    {
+        itemCanBeUsedText.text = itemCanBeUsed.ToString();
     }
 }

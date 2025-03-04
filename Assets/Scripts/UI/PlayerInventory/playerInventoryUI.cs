@@ -1,4 +1,4 @@
-using NUnit.Framework;
+using NUnit.Framework.Interfaces;
 using Sortify;
 using System;
 using System.Collections.Generic;
@@ -39,20 +39,29 @@ public class PlayerInventoryUI : NetworkBehaviour
             return;
         }
 
+        playerInventory.OnItemAdded += PlayerInventory_OnItemAdded;
         playerInventory.OnItemChanged += PlayerInventory_OnItemChanged;
     }
 
-
-
     private void PlayerInventory_OnItemChanged(ItemDataStruct itemData)
+    {
+        foreach(PlayerItemSingleUI playerItemSingleUI in playerItemSingleUIs)
+        {
+            if (playerItemSingleUI.ItemIndex == itemData.itemSOIndex)
+            {
+                playerItemSingleUI.UpdateCooldown(itemData.itemCooldownRemaining.ToString());
+                playerItemSingleUI.UpdateCanBeUsed(itemData.itemCanBeUsed);
+                return;
+            }
+        }
+    }
+
+    private void PlayerInventory_OnItemAdded(ItemDataStruct itemData)
     {
         PlayerItemSingleUI playerItemSingleUI = Instantiate(playerItemSingleUIPrefab, inventoryItemHolder).GetComponent<PlayerItemSingleUI>();
         playerItemSingleUI.Setup(itemsListSO.allItemsSOList[itemData.itemSOIndex].itemName, itemsListSO.allItemsSOList[itemData.itemSOIndex].itemIcon, itemData.itemCooldownRemaining.ToString(), itemData.ownerDebug, itemData.itemCanBeUsed, itemData.itemSOIndex);
-
         playerItemSingleUI.OnItemSingleSelected += (int index) => OnItemSelected?.Invoke(index);
-
         playerItemSingleUIs.Add(playerItemSingleUI);
-
         Debug.Log("Item Added UI");
     }
 
@@ -60,11 +69,9 @@ public class PlayerInventoryUI : NetworkBehaviour
     {
         playerInventoryUIBackground.SetActive(false);
     }
-
     public override void OnNetworkDespawn()
     {
         if (!IsOwner) return;
-
         foreach (PlayerItemSingleUI playerItemSingleUI in playerItemSingleUIs)
         {
             playerItemSingleUI.OnItemSingleSelected -= (int index) => OnItemSelected?.Invoke(index);
