@@ -12,6 +12,8 @@ public class ItemSO : ScriptableObject
     [Space(5)]
     public float damage;
     public float mass;
+    public float linearDamping;
+    public bool gravity;
 
     /// <summary>
     /// Numbers of turns that need to wait to use the item again

@@ -43,17 +43,36 @@ public class Trajectory : MonoBehaviour
         timeStamp = dotSpacing;
         adjustedForce = forceApplied / itemSO.mass; // Adjust the force to the weight of the object
 
-        for (int i = 0; i < dotsNumber; i++)
+        if(itemSO.linearDamping > 0)
         {
-            time = timeStamp; // we update the time for each dot
+            for (int i = 0; i < dotsNumber; i++)
+            {
+                time = timeStamp; // we update the time for each dot
 
-            dotPos.x = objectPos.x + adjustedForce.x * time; // Formula to calculate the position of the dots along the trajectory
-            dotPos.y = objectPos.y + adjustedForce.y * time + (0.5f * Physics.gravity.y * time * time);
-            dotPos.z = objectPos.z + adjustedForce.z * time; // we have to maintain the z position, for the dots to be in the same plane as the player
+                float expDecay = Mathf.Exp(-itemSO.linearDamping * time);
 
-            dotsList[i].position = dotPos;
-            timeStamp += dotSpacing; // increase the time stamp to move the dots further along the trajectory
+                dotPos.x = objectPos.x + adjustedForce.x * time * expDecay; // Formula to calculate the position of the dots along the trajectory
+                dotPos.y = objectPos.y + adjustedForce.y * time * expDecay + (0.5f * Physics.gravity.y * time * time);
+                dotPos.z = objectPos.z + adjustedForce.z * time * expDecay; // we have to maintain the z position, for the dots to be in the same plane as the player
+
+                dotsList[i].position = dotPos;
+                timeStamp += dotSpacing; // increase the time stamp to move the dots further along the trajectory
+            }
         }
+        else
+        {
+            for (int i = 0; i < dotsNumber; i++)
+            {
+                time = timeStamp; // we update the time for each dot
+
+                dotPos.x = objectPos.x + adjustedForce.x * time; // Formula to calculate the position of the dots along the trajectory
+                dotPos.y = objectPos.y + adjustedForce.y * time + (0.5f * Physics.gravity.y * time * time);
+                dotPos.z = objectPos.z + adjustedForce.z * time; // we have to maintain the z position, for the dots to be in the same plane as the player
+
+                dotsList[i].position = dotPos;
+                timeStamp += dotSpacing; // increase the time stamp to move the dots further along the trajectory
+            }
+        }  
     }
 
     public void Show()
