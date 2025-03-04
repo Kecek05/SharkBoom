@@ -31,6 +31,9 @@ public class ApplicationController : MonoBehaviour //Responsable of launching th
             ClientSingleton clientSingleton = Instantiate(clientPrefab);
             await clientSingleton.CreateClient();
 
+            HostSingleton hostSingleton = Instantiate(hostPrefab);
+            hostSingleton.CreateHost();
+
             //Go to main menu
         }
     }
