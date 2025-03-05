@@ -1,3 +1,4 @@
+using QFSW.QC;
 using Sortify;
 using System;
 using Unity.Mathematics;
@@ -156,6 +157,46 @@ public class DragAndShoot : MonoBehaviour
         }
     }
 
+    //DEBUG
+
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.E))
+        {
+            DragMouseDebug();
+        }
+    }
+    private void DragMouseDebug()
+    {
+        trajectory.SetSimulation(true);
+
+        plane = new Plane(Vector3.forward, startDragPos.position); // we create the plane to calculate the Z, because a click is a 2D position
+
+        SetIsShowingDots(false);
+        SetIsDragging(true);
+        OnDragStart?.Invoke();
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //CHANGE TO CONTEXT
+
+
+        if (plane.Raycast(ray, out outDistancePlane))
+        {
+            endPosDrag = ray.GetPoint(outDistancePlane); // get the position of the click instantaneously
+            directionOfDrag = (startDragPos.position - endPosDrag).normalized; // calculate the direction of the drag on Vector3
+            dragDistance = Vector3.Distance(startDragPos.position, endPosDrag); // calculate the distance of the drag on float
+
+            dragForce = dragDistance * offsetForceMultiplier; //Calculate the force linearly
+            dragForce = Mathf.Clamp(dragForce, minForceMultiplier, maxForceMultiplier);
+
+            trajectory.UpdateDots(transform.position, directionOfDrag * dragForce, player.GetSelectedItemSO()); // update the dots position 
+
+            if (!isShowingDots)
+            {
+                trajectory.Show(); // call the function for show dots
+                SetIsShowingDots(true);
+            }
+        }
+    }
 
     public void ResetDrag()
     {

@@ -107,7 +107,7 @@ public class PlayerInventoryUI : NetworkBehaviour
         }
 
         player.OnPlayerReady -= Player_OnPlayerReady;
-        GameFlowManager.OnRoundEnd -= GameFlowManager_OnRoundEnd;
+        GameFlowManager.OnRoundPreparing -= GameFlowManager_OnRoundPreparing;
         playerInventory.OnItemAdded -= PlayerInventory_OnItemAdded;
         playerInventory.OnItemChanged -= PlayerInventory_OnItemChanged;
     }
