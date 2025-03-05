@@ -8,14 +8,13 @@ public class PlayerLauncher : NetworkBehaviour
     [SerializeField] private Collider playerCollider;
     [SerializeField] private Transform spawnItemPos;
     [SerializeField] private Player player;
-    [SerializeField] private DragAndShoot dragAndShoot;
 
 
     public override void OnNetworkSpawn()
     {
         if (IsOwner)
         {
-            dragAndShoot.Initialize();
+            player.PlayerDragAndShoot.Initialize();
 
             GameFlowManager.OnRoundStarted += GameFlowManager_OnRoundStarted;
         }
@@ -23,10 +22,10 @@ public class PlayerLauncher : NetworkBehaviour
 
     private void GameFlowManager_OnRoundStarted()
     {
-        //Spawn Object
-        SpawnProjectileServerRpc(dragAndShoot.DragForce, dragAndShoot.DirectionOfDrag); //Spawn real projectile on server need to send the speed and force values through the network
+        //Spawn Object, only owner
+        SpawnProjectileServerRpc(player.PlayerDragAndShoot.DragForce, player.PlayerDragAndShoot.DirectionOfDrag); //Spawn real projectile on server need to send the speed and force values through the network
 
-        SpawnDummyProjectile(dragAndShoot.DragForce, dragAndShoot.DirectionOfDrag); //Spawn fake projectile on client
+        SpawnDummyProjectile(player.PlayerDragAndShoot.DragForce, player.PlayerDragAndShoot.DirectionOfDrag); //Spawn fake projectile on client
     }
 
 

@@ -16,7 +16,6 @@ public class DragAndShoot : MonoBehaviour
     [SerializeField] private Trajectory trajectory;
     [SerializeField] private InputReader inputReader;
     [SerializeField] private Player player;
-    [SerializeField] private PlayerInventory playerInventory;
     [Tooltip("Center position of the drag")]
     [SerializeField] private Transform startDragPos;
 
@@ -128,7 +127,7 @@ public class DragAndShoot : MonoBehaviour
             dragForce = dragDistance * offsetForceMultiplier; //Calculate the force linearly
             dragForce = Mathf.Clamp(dragForce, minForceMultiplier, maxForceMultiplier);
 
-            trajectory.UpdateDots(transform.position, directionOfDrag * dragForce, playerInventory.GetSelectedItemSO()); // update the dots position 
+            trajectory.UpdateDots(transform.position, directionOfDrag * dragForce, player.PlayerInventory.GetSelectedItemSO()); // update the dots position 
 
             if (Time.time - lastCheckTime >= checkMovementInterval)
             {
@@ -170,6 +169,8 @@ public class DragAndShoot : MonoBehaviour
     }
     private void DragMouseDebug()
     {
+        if(player.PlayerInventory.GetSelectedItemSO() == null) return;
+
         trajectory.SetSimulation(true);
 
         plane = new Plane(Vector3.forward, startDragPos.position); // we create the plane to calculate the Z, because a click is a 2D position
@@ -190,7 +191,7 @@ public class DragAndShoot : MonoBehaviour
             dragForce = dragDistance * offsetForceMultiplier; //Calculate the force linearly
             dragForce = Mathf.Clamp(dragForce, minForceMultiplier, maxForceMultiplier);
 
-            trajectory.UpdateDots(transform.position, directionOfDrag * dragForce, playerInventory.GetSelectedItemSO()); // update the dots position 
+            trajectory.UpdateDots(transform.position, directionOfDrag * dragForce, player.PlayerInventory.GetSelectedItemSO()); // update the dots position 
 
             if (!isShowingDots)
             {
@@ -205,7 +206,7 @@ public class DragAndShoot : MonoBehaviour
     {
         // Reset the dots position
         //CameraManager.Instance.CameraZoom.ResetZoom(startZoomPos); // Reset the zoom for start position
-        trajectory.UpdateDots(transform.position, directionOfDrag * minForceMultiplier, playerInventory.GetSelectedItemSO());
+        trajectory.UpdateDots(transform.position, directionOfDrag * minForceMultiplier, player.PlayerInventory.GetSelectedItemSO());
         ReleaseDrag();
 
     }

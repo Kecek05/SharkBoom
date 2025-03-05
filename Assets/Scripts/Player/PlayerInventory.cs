@@ -32,12 +32,9 @@ public class PlayerInventory : NetworkBehaviour
     {
         if(IsOwner)
         {
-            GameFlowManager.OnRoundPreparing += GameFlowManager_OnRoundPreparing;
             playerInventory.OnListChanged += PlayerInventory_OnListChanged;
-            Debug.Log("Im the owner");
-        }
 
-        gameObject.name = "Player " + UnityEngine.Random.Range(0, 100).ToString();
+        }
     }
 
 
@@ -102,7 +99,8 @@ public class PlayerInventory : NetworkBehaviour
             return;
         }
 
-        SetSelectedItem(itemInventoryIndex);
+        selectedItemIndex = itemInventoryIndex;
+        selectedItemData = playerInventory[itemInventoryIndex];
         Debug.Log($"Player: {gameObject.name} Selected Item: {GetItemSOByIndex(playerInventory[itemInventoryIndex].itemSOIndex).itemName}");
 
     }
@@ -130,17 +128,6 @@ public class PlayerInventory : NetworkBehaviour
         }
     }
 
-    private void GameFlowManager_OnRoundPreparing()
-    {
-        //Reset selected item
-        SetSelectedItem(-1);
-    }
-
-    private void SetSelectedItem(int itemInventoryIndex) 
-    {
-        selectedItemIndex = itemInventoryIndex;
-        selectedItemData = playerInventory[itemInventoryIndex];
-    }
 
     [Command("playerInventory-itemCanBeUsed")]
     public bool ItemCanBeUsed(int itemInventoryIndex) // Returns if the item can be used
@@ -160,5 +147,11 @@ public class PlayerInventory : NetworkBehaviour
         return itemsListSO.allItemsSOList[playerInventory[itemInventoyIndex].itemSOIndex];
     }
 
-    
+    public override void OnNetworkDespawn()
+    {
+        if (IsOwner)
+        {
+            playerInventory.OnListChanged -= PlayerInventory_OnListChanged;
+        }
+    }
 }

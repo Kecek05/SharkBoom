@@ -8,7 +8,6 @@ public class Player : NetworkBehaviour
     public event Action OnPlayerReady;
 
     [BetterHeader("References")]
-    [SerializeField] private Transform spawnThrowablePos;
 
     [SerializeField] private PlayerInventory playerInventory;
     public PlayerInventory PlayerInventory => playerInventory;
@@ -16,11 +15,14 @@ public class Player : NetworkBehaviour
     [SerializeField] private PlayerInventoryUI playerInventoryUI;
     public PlayerInventoryUI PlayerInventoryUI => playerInventoryUI;
 
-    [SerializeField] private Collider playerCollider;
-    [SerializeField] private GameObject clientProjectilePrefabDebug;
-    [SerializeField] private GameObject serverProjectileDebug;
+    [SerializeField] private DragAndShoot playerDragAndShoot;
+    public DragAndShoot PlayerDragAndShoot => playerDragAndShoot;
 
 
+    public override void OnNetworkSpawn()
+    {
+        gameObject.name = "Player " + UnityEngine.Random.Range(0, 100).ToString();
+    }
 
     public void SetPlayerReady() //UI Button will call this
     {
