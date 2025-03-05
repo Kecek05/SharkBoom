@@ -21,18 +21,19 @@ public class PlayerHealth : Health
 
         if (isDead) return;
 
-        Debug.Log("Player tomoou dano no " + bodyPart);
-
         switch (bodyPart)
         {
             case BodyPartEnum.Head:
                 ModifyHealth(-(damage * headMultiplier));
+                Debug.Log(this.gameObject.name + " tomou dano na " + bodyPart + " de " + damage * headMultiplier);
                 break;
             case BodyPartEnum.Body:
                 ModifyHealth(-(damage * bodyMultiplier));
+                Debug.Log(this.gameObject.name + " tomou dano na " + bodyPart + " de " + damage * headMultiplier);
                 break;
             case BodyPartEnum.Foot:
                 ModifyHealth(-(damage * footMultiplier));
+                Debug.Log(this.gameObject.name + " tomou dano na " + bodyPart + " de " + damage * headMultiplier);
                 break;
         }
     }
