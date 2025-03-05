@@ -15,8 +15,8 @@ public class DamageOnContact : MonoBehaviour
                 playerDamageControl.CalculateDamage(damage);
                 Debug.Log("Dealt " + damage + " damage to " + collision.gameObject.name);
             }
-            Destroy(gameObject);
         }
+        Destroy(gameObject);
 
     }
 

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class FireworkItemThrowableServer : BaseItemThrowable
 {
-    [SerializeField] private float followingTime = 2f;
+    [SerializeField] private float followingTime = 1.5f;
     private float currentFollowingTime = 0f;
 
     protected override void ItemReleased(float force, Vector3 direction)
