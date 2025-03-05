@@ -37,7 +37,7 @@ public class ClientSingleton : MonoBehaviour //Responsable for the client logic
     {
         gameManager = new ClientGameManager();
 
-        await gameManager.InitAsync();
+        await gameManager.InitAsync(true);
     }
 
     //public async Task<bool> AuthClient()
