@@ -8,6 +8,7 @@ public class PlayerInventory : NetworkBehaviour
     public event Action<ItemDataStruct> OnItemAdded;
     public event Action<ItemDataStruct> OnItemChanged;
 
+
     [SerializeField] private ItemsListSO itemsListSO;
     [SerializeField] private PlayerInventoryUI playerInventoryUI; //TEMP
 
@@ -125,6 +126,7 @@ public class PlayerInventory : NetworkBehaviour
                 itemCooldownRemaining = GetItemSOByIndex(selectedItemData.itemSOIndex).cooldown,
                 itemCanBeUsed = false,
             };
+
         } else
         {
             Debug.LogWarning("Item can't be used!");

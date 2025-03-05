@@ -103,7 +103,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1722693917505950453
 Transform:
   m_ObjectHideFlags: 0
@@ -345,6 +345,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   spawnThrowablePos: {fileID: 8518103509723896872}
   playerInventory: {fileID: 6377254783256832976}
+  playerInventoryUI: {fileID: 5233387307745232000}
   dragAndShoot: {fileID: 5330386554425838414}
   playerCollider: {fileID: 4585798541678627608}
   clientProjectilePrefabDebug: {fileID: 8383273951765277301, guid: ba148075d149fe442b225eeafe799df4, type: 3}
@@ -534,7 +535,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4737109445248722292
 Transform:
   m_ObjectHideFlags: 0
@@ -682,7 +683,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: USE ITEM
+  m_text: READY
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -770,7 +771,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6398479438026471912
 Transform:
   m_ObjectHideFlags: 0
@@ -1077,7 +1078,7 @@ GameObject:
   - component: {fileID: 2665186771864044218}
   - component: {fileID: 3765415218265298788}
   m_Layer: 5
-  m_Name: UseItemButton
+  m_Name: ReadyButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

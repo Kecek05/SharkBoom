@@ -1,13 +1,16 @@
 using Sortify;
+using System;
 using Unity.Netcode;
 using UnityEngine;
 
 public class Player : NetworkBehaviour
 {
+    public event Action OnPlayerReady;
 
     [BetterHeader("References")]
     [SerializeField] private Transform spawnThrowablePos;
     [SerializeField] private PlayerInventory playerInventory;
+    [SerializeField] private PlayerInventoryUI playerInventoryUI;
     [SerializeField] private DragAndShoot dragAndShoot;
     [SerializeField] private Collider playerCollider;
     [SerializeField] private GameObject clientProjectilePrefabDebug;
@@ -19,19 +22,26 @@ public class Player : NetworkBehaviour
         {
             dragAndShoot.Initialize();
 
-            dragAndShoot.OnDragRelease += DragAndShoot_OnDragRelease;
+            GameFlowManager.OnRoundStarted += GameFlowManager_OnRoundStarted;
         }
     }
 
-    private void DragAndShoot_OnDragRelease()
+    public void SetPlayerReady() //UI Button will call this
     {
-        //REFACTOR
 
+        GameFlowManager.Instance.SetPlayerReadyServerRpc();
+
+        OnPlayerReady?.Invoke();
+
+        Debug.Log("Player Setted to Ready");
+    }
+
+    private void GameFlowManager_OnRoundStarted()
+    {
+        //Spawn Object
         SpawnProjectileServerRpc(dragAndShoot.DragForce, dragAndShoot.DirectionOfDrag); //Spawn real projectile on server need to send the speed and force values through the network
 
         SpawnDummyProjectile(dragAndShoot.DragForce, dragAndShoot.DirectionOfDrag); //Spawn fake projectile on client
-
-        dragAndShoot.ResetDragPos();
     }
 
     [Rpc(SendTo.Server)]
@@ -75,12 +85,14 @@ public class Player : NetworkBehaviour
 
     public override void OnNetworkDespawn()
     {
-        if(!IsOwner) return;
+        if (IsOwner)
+        {
 
-        dragAndShoot.OnDragRelease -= DragAndShoot_OnDragRelease;
+            GameFlowManager.OnRoundStarted -= GameFlowManager_OnRoundStarted;
+        }
     }
 
-    public ItemSO GetSelectedItemSO() // used for get the mass, // used for get the mass, probably we will refactor for get all the itemSO, but for now 
+    public ItemSO GetSelectedItemSO()
     {
 
         ItemSO selectedItemSO = playerInventory.GetItemSOByIndex(playerInventory.SelectedItemData.itemSOIndex); // get the itemSO from the player inventory and the index

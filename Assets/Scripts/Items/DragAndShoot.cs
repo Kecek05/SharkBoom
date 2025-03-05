@@ -70,8 +70,12 @@ public class DragAndShoot : MonoBehaviour
         inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
         inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
 
+        player.OnPlayerReady += Player_OnPlayerReady; ;
+        GameFlowManager.OnRoundStarted += GameFlowManager_OnRoundGoing;
+        GameFlowManager.OnRoundEnd += GameFlowManager_OnRoundEnd;
         trajectory.Initialize(startDragPos);
     }
+
 
     private void InputReader_OnTouchPressEvent(InputAction.CallbackContext context)
     {
@@ -153,10 +157,25 @@ public class DragAndShoot : MonoBehaviour
         }
     }
 
+    private void Player_OnPlayerReady()
+    {
+        SetCanDrag(false);
+    }
+
+    private void GameFlowManager_OnRoundGoing()
+    {
+        ResetDragPos();
+    }
+
+    private void GameFlowManager_OnRoundEnd()
+    {
+        SetCanDrag(true);
+    }
+
 
     public void ReleaseDrag()
     {
-        isDragging = false;
+        SetIsDragging(false);
         trajectory.Hide();
     }
 
@@ -172,6 +191,11 @@ public class DragAndShoot : MonoBehaviour
     public void SetCanDrag(bool value)
     {
         canDrag = value;
+    }
+
+    public void SetIsDragging(bool value)
+    {
+        isDragging = value;
     }
 
     private void OnDestroy()

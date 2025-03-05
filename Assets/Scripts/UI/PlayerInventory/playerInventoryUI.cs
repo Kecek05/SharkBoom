@@ -8,10 +8,11 @@ using UnityEngine.UI;
 
 public class PlayerInventoryUI : NetworkBehaviour
 {
-
+    
     public event Action<int> OnItemSelected;
 
     [BetterHeader("References")]
+    [SerializeField] private Player player;
     [SerializeField] private GameObject playerInventoryUIBackground;
     [SerializeField] private PlayerInventory playerInventory;
     [SerializeField] private Transform inventoryItemHolder;
@@ -26,7 +27,8 @@ public class PlayerInventoryUI : NetworkBehaviour
     {
         useItemButton.onClick.AddListener(() =>
         {
-            playerInventory.UseItemRpc();
+            //playerInventory.UseItemRpc();
+            player.SetPlayerReady();
             Debug.Log("Use Item Button Clicked");
         });
     }
@@ -39,8 +41,16 @@ public class PlayerInventoryUI : NetworkBehaviour
             return;
         }
 
+        //Owner Code below
+        
+        GameFlowManager.OnRoundStarted += GameFlowManager_OnRoundGoing;
         playerInventory.OnItemAdded += PlayerInventory_OnItemAdded;
         playerInventory.OnItemChanged += PlayerInventory_OnItemChanged;
+    }
+
+    private void GameFlowManager_OnRoundGoing()
+    {
+        throw new NotImplementedException();
     }
 
     private void PlayerInventory_OnItemChanged(ItemDataStruct itemData)
