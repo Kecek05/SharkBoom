@@ -89,7 +89,7 @@ public class PlayerInventory : NetworkBehaviour
             itemCooldownRemaining = 0,
             itemCanBeUsed = true,
         });
-
+        SelectItemDataByIndexRpc(0);
         Debug.Log("Item Setted");
     }
 

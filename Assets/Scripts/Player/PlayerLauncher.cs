@@ -35,13 +35,17 @@ public class PlayerLauncher : NetworkBehaviour
     {
         GameObject gameObject = Instantiate(player.PlayerInventory.GetSelectedItemSO().itemServerPrefab, spawnItemPos.position, Quaternion.identity);
 
-        Physics.IgnoreCollision(playerCollider, gameObject.GetComponent<Collider>()); // Ignore collision between the player and the projectile
+        if (gameObject.TryGetComponent(out Collider collider))
+        {
+            Physics.IgnoreCollision(playerCollider, collider); // Ignore collision between the player and the projectile
+        }
 
         if (gameObject.transform.TryGetComponent(out IDraggable draggable))
         {
-            draggable.Release(dragForce, dragDirection); //Call interface
-        }
+            draggable.Release(dragForce, dragDirection, transform); //Call interface
 
+        }
+        
         SpawnProjectileClientRpc(dragForce, dragDirection);
     }
 
@@ -66,11 +70,8 @@ public class PlayerLauncher : NetworkBehaviour
 
         if (gameObject.transform.TryGetComponent(out IDraggable draggable))
         {
-            draggable.Release(dragForce, dragDirection); //Call interface
+            draggable.Release(dragForce, dragDirection, transform); //Call interface
 
-        } else if (gameObject.transform.TryGetComponent(out IUseable useable))
-        {
-            useable.Use(); //Call interface
         }
     }
 

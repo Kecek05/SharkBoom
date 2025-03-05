@@ -9,10 +9,7 @@ public interface IDamageable
 
 public interface IDraggable
 {
-    public void Release(float force, Vector3 direction);
+    public void Release(float force, Vector3 direction, Transform shooterTransform);
 }
 
-public interface IUseable
-{
-    public void Use();
-}
+
