@@ -61,10 +61,10 @@ public class GameFlowManager : NetworkBehaviour
                 OnRoundStarted?.Invoke();
                 if (IsServer)
                 {
-                    StartCoroutine(DelayRoundGoing());
+                    GameFlowManager.instance.StartCoroutine(DelayRoundGoing());
                 }
                 break;
-            case GameState.RoundEnded:
+            case GameState.RoundEnded: //for some reason, client doesnt lisen to OnRoundEnd
                 OnRoundEnd?.Invoke();
 
                 if(IsServer)
