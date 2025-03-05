@@ -1,0 +1,107 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &8478003704581063523
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3788096622501653025, guid: dc95c75a8d59d9c44a1d71a82eccf3b9, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3788096622501653025, guid: dc95c75a8d59d9c44a1d71a82eccf3b9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3788096622501653025, guid: dc95c75a8d59d9c44a1d71a82eccf3b9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3788096622501653025, guid: dc95c75a8d59d9c44a1d71a82eccf3b9, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3788096622501653025, guid: dc95c75a8d59d9c44a1d71a82eccf3b9, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3788096622501653025, guid: dc95c75a8d59d9c44a1d71a82eccf3b9, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3788096622501653025, guid: dc95c75a8d59d9c44a1d71a82eccf3b9, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3788096622501653025, guid: dc95c75a8d59d9c44a1d71a82eccf3b9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3788096622501653025, guid: dc95c75a8d59d9c44a1d71a82eccf3b9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3788096622501653025, guid: dc95c75a8d59d9c44a1d71a82eccf3b9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4698707596638033254, guid: dc95c75a8d59d9c44a1d71a82eccf3b9, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+    - target: {fileID: 8265960292797011190, guid: dc95c75a8d59d9c44a1d71a82eccf3b9, type: 3}
+      propertyPath: m_Name
+      value: FireworktemUseable
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 6682811367676426177, guid: dc95c75a8d59d9c44a1d71a82eccf3b9, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8265960292797011190, guid: dc95c75a8d59d9c44a1d71a82eccf3b9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3344170631980806153}
+    - targetCorrespondingSourceObject: {fileID: 8265960292797011190, guid: dc95c75a8d59d9c44a1d71a82eccf3b9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1814481298868497126}
+  m_SourcePrefab: {fileID: 100100000, guid: dc95c75a8d59d9c44a1d71a82eccf3b9, type: 3}
+--- !u!1 &509325002137819029 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8265960292797011190, guid: dc95c75a8d59d9c44a1d71a82eccf3b9, type: 3}
+  m_PrefabInstance: {fileID: 8478003704581063523}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3344170631980806153
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 509325002137819029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56a19a6a88938a44eba33c6504d0afa6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lifeTime: 4
+--- !u!114 &1814481298868497126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 509325002137819029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b19a2c38154c2347b11e4c1eed26664, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 695212668379715967}
+  force: 10
+--- !u!54 &695212668379715967 stripped
+Rigidbody:
+  m_CorrespondingSourceObject: {fileID: 8935721440454367772, guid: dc95c75a8d59d9c44a1d71a82eccf3b9, type: 3}
+  m_PrefabInstance: {fileID: 8478003704581063523}
+  m_PrefabAsset: {fileID: 0}

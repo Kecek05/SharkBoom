@@ -64,6 +64,10 @@ public class PlayerLauncher : NetworkBehaviour
         if (gameObject.transform.TryGetComponent(out IDraggable draggable))
         {
             draggable.Release(dragForce, dragDirection); //Call interface
+
+        } else if (gameObject.transform.TryGetComponent(out IUseable useable))
+        {
+            useable.Use(); //Call interface
         }
     }
 

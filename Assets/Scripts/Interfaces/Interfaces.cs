@@ -11,3 +11,8 @@ public interface IDraggable
 {
     public void Release(float force, Vector3 direction);
 }
+
+public interface IUseable
+{
+    public void Use();
+}

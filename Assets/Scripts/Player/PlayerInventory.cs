@@ -23,10 +23,6 @@ public class PlayerInventory : NetworkBehaviour
     /// </summary>
     private int selectedItemIndex;
 
-    private void Awake()
-    {
-        //playerInventory = new();
-    }
 
     public override void OnNetworkSpawn()
     {
@@ -35,6 +31,12 @@ public class PlayerInventory : NetworkBehaviour
             playerInventory.OnListChanged += PlayerInventory_OnListChanged;
 
             GameFlowManager.OnRoundEnd += GameFlowManager_OnRoundEnd;
+
+            //DEBUG
+            selectedItemData.OnValueChanged += (previousValue, newValue) =>
+            {
+                Debug.Log($"Item Selected InventoryIndex: {selectedItemData.Value.itemInventoryIndex.ToString()} Item Selected ItemSOIndex: {selectedItemData.Value.itemSOIndex.ToString()}");
+            };
         }
     }
 
