@@ -174,7 +174,7 @@ GameObject:
   - component: {fileID: 5330386554425838414}
   - component: {fileID: 800024870368675109}
   - component: {fileID: 4799874711576044224}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -219,7 +219,7 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
   m_Height: 2
@@ -393,6 +393,9 @@ MonoBehaviour:
   inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
   player: {fileID: 2871544100916734757}
   startDragPos: {fileID: 5526197349071884733}
+  touchLayer:
+    serializedVersion: 2
+    m_Bits: 128
   maxForceMultiplier: 25
   minForceMultiplier: 1
   offsetForceMultiplier: 2
