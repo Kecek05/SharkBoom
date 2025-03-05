@@ -29,7 +29,7 @@ public class MainMenuController : MonoBehaviour
         clientButton.onClick.AddListener(async() =>
         {
             clientButton.interactable = false;
-            await ClientSingleton.Instance.GameManager.StartClientAsync(lobbyCodeInputField.text);
+            await ClientSingleton.Instance.GameManager.StartRelayClientAsync(lobbyCodeInputField.text);
             clientButton.interactable = true;
         });
     }
