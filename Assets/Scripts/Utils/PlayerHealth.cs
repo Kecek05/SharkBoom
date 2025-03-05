@@ -4,8 +4,9 @@ using UnityEngine;
 public class PlayerHealth : Health
 {
     [SerializeField] private float headMultiplier = 2;
-    [SerializeField] private float bodyMultiplier = 1.2f;
+    [SerializeField] private float bodyMultiplier = 1f;
     [SerializeField] private float footMultiplier = 0.8f;
+    private float selectedMultiplier; //cache
 
     public enum BodyPartEnum
     {
@@ -21,21 +22,17 @@ public class PlayerHealth : Health
 
         if (isDead) return;
 
-        switch (bodyPart)
+        selectedMultiplier = bodyPart == BodyPartEnum.Head ? headMultiplier : bodyPart == BodyPartEnum.Body ? bodyMultiplier : bodyPart == BodyPartEnum.Foot ? footMultiplier : 0f; //0f error
+
+        if(selectedMultiplier == 0f)
         {
-            case BodyPartEnum.Head:
-                ModifyHealth(-(damage * headMultiplier));
-                Debug.Log(this.gameObject.name + " tomou dano na " + bodyPart + " de " + damage * headMultiplier);
-                break;
-            case BodyPartEnum.Body:
-                ModifyHealth(-(damage * bodyMultiplier));
-                Debug.Log(this.gameObject.name + " tomou dano na " + bodyPart + " de " + damage * headMultiplier);
-                break;
-            case BodyPartEnum.Foot:
-                ModifyHealth(-(damage * footMultiplier));
-                Debug.Log(this.gameObject.name + " tomou dano na " + bodyPart + " de " + damage * headMultiplier);
-                break;
+            Debug.LogWarning("Bodypart not found");
+            return;
         }
+
+        ModifyHealth(-(damage * selectedMultiplier));
+
+        Debug.Log($"Damage: {damage} in: {bodyPart} with multiplier: {selectedMultiplier} total: {damage * selectedMultiplier}");
     }
 
     protected override void Die()

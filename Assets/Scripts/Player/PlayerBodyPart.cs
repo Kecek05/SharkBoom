@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerDamageControl : MonoBehaviour, IDamageable
+public class PlayerBodyPart : MonoBehaviour, IDamageable
 {
     
     public PlayerHealth.BodyPartEnum bodyPart;
