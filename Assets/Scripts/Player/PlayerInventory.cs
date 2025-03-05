@@ -12,11 +12,11 @@ public class PlayerInventory : NetworkBehaviour
     [SerializeField] private ItemsListSO itemsListSO;
 
 
-    private NetworkList<ItemDataStruct> playerInventory;
+    private NetworkList<ItemDataStruct> playerInventory = new();
 
 
-    private ItemDataStruct selectedItemData;
-    public ItemDataStruct SelectedItemData => selectedItemData;
+    private NetworkVariable<ItemDataStruct> selectedItemData = new();
+    public NetworkVariable<ItemDataStruct> SelectedItemData => selectedItemData;
 
     /// <summary>
     /// The index of the selected item in the player inventory
@@ -25,7 +25,7 @@ public class PlayerInventory : NetworkBehaviour
 
     private void Awake()
     {
-        playerInventory = new();
+        //playerInventory = new();
     }
 
     public override void OnNetworkSpawn()
@@ -72,7 +72,7 @@ public class PlayerInventory : NetworkBehaviour
     [Command("playerInventory-printPlayerSelectedItem", MonoTargetType.All)]
     public void PrintPlayerSelectedItem() //DEBUG
     {
-        Debug.Log($"Player: {gameObject.name} Selected Item: {GetItemSOByIndex(selectedItemData.itemSOIndex).itemName}");
+        Debug.Log($"Player: {gameObject.name} Selected Item: {GetItemSOByIndex(selectedItemData.Value.itemSOIndex).itemName}");
     }
     #endregion
 
@@ -104,7 +104,7 @@ public class PlayerInventory : NetworkBehaviour
         }
 
         selectedItemIndex = itemInventoryIndex;
-        selectedItemData = playerInventory[itemInventoryIndex];
+        selectedItemData.Value = playerInventory[itemInventoryIndex];
         Debug.Log($"Player: {gameObject.name} Selected Item: {GetItemSOByIndex(playerInventory[itemInventoryIndex].itemSOIndex).itemName}");
 
     }
@@ -120,9 +120,9 @@ public class PlayerInventory : NetworkBehaviour
 
             playerInventory[selectedItemIndex] = new ItemDataStruct
             {
-                itemInventoryIndex = selectedItemData.itemInventoryIndex, //do not lose the index
-                itemSOIndex = selectedItemData.itemSOIndex,
-                itemCooldownRemaining = GetItemSOByIndex(selectedItemData.itemSOIndex).cooldown,
+                itemInventoryIndex = selectedItemData.Value.itemInventoryIndex, //do not lose the index
+                itemSOIndex = selectedItemData.Value.itemSOIndex,
+                itemCooldownRemaining = GetItemSOByIndex(selectedItemData.Value.itemSOIndex).cooldown,
                 itemCanBeUsed = false,
             };
 
@@ -143,7 +143,7 @@ public class PlayerInventory : NetworkBehaviour
 
     public ItemSO GetSelectedItemSO()
     {
-        return GetItemSOByIndex(selectedItemData.itemSOIndex);
+        return GetItemSOByIndex(selectedItemData.Value.itemSOIndex);
     }
 
     public ItemSO GetItemSOByIndex(int itemSOIndex)
