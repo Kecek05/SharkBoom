@@ -18,6 +18,7 @@ public class DragAndShoot : MonoBehaviour
     [SerializeField] private Player player;
     [Tooltip("Center position of the drag")]
     [SerializeField] private Transform startDragPos;
+    [SerializeField] private LayerMask touchLayer;
 
 
     [BetterHeader("Force Settings")]
@@ -86,18 +87,21 @@ public class DragAndShoot : MonoBehaviour
             Ray rayStart = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
-            if (Physics.Raycast(rayStart, out hit) && hit.collider.gameObject == this.gameObject ) // compare if the touch hit on the object
+            if (Physics.Raycast(rayStart, out hit, Mathf.Infinity, touchLayer)) // compare if the touch hit on the object
             {
-                //Start Dragging
-                trajectory.SetSimulation(true);
-                CameraManager.Instance.SetCameraState(CameraManager.CameraState.Dragging);
-                startZoomPos = CameraManager.Instance.CameraObjectToFollow;
+                if(hit.collider.gameObject == this.gameObject)
+                {
+                    //Start Dragging
+                    trajectory.SetSimulation(true);
+                    CameraManager.Instance.SetCameraState(CameraManager.CameraState.Dragging);
+                    startZoomPos = CameraManager.Instance.CameraObjectToFollow;
 
-                plane = new Plane(Vector3.forward, startDragPos.position); // we create the plane to calculate the Z, because a click is a 2D position
-                
-                SetIsShowingDots(false);
-                SetIsDragging(true);
-                OnDragStart?.Invoke();
+                    plane = new Plane(Vector3.forward, startDragPos.position); // we create the plane to calculate the Z, because a click is a 2D position
+
+                    SetIsShowingDots(false);
+                    SetIsDragging(true);
+                    OnDragStart?.Invoke();
+                }
             }
         }
 
