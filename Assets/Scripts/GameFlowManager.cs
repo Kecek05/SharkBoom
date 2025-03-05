@@ -1,18 +1,53 @@
 using QFSW.QC;
+using Sortify;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
 public class GameFlowManager : NetworkBehaviour
 {
-    public static GameFlowManager Instance { get; private set; }
+    private static GameFlowManager instance;
+    public static GameFlowManager Instance => instance;
 
+    [BetterHeader("References")]
     [SerializeField] private ItemsListSO itemsListSO;
     [SerializeField] private List<Transform> spawnPointsPos;
 
+
+    private enum GameState
+    {
+        WaitingForPlayers, //Waiting for players to connect
+        GameStarted, //all players connected
+        WaitingForPlayersReady, //waiting for all players to be ready
+        PlayersReady, // all players ready
+        RoundGoing,
+        RoundEnded,
+        GameEnded, //Game Over
+    }
+
+    private NetworkVariable<GameState> gameState = new(GameState.WaitingForPlayers);
+
+    private Dictionary<ulong, bool> playersReady = new();
+    //private Dictionary<ulong, algo> playersRoundData = new();
+
     private void Awake()
     {
-        Instance = this;
+        instance = this;
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        gameState.OnValueChanged += GameState_OnValueChanged;
+    }
+
+    private void GameState_OnValueChanged(GameState previousValue, GameState newValue)
+    {
+
+        if(IsServer)
+        {
+            //Do logic, spawn itens and do actions
+        }
+        Debug.Log($"Game State Changed to: {newValue.ToString()}");
     }
 
     [Command("gameFlowManager-randomizePlayersItems")]
@@ -38,4 +73,30 @@ public class GameFlowManager : NetworkBehaviour
         spawnPointsPos.Remove(selectedSpawnPoint);
         return selectedSpawnPoint.position;
     }
+
+    [Command("gameFlowManager-setPlayerReady")]
+    [Rpc(SendTo.Server)]
+    public void SetPlayerReadyRpc(ServerRpcParams serverRpcParams = default)
+    {
+        playersReady[serverRpcParams.Receive.SenderClientId] = true;
+
+        bool allClientsReady = true;
+        foreach (ulong clientID in NetworkManager.Singleton.ConnectedClientsIds)
+        {
+            if (!playersReady.ContainsKey(clientID) || !playersReady[clientID])
+            {
+                //This player is not ready
+                allClientsReady = false;
+                break;
+            }
+        }
+
+        if (allClientsReady)
+        {
+            gameState.Value = GameState.PlayersReady;
+            playersReady.Clear(); //Clear for next round
+            Debug.Log("All Players Ready!");
+        }
+    }
+
 }
