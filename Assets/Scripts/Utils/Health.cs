@@ -24,13 +24,13 @@ public class Health : NetworkBehaviour, IDamageable
     }
 
     [Command("health-takeDamage")]
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, float damageMultiplier)
     {
         if(!IsServer) return;
 
         if(isDead) return;
 
-        ModifyHealth(-damage);
+        ModifyHealth(-(damage * damageMultiplier));
     }
 
 

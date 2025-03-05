@@ -60,8 +60,8 @@ public class DragAndShoot : MonoBehaviour
     private bool isShowingDots; //Cache for show dots
 
 
-    public Vector3 Direction => directionOfDrag;
-    public float Force => dragForce;
+    public Vector3 DirectionOfDrag => directionOfDrag;
+    public float DragForce => dragForce;
     public bool CanDrag => canDrag;
 
 
@@ -85,6 +85,7 @@ public class DragAndShoot : MonoBehaviour
             if (Physics.Raycast(rayStart, out hit) && hit.collider.gameObject == this.gameObject) // compare if the touch hit on the object
             {
                 //Start Dragging
+                trajectory.SetSimulation(true);
                 CameraManager.Instance.SetCameraState(CameraManager.CameraState.Dragging);
                 startZoomPos = CameraManager.Instance.CameraObjectToFollow;
 
@@ -99,6 +100,7 @@ public class DragAndShoot : MonoBehaviour
         if (context.canceled && isDragging)
         {
             isDragging = false;
+            trajectory.SetSimulation(false);
             OnDragRelease?.Invoke();
             CameraManager.Instance.SetCameraState(CameraManager.CameraState.Default);
         }

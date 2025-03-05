@@ -27,9 +27,9 @@ public class Player : NetworkBehaviour
     {
         //REFACTOR
 
-        SpawnProjectileServerRpc(dragAndShoot.Force, dragAndShoot.Direction); //Spawn real projectile on server need to send the speed and force values through the network
+        SpawnProjectileServerRpc(dragAndShoot.DragForce, dragAndShoot.DirectionOfDrag); //Spawn real projectile on server need to send the speed and force values through the network
 
-        SpawnDummyProjectile(dragAndShoot.Force, dragAndShoot.Direction); //Spawn fake projectile on client
+        SpawnDummyProjectile(dragAndShoot.DragForce, dragAndShoot.DirectionOfDrag); //Spawn fake projectile on client
 
         dragAndShoot.ResetDragPos();
     }
