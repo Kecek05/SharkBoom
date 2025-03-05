@@ -16,14 +16,15 @@ public class GameFlowManager : NetworkBehaviour
     [SerializeField] private List<Transform> spawnPointsPos;
 
 
-    public static event Action OnRoundStarted;
-    public static event Action OnRoundEnd;
+    public static event Action OnRoundPreparing; //Preparing fase, players can play
+    public static event Action OnRoundStarted; // Round started, players just watch
+    public static event Action OnRoundEnd; // Round finished, future implementations
 
     private enum GameState
     {
         WaitingForPlayers, //Waiting for players to connect
         GameStarted, //all players connected
-        WaitingForPlayersReady, //waiting for all players to be ready
+        RoundPreparing, //waiting for all players to be ready
         RoundStarted, // all players ready
         RoundEnded,
         GameEnded, //Game Over
@@ -52,7 +53,8 @@ public class GameFlowManager : NetworkBehaviour
                 break;
             case GameState.GameStarted:
                 break;
-            case GameState.WaitingForPlayersReady:
+            case GameState.RoundPreparing:
+                OnRoundPreparing?.Invoke();
                 break;
             case GameState.RoundStarted:
                 OnRoundStarted?.Invoke();
@@ -60,7 +62,7 @@ public class GameFlowManager : NetworkBehaviour
                 break;
             case GameState.RoundEnded:
                 OnRoundEnd?.Invoke();
-                SetGameStateRpc(GameState.WaitingForPlayersReady);
+                SetGameStateRpc(GameState.RoundPreparing);
                 break;
             case GameState.GameEnded:
                 break;

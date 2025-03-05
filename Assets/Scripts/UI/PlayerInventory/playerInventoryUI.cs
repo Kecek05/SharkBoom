@@ -42,16 +42,15 @@ public class PlayerInventoryUI : NetworkBehaviour
         }
 
         //Owner Code below
-        
-        GameFlowManager.OnRoundStarted += GameFlowManager_OnRoundGoing;
+
+        player.OnPlayerReady += Player_OnPlayerReady;
+        GameFlowManager.OnRoundPreparing += GameFlowManager_OnRoundPreparing;
         playerInventory.OnItemAdded += PlayerInventory_OnItemAdded;
         playerInventory.OnItemChanged += PlayerInventory_OnItemChanged;
     }
 
-    private void GameFlowManager_OnRoundGoing()
-    {
-        throw new NotImplementedException();
-    }
+
+
 
     private void PlayerInventory_OnItemChanged(ItemDataStruct itemData)
     {
@@ -78,9 +77,26 @@ public class PlayerInventoryUI : NetworkBehaviour
         Debug.Log("Item Added UI");
     }
 
+    private void Player_OnPlayerReady()
+    {
+        Hide();
+    }
+
+    private void GameFlowManager_OnRoundPreparing()
+    {
+        Show();
+    }
+
+
+
     private void Hide()
     {
         playerInventoryUIBackground.SetActive(false);
+    }
+
+    private void Show()
+    {
+        playerInventoryUIBackground.SetActive(true);
     }
     public override void OnNetworkDespawn()
     {
@@ -89,6 +105,11 @@ public class PlayerInventoryUI : NetworkBehaviour
         {
             playerItemSingleUI.OnItemSingleSelected -= (int index) => OnItemSelected?.Invoke(index);
         }
+
+        player.OnPlayerReady -= Player_OnPlayerReady;
+        GameFlowManager.OnRoundEnd -= GameFlowManager_OnRoundEnd;
+        playerInventory.OnItemAdded -= PlayerInventory_OnItemAdded;
+        playerInventory.OnItemChanged -= PlayerInventory_OnItemChanged;
     }
 
 }

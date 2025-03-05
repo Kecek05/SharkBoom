@@ -38,7 +38,6 @@ public class DragAndShoot : MonoBehaviour
     [SerializeField] private float zoomMultiplier = 7f;
 
 
-    private Vector3 velocity = Vector3.zero; //cache
     private Vector3 endPosDrag;
     private Vector3 directionOfDrag;
     private float dragForce;
@@ -72,7 +71,7 @@ public class DragAndShoot : MonoBehaviour
 
         player.OnPlayerReady += Player_OnPlayerReady; ;
         GameFlowManager.OnRoundStarted += GameFlowManager_OnRoundGoing;
-        GameFlowManager.OnRoundEnd += GameFlowManager_OnRoundEnd;
+        GameFlowManager.OnRoundPreparing += GameFlowManager_OnRoundPreparing;
         trajectory.Initialize(startDragPos);
     }
 
@@ -94,16 +93,16 @@ public class DragAndShoot : MonoBehaviour
                 startZoomPos = CameraManager.Instance.CameraObjectToFollow;
 
                 plane = new Plane(Vector3.forward, startDragPos.position); // we create the plane to calculate the Z, because a click is a 2D position
-                isShowingDots = false;
-
-                isDragging = true;
+                
+                SetIsShowingDots(false);
+                SetIsDragging(true);
                 OnDragStart?.Invoke();
             }
         }
 
         if (context.canceled && isDragging)
         {
-            isDragging = false;
+            SetIsDragging(false);
             trajectory.SetSimulation(false);
             OnDragRelease?.Invoke();
             CameraManager.Instance.SetCameraState(CameraManager.CameraState.Default);
@@ -152,34 +151,13 @@ public class DragAndShoot : MonoBehaviour
             if (!isShowingDots)
             {
                 trajectory.Show(); // call the function for show dots
-                isShowingDots = true;
+                SetIsShowingDots(true);
             }
         }
     }
 
-    private void Player_OnPlayerReady()
-    {
-        SetCanDrag(false);
-    }
 
-    private void GameFlowManager_OnRoundGoing()
-    {
-        ResetDragPos();
-    }
-
-    private void GameFlowManager_OnRoundEnd()
-    {
-        SetCanDrag(true);
-    }
-
-
-    public void ReleaseDrag()
-    {
-        SetIsDragging(false);
-        trajectory.Hide();
-    }
-
-    public void ResetDragPos()
+    public void ResetDrag()
     {
         // Reset the dots position
         //CameraManager.Instance.CameraZoom.ResetZoom(startZoomPos); // Reset the zoom for start position
@@ -188,14 +166,57 @@ public class DragAndShoot : MonoBehaviour
 
     }
 
+    public void ReleaseDrag()
+    {
+        SetIsDragging(false);
+        SetIsShowingDots(false);
+        trajectory.Hide();
+    }
+
+
+    private void Player_OnPlayerReady()
+    {
+        //Turn Off
+        TurnOffDrag();
+    }
+
+    private void GameFlowManager_OnRoundGoing()
+    {
+        //Hide Dots, already Off
+        ResetDrag();
+    }
+
+    private void GameFlowManager_OnRoundPreparing()
+    {
+        //Back to normal
+        TurnOnDrag();
+    }
+
+    private void TurnOffDrag()
+    {
+        SetCanDrag(false);
+        SetIsDragging(false);
+    }
+
+    private void TurnOnDrag()
+    {
+        SetCanDrag(true);
+    }
+
+
     public void SetCanDrag(bool value)
     {
         canDrag = value;
     }
 
-    public void SetIsDragging(bool value)
+    private void SetIsDragging(bool value)
     {
         isDragging = value;
+    }
+
+    private void SetIsShowingDots(bool value)
+    {
+        isShowingDots = value;
     }
 
     private void OnDestroy()
