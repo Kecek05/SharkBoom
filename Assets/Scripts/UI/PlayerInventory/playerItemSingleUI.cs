@@ -17,6 +17,7 @@ public class PlayerItemSingleUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI itemCanBeUsedText;
     [SerializeField] private Button selectItemButton;
     [SerializeField] private TextMeshProUGUI itemInventoryIndexText;
+    private PlayerInventoryUI playerInventoryUI;
 
     private int myIndexItemInventory;
     public int ItemIndex => myIndexItemInventory;
@@ -25,12 +26,12 @@ public class PlayerItemSingleUI : MonoBehaviour
     {
         selectItemButton.onClick.AddListener(() =>
         {
-            OnItemSingleSelected?.Invoke(myIndexItemInventory);
+            playerInventoryUI.SelecItem(myIndexItemInventory);
             Debug.Log($"Item {myIndexItemInventory} selected");
         });
     }
 
-    public void Setup(string itemName, Image itemIcon, string itemCooldown, FixedString32Bytes ownerDebug, bool itemCanBeUsed, int indexItemInventory)
+    public void Setup(string itemName, Image itemIcon, string itemCooldown, FixedString32Bytes ownerDebug, bool itemCanBeUsed, int indexItemInventory, PlayerInventoryUI _playerInventoryUI)
     {
         itemNameText.text = itemName;
         //itemImageIcon.sprite = itemIcon.sprite;
@@ -42,6 +43,8 @@ public class PlayerItemSingleUI : MonoBehaviour
         myIndexItemInventory = indexItemInventory;
 
         itemInventoryIndexText.text = indexItemInventory.ToString();
+
+        playerInventoryUI = _playerInventoryUI;
     }
 
     internal void UpdateCooldown(string newCooldown)

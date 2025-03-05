@@ -1,7 +1,7 @@
 using Sortify;
 using UnityEngine;
 
-public class BaseProjectile : MonoBehaviour, IDraggable
+public class BaseItemThrowable : MonoBehaviour, IDraggable
 {
     [BetterHeader("References")]
     [SerializeField] private Rigidbody rb;

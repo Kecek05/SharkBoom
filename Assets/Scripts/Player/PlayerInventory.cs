@@ -34,10 +34,14 @@ public class PlayerInventory : NetworkBehaviour
         {
             playerInventory.OnListChanged += PlayerInventory_OnListChanged;
 
+            GameFlowManager.OnRoundEnd += GameFlowManager_OnRoundEnd;
         }
     }
 
-
+    private void GameFlowManager_OnRoundEnd()
+    {
+        UseItemRpc();
+    }
 
     private void PlayerInventory_OnListChanged(NetworkListEvent<ItemDataStruct> changeEvent)
     {
@@ -139,12 +143,12 @@ public class PlayerInventory : NetworkBehaviour
 
     public ItemSO GetSelectedItemSO()
     {
-        return GetItemSOByIndex(selectedItemData.itemInventoryIndex);
+        return GetItemSOByIndex(selectedItemData.itemSOIndex);
     }
 
-    public ItemSO GetItemSOByIndex(int itemInventoyIndex)
+    public ItemSO GetItemSOByIndex(int itemSOIndex)
     {
-        return itemsListSO.allItemsSOList[playerInventory[itemInventoyIndex].itemSOIndex];
+        return itemsListSO.allItemsSOList[itemSOIndex];
     }
 
     public override void OnNetworkDespawn()

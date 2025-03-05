@@ -3,6 +3,7 @@ using Sortify;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -83,8 +84,9 @@ public class GameFlowManager : NetworkBehaviour
 
 
     [Command("gameFlowManager-randomizePlayersItems")]
-    public void RandomizePlayerItems()
+    public async void RandomizePlayerItems()
     {
+        await Task.Delay(3000); //Delay for player to connect
         int itemsInInventory = UnityEngine.Random.Range(2, itemsListSO.allItemsSOList.Count); //Random qtd of items for now
 
         for(int i = 0; i < itemsInInventory; i++)

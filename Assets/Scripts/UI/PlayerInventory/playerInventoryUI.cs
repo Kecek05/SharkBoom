@@ -8,8 +8,6 @@ using UnityEngine.UI;
 
 public class PlayerInventoryUI : NetworkBehaviour
 {
-    
-    public event Action<int> OnItemSelected;
 
     [BetterHeader("References")]
     [SerializeField] private GameObject playerInventoryUIBackground;
@@ -70,9 +68,13 @@ public class PlayerInventoryUI : NetworkBehaviour
     {
         //Add item on list
         PlayerItemSingleUI playerItemSingleUI = Instantiate(playerItemSingleUIPrefab, inventoryItemHolder).GetComponent<PlayerItemSingleUI>();
-        playerItemSingleUI.Setup(itemsListSO.allItemsSOList[itemData.itemSOIndex].itemName, itemsListSO.allItemsSOList[itemData.itemSOIndex].itemIcon, itemData.itemCooldownRemaining.ToString(), itemData.ownerDebug, itemData.itemCanBeUsed, itemData.itemInventoryIndex);
-        playerItemSingleUI.OnItemSingleSelected += (int itemInventoryIndex) => player.PlayerInventory.SelectItemDataByIndexRpc(itemInventoryIndex);
+        playerItemSingleUI.Setup(itemsListSO.allItemsSOList[itemData.itemSOIndex].itemName, itemsListSO.allItemsSOList[itemData.itemSOIndex].itemIcon, itemData.itemCooldownRemaining.ToString(), itemData.ownerDebug, itemData.itemCanBeUsed, itemData.itemInventoryIndex, this);
         playerItemSingleUIs.Add(playerItemSingleUI);
+    }
+
+    public void SelecItem(int itemInventoryIndex)
+    {
+        player.PlayerInventory.SelectItemDataByIndexRpc(itemInventoryIndex);
     }
 
     private void Player_OnPlayerReady()
@@ -99,10 +101,6 @@ public class PlayerInventoryUI : NetworkBehaviour
     public override void OnNetworkDespawn()
     {
         if (!IsOwner) return;
-        foreach (PlayerItemSingleUI playerItemSingleUI in playerItemSingleUIs)
-        {
-            playerItemSingleUI.OnItemSingleSelected -= (int itemInventoryIndex) => player.PlayerInventory.SelectItemDataByIndexRpc(itemInventoryIndex);
-        }
 
         player.OnPlayerReady -= Player_OnPlayerReady;
         GameFlowManager.OnRoundPreparing -= GameFlowManager_OnRoundPreparing;

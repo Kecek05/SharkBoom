@@ -34,6 +34,12 @@ public class NetworkServer : IDisposable
 
         response.Approved = true; //Connection is approved
         response.CreatePlayerObject = false;
+
+        if(networkManager.ConnectedClientsList.Count == 1) 
+        {
+            //Both players are connected
+            GameFlowManager.Instance.RandomizePlayerItems();
+        }
     }
 
     private async Task SpawnPlayerDelay(ulong clientId)
