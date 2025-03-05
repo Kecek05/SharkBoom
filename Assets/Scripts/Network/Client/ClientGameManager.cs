@@ -21,11 +21,6 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         Debug.Log("Starting Client");
     }
 
-    public void GoToMenu()
-    {
-        SceneManager.LoadScene(MENU_SCENE);
-    }
-
     public void Dispose()
     {
         networkClient?.Dispose();

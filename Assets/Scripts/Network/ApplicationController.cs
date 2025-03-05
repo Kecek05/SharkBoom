@@ -35,7 +35,7 @@ public class ApplicationController : MonoBehaviour //Responsable of launching th
             hostSingleton.CreateHost(playerPrefab);
 
             //Go to main menu
-            clientSingleton.GameManager.GoToMenu();
+            Loader.Load(Loader.Scene.MainMenu);
 
         }
     }

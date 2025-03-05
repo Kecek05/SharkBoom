@@ -24,7 +24,8 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
 
         NetworkManager.Singleton.StartHost();
 
-        NetworkManager.Singleton.SceneManager.LoadScene("GameNetCodeTest", UnityEngine.SceneManagement.LoadSceneMode.Single);
+        Loader.LoadNetwork(Loader.Scene.GameNetCodeTest);
+
     }
 
     public async void ShutdownAsync()
