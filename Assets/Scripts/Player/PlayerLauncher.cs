@@ -5,8 +5,8 @@ using UnityEngine;
 public class PlayerLauncher : NetworkBehaviour
 {
     [BetterHeader("References")]
-    [SerializeField] private Collider playerCollider;
     [SerializeField] private Transform spawnItemPos;
+    [SerializeField] private Collider[] playerColliders;
     [SerializeField] private Player player;
 
 
@@ -14,7 +14,6 @@ public class PlayerLauncher : NetworkBehaviour
     {
         if (IsOwner)
         {
-            player.PlayerDragAndShoot.Initialize();
 
             GameFlowManager.OnRoundStarted += GameFlowManager_OnRoundStarted;
         }
@@ -35,9 +34,12 @@ public class PlayerLauncher : NetworkBehaviour
     {
         GameObject gameObject = Instantiate(player.PlayerInventory.GetSelectedItemSO().itemServerPrefab, spawnItemPos.position, Quaternion.identity);
 
-        if (gameObject.TryGetComponent(out Collider collider))
+        if (gameObject.TryGetComponent(out Collider projectileCollider))
         {
-            Physics.IgnoreCollision(playerCollider, collider); // Ignore collision between the player and the projectile
+            foreach(Collider playerCollider in playerColliders)
+            {
+                Physics.IgnoreCollision(playerCollider, projectileCollider); // Ignore collision between the player and the projectile
+            }
         }
 
         if (gameObject.transform.TryGetComponent(out IDraggable draggable))
@@ -63,9 +65,12 @@ public class PlayerLauncher : NetworkBehaviour
 
         GameObject gameObject = Instantiate(player.PlayerInventory.GetSelectedItemSO().itemClientPrefab, spawnItemPos.position, Quaternion.identity);
 
-        if(gameObject.TryGetComponent(out Collider collider))
+        if (gameObject.TryGetComponent(out Collider projectileCollider))
         {
-            Physics.IgnoreCollision(playerCollider, collider); // Ignore collision between the player and the projectile
+            foreach (Collider playerCollider in playerColliders)
+            {
+                Physics.IgnoreCollision(playerCollider, projectileCollider); // Ignore collision between the player and the projectile
+            }
         }
 
         if (gameObject.transform.TryGetComponent(out IDraggable draggable))

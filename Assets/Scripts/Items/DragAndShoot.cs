@@ -2,10 +2,11 @@ using QFSW.QC;
 using Sortify;
 using System;
 using Unity.Mathematics;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class DragAndShoot : MonoBehaviour
+public class DragAndShoot : NetworkBehaviour
 {
     
     public event Action OnDragRelease;
@@ -65,13 +66,14 @@ public class DragAndShoot : MonoBehaviour
     public float DragForce => dragForce;
     public bool CanDrag => canDrag;
 
-
-    public void Initialize() //Setup
+    public override void OnNetworkSpawn()
     {
+        if (!IsOwner) return;
+
         inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
         inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
 
-        player.OnPlayerReady += Player_OnPlayerReady; ;
+        player.OnPlayerReady += Player_OnPlayerReady;
         GameFlowManager.OnRoundStarted += GameFlowManager_OnRoundGoing;
         GameFlowManager.OnRoundPreparing += GameFlowManager_OnRoundPreparing;
         trajectory.Initialize(startDragPos);
@@ -252,7 +254,6 @@ public class DragAndShoot : MonoBehaviour
         SetCanDrag(true);
     }
 
-
     public void SetCanDrag(bool value)
     {
         canDrag = value;
@@ -268,9 +269,17 @@ public class DragAndShoot : MonoBehaviour
         isShowingDots = value;
     }
 
-    private void OnDestroy()
+    public override void OnNetworkDespawn()
     {
+        if (!IsOwner) return;
+
         inputReader.OnTouchPressEvent -= InputReader_OnTouchPressEvent;
         inputReader.OnPrimaryFingerPositionEvent -= InputReader_OnPrimaryFingerPositionEvent;
+
+        player.OnPlayerReady -= Player_OnPlayerReady;
+        GameFlowManager.OnRoundStarted -= GameFlowManager_OnRoundGoing;
+        GameFlowManager.OnRoundPreparing -= GameFlowManager_OnRoundPreparing;
     }
+
+
 }

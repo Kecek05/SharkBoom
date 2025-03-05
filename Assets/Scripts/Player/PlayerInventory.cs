@@ -198,6 +198,9 @@ public class PlayerInventory : NetworkBehaviour
         if (IsOwner)
         {
             playerInventory.OnListChanged -= PlayerInventory_OnListChanged;
+
+            GameFlowManager.OnRoundEnd -= GameFlowManager_OnRoundEnd;
+            GameFlowManager.OnRoundPreparing -= GameFlowManager_OnRoundPreparing;
         }
     }
 }
