@@ -12,9 +12,8 @@ public class PlayerInventoryUI : NetworkBehaviour
     public event Action<int> OnItemSelected;
 
     [BetterHeader("References")]
-    [SerializeField] private Player player;
     [SerializeField] private GameObject playerInventoryUIBackground;
-    [SerializeField] private PlayerInventory playerInventory;
+    [SerializeField] private Player player;
     [SerializeField] private Transform inventoryItemHolder;
     [SerializeField] private GameObject playerItemSingleUIPrefab;
     [SerializeField] private Button useItemButton;
@@ -28,7 +27,7 @@ public class PlayerInventoryUI : NetworkBehaviour
         useItemButton.onClick.AddListener(() =>
         {
             //playerInventory.UseItemRpc();
-            player.SetPlayerReady();
+            this.player.SetPlayerReady();
             Debug.Log("Use Item Button Clicked");
         });
     }
@@ -45,8 +44,8 @@ public class PlayerInventoryUI : NetworkBehaviour
 
         player.OnPlayerReady += Player_OnPlayerReady;
         GameFlowManager.OnRoundPreparing += GameFlowManager_OnRoundPreparing;
-        playerInventory.OnItemAdded += PlayerInventory_OnItemAdded;
-        playerInventory.OnItemChanged += PlayerInventory_OnItemChanged;
+        player.PlayerInventory.OnItemAdded += PlayerInventory_OnItemAdded;
+        player.PlayerInventory.OnItemChanged += PlayerInventory_OnItemChanged;
     }
 
 
@@ -72,9 +71,8 @@ public class PlayerInventoryUI : NetworkBehaviour
         //Add item on list
         PlayerItemSingleUI playerItemSingleUI = Instantiate(playerItemSingleUIPrefab, inventoryItemHolder).GetComponent<PlayerItemSingleUI>();
         playerItemSingleUI.Setup(itemsListSO.allItemsSOList[itemData.itemSOIndex].itemName, itemsListSO.allItemsSOList[itemData.itemSOIndex].itemIcon, itemData.itemCooldownRemaining.ToString(), itemData.ownerDebug, itemData.itemCanBeUsed, itemData.itemInventoryIndex);
-        playerItemSingleUI.OnItemSingleSelected += (int index) => OnItemSelected?.Invoke(index);
+        playerItemSingleUI.OnItemSingleSelected += (int itemInventoryIndex) => player.PlayerInventory.SelectItemDataByIndexRpc(itemInventoryIndex);
         playerItemSingleUIs.Add(playerItemSingleUI);
-        Debug.Log("Item Added UI");
     }
 
     private void Player_OnPlayerReady()
@@ -103,13 +101,13 @@ public class PlayerInventoryUI : NetworkBehaviour
         if (!IsOwner) return;
         foreach (PlayerItemSingleUI playerItemSingleUI in playerItemSingleUIs)
         {
-            playerItemSingleUI.OnItemSingleSelected -= (int index) => OnItemSelected?.Invoke(index);
+            playerItemSingleUI.OnItemSingleSelected -= (int itemInventoryIndex) => player.PlayerInventory.SelectItemDataByIndexRpc(itemInventoryIndex);
         }
 
         player.OnPlayerReady -= Player_OnPlayerReady;
         GameFlowManager.OnRoundPreparing -= GameFlowManager_OnRoundPreparing;
-        playerInventory.OnItemAdded -= PlayerInventory_OnItemAdded;
-        playerInventory.OnItemChanged -= PlayerInventory_OnItemChanged;
+        player.PlayerInventory.OnItemAdded -= PlayerInventory_OnItemAdded;
+        player.PlayerInventory.OnItemChanged -= PlayerInventory_OnItemChanged;
     }
 
 }

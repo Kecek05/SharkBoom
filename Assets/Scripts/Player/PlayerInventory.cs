@@ -10,7 +10,6 @@ public class PlayerInventory : NetworkBehaviour
 
 
     [SerializeField] private ItemsListSO itemsListSO;
-    [SerializeField] private PlayerInventoryUI playerInventoryUI; //TEMP
 
 
     private NetworkList<ItemDataStruct> playerInventory;
@@ -29,22 +28,19 @@ public class PlayerInventory : NetworkBehaviour
         playerInventory = new();
     }
 
-    private void PlayerInventoryUI_OnItemSelected(int itemIndex)
-    {
-        SelectItemDataByIndexRpc(itemIndex);
-    }
-
     public override void OnNetworkSpawn()
     {
         if(IsOwner)
         {
-            playerInventoryUI.OnItemSelected += PlayerInventoryUI_OnItemSelected;
+            GameFlowManager.OnRoundPreparing += GameFlowManager_OnRoundPreparing;
             playerInventory.OnListChanged += PlayerInventory_OnListChanged;
             Debug.Log("Im the owner");
         }
 
         gameObject.name = "Player " + UnityEngine.Random.Range(0, 100).ToString();
     }
+
+
 
     private void PlayerInventory_OnListChanged(NetworkListEvent<ItemDataStruct> changeEvent)
     {
@@ -62,6 +58,8 @@ public class PlayerInventory : NetworkBehaviour
         }
     }
 
+    #region DEBUG
+
     [Command("playerInventory-printPlayerInventory", MonoTargetType.All)]
     public void PrintPlayerInventory() //DEBUG
     {
@@ -75,7 +73,7 @@ public class PlayerInventory : NetworkBehaviour
     {
         Debug.Log($"Player: {gameObject.name} Selected Item: {GetItemSOByIndex(selectedItemData.itemSOIndex).itemName}");
     }
-
+    #endregion
 
     public void SetPlayerItems(int itemSOIndex) //Set the items that player have
     {
@@ -104,8 +102,7 @@ public class PlayerInventory : NetworkBehaviour
             return;
         }
 
-        selectedItemIndex = itemInventoryIndex;
-        selectedItemData = playerInventory[itemInventoryIndex];
+        SetSelectedItem(itemInventoryIndex);
         Debug.Log($"Player: {gameObject.name} Selected Item: {GetItemSOByIndex(playerInventory[itemInventoryIndex].itemSOIndex).itemName}");
 
     }
@@ -133,6 +130,18 @@ public class PlayerInventory : NetworkBehaviour
         }
     }
 
+    private void GameFlowManager_OnRoundPreparing()
+    {
+        //Reset selected item
+        SetSelectedItem(-1);
+    }
+
+    private void SetSelectedItem(int itemInventoryIndex) 
+    {
+        selectedItemIndex = itemInventoryIndex;
+        selectedItemData = playerInventory[itemInventoryIndex];
+    }
+
     [Command("playerInventory-itemCanBeUsed")]
     public bool ItemCanBeUsed(int itemInventoryIndex) // Returns if the item can be used
     {
@@ -141,9 +150,14 @@ public class PlayerInventory : NetworkBehaviour
             
     }
 
-    public ItemSO GetItemSOByIndex(int itemIndex)
+    public ItemSO GetSelectedItemSO()
     {
-        return itemsListSO.allItemsSOList[itemIndex];
+        return GetItemSOByIndex(selectedItemData.itemInventoryIndex);
+    }
+
+    public ItemSO GetItemSOByIndex(int itemInventoyIndex)
+    {
+        return itemsListSO.allItemsSOList[playerInventory[itemInventoyIndex].itemSOIndex];
     }
 
     

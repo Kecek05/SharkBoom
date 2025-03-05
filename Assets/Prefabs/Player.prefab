@@ -346,7 +346,6 @@ MonoBehaviour:
   spawnThrowablePos: {fileID: 8518103509723896872}
   playerInventory: {fileID: 6377254783256832976}
   playerInventoryUI: {fileID: 5233387307745232000}
-  dragAndShoot: {fileID: 5330386554425838414}
   playerCollider: {fileID: 4585798541678627608}
   clientProjectilePrefabDebug: {fileID: 8383273951765277301, guid: ba148075d149fe442b225eeafe799df4, type: 3}
   serverProjectileDebug: {fileID: 1416198623344933440, guid: f2315e52c08a4564193fd87de9dbd174, type: 3}
@@ -364,7 +363,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   itemsListSO: {fileID: 11400000, guid: 0512cb21a29af2e4b88962e2cb6a1605, type: 2}
-  playerInventoryUI: {fileID: 5233387307745232000}
 --- !u!114 &5330386554425838414
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -380,6 +378,7 @@ MonoBehaviour:
   trajectory: {fileID: 800024870368675109}
   inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
   player: {fileID: 2871544100916734757}
+  playerInventory: {fileID: 6377254783256832976}
   startDragPos: {fileID: 5526197349071884733}
   maxForceMultiplier: 25
   minForceMultiplier: 1
@@ -982,9 +981,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  player: {fileID: 2871544100916734757}
   playerInventoryUIBackground: {fileID: 8210345525591779225}
-  playerInventory: {fileID: 6377254783256832976}
+  player: {fileID: 2871544100916734757}
   inventoryItemHolder: {fileID: 3048060028184846068}
   playerItemSingleUIPrefab: {fileID: 1455874116165048915, guid: fbe932c78e14f894abff59d22cff4bdd, type: 3}
   useItemButton: {fileID: 3765415218265298788}
