@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Unity.Netcode;
 using UnityEngine;
 
 public class HostSingleton : MonoBehaviour
@@ -32,9 +33,9 @@ public class HostSingleton : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public void CreateHost()
+    public void CreateHost(NetworkObject playerPrefab)
     {
-        gameManager = new HostGameManager();
+        gameManager = new HostGameManager(playerPrefab);
 
     }
 

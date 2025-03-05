@@ -8,14 +8,19 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
 
     private NetworkServer networkServer;
     public NetworkServer NetworkServer => networkServer;
+    private NetworkObject playerPrefab;
 
+    public HostGameManager(NetworkObject _playerPrefab)
+    {
+        playerPrefab = _playerPrefab;
+    }
 
 
     public async Task StartHostAsync()
     {
         Debug.Log("Starting Host");
 
-        networkServer = new NetworkServer(NetworkManager.Singleton);
+        networkServer = new NetworkServer(NetworkManager.Singleton, playerPrefab);
 
         NetworkManager.Singleton.StartHost();
 

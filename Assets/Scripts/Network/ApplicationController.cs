@@ -32,7 +32,7 @@ public class ApplicationController : MonoBehaviour //Responsable of launching th
             await clientSingleton.CreateClient();
 
             HostSingleton hostSingleton = Instantiate(hostPrefab);
-            hostSingleton.CreateHost();
+            hostSingleton.CreateHost(playerPrefab);
 
             //Go to main menu
             clientSingleton.GameManager.GoToMenu();

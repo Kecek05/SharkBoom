@@ -1,15 +1,17 @@
 using System;
+using System.Threading.Tasks;
 using Unity.Netcode;
 using UnityEngine;
 
 public class NetworkServer : IDisposable
 {
     private NetworkManager networkManager;
+    private NetworkObject playerPrefab;
 
-    public NetworkServer(NetworkManager networkManager) // our constructor
+    public NetworkServer(NetworkManager _networkManager, NetworkObject _playerPrefab) // our constructor
     {
-        this.networkManager = networkManager;
-
+        networkManager = _networkManager;
+        playerPrefab = _playerPrefab;
         networkManager.ConnectionApprovalCallback += ApprovalCheck;
 
         networkManager.OnServerStarted += NetworkManager_OnServerStarted;
@@ -27,10 +29,19 @@ public class NetworkServer : IDisposable
 
     private void ApprovalCheck(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
     {
-        response.Approved = true;
-        response.Position = new Vector3(5, 5, 0);
-        response.Rotation = Quaternion.identity;
-        response.CreatePlayerObject = true;
+
+        _ = SpawnPlayerDelay(request.ClientNetworkId);
+
+        response.Approved = true; //Connection is approved
+        response.CreatePlayerObject = false;
+    }
+
+    private async Task SpawnPlayerDelay(ulong clientId)
+    {
+        await Task.Delay(1000);
+        NetworkObject playerInstance = GameObject.Instantiate(playerPrefab, GameFlowManager.Instance.GetRandomSpawnPoint(), Quaternion.identity);
+
+        playerInstance.SpawnAsPlayerObject(clientId);
     }
 
     public void Dispose()
