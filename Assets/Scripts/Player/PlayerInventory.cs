@@ -7,6 +7,7 @@ public class PlayerInventory : NetworkBehaviour
 {
     public event Action<ItemDataStruct> OnItemAdded;
     public event Action<ItemDataStruct> OnItemChanged;
+    public event Action<int> OnItemSelected;
 
 
     [SerializeField] private ItemsListSO itemsListSO;
@@ -31,6 +32,7 @@ public class PlayerInventory : NetworkBehaviour
             playerInventory.OnListChanged += PlayerInventory_OnListChanged;
 
             GameFlowManager.OnRoundEnd += GameFlowManager_OnRoundEnd;
+            GameFlowManager.OnRoundPreparing += GameFlowManager_OnRoundPreparing;
 
             //DEBUG
             selectedItemData.OnValueChanged += (previousValue, newValue) =>
@@ -40,9 +42,49 @@ public class PlayerInventory : NetworkBehaviour
         }
     }
 
+    private void GameFlowManager_OnRoundPreparing()
+    {
+        //Round preparing fase starting
+        SelectItemDataByIndexRpc(SelectFirstItemInventoryIndexAvailable());
+    }
+
     private void GameFlowManager_OnRoundEnd()
     {
+        //Round ended
+        DecreaseAllItemsCooldownRpc();
         UseItemRpc();
+
+    }
+
+    [Rpc(SendTo.Server)]
+    private void DecreaseAllItemsCooldownRpc()
+    {
+        for (int i = 0; i < playerInventory.Count; i++)
+        {
+            if (!playerInventory[i].itemCanBeUsed)
+            {
+                playerInventory[i] = new ItemDataStruct
+                {
+                    itemInventoryIndex = playerInventory[i].itemInventoryIndex,
+                    itemSOIndex = playerInventory[i].itemSOIndex,
+                    itemCooldownRemaining = playerInventory[i].itemCooldownRemaining - 1,
+                    itemCanBeUsed = playerInventory[i].itemCooldownRemaining - 1 <= 0, // if less or equal than 0, can be used
+                };
+            }
+        }
+    }
+
+    private int SelectFirstItemInventoryIndexAvailable()
+    {
+        for (int i = 0; i < playerInventory.Count; i++)
+        {
+            if (playerInventory[i].itemCanBeUsed)
+            {
+                return i;
+            }
+        }
+        Debug.LogWarning("No item available");
+        return -1;
     }
 
     private void PlayerInventory_OnListChanged(NetworkListEvent<ItemDataStruct> changeEvent)
@@ -89,7 +131,7 @@ public class PlayerInventory : NetworkBehaviour
             itemCooldownRemaining = 0,
             itemCanBeUsed = true,
         });
-        SelectItemDataByIndexRpc(0);
+        SelectItemDataByIndexRpc(SelectFirstItemInventoryIndexAvailable()); //Default some value
         Debug.Log("Item Setted");
     }
 
@@ -107,8 +149,18 @@ public class PlayerInventory : NetworkBehaviour
 
         selectedItemIndex = itemInventoryIndex;
         selectedItemData.Value = playerInventory[itemInventoryIndex];
+
+        TriggerOnItemSelectedClientsRpc(itemInventoryIndex);
         Debug.Log($"Player: {gameObject.name} Selected Item: {GetItemSOByIndex(playerInventory[itemInventoryIndex].itemSOIndex).itemName}");
 
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void TriggerOnItemSelectedClientsRpc(int itemInventoryIndex)
+    {
+        if(!IsOwner) return;
+
+        OnItemSelected?.Invoke(itemInventoryIndex);
     }
 
     [Command("playerInventory-useItem")]

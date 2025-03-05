@@ -44,10 +44,23 @@ public class PlayerInventoryUI : NetworkBehaviour
         GameFlowManager.OnRoundPreparing += GameFlowManager_OnRoundPreparing;
         player.PlayerInventory.OnItemAdded += PlayerInventory_OnItemAdded;
         player.PlayerInventory.OnItemChanged += PlayerInventory_OnItemChanged;
+        player.PlayerInventory.OnItemSelected += PlayerInventory_OnItemSelected;
     }
 
-
-
+    private void PlayerInventory_OnItemSelected(int itemInventoryIndex)
+    {
+        //Update item on list
+        foreach (PlayerItemSingleUI playerItemSingleUI in playerItemSingleUIs)
+        {
+            if (playerItemSingleUI.ItemIndex == itemInventoryIndex)
+            {
+                playerItemSingleUI.SelectedThisItem();
+            } else
+            {
+                playerItemSingleUI.UnSelectedThisItem();
+            }
+        }
+    }
 
     private void PlayerInventory_OnItemChanged(ItemDataStruct itemData)
     {
