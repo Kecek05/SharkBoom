@@ -26,15 +26,11 @@ public struct ItemDataStruct : INetworkSerializable, IEquatable<ItemDataStruct>
     public int itemCooldownRemaining;
 
 
-    public FixedString32Bytes ownerDebug;
-
-
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
         serializer.SerializeValue(ref itemSOIndex);
         serializer.SerializeValue(ref itemCanBeUsed);
         serializer.SerializeValue(ref itemCooldownRemaining);
-        serializer.SerializeValue(ref ownerDebug);
         serializer.SerializeValue(ref itemInventoryIndex);
     }
 

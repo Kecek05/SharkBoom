@@ -117,7 +117,6 @@ public class PlayerInventory : NetworkBehaviour
 
         playerInventory.Add(new ItemDataStruct
         {
-            ownerDebug = $"Player {gameObject.name}",
             itemInventoryIndex = playerInventory.Count, //get the index
             itemSOIndex = itemSOIndex,
             itemCooldownRemaining = 0,
@@ -160,7 +159,6 @@ public class PlayerInventory : NetworkBehaviour
         if (ItemCanBeUsed(itemInventoryIndex))
         {
             //Item Can be used
-            Debug.Log($"Player: {gameObject.name} Using item!"); //TO DO: Implement item use
 
             playerInventory[itemInventoryIndex] = new ItemDataStruct
             {

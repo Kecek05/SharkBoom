@@ -38,7 +38,7 @@ public class NetworkServer : IDisposable
         if(networkManager.ConnectedClientsList.Count == 1) 
         {
             //Both players are connected
-            GameFlowManager.Instance.RandomizePlayerItems();
+            GameFlowManager.Instance.SetGameStateRpc(GameFlowManager.GameState.GameStarted);
         }
     }
 

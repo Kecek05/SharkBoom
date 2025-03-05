@@ -21,7 +21,7 @@ public class GameFlowManager : NetworkBehaviour
     public static event Action OnRoundStarted; // Round started, players just watch
     public static event Action OnRoundEnd; // Round finished, future implementations
 
-    private enum GameState
+    public enum GameState
     {
         WaitingForPlayers, //Waiting for players to connect
         GameStarted, //all players connected
@@ -53,6 +53,11 @@ public class GameFlowManager : NetworkBehaviour
             case GameState.WaitingForPlayers:
                 break;
             case GameState.GameStarted:
+                if(IsServer)
+                {
+                    RandomizePlayerItems();
+                }
+
                 break;
             case GameState.RoundPreparing:
                 OnRoundPreparing?.Invoke();
@@ -61,7 +66,7 @@ public class GameFlowManager : NetworkBehaviour
                 OnRoundStarted?.Invoke();
                 if (IsServer)
                 {
-                    GameFlowManager.instance.StartCoroutine(DelayRoundGoing());
+                    DelayChangeState(GameState.RoundEnded);
                 }
                 break;
             case GameState.RoundEnded: //for some reason, client doesnt lisen to OnRoundEnd
@@ -69,7 +74,7 @@ public class GameFlowManager : NetworkBehaviour
 
                 if(IsServer)
                 {
-                    SetGameStateRpc(GameState.RoundPreparing);
+                    DelayChangeState(GameState.RoundPreparing);
                 }
                 break;
             case GameState.GameEnded:
@@ -79,13 +84,12 @@ public class GameFlowManager : NetworkBehaviour
         Debug.Log($"Game State Changed to: {newValue.ToString()}");
     }
 
-    private IEnumerator DelayRoundGoing()
-    {
-        Debug.Log("Waiting...");
-        yield return new WaitForSeconds(2f);
-        SetGameStateRpc(GameState.RoundEnded);
-    }
 
+    private async void DelayChangeState(GameState newGameState)
+    {
+        await Task.Delay(2000);
+        SetGameStateRpc(newGameState);
+    }
 
     [Command("gameFlowManager-randomizePlayersItems")]
     public async void RandomizePlayerItems()
@@ -104,6 +108,8 @@ public class GameFlowManager : NetworkBehaviour
                 Debug.Log($"Player: {playerInventory.gameObject.name}");
             }
         }
+
+        SetGameStateRpc(GameState.RoundPreparing);
     }
 
     public Vector3 GetRandomSpawnPoint()
@@ -133,12 +139,11 @@ public class GameFlowManager : NetworkBehaviour
         {
             SetGameStateRpc(GameState.RoundStarted);
             playersReady.Clear(); //Clear for next round
-            Debug.Log("All Players Ready!");
         }
     }
 
     [Rpc(SendTo.Server)]
-    private void SetGameStateRpc(GameState newState)
+    public void SetGameStateRpc(GameState newState)
     {
         gameState.Value = newState;
     }

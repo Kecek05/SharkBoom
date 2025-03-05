@@ -14,7 +14,7 @@ public class PlayerInventoryUI : NetworkBehaviour
     [SerializeField] private Player player;
     [SerializeField] private Transform inventoryItemHolder;
     [SerializeField] private GameObject playerItemSingleUIPrefab;
-    [SerializeField] private Button useItemButton;
+    [SerializeField] private Button readyButton;
 
     [SerializeField] private ItemsListSO itemsListSO; //TEMP
 
@@ -22,7 +22,7 @@ public class PlayerInventoryUI : NetworkBehaviour
 
     private void Awake()
     {
-        useItemButton.onClick.AddListener(() =>
+        readyButton.onClick.AddListener(() =>
         {
             //playerInventory.UseItemRpc();
             player.SetPlayerReady();
@@ -70,7 +70,6 @@ public class PlayerInventoryUI : NetworkBehaviour
             {
                 playerItemSingleUI.UpdateCooldown(itemData.itemCooldownRemaining.ToString());
                 playerItemSingleUI.UpdateCanBeUsed(itemData.itemCanBeUsed);
-                Debug.Log($"Item Updated UI SingleUIIndex: {playerItemSingleUI.ItemIndex} ItemDataInventoryIndex: {itemData.itemInventoryIndex} ");
                 return;
             }
         }
@@ -80,7 +79,7 @@ public class PlayerInventoryUI : NetworkBehaviour
     {
         //Add item on list
         PlayerItemSingleUI playerItemSingleUI = Instantiate(playerItemSingleUIPrefab, inventoryItemHolder).GetComponent<PlayerItemSingleUI>();
-        playerItemSingleUI.Setup(itemsListSO.allItemsSOList[itemData.itemSOIndex].itemName, itemsListSO.allItemsSOList[itemData.itemSOIndex].itemIcon, itemData.itemCooldownRemaining.ToString(), itemData.ownerDebug, itemData.itemCanBeUsed, itemData.itemInventoryIndex, this);
+        playerItemSingleUI.Setup(itemsListSO.allItemsSOList[itemData.itemSOIndex].itemName, itemsListSO.allItemsSOList[itemData.itemSOIndex].itemIcon, itemData.itemCooldownRemaining.ToString(), itemData.itemCanBeUsed, itemData.itemInventoryIndex, this);
         playerItemSingleUIs.Add(playerItemSingleUI);
     }
 

@@ -13,9 +13,8 @@ public class PlayerItemSingleUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI itemNameText;
     [SerializeField] private Image itemImageIcon;
     [SerializeField] private TextMeshProUGUI itemCooldownText;
-    [SerializeField] private TextMeshProUGUI ownerDebugText;
     [SerializeField] private TextMeshProUGUI itemCanBeUsedText;
-    [SerializeField] private Button selectItemButton;
+    [SerializeField] private Button selectThisItemButton;
     [SerializeField] private TextMeshProUGUI itemInventoryIndexText;
     [SerializeField] private Image backgroundImage;
     private PlayerInventoryUI playerInventoryUI;
@@ -29,20 +28,18 @@ public class PlayerItemSingleUI : MonoBehaviour
 
     private void Awake()
     {
-        selectItemButton.onClick.AddListener(() =>
+        selectThisItemButton.onClick.AddListener(() =>
         {
             playerInventoryUI.SelecItem(myIndexItemInventory);
-            Debug.Log($"Item {myIndexItemInventory} selected");
         });
     }
 
-    public void Setup(string itemName, Image itemIcon, string itemCooldown, FixedString32Bytes ownerDebug, bool itemCanBeUsed, int indexItemInventory, PlayerInventoryUI _playerInventoryUI)
+    public void Setup(string itemName, Image itemIcon, string itemCooldown, bool itemCanBeUsed, int indexItemInventory, PlayerInventoryUI _playerInventoryUI)
     {
         itemNameText.text = itemName;
         //itemImageIcon.sprite = itemIcon.sprite;
         itemCooldownText.text = itemCooldown;
 
-        ownerDebugText.text = ownerDebug.ToString();
         itemCanBeUsedText.text = itemCanBeUsed.ToString();
 
         myIndexItemInventory = indexItemInventory;
