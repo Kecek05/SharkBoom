@@ -25,8 +25,7 @@ public class PlayerInventoryUI : NetworkBehaviour
         useItemButton.onClick.AddListener(() =>
         {
             //playerInventory.UseItemRpc();
-            this.player.SetPlayerReady();
-            Debug.Log("Use Item Button Clicked");
+            player.SetPlayerReady();
         });
     }
 
@@ -87,7 +86,7 @@ public class PlayerInventoryUI : NetworkBehaviour
 
     public void SelecItem(int itemInventoryIndex)
     {
-        player.PlayerInventory.SelectItemDataByIndexRpc(itemInventoryIndex);
+        player.PlayerInventory.SelectItemDataByItemInventoryIndexRpc(itemInventoryIndex);
     }
 
     private void Player_OnPlayerReady()

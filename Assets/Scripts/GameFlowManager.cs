@@ -59,14 +59,18 @@ public class GameFlowManager : NetworkBehaviour
                 break;
             case GameState.RoundStarted:
                 OnRoundStarted?.Invoke();
-                if (!IsServer) return;
-                StartCoroutine(DelayRoundGoing());
+                if (IsServer)
+                {
+                    StartCoroutine(DelayRoundGoing());
+                }
                 break;
             case GameState.RoundEnded:
                 OnRoundEnd?.Invoke();
 
-                if(!IsServer) return;
-                SetGameStateRpc(GameState.RoundPreparing);
+                if(IsServer)
+                {
+                    SetGameStateRpc(GameState.RoundPreparing);
+                }
                 break;
             case GameState.GameEnded:
                 break;

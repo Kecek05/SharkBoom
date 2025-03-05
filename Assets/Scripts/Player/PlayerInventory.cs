@@ -34,25 +34,20 @@ public class PlayerInventory : NetworkBehaviour
             GameFlowManager.OnRoundEnd += GameFlowManager_OnRoundEnd;
             GameFlowManager.OnRoundPreparing += GameFlowManager_OnRoundPreparing;
 
-            //DEBUG
-            selectedItemData.OnValueChanged += (previousValue, newValue) =>
-            {
-                Debug.Log($"Item Selected InventoryIndex: {selectedItemData.Value.itemInventoryIndex.ToString()} Item Selected ItemSOIndex: {selectedItemData.Value.itemSOIndex.ToString()}");
-            };
         }
     }
 
     private void GameFlowManager_OnRoundPreparing()
     {
         //Round preparing fase starting
-        SelectItemDataByIndexRpc(SelectFirstItemInventoryIndexAvailable());
+        SelectItemDataByItemInventoryIndexRpc(SelectFirstItemInventoryIndexAvailable());
     }
 
     private void GameFlowManager_OnRoundEnd()
     {
         //Round ended
         DecreaseAllItemsCooldownRpc();
-        UseItemRpc();
+        UseItemByInventoryIndexRpc(selectedItemData.Value.itemInventoryIndex);
 
     }
 
@@ -92,12 +87,9 @@ public class PlayerInventory : NetworkBehaviour
         switch(changeEvent.Type)
         {
             case NetworkListEvent<ItemDataStruct>.EventType.Add:
-                Debug.Log("Item Added");
-
                 OnItemAdded?.Invoke(changeEvent.Value);
                 break;
             case NetworkListEvent<ItemDataStruct>.EventType.Value:
-                Debug.Log("Item Value Changed");
                 OnItemChanged?.Invoke(changeEvent.Value);
                 break;
         }
@@ -110,13 +102,13 @@ public class PlayerInventory : NetworkBehaviour
     {
         for (int i = 0; i < playerInventory.Count; i++)
         {
-            Debug.Log($"Player: {gameObject.name} Item: {GetItemSOByIndex(playerInventory[i].itemSOIndex).itemName} Cooldown: {GetItemSOByIndex(playerInventory[i].itemSOIndex).cooldown} Can be used: {playerInventory[i].itemCanBeUsed} Item Inventory Index: {playerInventory[i].itemInventoryIndex}");
+            Debug.Log($"Player: {gameObject.name} Item: {GetItemSOByItemSOIndex(playerInventory[i].itemSOIndex).itemName} Cooldown: {GetItemSOByItemSOIndex(playerInventory[i].itemSOIndex).cooldown} Can be used: {playerInventory[i].itemCanBeUsed} Item Inventory Index: {playerInventory[i].itemInventoryIndex}");
         }
     }
     [Command("playerInventory-printPlayerSelectedItem", MonoTargetType.All)]
     public void PrintPlayerSelectedItem() //DEBUG
     {
-        Debug.Log($"Player: {gameObject.name} Selected Item: {GetItemSOByIndex(selectedItemData.Value.itemSOIndex).itemName}");
+        Debug.Log($"Player: {gameObject.name} Selected Item: {GetItemSOByItemSOIndex(selectedItemData.Value.itemSOIndex).itemName}");
     }
     #endregion
 
@@ -131,14 +123,13 @@ public class PlayerInventory : NetworkBehaviour
             itemCooldownRemaining = 0,
             itemCanBeUsed = true,
         });
-        SelectItemDataByIndexRpc(SelectFirstItemInventoryIndexAvailable()); //Default some value
-        Debug.Log("Item Setted");
+        SelectItemDataByItemInventoryIndexRpc(0); //Default some value
     }
 
 
     [Command("playerInventory-selectItemDataByIndex")]
     [Rpc(SendTo.Server)]
-    public void SelectItemDataByIndexRpc(int itemInventoryIndex) // Select a item to use, UI will call this
+    public void SelectItemDataByItemInventoryIndexRpc(int itemInventoryIndex) // Select a item to use, UI will call this
     {
 
         if (!ItemCanBeUsed(itemInventoryIndex))
@@ -151,7 +142,6 @@ public class PlayerInventory : NetworkBehaviour
         selectedItemData.Value = playerInventory[itemInventoryIndex];
 
         TriggerOnItemSelectedClientsRpc(itemInventoryIndex);
-        Debug.Log($"Player: {gameObject.name} Selected Item: {GetItemSOByIndex(playerInventory[itemInventoryIndex].itemSOIndex).itemName}");
 
     }
 
@@ -165,18 +155,18 @@ public class PlayerInventory : NetworkBehaviour
 
     [Command("playerInventory-useItem")]
     [Rpc(SendTo.Server)]
-    public void UseItemRpc() // Use the item, Server will call this when both players ready
+    public void UseItemByInventoryIndexRpc(int itemInventoryIndex) // Use the item, Server will call this when both players ready
     {
-        if (ItemCanBeUsed(selectedItemIndex))
+        if (ItemCanBeUsed(itemInventoryIndex))
         {
             //Item Can be used
             Debug.Log($"Player: {gameObject.name} Using item!"); //TO DO: Implement item use
 
-            playerInventory[selectedItemIndex] = new ItemDataStruct
+            playerInventory[itemInventoryIndex] = new ItemDataStruct
             {
-                itemInventoryIndex = selectedItemData.Value.itemInventoryIndex, //do not lose the index
-                itemSOIndex = selectedItemData.Value.itemSOIndex,
-                itemCooldownRemaining = GetItemSOByIndex(selectedItemData.Value.itemSOIndex).cooldown,
+                itemInventoryIndex = playerInventory[itemInventoryIndex].itemInventoryIndex, //do not lose the index
+                itemSOIndex = playerInventory[itemInventoryIndex].itemSOIndex,
+                itemCooldownRemaining = GetItemSOByItemSOIndex(playerInventory[itemInventoryIndex].itemSOIndex).cooldown,
                 itemCanBeUsed = false,
             };
 
@@ -197,10 +187,10 @@ public class PlayerInventory : NetworkBehaviour
 
     public ItemSO GetSelectedItemSO()
     {
-        return GetItemSOByIndex(selectedItemData.Value.itemSOIndex);
+        return GetItemSOByItemSOIndex(selectedItemData.Value.itemSOIndex);
     }
 
-    public ItemSO GetItemSOByIndex(int itemSOIndex)
+    public ItemSO GetItemSOByItemSOIndex(int itemSOIndex)
     {
         return itemsListSO.allItemsSOList[itemSOIndex];
     }
