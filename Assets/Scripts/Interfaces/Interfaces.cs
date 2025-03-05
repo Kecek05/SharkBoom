@@ -2,9 +2,7 @@ using UnityEngine;
 
 public interface IDamageable
 {
-    public void TakeDamage(float damage, float damageMultiplier = 1f);
-
-    public void Die();
+    public void TakeDamage(float damage);
 }
 
 public interface IDraggable

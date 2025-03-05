@@ -103,7 +103,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1722693917505950453
 Transform:
   m_ObjectHideFlags: 0
@@ -131,9 +131,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f33bec82c2ef934e926f61747696b3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BodyPart: 2
-  bodyPartCollision: {fileID: 3919159044063241953}
-  health: {fileID: 5795781004935212288}
+  bodyPart: 2
+  player: {fileID: 2871544100916734757}
 --- !u!135 &3919159044063241953
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -149,7 +148,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -174,7 +173,7 @@ GameObject:
   - component: {fileID: 1987240186612080187}
   - component: {fileID: 5330386554425838414}
   - component: {fileID: 800024870368675109}
-  - component: {fileID: 5795781004935212288}
+  - component: {fileID: 4799874711576044224}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -220,7 +219,7 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.5
   m_Height: 2
@@ -347,6 +346,7 @@ MonoBehaviour:
   playerInventory: {fileID: 6377254783256832976}
   playerInventoryUI: {fileID: 5233387307745232000}
   playerDragAndShoot: {fileID: 5330386554425838414}
+  playerHealth: {fileID: 4799874711576044224}
 --- !u!114 &6377254783256832976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -392,7 +392,6 @@ MonoBehaviour:
   trajectory: {fileID: 800024870368675109}
   inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
   player: {fileID: 2871544100916734757}
-  playerInventory: {fileID: 6377254783256832976}
   startDragPos: {fileID: 5526197349071884733}
   maxForceMultiplier: 25
   minForceMultiplier: 1
@@ -415,7 +414,7 @@ MonoBehaviour:
   dragAndShoot: {fileID: 5330386554425838414}
   dotsNumber: 30
   dotSpacing: 0.01
---- !u!114 &5795781004935212288
+--- !u!114 &4799874711576044224
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -424,11 +423,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1244250245066138330}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 84e8393211b811b4397a39841f85f0ec, type: 3}
+  m_Script: {fileID: 11500000, guid: f26550d4d9fdd6a418c3dd120c137ec5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   maxHealth: 100
+  headMultiplier: 2
+  bodyMultiplier: 1.2
+  footMultiplier: 0.8
 --- !u!1 &1348648853730134369
 GameObject:
   m_ObjectHideFlags: 0
@@ -548,7 +550,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4737109445248722292
 Transform:
   m_ObjectHideFlags: 0
@@ -576,9 +578,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f33bec82c2ef934e926f61747696b3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BodyPart: 1
-  bodyPartCollision: {fileID: 4834629341430548951}
-  health: {fileID: 5795781004935212288}
+  bodyPart: 1
+  player: {fileID: 2871544100916734757}
 --- !u!135 &4834629341430548951
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -594,7 +595,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -784,7 +785,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6398479438026471912
 Transform:
   m_ObjectHideFlags: 0
@@ -812,9 +813,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f33bec82c2ef934e926f61747696b3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BodyPart: 0
-  bodyPartCollision: {fileID: 1847687033026414544}
-  health: {fileID: 5795781004935212288}
+  bodyPart: 0
+  player: {fileID: 2871544100916734757}
 --- !u!135 &1847687033026414544
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -830,7 +830,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3

@@ -18,6 +18,9 @@ public class Player : NetworkBehaviour
     [SerializeField] private DragAndShoot playerDragAndShoot;
     public DragAndShoot PlayerDragAndShoot => playerDragAndShoot;
 
+    [SerializeField] private PlayerHealth playerHealth;
+    public PlayerHealth PlayerHealth => playerHealth;
+
 
     public override void OnNetworkSpawn()
     {
