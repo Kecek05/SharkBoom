@@ -59,7 +59,10 @@ public class PlayerLauncher : NetworkBehaviour
 
         GameObject gameObject = Instantiate(player.PlayerInventory.GetSelectedItemSO().itemClientPrefab, spawnItemPos.position, Quaternion.identity);
 
-        Physics.IgnoreCollision(playerCollider, gameObject.GetComponent<Collider>()); // Ignore collision between the player and the projectile
+        if(gameObject.TryGetComponent(out Collider collider))
+        {
+            Physics.IgnoreCollision(playerCollider, collider); // Ignore collision between the player and the projectile
+        }
 
         if (gameObject.transform.TryGetComponent(out IDraggable draggable))
         {

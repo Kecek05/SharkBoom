@@ -87,9 +87,10 @@ public class GameFlowManager : NetworkBehaviour
     public async void RandomizePlayerItems()
     {
         await Task.Delay(3000); //Delay for player to connect
-        int itemsInInventory = UnityEngine.Random.Range(2, itemsListSO.allItemsSOList.Count); //Random qtd of items for now
+        //int itemsInInventory = UnityEngine.Random.Range(2, itemsListSO.allItemsSOList.Count); //Random qtd of items for now
+        int itemsInInventory = itemsListSO.allItemsSOList.Count; //all items
 
-        for(int i = 0; i < itemsInInventory; i++)
+        for (int i = 0; i < itemsInInventory; i++)
         {
             int randomItemSOIndex = UnityEngine.Random.Range(0, itemsListSO.allItemsSOList.Count);
 
