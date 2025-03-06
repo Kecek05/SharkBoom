@@ -16,7 +16,7 @@ public class PlayerHealth : Health
     }
 
     [Command("health-takeDamage")]
-    public void PlayerTakeDamage(float damage, BodyPartEnum bodyPart)
+    public void PlayerTakeDamage(DamageableSO damageableSO, BodyPartEnum bodyPart)
     {
         if(!IsServer) return;
 
@@ -30,9 +30,9 @@ public class PlayerHealth : Health
             return;
         }
 
-        ModifyHealth(-(damage * selectedMultiplier));
+        ModifyHealth(-(damageableSO.damage * selectedMultiplier));
 
-        Debug.Log($"Damage: {damage} in: {bodyPart} with multiplier: {selectedMultiplier} total: {damage * selectedMultiplier}");
+        Debug.Log($"Damage: {damageableSO.damage} in: {bodyPart} with multiplier: {selectedMultiplier} total: {damage * selectedMultiplier}");
     }
 
     protected override void Die()

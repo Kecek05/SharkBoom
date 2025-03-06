@@ -35,8 +35,8 @@ public class BaseItemThrowable : MonoBehaviour, IDraggable
         {
             if (NetworkManager.Singleton.IsServer)
             {
-                damageable.TakeDamage(itemSO.damage);
-                Debug.Log("Dealt " + itemSO.damage + " damage to " + collision.gameObject.name);
+                damageable.TakeDamage(itemSO.damageableSO);
+                Debug.Log("Dealt " + itemSO.damageableSO.damage + " damage to " + collision.gameObject.name);
             }
         }
 

@@ -96,7 +96,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1722693917505950453}
   - component: {fileID: 4733135194678780252}
-  - component: {fileID: 3919159044063241953}
+  - component: {fileID: 7365868197530410558}
   m_Layer: 0
   m_Name: Foot
   m_TagString: Untagged
@@ -113,7 +113,7 @@ Transform:
   m_GameObject: {fileID: 773857424255861932}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.3, z: 0}
+  m_LocalPosition: {x: 0, y: -1.101, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -133,8 +133,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bodyPart: 2
   player: {fileID: 2871544100916734757}
---- !u!135 &3919159044063241953
-SphereCollider:
+--- !u!65 &7365868197530410558
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -152,8 +152,8 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 0.6636106, z: 1}
+  m_Center: {x: 0, y: 0.16819471, z: 0}
 --- !u!1 &1244250245066138330
 GameObject:
   m_ObjectHideFlags: 0
@@ -379,8 +379,8 @@ MonoBehaviour:
   spawnItemPos: {fileID: 8518103509723896872}
   playerColliders:
   - {fileID: 1847687033026414544}
-  - {fileID: 4834629341430548951}
-  - {fileID: 3919159044063241953}
+  - {fileID: 0}
+  - {fileID: 0}
   player: {fileID: 2871544100916734757}
 --- !u!114 &5120579722876303172
 MonoBehaviour:
@@ -552,7 +552,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4737109445248722292}
   - component: {fileID: 3631357948266487293}
-  - component: {fileID: 4834629341430548951}
+  - component: {fileID: 3015071477265737548}
   m_Layer: 0
   m_Name: Body
   m_TagString: Untagged
@@ -569,7 +569,7 @@ Transform:
   m_GameObject: {fileID: 1482397564086282568}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.31, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -589,8 +589,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bodyPart: 1
   player: {fileID: 2871544100916734757}
---- !u!135 &4834629341430548951
-SphereCollider:
+--- !u!65 &3015071477265737548
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -608,7 +608,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.68
+  m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1731536595254416242
 GameObject:
@@ -789,7 +789,7 @@ Transform:
   m_GameObject: {fileID: 3077044857443190407}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.29, z: 0}
+  m_LocalPosition: {x: 0, y: 0.833, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -828,7 +828,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
+  m_Radius: 0.57
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3162107493010681911
 GameObject:

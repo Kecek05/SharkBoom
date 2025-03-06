@@ -28,11 +28,10 @@ public class PlayerLauncher : NetworkBehaviour
         //Spawn Object, only owner
         SpawnProjectileServerRpc(player.PlayerDragController.DragForce, player.PlayerDragController.DirectionOfDrag); //Spawn real projectile on server need to send the speed and force values through the network
 
-        GameObject projetctile = SpawnDummyProjectile(player.PlayerDragController.DragForce, player.PlayerDragController.DirectionOfDrag); //Spawn fake projectile on client
+        SpawnDummyProjectile(player.PlayerDragController.DragForce, player.PlayerDragController.DirectionOfDrag); //Spawn fake projectile on client
 
-        CameraManager.Instance.SetCameraState(CameraManager.CameraState.Following);
-        CameraManager.Instance.CameraFollowing.SetCameraFollowingObject(projetctile.transform);
-        Debug.Log("passou pelo player");
+        //CameraManager.Instance.SetCameraState(CameraManager.CameraState.Following);
+        //CameraManager.Instance.CameraFollowing.SetCameraFollowingObject(projetctile.transform);
         if (player.PlayerInventory.SelectedItemData.Value.itemInventoryIndex == 0) //Jump
         {
             OnPlayerJumped?.Invoke();

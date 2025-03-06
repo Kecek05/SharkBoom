@@ -158,9 +158,15 @@ public class PlayerInventory : NetworkBehaviour
         selectedItemIndex = itemInventoryIndex;
         selectedItemData.Value = playerInventory[itemInventoryIndex];
 
-        player.PlayerDragController.SetDragAndShoot(GetSelectedItemSO().rb);
+        TriggerSetDragAndShootRpc();
         TriggerOnItemSelectedClientsRpc(itemInventoryIndex);
 
+    }
+
+    [Rpc(SendTo.Owner)]
+    protected void TriggerSetDragAndShootRpc()
+    {
+        player.PlayerDragController.SetDragAndShoot(GetSelectedItemSO().rb);
     }
 
     [Rpc(SendTo.ClientsAndHost)]
