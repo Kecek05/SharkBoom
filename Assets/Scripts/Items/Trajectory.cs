@@ -44,10 +44,10 @@ public class Trajectory : MonoBehaviour
         }
     }
 
-    public void UpdateDots(Vector3 objectPos, Vector3 forceApplied, ItemSO itemSO) 
+    public void UpdateDots(Vector3 objectPos, Vector3 forceApplied, Rigidbody rb) 
     {
         trajectoryPoints.Add(objectPos);
-        SimulateTrajectory(objectPos, forceApplied, itemSO);
+        SimulateTrajectory(objectPos, forceApplied, rb);
 
         for (int i = 0; i < dotsNumber && i < trajectoryPoints.Count; i++)
         {
@@ -55,7 +55,7 @@ public class Trajectory : MonoBehaviour
         }
     }
 
-    private void SimulateTrajectory(Vector3 objectPos, Vector3 forceApplied, ItemSO itemSO)
+    private void SimulateTrajectory(Vector3 objectPos, Vector3 forceApplied, Rigidbody rb)
     {
         if (!isSimulating) return;
 
@@ -64,10 +64,10 @@ public class Trajectory : MonoBehaviour
         GameObject ghostObj = new GameObject("Ghost");
         Rigidbody ghost = ghostObj.AddComponent<Rigidbody>();
 
-        ghost.mass = itemSO.rb.mass;
-        ghost.linearDamping = itemSO.rb.linearDamping;
-        ghost.angularDamping = itemSO.rb.angularDamping;
-        ghost.useGravity = itemSO.rb.useGravity;
+        ghost.mass = rb.mass;
+        ghost.linearDamping = rb.linearDamping;
+        ghost.angularDamping = rb.angularDamping;
+        ghost.useGravity = rb.useGravity;
         ghost.position = objectPos;
         ghost.linearVelocity = forceApplied / ghost.mass;
         ghost.isKinematic = false;

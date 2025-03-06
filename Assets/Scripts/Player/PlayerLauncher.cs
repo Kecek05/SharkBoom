@@ -14,17 +14,25 @@ public class PlayerLauncher : NetworkBehaviour
     {
         if (IsOwner)
         {
-
+            player.PlayerDragAndShoot.OnDragRelease += PlayerDragAndShoot_OnDragRelease;
             GameFlowManager.OnRoundStarted += GameFlowManager_OnRoundStarted;
         }
     }
 
-    private void GameFlowManager_OnRoundStarted()
+    private void PlayerDragAndShoot_OnDragRelease()
     {
         //Spawn Object, only owner
         SpawnProjectileServerRpc(player.PlayerDragAndShoot.DragForce, player.PlayerDragAndShoot.DirectionOfDrag); //Spawn real projectile on server need to send the speed and force values through the network
 
         SpawnDummyProjectile(player.PlayerDragAndShoot.DragForce, player.PlayerDragAndShoot.DirectionOfDrag); //Spawn fake projectile on client
+    }
+
+    private void GameFlowManager_OnRoundStarted()
+    {
+        ////Spawn Object, only owner
+        //SpawnProjectileServerRpc(player.PlayerDragAndShoot.DragForce, player.PlayerDragAndShoot.DirectionOfDrag); //Spawn real projectile on server need to send the speed and force values through the network
+
+        //SpawnDummyProjectile(player.PlayerDragAndShoot.DragForce, player.PlayerDragAndShoot.DirectionOfDrag); //Spawn fake projectile on client
     }
 
 
@@ -84,6 +92,7 @@ public class PlayerLauncher : NetworkBehaviour
     {
         if(IsOwner)
         {
+            player.PlayerDragAndShoot.OnDragRelease -= PlayerDragAndShoot_OnDragRelease;
             GameFlowManager.OnRoundStarted -= GameFlowManager_OnRoundStarted;
         }
     }

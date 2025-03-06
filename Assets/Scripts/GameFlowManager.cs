@@ -23,13 +23,26 @@ public class GameFlowManager : NetworkBehaviour
 
     public enum GameState
     {
+        None,
         WaitingForPlayers, //Waiting for players to connect
         GameStarted, //all players connected
-        RoundPreparing, //waiting for all players to be ready
-        RoundStarted, // all players ready
-        RoundEnded,
         GameEnded, //Game Over
     }
+
+    public enum PlayableState
+    {
+        None,
+        Player1Playing, //Player 1 Can Play
+        Player1Played, //Player 1 Cant Play
+        Player2Playing, //Player 2 Can Play
+        Player2Played, //Player 2 Cant Play
+    }
+
+    private PlayableState localPlayableState = new();
+    public PlayableState LocalplayableState => localPlayableState;
+
+    private NetworkVariable<PlayableState> currentPlayableState = new(PlayableState.None);
+    public NetworkVariable<PlayableState> CurrentPlayableState => currentPlayableState;
 
     private NetworkVariable<GameState> gameState = new(GameState.WaitingForPlayers);
 
@@ -44,6 +57,15 @@ public class GameFlowManager : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         gameState.OnValueChanged += GameState_OnValueChanged;
+
+        if (NetworkManager.Singleton.LocalClientId == 0)
+        {
+            localPlayableState = PlayableState.Player1Playing;
+        }
+        else
+        {
+            localPlayableState = PlayableState.Player2Playing;
+        }
     }
 
     private void GameState_OnValueChanged(GameState previousValue, GameState newValue)
@@ -56,25 +78,6 @@ public class GameFlowManager : NetworkBehaviour
                 if(IsServer)
                 {
                     RandomizePlayerItems();
-                }
-
-                break;
-            case GameState.RoundPreparing:
-                OnRoundPreparing?.Invoke();
-                break;
-            case GameState.RoundStarted:
-                OnRoundStarted?.Invoke();
-                if (IsServer)
-                {
-                    DelayChangeState(GameState.RoundEnded);
-                }
-                break;
-            case GameState.RoundEnded: //for some reason, client doesnt lisen to OnRoundEnd
-                OnRoundEnd?.Invoke();
-
-                if(IsServer)
-                {
-                    DelayChangeState(GameState.RoundPreparing);
                 }
                 break;
             case GameState.GameEnded:
@@ -109,7 +112,7 @@ public class GameFlowManager : NetworkBehaviour
             }
         }
 
-        SetGameStateRpc(GameState.RoundPreparing);
+        SetGameStateRpc(GameState.GameStarted);
     }
 
     public Vector3 GetRandomSpawnPoint()
@@ -137,7 +140,7 @@ public class GameFlowManager : NetworkBehaviour
 
         if (allClientsReady)
         {
-            SetGameStateRpc(GameState.RoundStarted);
+            //SetGameStateRpc(GameState.RoundStarted);
             playersReady.Clear(); //Clear for next round
         }
     }

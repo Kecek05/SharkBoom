@@ -7,14 +7,14 @@ public class PlayerInventory : NetworkBehaviour
 {
     public event Action<ItemDataStruct> OnItemAdded;
     public event Action<ItemDataStruct> OnItemChanged;
-    public event Action<int> OnItemSelected;
-
+    public event Action<int> OnItemInventoryIndexSelected;
+    public event Action<ItemSO> OnItemSOSelected;
 
     [SerializeField] private ItemsListSO itemsListSO;
 
-
     private NetworkList<ItemDataStruct> playerInventory = new();
 
+    
 
     private NetworkVariable<ItemDataStruct> selectedItemData = new();
     public NetworkVariable<ItemDataStruct> SelectedItemData => selectedItemData;
@@ -149,7 +149,9 @@ public class PlayerInventory : NetworkBehaviour
     {
         if(!IsOwner) return;
 
-        OnItemSelected?.Invoke(itemInventoryIndex);
+        OnItemInventoryIndexSelected?.Invoke(itemInventoryIndex);
+
+        OnItemSOSelected?.Invoke(GetItemSOByItemSOIndex(playerInventory[itemInventoryIndex].itemSOIndex));
     }
 
     [Command("playerInventory-useItem")]

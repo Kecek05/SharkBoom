@@ -45,7 +45,7 @@ public class DragAndShoot : NetworkBehaviour
     private Vector3 directionOfDrag;
     private float dragForce;
     private bool isDragging = false;
-    private bool canDrag = true;
+    private bool canDrag = false;
     private float dragDistance;
 
 
@@ -66,6 +66,9 @@ public class DragAndShoot : NetworkBehaviour
     public float DragForce => dragForce;
     public bool CanDrag => canDrag;
 
+
+    private Rigidbody selectedRb;
+
     public override void OnNetworkSpawn()
     {
         if (!IsOwner) return;
@@ -79,6 +82,11 @@ public class DragAndShoot : NetworkBehaviour
         trajectory.Initialize(startDragPos);
     }
 
+    public void SetDragAndShoot(Rigidbody rb)
+    {
+        selectedRb = rb;
+        SetCanDrag(true);
+    }
 
     private void InputReader_OnTouchPressEvent(InputAction.CallbackContext context)
     {
@@ -133,7 +141,7 @@ public class DragAndShoot : NetworkBehaviour
             dragForce = dragDistance * offsetForceMultiplier; //Calculate the force linearly
             dragForce = Mathf.Clamp(dragForce, minForceMultiplier, maxForceMultiplier);
 
-            trajectory.UpdateDots(transform.position, directionOfDrag * dragForce, player.PlayerInventory.GetSelectedItemSO()); // update the dots position 
+            trajectory.UpdateDots(transform.position, directionOfDrag * dragForce, player.PlayerInventory.GetSelectedItemSO().rb); // update the dots position 
 
             if (Time.time - lastCheckTime >= checkMovementInterval)
             {
@@ -197,7 +205,7 @@ public class DragAndShoot : NetworkBehaviour
             dragForce = dragDistance * offsetForceMultiplier; //Calculate the force linearly
             dragForce = Mathf.Clamp(dragForce, minForceMultiplier, maxForceMultiplier);
 
-            trajectory.UpdateDots(transform.position, directionOfDrag * dragForce, player.PlayerInventory.GetSelectedItemSO()); // update the dots position 
+            trajectory.UpdateDots(transform.position, directionOfDrag * dragForce, player.PlayerInventory.GetSelectedItemSO().rb); // update the dots position 
 
             if (!isShowingDots)
             {
@@ -212,7 +220,7 @@ public class DragAndShoot : NetworkBehaviour
     {
         // Reset the dots position
         //CameraManager.Instance.CameraZoom.ResetZoom(startZoomPos); // Reset the zoom for start position
-        trajectory.UpdateDots(transform.position, directionOfDrag * minForceMultiplier, player.PlayerInventory.GetSelectedItemSO());
+        trajectory.UpdateDots(transform.position, directionOfDrag * minForceMultiplier, player.PlayerInventory.GetSelectedItemSO().rb);
         ReleaseDrag();
 
     }

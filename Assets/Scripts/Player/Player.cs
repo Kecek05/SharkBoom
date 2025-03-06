@@ -21,13 +21,15 @@ public class Player : NetworkBehaviour
     [SerializeField] private PlayerHealth playerHealth;
     public PlayerHealth PlayerHealth => playerHealth;
 
+    [SerializeField] private PlayerDragController playerDragController;
+    public PlayerDragController PlayerDragController => playerDragController;
 
     public override void OnNetworkSpawn()
     {
         gameObject.name = "Player " + UnityEngine.Random.Range(0, 100).ToString();
     }
 
-    public void SetPlayerReady() //UI Button will call this
+    public void SetPlayerReady()
     {
         if(playerInventory.GetSelectedItemSO() == null)
         {
