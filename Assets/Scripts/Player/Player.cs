@@ -71,10 +71,14 @@ public class Player : NetworkBehaviour
 
     public void PlayerShooted()
     {
+        //Player Shooted, cant do any thing else. Round ended
         SetPlayerCanJumpThisTurn(false);
         SetPlayerCanShootThisTurn(false);
 
         OnPlayerShooted?.Invoke();
+
+        //This player round ended, wait for the item to finish their action an then change the game state to the next player
+        // GameFlowManager.Instance.SetGameStateRpc(GameFlowManager.Instance.LocalplayedState);
     }
 
 

@@ -149,7 +149,7 @@ public class PlayerInventory : NetworkBehaviour
     #endregion
 
 
-    public void SetPlayerItems(int itemSOIndex) //Set the items that player have
+    public void SetPlayerItems(int itemSOIndex) //Set the items that player have when starting the game
     {
 
         playerInventory.Add(new ItemDataStruct

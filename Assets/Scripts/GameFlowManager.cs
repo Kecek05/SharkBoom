@@ -42,7 +42,6 @@ public class GameFlowManager : NetworkBehaviour
 
     private PlayableState localPlayableState = new();
     private PlayableState localPlayedState = new();
-    public PlayableState LocalplayableState => localPlayableState;
 
     private NetworkVariable<PlayableState> currentPlayableState = new(PlayableState.None);
     public NetworkVariable<PlayableState> CurrentPlayableState => currentPlayableState;
@@ -51,6 +50,8 @@ public class GameFlowManager : NetworkBehaviour
 
     private Dictionary<ulong, bool> playersReady = new();
     //private Dictionary<ulong, algo> playersRoundData = new();
+    public PlayableState LocalplayableState => localPlayableState;
+    public PlayableState LocalplayedState => localPlayedState;
 
     private void Awake()
     {
