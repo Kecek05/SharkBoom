@@ -1,4 +1,5 @@
 using Sortify;
+using Unity.Cinemachine;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -9,18 +10,24 @@ public class BaseItemThrowable : MonoBehaviour, IDraggable
     [SerializeField] protected bool canDoDamage = true;
     [SerializeField] protected ItemSO itemSO;
     [SerializeField] protected Rigidbody rb;
+    [SerializeField] protected CinemachineFollow cinemachineFollow;
     protected Transform shooterTransform;
 
 
     public void Release(float force, Vector3 direction, Transform _shooterTransform)
     {
         shooterTransform = _shooterTransform;
+        CameraManager.Instance.SetCameraState(CameraManager.CameraState.Following);
+        CameraManager.Instance.CameraFollowing.SetTheValuesOfCinemachine(cinemachineFollow);
         ItemReleased(force, direction);
+        
     }
 
     protected virtual void ItemReleased(float force, Vector3 direction)
     {
         rb.AddForce(direction * force, ForceMode.Impulse);
+        
+       
     }
 
     protected void OnCollisionEnter(Collision collision)

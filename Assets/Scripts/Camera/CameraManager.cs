@@ -4,7 +4,6 @@ using UnityEngine;
 public class CameraManager : MonoBehaviour
 {
 
-    [SerializeField] private CinemachineCamera cinemachineCamera;
     [SerializeField] private Transform cameraObjectToFollow;
     [SerializeField] private CameraMovement cameraMovement;
     [SerializeField] private CameraZoom cameraZoom;
@@ -13,9 +12,9 @@ public class CameraManager : MonoBehaviour
     public static CameraManager Instance { get; private set; }
     public Transform CameraObjectToFollow => cameraObjectToFollow;
     public CameraZoom CameraZoom => cameraZoom;
-    public CinemachineCamera CinemachineCamera => cinemachineCamera;
 
     public CameraFollowing CameraFollowing => cameraFollowing;
+
 
     public enum CameraState // Enum for all camera states
     {

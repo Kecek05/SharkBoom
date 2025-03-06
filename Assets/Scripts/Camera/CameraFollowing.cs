@@ -5,10 +5,20 @@ using UnityEngine;
 public class CameraFollowing : MonoBehaviour
 {
 
-    private Vector3 cameraObjectFollowPos;
-    private Transform cameraTarget;
+    public void SetTheValuesOfCinemachine(CinemachineFollow cinemachineFollowCamera)
+    {
 
-    public void SetCameraFollowingObject(Transform _cameraTarget)
+        if (cinemachineFollowCamera != null)
+        {
+            cinemachineFollowCamera.FollowOffset.z = CameraManager.Instance.CameraObjectToFollow.position.z;
+        }
+        else
+        {
+            Debug.LogError("CinemachineFollow não encontrado nos filhos de ");
+        }
+    }
+
+    /*public void SetCameraFollowingObject(Transform _cameraTarget)
     {
         cameraObjectFollowPos = CameraManager.Instance.CameraObjectToFollow.position;
         cameraObjectFollowPos.x += _cameraTarget.position.x;
@@ -33,5 +43,5 @@ public class CameraFollowing : MonoBehaviour
     public void ResetCameraObject()
     {
         CameraManager.Instance.CinemachineCamera.Follow = CameraManager.Instance.CameraObjectToFollow;
-    }
+    } */
 }
