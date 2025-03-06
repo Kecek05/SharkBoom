@@ -44,7 +44,6 @@ public class CameraManager : MonoBehaviour
     {
         cameraMovement.enabled = false; // We reset all camera Behaviours to false and enable them based on the state
         cameraZoom.enabled = false;
-        cameraFollowing.enabled = false;
 
         switch (cameraState)
         {
@@ -75,27 +74,23 @@ public class CameraManager : MonoBehaviour
     private void Move()
     {
         cameraMovement.enabled = true;
-        cameraFollowing.enabled = false;
     }
 
     private void Zoom()
     {
         cameraZoom.enabled = true;
-        cameraFollowing.enabled = false;
     }
 
     private void Dragging()
     {
         cameraMovement.enabled = false;
         cameraZoom.enabled = true;
-        cameraFollowing.enabled = false;
     }
 
     private void CameraReset()
     {
         cameraMovement.enabled = true;
         cameraZoom.enabled = true;
-        cameraFollowing.ResetCameraObject();
     }
 
     private void Following()
