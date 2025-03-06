@@ -14,7 +14,6 @@ public class PlayerInventoryUI : NetworkBehaviour
     [SerializeField] private Player player;
     [SerializeField] private Transform inventoryItemHolder;
     [SerializeField] private GameObject playerItemSingleUIPrefab;
-    [SerializeField] private Button readyButton;
     [SerializeField] private Button jumpButton;
 
     [SerializeField] private ItemsListSO itemsListSO; //TEMP
@@ -23,11 +22,6 @@ public class PlayerInventoryUI : NetworkBehaviour
 
     private void Awake()
     {
-        readyButton.onClick.AddListener(() =>
-        {
-            //playerInventory.UseItemRpc();
-            //player.SetPlayerReady();
-        });
 
         jumpButton.onClick.AddListener(() =>
         {
