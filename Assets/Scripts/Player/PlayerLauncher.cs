@@ -28,9 +28,12 @@ public class PlayerLauncher : NetworkBehaviour
         //Spawn Object, only owner
         SpawnProjectileServerRpc(player.PlayerDragController.DragForce, player.PlayerDragController.DirectionOfDrag); //Spawn real projectile on server need to send the speed and force values through the network
 
-        SpawnDummyProjectile(player.PlayerDragController.DragForce, player.PlayerDragController.DirectionOfDrag); //Spawn fake projectile on client
+        GameObject projetctile = SpawnDummyProjectile(player.PlayerDragController.DragForce, player.PlayerDragController.DirectionOfDrag); //Spawn fake projectile on client
 
-        if(player.PlayerInventory.SelectedItemData.Value.itemInventoryIndex == 0) //Jump
+        CameraManager.Instance.SetCameraState(CameraManager.CameraState.Following);
+        CameraManager.Instance.CameraFollowing.SetCameraFollowingObject(projetctile.transform);
+        Debug.Log("passou pelo player");
+        if (player.PlayerInventory.SelectedItemData.Value.itemInventoryIndex == 0) //Jump
         {
             OnPlayerJumped?.Invoke();
 
@@ -81,12 +84,12 @@ public class PlayerLauncher : NetworkBehaviour
 
     }
 
-    private void SpawnDummyProjectile(float dragForce, Vector3 dragDirection)
+    private GameObject SpawnDummyProjectile(float dragForce, Vector3 dragDirection)
     {
 
-        GameObject gameObject = Instantiate(player.PlayerInventory.GetSelectedItemSO().itemClientPrefab, spawnItemPos.position, Quaternion.identity);
+        GameObject projetctile = Instantiate(player.PlayerInventory.GetSelectedItemSO().itemClientPrefab, spawnItemPos.position, Quaternion.identity);
 
-        if (gameObject.TryGetComponent(out Collider projectileCollider))
+        if (projetctile.TryGetComponent(out Collider projectileCollider))
         {
             foreach (Collider playerCollider in playerColliders)
             {
@@ -94,11 +97,12 @@ public class PlayerLauncher : NetworkBehaviour
             }
         }
 
-        if (gameObject.transform.TryGetComponent(out IDraggable draggable))
+        if (projetctile.transform.TryGetComponent(out IDraggable draggable))
         {
             draggable.Release(dragForce, dragDirection, transform); //Call interface
-
         }
+
+        return projetctile;
     }
 
     public override void OnNetworkDespawn()

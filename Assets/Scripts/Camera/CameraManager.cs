@@ -1,22 +1,29 @@
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class CameraManager : MonoBehaviour
 {
 
+    [SerializeField] private CinemachineCamera cinemachineCamera;
     [SerializeField] private Transform cameraObjectToFollow;
     [SerializeField] private CameraMovement cameraMovement;
     [SerializeField] private CameraZoom cameraZoom;
+    [SerializeField] private CameraFollowing cameraFollowing;
 
     public static CameraManager Instance { get; private set; }
     public Transform CameraObjectToFollow => cameraObjectToFollow;
     public CameraZoom CameraZoom => cameraZoom;
+    public CinemachineCamera CinemachineCamera => cinemachineCamera;
+
+    public CameraFollowing CameraFollowing => cameraFollowing;
 
     public enum CameraState // Enum for all camera states
     {
         Move,
         Zoom,
         Dragging,
-        Default
+        Default,
+        Following
     }
 
     private CameraState cameraState;
@@ -37,6 +44,7 @@ public class CameraManager : MonoBehaviour
     {
         cameraMovement.enabled = false; // We reset all camera Behaviours to false and enable them based on the state
         cameraZoom.enabled = false;
+        cameraFollowing.enabled = false;
 
         switch (cameraState)
         {
@@ -52,6 +60,9 @@ public class CameraManager : MonoBehaviour
             case CameraState.Dragging:
                 Dragging();
                 break;
+            case CameraState.Following:
+                Following();
+                break;
         }
     }
 
@@ -64,22 +75,34 @@ public class CameraManager : MonoBehaviour
     private void Move()
     {
         cameraMovement.enabled = true;
+        cameraFollowing.enabled = false;
     }
 
     private void Zoom()
     {
         cameraZoom.enabled = true;
+        cameraFollowing.enabled = false;
     }
 
     private void Dragging()
     {
         cameraMovement.enabled = false;
         cameraZoom.enabled = true;
+        cameraFollowing.enabled = false;
     }
 
     private void CameraReset()
     {
         cameraMovement.enabled = true;
         cameraZoom.enabled = true;
+        cameraFollowing.ResetCameraObject();
+    }
+
+    private void Following()
+    {
+        cameraMovement.enabled = false;
+        cameraZoom.enabled = false;
+        cameraFollowing.enabled = true;
+        Debug.Log("Camera Following is true");
     }
 }
