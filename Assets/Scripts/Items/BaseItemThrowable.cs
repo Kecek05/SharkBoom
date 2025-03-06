@@ -5,7 +5,8 @@ using UnityEngine;
 public class BaseItemThrowable : MonoBehaviour, IDraggable
 {
     [BetterHeader("References")]
-    [Toggle][SerializeField] protected bool isServerObject;
+    [SerializeField] protected bool isServerObject;
+    [SerializeField] protected bool canDoDamage = true;
     [SerializeField] protected ItemSO itemSO;
     [SerializeField] protected Rigidbody rb;
     protected Transform shooterTransform;
@@ -22,9 +23,9 @@ public class BaseItemThrowable : MonoBehaviour, IDraggable
         rb.AddForce(direction * force, ForceMode.Impulse);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    protected void OnCollisionEnter(Collision collision)
     {
-        if (!isServerObject)
+        if (!isServerObject || !canDoDamage)
         {
             //Change latter
             Destroy(gameObject);

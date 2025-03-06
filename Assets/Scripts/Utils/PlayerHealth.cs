@@ -3,9 +3,7 @@ using UnityEngine;
 
 public class PlayerHealth : Health
 {
-    [SerializeField] private float headMultiplier = 2;
-    [SerializeField] private float bodyMultiplier = 1f;
-    [SerializeField] private float footMultiplier = 0.8f;
+
     private float selectedMultiplier; //cache
 
     public enum BodyPartEnum
@@ -22,7 +20,7 @@ public class PlayerHealth : Health
 
         if (isDead) return;
 
-        selectedMultiplier = bodyPart == BodyPartEnum.Head ? headMultiplier : bodyPart == BodyPartEnum.Body ? bodyMultiplier : bodyPart == BodyPartEnum.Foot ? footMultiplier : 0f; //0f error
+        selectedMultiplier = bodyPart == BodyPartEnum.Head ? damageableSO.headMultiplier : bodyPart == BodyPartEnum.Body ? damageableSO.bodyMultiplier : bodyPart == BodyPartEnum.Foot ? damageableSO.footMultiplier : 0f; //0f error
 
         if(selectedMultiplier == 0f)
         {
@@ -32,7 +30,7 @@ public class PlayerHealth : Health
 
         ModifyHealth(-(damageableSO.damage * selectedMultiplier));
 
-        Debug.Log($"Damage: {damageableSO.damage} in: {bodyPart} with multiplier: {selectedMultiplier} total: {damage * selectedMultiplier}");
+        Debug.Log($"Damage: {damageableSO.damage} in: {bodyPart} with multiplier: {selectedMultiplier} total: {damageableSO.damage * selectedMultiplier}");
     }
 
     protected override void Die()
