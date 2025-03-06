@@ -24,6 +24,10 @@ public class Player : NetworkBehaviour
     [SerializeField] private PlayerDragController playerDragController;
     public PlayerDragController PlayerDragController => playerDragController;
 
+    [SerializeField] private PlayerLauncher playerLauncher;
+    public PlayerLauncher PlayerLauncher => playerLauncher;
+
+
     public override void OnNetworkSpawn()
     {
         gameObject.name = "Player " + UnityEngine.Random.Range(0, 100).ToString();

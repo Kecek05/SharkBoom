@@ -1,9 +1,13 @@
 using Sortify;
+using System;
 using Unity.Netcode;
 using UnityEngine;
 
 public class PlayerLauncher : NetworkBehaviour
 {
+    public event Action OnPlayerJumped;
+    public event Action OnPlayerShooted;
+
     [BetterHeader("References")]
     [SerializeField] private Transform spawnItemPos;
     [SerializeField] private Collider[] playerColliders;
@@ -22,6 +26,15 @@ public class PlayerLauncher : NetworkBehaviour
     private void PlayerDragAndShoot_OnDragRelease()
     {
         //Spawn Object, only owner
+        if(player.PlayerInventory.SelectedItemData.Value.itemInventoryIndex == 0) //Jump
+        {
+            OnPlayerJumped?.Invoke();
+
+        } else
+        {
+            OnPlayerShooted?.Invoke();
+        }
+
         SpawnProjectileServerRpc(player.PlayerDragAndShoot.DragForce, player.PlayerDragAndShoot.DirectionOfDrag); //Spawn real projectile on server need to send the speed and force values through the network
 
         SpawnDummyProjectile(player.PlayerDragAndShoot.DragForce, player.PlayerDragAndShoot.DirectionOfDrag); //Spawn fake projectile on client

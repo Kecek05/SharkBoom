@@ -7,14 +7,14 @@ public class PlayerInventory : NetworkBehaviour
 {
     public event Action<ItemDataStruct> OnItemAdded;
     public event Action<ItemDataStruct> OnItemChanged;
-    public event Action<int> OnItemInventoryIndexSelected;
-    public event Action<ItemSO> OnItemSOSelected;
+    public event Action<int> OnItemSelected;
+
+    [SerializeField] private Player player;
 
     [SerializeField] private ItemsListSO itemsListSO;
 
     private NetworkList<ItemDataStruct> playerInventory = new();
 
-    
 
     private NetworkVariable<ItemDataStruct> selectedItemData = new();
     public NetworkVariable<ItemDataStruct> SelectedItemData => selectedItemData;
@@ -29,30 +29,46 @@ public class PlayerInventory : NetworkBehaviour
     {
         if(IsOwner)
         {
+
+            player.PlayerLauncher.OnPlayerJumped += PlayerLauncher_OnPlayerJumped;
+            player.PlayerLauncher.OnPlayerShooted += PlayerLauncher_OnPlayerShooted;
+
             playerInventory.OnListChanged += PlayerInventory_OnListChanged;
 
-            GameFlowManager.OnRoundEnd += GameFlowManager_OnRoundEnd;
-            GameFlowManager.OnRoundPreparing += GameFlowManager_OnRoundPreparing;
 
         }
     }
 
-    private void GameFlowManager_OnRoundPreparing()
+    private void PlayerLauncher_OnPlayerJumped()
     {
-        //Round preparing fase starting
+        //Jumped, can shoot
+        SetPlayerJumpedRpc(true);
         SelectItemDataByItemInventoryIndexRpc(SelectFirstItemInventoryIndexAvailable());
     }
 
-    private void GameFlowManager_OnRoundEnd()
+    private void PlayerLauncher_OnPlayerShooted()
     {
         //Round ended
         DecreaseAllItemsCooldownRpc();
         UseItemByInventoryIndexRpc(selectedItemData.Value.itemInventoryIndex);
-
+        SetPlayerJumpedRpc(false);
+        SelectItemDataByItemInventoryIndexRpc();
     }
 
     [Rpc(SendTo.Server)]
-    private void DecreaseAllItemsCooldownRpc()
+    private void SetPlayerJumpedRpc(bool jumped)
+    {
+        playerInventory[0] = new ItemDataStruct
+        {
+            itemInventoryIndex = playerInventory[0].itemInventoryIndex,
+            itemSOIndex = playerInventory[0].itemSOIndex,
+            itemCooldownRemaining = playerInventory[0].itemCooldownRemaining - 1,
+            itemCanBeUsed = !jumped, // if jumped, cant jump
+        };
+    }
+
+    [Rpc(SendTo.Server)]
+    public void DecreaseAllItemsCooldownRpc()
     {
         for (int i = 0; i < playerInventory.Count; i++)
         {
@@ -87,6 +103,7 @@ public class PlayerInventory : NetworkBehaviour
         switch(changeEvent.Type)
         {
             case NetworkListEvent<ItemDataStruct>.EventType.Add:
+                if (changeEvent.Value.itemInventoryIndex == 0) return; //Dont add item UI on Jump, index 0 is jump
                 OnItemAdded?.Invoke(changeEvent.Value);
                 break;
             case NetworkListEvent<ItemDataStruct>.EventType.Value:
@@ -112,6 +129,7 @@ public class PlayerInventory : NetworkBehaviour
     }
     #endregion
 
+
     public void SetPlayerItems(int itemSOIndex) //Set the items that player have
     {
 
@@ -122,13 +140,13 @@ public class PlayerInventory : NetworkBehaviour
             itemCooldownRemaining = 0,
             itemCanBeUsed = true,
         });
-        SelectItemDataByItemInventoryIndexRpc(0); //Default some value
+        SelectItemDataByItemInventoryIndexRpc(); //Default to Jump
     }
 
 
     [Command("playerInventory-selectItemDataByIndex")]
     [Rpc(SendTo.Server)]
-    public void SelectItemDataByItemInventoryIndexRpc(int itemInventoryIndex) // Select a item to use, UI will call this
+    public void SelectItemDataByItemInventoryIndexRpc(int itemInventoryIndex = 0) // Select a item to use, UI will call this, default (0) its Jump
     {
 
         if (!ItemCanBeUsed(itemInventoryIndex))
@@ -149,9 +167,7 @@ public class PlayerInventory : NetworkBehaviour
     {
         if(!IsOwner) return;
 
-        OnItemInventoryIndexSelected?.Invoke(itemInventoryIndex);
-
-        OnItemSOSelected?.Invoke(GetItemSOByItemSOIndex(playerInventory[itemInventoryIndex].itemSOIndex));
+        OnItemSelected?.Invoke(itemInventoryIndex);
     }
 
     [Command("playerInventory-useItem")]
@@ -201,8 +217,8 @@ public class PlayerInventory : NetworkBehaviour
         {
             playerInventory.OnListChanged -= PlayerInventory_OnListChanged;
 
-            GameFlowManager.OnRoundEnd -= GameFlowManager_OnRoundEnd;
-            GameFlowManager.OnRoundPreparing -= GameFlowManager_OnRoundPreparing;
+            player.PlayerLauncher.OnPlayerJumped -= PlayerLauncher_OnPlayerJumped;
+            player.PlayerLauncher.OnPlayerShooted -= PlayerLauncher_OnPlayerShooted;
         }
     }
 }

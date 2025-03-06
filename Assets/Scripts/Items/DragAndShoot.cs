@@ -14,52 +14,51 @@ public class DragAndShoot : NetworkBehaviour
 
     [BetterHeader("References")]
 
-    [SerializeField] private Trajectory trajectory;
-    [SerializeField] private InputReader inputReader;
-    [SerializeField] private Player player;
+    [SerializeField] protected Trajectory trajectory;
+    [SerializeField] protected InputReader inputReader;
     [Tooltip("Center position of the drag")]
-    [SerializeField] private Transform startDragPos;
-    [SerializeField] private LayerMask touchLayer;
+    [SerializeField] protected Transform startDragPos;
+    [SerializeField] protected LayerMask touchLayer;
 
 
     [BetterHeader("Force Settings")]
     [Tooltip("Maximum Force that the Object can go")] [RangeStep(1f, 50f, 1f)]
-    [SerializeField] private float maxForceMultiplier = 50f;
+    [SerializeField] protected float maxForceMultiplier = 50f;
 
     [Tooltip("Minimum Force that the Object can go")] [RangeStep(1f, 50f, 1f)]
-    [SerializeField] private float minForceMultiplier = 1f;
+    [SerializeField] protected float minForceMultiplier = 1f;
 
     [Tooltip("Value to be add to not need to drag too far from the object")]
     [RangeStep(1.1f, 5f, 0.2f)]
-    [SerializeField] private float offsetForceMultiplier = 0.1f;
+    [SerializeField] protected float offsetForceMultiplier = 0.1f;
 
     [BetterHeader("Zoom Settings")]
     [Tooltip("Time to the drag updtae the zoom")] 
-    [SerializeField] private float zoomDragSpeed;
+    [SerializeField] protected float zoomDragSpeed;
 
     [Tooltip("Increase the force of zoom")] 
-    [SerializeField] private float zoomMultiplier = 7f;
+    [SerializeField] protected float zoomMultiplier = 7f;
 
 
-    private Vector3 endPosDrag;
-    private Vector3 directionOfDrag;
-    private float dragForce;
-    private bool isDragging = false;
-    private bool canDrag = false;
-    private float dragDistance;
+    protected Vector3 endPosDrag;
+    protected Vector3 directionOfDrag;
+    protected float dragForce;
+    protected bool isDragging = false;
+    protected bool canDrag = false;
+    protected float dragDistance;
 
 
-    private Transform startZoomPos; // store the original zoom position
-    private float zoomForce; // current force of zoom
-    private bool isZoomIncreasing; // bool for check if the force is decreasing or increasing and allow the zoom
-    private float lastZoomForce = 0f; // Store the last zoom force
-    private float checkMovementInterval = 0.001f; // control the time between checks of the zoom force, turn the difference bigger
-    private float lastCheckTime = 0f; // control the time between checks
+    protected Transform startZoomPos; // store the original zoom position
+    protected float zoomForce; // current force of zoom
+    protected bool isZoomIncreasing; // bool for check if the force is decreasing or increasing and allow the zoom
+    protected float lastZoomForce = 0f; // Store the last zoom force
+    protected float checkMovementInterval = 0.001f; // control the time between checks of the zoom force, turn the difference bigger
+    protected float lastCheckTime = 0f; // control the time between checks
 
-    private Plane plane; // Cache for the clicks
-    private float outDistancePlane; // store the distance of the plane and screen
+    protected Plane plane; // Cache for the clicks
+    protected float outDistancePlane; // store the distance of the plane and screen
 
-    private bool isShowingDots; //Cache for show dots
+    protected bool isShowingDots; //Cache for show dots
 
 
     public Vector3 DirectionOfDrag => directionOfDrag;
@@ -67,7 +66,7 @@ public class DragAndShoot : NetworkBehaviour
     public bool CanDrag => canDrag;
 
 
-    private Rigidbody selectedRb;
+    protected Rigidbody selectedRb;
 
     public override void OnNetworkSpawn()
     {
@@ -76,9 +75,6 @@ public class DragAndShoot : NetworkBehaviour
         inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
         inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
 
-        player.OnPlayerReady += Player_OnPlayerReady;
-        GameFlowManager.OnRoundStarted += GameFlowManager_OnRoundGoing;
-        GameFlowManager.OnRoundPreparing += GameFlowManager_OnRoundPreparing;
         trajectory.Initialize(startDragPos);
     }
 
@@ -88,7 +84,7 @@ public class DragAndShoot : NetworkBehaviour
         SetCanDrag(true);
     }
 
-    private void InputReader_OnTouchPressEvent(InputAction.CallbackContext context)
+    protected void InputReader_OnTouchPressEvent(InputAction.CallbackContext context)
     {
         if (!canDrag) return;
 
@@ -124,7 +120,7 @@ public class DragAndShoot : NetworkBehaviour
         }
     }
 
-    private void InputReader_OnPrimaryFingerPositionEvent(InputAction.CallbackContext context)
+    protected void InputReader_OnPrimaryFingerPositionEvent(InputAction.CallbackContext context)
     {
 
         if(!canDrag || !isDragging) return;
@@ -141,7 +137,7 @@ public class DragAndShoot : NetworkBehaviour
             dragForce = dragDistance * offsetForceMultiplier; //Calculate the force linearly
             dragForce = Mathf.Clamp(dragForce, minForceMultiplier, maxForceMultiplier);
 
-            trajectory.UpdateDots(transform.position, directionOfDrag * dragForce, player.PlayerInventory.GetSelectedItemSO().rb); // update the dots position 
+            trajectory.UpdateDots(transform.position, directionOfDrag * dragForce, selectedRb); // update the dots position 
 
             if (Time.time - lastCheckTime >= checkMovementInterval)
             {
@@ -183,7 +179,6 @@ public class DragAndShoot : NetworkBehaviour
     }
     private void DragMouseDebug()
     {
-        if(player.PlayerInventory.GetSelectedItemSO() == null) return;
 
         trajectory.SetSimulation(true);
 
@@ -205,7 +200,7 @@ public class DragAndShoot : NetworkBehaviour
             dragForce = dragDistance * offsetForceMultiplier; //Calculate the force linearly
             dragForce = Mathf.Clamp(dragForce, minForceMultiplier, maxForceMultiplier);
 
-            trajectory.UpdateDots(transform.position, directionOfDrag * dragForce, player.PlayerInventory.GetSelectedItemSO().rb); // update the dots position 
+            trajectory.UpdateDots(transform.position, directionOfDrag * dragForce, selectedRb); // update the dots position 
 
             if (!isShowingDots)
             {
@@ -220,7 +215,8 @@ public class DragAndShoot : NetworkBehaviour
     {
         // Reset the dots position
         //CameraManager.Instance.CameraZoom.ResetZoom(startZoomPos); // Reset the zoom for start position
-        trajectory.UpdateDots(transform.position, directionOfDrag * minForceMultiplier, player.PlayerInventory.GetSelectedItemSO().rb);
+        trajectory.UpdateDots(transform.position, directionOfDrag * minForceMultiplier, selectedRb);
+
         ReleaseDrag();
 
     }
@@ -233,31 +229,13 @@ public class DragAndShoot : NetworkBehaviour
     }
 
 
-    private void Player_OnPlayerReady()
-    {
-        //Turn Off
-        TurnOffDrag();
-    }
-
-    private void GameFlowManager_OnRoundGoing()
-    {
-        //Hide Dots, already Off
-        ResetDrag();
-    }
-
-    private void GameFlowManager_OnRoundPreparing()
-    {
-        //Back to normal
-        TurnOnDrag();
-    }
-
-    private void TurnOffDrag()
+    protected void TurnOffDrag()
     {
         SetCanDrag(false);
         SetIsDragging(false);
     }
 
-    private void TurnOnDrag()
+    protected void TurnOnDrag()
     {
         SetCanDrag(true);
     }
@@ -267,12 +245,12 @@ public class DragAndShoot : NetworkBehaviour
         canDrag = value;
     }
 
-    private void SetIsDragging(bool value)
+    protected void SetIsDragging(bool value)
     {
         isDragging = value;
     }
 
-    private void SetIsShowingDots(bool value)
+    protected void SetIsShowingDots(bool value)
     {
         isShowingDots = value;
     }
@@ -284,9 +262,6 @@ public class DragAndShoot : NetworkBehaviour
         inputReader.OnTouchPressEvent -= InputReader_OnTouchPressEvent;
         inputReader.OnPrimaryFingerPositionEvent -= InputReader_OnPrimaryFingerPositionEvent;
 
-        player.OnPlayerReady -= Player_OnPlayerReady;
-        GameFlowManager.OnRoundStarted -= GameFlowManager_OnRoundGoing;
-        GameFlowManager.OnRoundPreparing -= GameFlowManager_OnRoundPreparing;
     }
 
 

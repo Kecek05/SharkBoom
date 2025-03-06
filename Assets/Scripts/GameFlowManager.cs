@@ -101,12 +101,19 @@ public class GameFlowManager : NetworkBehaviour
         //int itemsInInventory = UnityEngine.Random.Range(2, itemsListSO.allItemsSOList.Count); //Random qtd of items for now
         int itemsInInventory = itemsListSO.allItemsSOList.Count; //all items
 
+        //Add Jump item first
+        foreach (PlayerInventory playerInventory in FindObjectsByType<PlayerInventory>(FindObjectsSortMode.None))
+        {
+            playerInventory.SetPlayerItems(0);
+        }
+
         for (int i = 0; i < itemsInInventory; i++)
         {
-            int randomItemSOIndex = UnityEngine.Random.Range(0, itemsListSO.allItemsSOList.Count);
+            int randomItemSOIndex = UnityEngine.Random.Range(1, itemsListSO.allItemsSOList.Count); //Start from index 1,index 0 is jump
 
             foreach (PlayerInventory playerInventory in FindObjectsByType<PlayerInventory>(FindObjectsSortMode.None))
             {
+
                 playerInventory.SetPlayerItems(randomItemSOIndex);
                 Debug.Log($"Player: {playerInventory.gameObject.name}");
             }

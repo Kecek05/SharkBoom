@@ -17,7 +17,6 @@ public class PlayerInventoryUI : NetworkBehaviour
     [SerializeField] private Button readyButton;
     [SerializeField] private Button jumpButton;
 
-    [SerializeField] private ItemSO jumpItemSO;
     [SerializeField] private ItemsListSO itemsListSO; //TEMP
 
     private List<PlayerItemSingleUI> playerItemSingleUIs = new();
@@ -32,7 +31,7 @@ public class PlayerInventoryUI : NetworkBehaviour
 
         jumpButton.onClick.AddListener(() =>
         {
-            player.PlayerDragController.SetLaunch(jumpItemSO);
+            player.PlayerInventory.SelectItemDataByItemInventoryIndexRpc(0); //Jump Index
         });
     }
 
@@ -50,7 +49,7 @@ public class PlayerInventoryUI : NetworkBehaviour
         GameFlowManager.OnRoundPreparing += GameFlowManager_OnRoundPreparing;
         player.PlayerInventory.OnItemAdded += PlayerInventory_OnItemAdded;
         player.PlayerInventory.OnItemChanged += PlayerInventory_OnItemChanged;
-        player.PlayerInventory.OnItemInventoryIndexSelected += PlayerInventory_OnItemSelected;
+        player.PlayerInventory.OnItemSelected += PlayerInventory_OnItemSelected;
     }
 
     private void PlayerInventory_OnItemSelected(int itemInventoryIndex)

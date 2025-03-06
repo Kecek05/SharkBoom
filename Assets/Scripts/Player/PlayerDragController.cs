@@ -2,29 +2,30 @@ using Sortify;
 using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerDragController : NetworkBehaviour
+public class PlayerDragController : DragAndShoot
 {
     [BetterHeader("References")]
     [SerializeField] private Player player;
 
     public override void OnNetworkSpawn()
     {
+        base.OnNetworkSpawn();
+
         if (!IsOwner) return;
 
-        player.PlayerInventory.OnItemSOSelected += SetLaunch;
+        player.PlayerDragController.OnDragRelease += PlayerDragController_OnDragRelease;
     }
 
-
-    public void SetLaunch(ItemSO itemSO)
+    private void PlayerDragController_OnDragRelease()
     {
-        player.PlayerDragAndShoot.SetDragAndShoot(itemSO.rb);
-
+        ResetDrag();
     }
+
 
     public override void OnNetworkDespawn()
     {
         if (!IsOwner) return;
 
-        player.PlayerInventory.OnItemSOSelected -= SetLaunch;
+        player.PlayerDragController.OnDragRelease -= PlayerDragController_OnDragRelease;
     }
 }
