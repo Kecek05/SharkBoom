@@ -65,9 +65,6 @@ PrefabInstance:
       addedObject: {fileID: 1605454544280285762}
     - targetCorrespondingSourceObject: {fileID: 8360590805627951754, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8896217447416486367}
-    - targetCorrespondingSourceObject: {fileID: 8360590805627951754, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 4368214002554539844}
   m_SourcePrefab: {fileID: 100100000, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
 --- !u!1 &6020880011412641438 stripped
@@ -88,18 +85,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lifeTime: 4
---- !u!114 &8896217447416486367
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6020880011412641438}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: edb9b1f76e7102c4cbc8dd8c7d5757f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &4368214002554539844
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112,6 +97,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 880ba77410d1d354fb74b416542895c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isServerObject: 0
+  itemSO: {fileID: 0}
   rb: {fileID: 6717943621661333620}
 --- !u!54 &6717943621661333620 stripped
 Rigidbody:

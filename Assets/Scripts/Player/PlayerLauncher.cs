@@ -56,6 +56,8 @@ public class PlayerLauncher : NetworkBehaviour
     [Rpc(SendTo.Server)]
     private void SpawnProjectileServerRpc(float dragForce, Vector3 dragDirection) // on server 
     {
+        if (player.PlayerInventory.GetSelectedItemSO().itemServerPrefab == null) return;
+
         GameObject gameObject = Instantiate(player.PlayerInventory.GetSelectedItemSO().itemServerPrefab, spawnItemPos.position, Quaternion.identity);
 
         if (gameObject.TryGetComponent(out Collider projectileCollider))
@@ -84,8 +86,11 @@ public class PlayerLauncher : NetworkBehaviour
 
     }
 
-    private GameObject SpawnDummyProjectile(float dragForce, Vector3 dragDirection)
+    private void SpawnDummyProjectile(float dragForce, Vector3 dragDirection)
     {
+
+        if (player.PlayerInventory.GetSelectedItemSO().itemClientPrefab == null) return;
+
 
         GameObject projetctile = Instantiate(player.PlayerInventory.GetSelectedItemSO().itemClientPrefab, spawnItemPos.position, Quaternion.identity);
 
@@ -102,7 +107,6 @@ public class PlayerLauncher : NetworkBehaviour
             draggable.Release(dragForce, dragDirection, transform); //Call interface
         }
 
-        return projetctile;
     }
 
     public override void OnNetworkDespawn()
