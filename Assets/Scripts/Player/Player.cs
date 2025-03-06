@@ -6,6 +6,10 @@ using UnityEngine;
 public class Player : NetworkBehaviour
 {
     public event Action OnPlayerReady;
+    public event Action OnPlayerCanPlay;
+    public event Action OnPlayerCantPlay;
+    public event Action OnPlayerJumped;
+    public event Action OnPlayerShooted;
 
     [BetterHeader("References")]
     [SerializeField] private PlayerInventory playerInventory;
@@ -30,7 +34,49 @@ public class Player : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         gameObject.name = "Player " + UnityEngine.Random.Range(0, 100).ToString();
+
+        if(IsOwner)
+        {
+            GameFlowManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
+            GameFlowManager.OnMyTurnEnded += GameFlowManager_OnMyTurnEnded;
+        }
     }
+
+
+
+    private void GameFlowManager_OnMyTurnStarted()
+    {
+        // My Turn Started, I can play
+        SetPlayerCanJumpThisTurn(true);
+        SetPlayerCanShootThisTurn(true);
+
+        OnPlayerCanPlay?.Invoke();
+    }
+
+    private void GameFlowManager_OnMyTurnEnded()
+    {
+        //My Turn Ended, I cant play
+
+
+        OnPlayerCantPlay?.Invoke();
+    }
+
+
+    public void PlayerJumped()
+    {
+        SetPlayerCanJumpThisTurn(false);
+
+        OnPlayerJumped?.Invoke();
+    }
+
+    public void PlayerShooted()
+    {
+        SetPlayerCanJumpThisTurn(false);
+        SetPlayerCanShootThisTurn(false);
+
+        OnPlayerShooted?.Invoke();
+    }
+
 
     public void SetPlayerReady()
     {
@@ -48,5 +94,23 @@ public class Player : NetworkBehaviour
         Debug.Log("Player Setted to Ready");
     }
 
+    private void SetPlayerCanJumpThisTurn(bool canJump)
+    {
+        playerCanJumpThisTurn = canJump;
+    }
 
+    private void SetPlayerCanShootThisTurn(bool canShoot)
+    {
+        playerCanShootThisTurn = canShoot;
+    }
+
+
+    public override void OnNetworkDespawn()
+    {
+        if (IsOwner)
+        {
+            GameFlowManager.OnMyTurnStarted -= GameFlowManager_OnMyTurnStarted;
+            GameFlowManager.OnMyTurnEnded -= GameFlowManager_OnMyTurnEnded;
+        }
+    }
 }

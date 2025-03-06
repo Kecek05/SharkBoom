@@ -20,6 +20,8 @@ public class GameFlowManager : NetworkBehaviour
     public static event Action OnRoundPreparing; //Preparing fase, players can play
     public static event Action OnRoundStarted; // Round started, players just watch
     public static event Action OnRoundEnd; // Round finished, future implementations
+    public static event Action OnMyTurnStarted; //local player can play
+    public static event Action OnMyTurnEnded;
 
     public enum GameState
     {
@@ -39,6 +41,7 @@ public class GameFlowManager : NetworkBehaviour
     }
 
     private PlayableState localPlayableState = new();
+    private PlayableState localPlayedState = new();
     public PlayableState LocalplayableState => localPlayableState;
 
     private NetworkVariable<PlayableState> currentPlayableState = new(PlayableState.None);
@@ -58,13 +61,36 @@ public class GameFlowManager : NetworkBehaviour
     {
         gameState.OnValueChanged += GameState_OnValueChanged;
 
-        if (NetworkManager.Singleton.LocalClientId == 0)
+        if(IsClient)
         {
-            localPlayableState = PlayableState.Player1Playing;
+            currentPlayableState.OnValueChanged += CurrentPlayableState_OnValueChanged;
+
+            if (NetworkManager.Singleton.LocalClientId == 0)
+            {
+                localPlayableState = PlayableState.Player1Playing;
+                localPlayedState = PlayableState.Player1Played;
+            }
+            else
+            {
+                localPlayableState = PlayableState.Player2Playing;
+                localPlayedState = PlayableState.Player2Played;
+            }
+
         }
-        else
+
+
+    }
+
+    private void CurrentPlayableState_OnValueChanged(PlayableState previousValue, PlayableState newValue)
+    {
+        if(newValue == localPlayableState)
         {
-            localPlayableState = PlayableState.Player2Playing;
+            //Local Player can play
+            OnMyTurnStarted?.Invoke();
+        } else if (newValue == localPlayedState)
+        {
+            //Local Player cant play
+            OnMyTurnEnded?.Invoke();
         }
     }
 
@@ -78,6 +104,10 @@ public class GameFlowManager : NetworkBehaviour
                 if(IsServer)
                 {
                     RandomizePlayerItems();
+
+                    int randomStartPlayer = UnityEngine.Random.Range(0, 2);
+
+                    currentPlayableState.Value = randomStartPlayer == 0 ? PlayableState.Player1Playing : PlayableState.Player2Playing;
                 }
                 break;
             case GameState.GameEnded:

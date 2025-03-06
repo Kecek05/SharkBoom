@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class PlayerLauncher : NetworkBehaviour
 {
-    public event Action OnPlayerJumped;
-    public event Action OnPlayerShooted;
 
     [BetterHeader("References")]
     [SerializeField] private Transform spawnItemPos;
@@ -19,7 +17,6 @@ public class PlayerLauncher : NetworkBehaviour
         if (IsOwner)
         {
             player.PlayerDragController.OnDragRelease += PlayerDragAndShoot_OnDragRelease;
-            GameFlowManager.OnRoundStarted += GameFlowManager_OnRoundStarted;
         }
     }
 
@@ -34,20 +31,12 @@ public class PlayerLauncher : NetworkBehaviour
         //CameraManager.Instance.CameraFollowing.SetCameraFollowingObject(projetctile.transform);
         if (player.PlayerInventory.SelectedItemData.Value.itemInventoryIndex == 0) //Jump
         {
-            OnPlayerJumped?.Invoke();
+            player.PlayerJumped();
 
         } else
         {
-            OnPlayerShooted?.Invoke();
+            player.PlayerShooted();
         }
-    }
-
-    private void GameFlowManager_OnRoundStarted()
-    {
-        ////Spawn Object, only owner
-        //SpawnProjectileServerRpc(player.PlayerDragAndShoot.DragForce, player.PlayerDragAndShoot.DirectionOfDrag); //Spawn real projectile on server need to send the speed and force values through the network
-
-        //SpawnDummyProjectile(player.PlayerDragAndShoot.DragForce, player.PlayerDragAndShoot.DirectionOfDrag); //Spawn fake projectile on client
     }
 
 
@@ -113,7 +102,6 @@ public class PlayerLauncher : NetworkBehaviour
         if(IsOwner)
         {
             player.PlayerDragController.OnDragRelease -= PlayerDragAndShoot_OnDragRelease;
-            GameFlowManager.OnRoundStarted -= GameFlowManager_OnRoundStarted;
         }
     }
 

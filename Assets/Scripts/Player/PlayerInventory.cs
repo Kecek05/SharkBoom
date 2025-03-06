@@ -25,28 +25,47 @@ public class PlayerInventory : NetworkBehaviour
     private int selectedItemIndex;
 
 
+    private bool canInteractWithInventory = false;
+
     public override void OnNetworkSpawn()
     {
         if(IsOwner)
         {
 
-            player.PlayerLauncher.OnPlayerJumped += PlayerLauncher_OnPlayerJumped;
-            player.PlayerLauncher.OnPlayerShooted += PlayerLauncher_OnPlayerShooted;
+            player.OnPlayerJumped += Player_OnPlayerJumped;
+            player.OnPlayerShooted += Player_OnPlayerShooted;
 
             playerInventory.OnListChanged += PlayerInventory_OnListChanged;
 
+            player.OnPlayerCanPlay += Player_OnPlayerCanPlay;
+            player.OnPlayerCantPlay += Player_OnPlayerCantPlay;
 
         }
     }
 
-    private void PlayerLauncher_OnPlayerJumped()
+    private void Player_OnPlayerCanPlay()
+    {
+        //Can interact with inventory
+
+        canInteractWithInventory = true;
+    }
+
+
+    private void Player_OnPlayerCantPlay()
+    {
+        //Cant interact with inventory
+        canInteractWithInventory = false;
+    }
+
+
+    private void Player_OnPlayerJumped()
     {
         //Jumped, can shoot
         SetPlayerJumpedRpc(true);
         SelectItemDataByItemInventoryIndexRpc(SelectFirstItemInventoryIndexAvailable());
     }
 
-    private void PlayerLauncher_OnPlayerShooted()
+    private void Player_OnPlayerShooted()
     {
         //Round ended
         DecreaseAllItemsCooldownRpc();
@@ -148,6 +167,8 @@ public class PlayerInventory : NetworkBehaviour
     [Rpc(SendTo.Server)]
     public void SelectItemDataByItemInventoryIndexRpc(int itemInventoryIndex = 0) // Select a item to use, UI will call this, default (0) its Jump
     {
+        if(!canInteractWithInventory) return;
+
 
         if (!ItemCanBeUsed(itemInventoryIndex))
         {
@@ -181,6 +202,8 @@ public class PlayerInventory : NetworkBehaviour
     [Rpc(SendTo.Server)]
     public void UseItemByInventoryIndexRpc(int itemInventoryIndex) // Use the item, Server will call this when both players ready
     {
+        if (!canInteractWithInventory);
+
         if (ItemCanBeUsed(itemInventoryIndex))
         {
             //Item Can be used
@@ -224,8 +247,11 @@ public class PlayerInventory : NetworkBehaviour
         {
             playerInventory.OnListChanged -= PlayerInventory_OnListChanged;
 
-            player.PlayerLauncher.OnPlayerJumped -= PlayerLauncher_OnPlayerJumped;
-            player.PlayerLauncher.OnPlayerShooted -= PlayerLauncher_OnPlayerShooted;
+            player.OnPlayerJumped -= Player_OnPlayerJumped;
+            player.OnPlayerShooted -= Player_OnPlayerShooted;
+
+            player.OnPlayerCanPlay -= Player_OnPlayerCanPlay;
+            player.OnPlayerCantPlay -= Player_OnPlayerCantPlay;
         }
     }
 }

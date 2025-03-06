@@ -14,6 +14,21 @@ public class PlayerDragController : DragAndShoot
         if (!IsOwner) return;
 
         player.PlayerDragController.OnDragRelease += PlayerDragController_OnDragRelease;
+        player.OnPlayerCanPlay += Player_OnPlayerCanPlay;
+        player.OnPlayerCantPlay += Player_OnPlayerCantPlay;
+
+    }
+
+
+
+    private void Player_OnPlayerCanPlay()
+    {
+        TurnOnDrag();
+    }
+
+    private void Player_OnPlayerCantPlay()
+    {
+        TurnOffDrag();
     }
 
     private void PlayerDragController_OnDragRelease()
