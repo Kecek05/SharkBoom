@@ -26,7 +26,7 @@ public class CameraZoom : MonoBehaviour
     [SerializeField] private float minZoom = -15f;
     [Tooltip("Think like a scope of a sniper, max = more close of player")]
     [SerializeField] private float maxZoom = 1f;
-    [SerializeField] private CinemachineCamera cinemachineCamera;
+    
 
     private void Start()
     {
