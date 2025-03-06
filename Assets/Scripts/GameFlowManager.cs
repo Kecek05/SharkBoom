@@ -108,7 +108,8 @@ public class GameFlowManager : NetworkBehaviour
 
                     int randomStartPlayer = UnityEngine.Random.Range(0, 2);
 
-                    currentPlayableState.Value = randomStartPlayer == 0 ? PlayableState.Player1Playing : PlayableState.Player2Playing;
+                    CurrentPlayableState.Value = PlayableState.Player1Playing;
+                    //currentPlayableState.Value = randomStartPlayer == 0 ? PlayableState.Player1Playing : PlayableState.Player2Playing;
                 }
                 break;
             case GameState.GameEnded:
