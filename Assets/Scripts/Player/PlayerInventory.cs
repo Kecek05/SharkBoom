@@ -21,7 +21,7 @@ public class PlayerInventory : NetworkBehaviour
     /// <summary>
     /// The index of the selected item in the player inventory
     /// </summary>
-    private NetworkVariable<int> selectedItemInventoryIndex = new();
+    private NetworkVariable<int> selectedItemInventoryIndex = new(-1);
 
     public NetworkVariable<int> SelectedItemInventoryIndex => selectedItemInventoryIndex;
 
@@ -53,6 +53,8 @@ public class PlayerInventory : NetworkBehaviour
         //Can interact with inventory
 
         canInteractWithInventory = true;
+
+        SelectItemDataByItemInventoryIndex(); //Default to Jump
     }
 
 
@@ -85,9 +87,9 @@ public class PlayerInventory : NetworkBehaviour
     {
         playerInventory[0] = new ItemDataStruct
         {
-            itemInventoryIndex = playerInventory[0].itemInventoryIndex,
-            itemSOIndex = playerInventory[0].itemSOIndex,
-            itemCooldownRemaining = playerInventory[0].itemCooldownRemaining - 1,
+            itemInventoryIndex = playerInventory[0].itemInventoryIndex, //first in inventory
+            itemSOIndex = playerInventory[0].itemSOIndex, //first in itemsListSO
+            itemCooldownRemaining = GetItemSOByItemSOIndex(playerInventory[0].itemSOIndex).cooldown, // No cooldown
             itemCanBeUsed = !jumped, // if jumped, cant jump
         };
     }
@@ -148,7 +150,7 @@ public class PlayerInventory : NetworkBehaviour
             itemCooldownRemaining = 0,
             itemCanBeUsed = true,
         });
-        SelectItemDataByItemInventoryIndex(); //Default to Jump
+        //SelectItemDataByItemInventoryIndex(); //Default to Jump
     }
 
     public void SelectItemDataByItemInventoryIndex(int itemInventoryIndex = 0) // Select a item to use, UI will call this, default (0) its Jump

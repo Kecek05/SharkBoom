@@ -68,6 +68,8 @@ public class DragAndShoot : NetworkBehaviour
 
     protected Rigidbody selectedRb;
 
+    public Rigidbody SelectedRb => selectedRb; //DEBUG
+
     public override void OnNetworkSpawn()
     {
         if (!IsOwner) return;
@@ -113,17 +115,25 @@ public class DragAndShoot : NetworkBehaviour
 
         if (context.canceled && isDragging)
         {
-            SetIsDragging(false);
-            trajectory.SetSimulation(false);
-            OnDragRelease?.Invoke();
-            CameraManager.Instance.SetCameraState(CameraManager.CameraState.Default);
+            CancelledDrag();
         }
+    }
+
+    [Command("dragAndShoot-release")]
+    private void CancelledDrag() //FOR DEBUG
+    {
+        if(!IsOwner) return;
+
+        SetIsDragging(false);
+        trajectory.SetSimulation(false);
+        OnDragRelease?.Invoke();
+        CameraManager.Instance.SetCameraState(CameraManager.CameraState.Default);
     }
 
     protected void InputReader_OnPrimaryFingerPositionEvent(InputAction.CallbackContext context)
     {
 
-        if(!canDrag || !isDragging) return;
+        if(!canDrag || !isDragging || selectedRb == null) return;
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //CHANGE TO CONTEXT
        

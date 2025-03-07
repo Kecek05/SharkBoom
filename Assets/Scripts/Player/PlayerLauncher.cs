@@ -21,7 +21,6 @@ public class PlayerLauncher : NetworkBehaviour
         }
     }
 
-    [Command("playerLauncher-release")]
     private void PlayerDragAndShoot_OnDragRelease()
     {
 

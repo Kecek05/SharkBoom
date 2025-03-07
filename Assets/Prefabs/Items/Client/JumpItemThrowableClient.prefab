@@ -85,7 +85,7 @@ PrefabInstance:
       addedObject: {fileID: -793818038911944659}
     - targetCorrespondingSourceObject: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8097856024643740783}
+      addedObject: {fileID: 3858037923281347468}
   m_SourcePrefab: {fileID: 100100000, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
 --- !u!114 &2061251337206000038 stripped
 MonoBehaviour:
@@ -125,8 +125,8 @@ MonoBehaviour:
   rb: {fileID: 4018474481521727816}
   cinemachineFollow: {fileID: 2061251337206000038}
   followingTime: 1.5
---- !u!136 &8097856024643740783
-CapsuleCollider:
+--- !u!135 &3858037923281347468
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -143,8 +143,6 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
+  serializedVersion: 3
+  m_Radius: 0.1
   m_Center: {x: 0, y: 0, z: 0}
