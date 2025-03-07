@@ -49,6 +49,7 @@ public class PlayerLauncher : NetworkBehaviour
         {
             player.PlayerShooted();
         }
+        Debug.Log($"Release, SelectedItemIndex: {player.PlayerInventory.SelectedItemIndex.Value}");
     }
 
 

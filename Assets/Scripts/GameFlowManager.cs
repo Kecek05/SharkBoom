@@ -44,12 +44,14 @@ public class GameFlowManager : NetworkBehaviour
     private PlayableState localPlayedState = new();
 
     private NetworkVariable<PlayableState> currentPlayableState = new(PlayableState.None);
-    public NetworkVariable<PlayableState> CurrentPlayableState => currentPlayableState;
 
     private NetworkVariable<GameState> gameState = new(GameState.WaitingForPlayers);
 
     private Dictionary<ulong, bool> playersReady = new();
     //private Dictionary<ulong, algo> playersRoundData = new();
+
+    public NetworkVariable<GameState> CurrentGameState => gameState; 
+    public NetworkVariable<PlayableState> CurrentPlayableState => currentPlayableState;
     public PlayableState LocalplayableState => localPlayableState;
     public PlayableState LocalplayedState => localPlayedState;
 

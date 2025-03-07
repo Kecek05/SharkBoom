@@ -1,33 +1,27 @@
 using QFSW.QC;
 using Sortify;
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
 public class DebuggingTools : NetworkBehaviour
 {
 
+    public static DebuggingTools Instance;
+
     [BetterHeader("References")]
-    [SerializeField] private GameObject projectilePrefab;
-    [SerializeField] private Transform spawnProjectilePos;
+    public TextMeshProUGUI debugGameStateText;
+    public TextMeshProUGUI debugPlayableStateText;
 
-    [Command("debug-spawnProjectile")]
-    public void SpawnProjectile()
+    private void Awake()
     {
-        SpawnProjectileRpc();
+        Instance = this;
     }
 
-    [Rpc(SendTo.Server)]
-    private void SpawnProjectileRpc()
+    private void Update()
     {
-        SpawnProjectileClientsRpc();
-        Debug.Log("Server");
+        debugGameStateText.text = GameFlowManager.Instance.CurrentGameState.Value.ToString();
+        debugPlayableStateText.text = GameFlowManager.Instance.CurrentPlayableState.Value.ToString();
     }
 
-    [Rpc(SendTo.ClientsAndHost)]
-    private void SpawnProjectileClientsRpc()
-    {
-        GameObject projectileSpawned = Instantiate(projectilePrefab, spawnProjectilePos.position, Quaternion.identity);
-
-        Debug.Log("Projectile spawned");
-    }
 }
