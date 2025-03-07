@@ -14,14 +14,10 @@ public class PlayerInventory : NetworkBehaviour
 
     private NetworkList<ItemDataStruct> playerInventory = new();
 
-
-    //private NetworkVariable<ItemDataStruct> selectedItemData = new();
-    //public NetworkVariable<ItemDataStruct> SelectedItemData => selectedItemData;
-
     /// <summary>
     /// The index of the selected item in the player inventory
     /// </summary>
-    private NetworkVariable<int> selectedItemInventoryIndex = new(-1);
+    private NetworkVariable<int> selectedItemInventoryIndex = new(-1); //-1 to start change to 0 and Call OnValueChanged
 
     public NetworkVariable<int> SelectedItemInventoryIndex => selectedItemInventoryIndex;
 
@@ -155,7 +151,6 @@ public class PlayerInventory : NetworkBehaviour
 
     public void SelectItemDataByItemInventoryIndex(int itemInventoryIndex = 0) // Select a item to use, UI will call this, default (0) its Jump
     {
-        Debug.Log($"Try to select, can? {canInteractWithInventory}");
 
         if(!canInteractWithInventory) return;
 
@@ -182,12 +177,8 @@ public class PlayerInventory : NetworkBehaviour
         //Owner only
         // Need to be an OnValueChanged event because the lag between the client and the server
 
-        Debug.Log(selectedItemInventoryIndex.Value);
-
         player.PlayerDragController.SetDragAndShoot(GetSelectedItemSO().rb);
 
-        Debug.Log($"Set Selected Item Index to {selectedItemInventoryIndex.Value}");
-        Debug.Log("I Trigger");
         OnItemSelected?.Invoke(selectedItemInventoryIndex.Value);
     }
 
