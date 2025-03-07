@@ -222,6 +222,11 @@ public class PlayerInventory : NetworkBehaviour
         return itemsListSO.allItemsSOList[itemSOIndex];
     }
 
+    public void SetCanInteractWIthInventory(bool canInteract)
+    {
+        canInteractWithInventory = canInteract;
+    }
+
     public override void OnNetworkDespawn()
     {
         if (IsOwner)

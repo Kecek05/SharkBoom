@@ -43,9 +43,9 @@ public class Player : NetworkBehaviour
             GameFlowManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
             GameFlowManager.OnMyTurnEnded += GameFlowManager_OnMyTurnEnded;
 
-            playerStateMachine = new PlayerStateMachine();
+            playerStateMachine = new PlayerStateMachine(this);
 
-            playerStateMachine.Initialize(playerStateMachine.idleState);
+            playerStateMachine.Initialize(playerStateMachine.idleEnemyTurnState);
         }
     }
 
@@ -54,12 +54,15 @@ public class Player : NetworkBehaviour
     private void GameFlowManager_OnMyTurnStarted()
     {
         // My Turn Started, I can play
-        SetPlayerCanJumpThisTurn(true);
-        SetPlayerCanShootThisTurn(true);
-
-        OnPlayerCanPlay?.Invoke();
-
+        playerStateMachine.TransitionTo(playerStateMachine.idleMyTurnState);
         Debug.Log("I can play!");
+
+        //SetPlayerCanJumpThisTurn(true);
+        //SetPlayerCanShootThisTurn(true);
+
+        //OnPlayerCanPlay?.Invoke();
+
+
     }
 
     private void GameFlowManager_OnMyTurnEnded()
@@ -110,12 +113,12 @@ public class Player : NetworkBehaviour
         Debug.Log("Player Setted to Ready");
     }
 
-    private void SetPlayerCanJumpThisTurn(bool canJump)
+    public void SetPlayerCanJumpThisTurn(bool canJump)
     {
         playerCanJumpThisTurn = canJump;
     }
 
-    private void SetPlayerCanShootThisTurn(bool canShoot)
+    public void SetPlayerCanShootThisTurn(bool canShoot)
     {
         playerCanShootThisTurn = canShoot;
     }

@@ -1,19 +1,81 @@
+using System;
 using UnityEngine;
 
 
 
-public class IdleState : IState
-{
 
-    public IdleState()
+public class MyTurnStartedState : IState
+{
+    public event Action OnPlayerCanPlay;
+
+    //My Turn started, set up only
+    private Player player;
+
+    public MyTurnStartedState(Player player)
     {
         //our builder
-
+        this.player = player;
     }
 
     public void Enter()
     {
+        player.SetPlayerCanJumpThisTurn(true);
+        player.SetPlayerCanShootThisTurn(true);
+
+        OnPlayerCanPlay?.Invoke();
+
+        player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleMyTurnState);
+        Debug.Log("Entering My Turn Started State");
+    }
+
+    public void Execute()
+    {
+        Debug.Log("Executing My Turn Started State");
+    }
+
+    public void Exit()
+    {
+        Debug.Log("Exiting My Turn Started State");
+    }
+
+}
+
+public class IdleMyTurnState : IState
+{
+    public Action OnPlayerCanPlay;
+
+
+    //Idle in my turn
+    // Can Move Camera, Choose items and drag
+    //Change to Dragging if start dragging
+
+    private Player player;
+
+    public IdleMyTurnState(Player player)
+    {
+        //our builder
+        this.player = player;
+    }
+
+    public void Enter()
+    {
+        player.PlayerDragController.OnDragStart += PlayerDragController_OnDragStart;
+
+        player.PlayerInventory.SetCanInteractWIthInventory(true);
+        player.PlayerDragController.TurnOnDrag();
+        //Set Can Move Camera
         Debug.Log("Entering Idle State");
+    }
+
+    private void PlayerDragController_OnDragStart()
+    {
+        if (player.PlayerInventory.SelectedItemInventoryIndex.Value == 0)
+        {
+            player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.draggingJump);
+        } else
+        {
+            player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.draggingItem);
+        }
     }
 
     public void Execute()
@@ -23,13 +85,213 @@ public class IdleState : IState
 
     public void Exit()
     {
+        player.PlayerDragController.OnDragStart -= PlayerDragController_OnDragStart;
+
         Debug.Log("Exiting Idle State");
+    }
+}
+
+public class DraggingJump : IState
+{
+    //Started Dragging the jump
+    //Cant Move Camera, Cant Choose items, Only Drag
+    //Change to Release Jump if release the jump
+    private Player player;
+
+
+    public DraggingJump(Player player) {
+        //our builder
+        this.player = player;
+    }
+    public void Enter()
+    {
+        player.PlayerDragController.OnDragRelease += PlayerDragController_OnDragRelease;
+
+        player.PlayerInventory.SetCanInteractWIthInventory(false);
+        //Set Cant move camera
+        Debug.Log("Entering Dragging Jump State");
+    }
+
+    private void PlayerDragController_OnDragRelease()
+    {
+        //Can Shoot, Go to Idle
+    }
+
+    public void Execute()
+    {
+        Debug.Log("Executing Dragging Jump State");
+    }
+
+    public void Exit()
+    {
+        player.PlayerDragController.OnDragRelease -= PlayerDragController_OnDragRelease;
+
+        Debug.Log("Exiting Dragging Jump State");
+    }
+
+}
+
+public class DraggingItem : IState
+{
+    //Started Dragging the item
+    //Cant Move Camera, Cant Choose items, Only Drag
+    //Change to Release Item if release the item
+
+    private Player player;
+
+    public DraggingItem(Player player)
+    {
+        //our builder
+        this.player = player;
+    }
+    public void Enter()
+    {
+        player.PlayerDragController.OnDragRelease += PlayerDragController_OnDragRelease;
+
+        Debug.Log("Entering Dragging Item State");
+    }
+
+    private void PlayerDragController_OnDragRelease()
+    {
+        
+    }
+
+    public void Execute()
+    {
+        Debug.Log("Executing Dragging Item State");
+    }
+
+    public void Exit()
+    {
+        player.PlayerDragController.OnDragRelease -= PlayerDragController_OnDragRelease;
+
+        Debug.Log("Exiting Dragging Item State");
+    }
+
+}
+
+public class DragReleaseJump : IState
+{
+    //Released the jump
+    //Cant Move Camera, Cant Choose items, Cant Drag, Camera following the action
+    //Change to the IdleMyTurn after the item Callback
+
+    public DragReleaseJump()
+    {
+        //our builder
+    }
+    public void Enter()
+    {
+        Debug.Log("Entering Drag Release Jump State");
+    }
+    public void Execute()
+    {
+        Debug.Log("Executing Drag Release Jump State");
+    }
+    public void Exit()
+    {
+        Debug.Log("Exiting Drag Release Jump State");
+    }
+}
+
+public class DragReleaseItem : IState
+{
+    //Released the item
+    //Cant Move Camera, Cant Choose items, Cant Drag, Camera following the action
+    //Change to the MyTurnEnded after the item Callback
+    public DragReleaseItem()
+    {
+        //our builder
+    }
+    public void Enter()
+    {
+        Debug.Log("Entering Drag Release Item State");
+    }
+    public void Execute()
+    {
+        Debug.Log("Executing Drag Release Item State");
+    }
+    public void Exit()
+    {
+        Debug.Log("Exiting Drag Release Item State");
+    }
+}
+
+public class MyTurnEndedState : IState
+{
+    //My Turn ended, next is enemy turn
+
+    public MyTurnEndedState()
+    {
+        //our builder
+    }
+    public void Enter()
+    {
+        Debug.Log("Entering My Turn End State");
+    }
+    public void Execute()
+    {
+        Debug.Log("Executing My Turn End State");
+    }
+    public void Exit()
+    {
+        Debug.Log("Exiting My Turn End State");
+    }
+}
+
+
+public class IdleEnemyTurnState : IState
+{
+    //Idle in enemy turn
+    // Can Move camera
+
+    public IdleEnemyTurnState()
+    {
+        //our builder
+    }
+    public void Enter()
+    {
+        Debug.Log("Entering Idle State");
+    }
+    public void Execute()
+    {
+        Debug.Log("Executing Idle State");
+    }
+    public void Exit()
+    {
+        Debug.Log("Exiting Idle State");
+    }
+}
+
+public class PlayerWatchingState : IState
+{
+    //Player is watching the enemy turn
+    //Cant do anything
+
+
+    public PlayerWatchingState()
+    {
+        //our builder
+    }
+    public void Enter()
+    {
+        Debug.Log("Entering Player Watching State");
+    }
+    public void Execute()
+    {
+        Debug.Log("Executing Player Watching State");
+    }
+    public void Exit()
+    {
+        Debug.Log("Exiting Player Watching State");
     }
 }
 
 
 public class DeadState : IState
 {
+    //Player is dead
+    //Cant do anything
     public DeadState()
     {
         //our builder
@@ -48,63 +310,3 @@ public class DeadState : IState
     }
 }
 
-
-public class DraggingState : IState
-{
-    public DraggingState()
-    {
-        //our builder
-    }
-    public void Enter()
-    {
-        Debug.Log("Entering Dragging State");
-    }
-    public void Execute()
-    {
-        Debug.Log("Executing Dragging State");
-    }
-    public void Exit()
-    {
-        Debug.Log("Exiting Dragging State");
-    }
-}
-
-public class MyTurnState : IState
-{
-    public MyTurnState()
-    {
-        //our builder
-    }
-    public void Enter()
-    {
-        Debug.Log("Entering My Turn State");
-    }
-    public void Execute()
-    {
-        Debug.Log("Executing My Turn State");
-    }
-    public void Exit()
-    {
-        Debug.Log("Exiting My Turn State");
-    }
-}
-
-public class MyTurnEndedState : IState
-{
-    public MyTurnEndedState()
-    {
-        //our builder
-    }
-    public void Enter()
-    {
-        Debug.Log("Entering My Turn Ended State");
-    }
-    public void Execute()
-    {
-        Debug.Log("Executing My Turn Ended State");
-    }
-    public void Exit()
-    {
-        Debug.Log("Exiting My Turn Ended State");
-    }
-}

@@ -196,13 +196,13 @@ public class DragAndShoot : NetworkBehaviour
     }
 
 
-    protected void TurnOffDrag()
+    public void TurnOffDrag()
     {
         SetCanDrag(false);
         SetIsDragging(false);
     }
 
-    protected void TurnOnDrag()
+    public void TurnOnDrag()
     {
         SetCanDrag(true);
     }
@@ -212,12 +212,12 @@ public class DragAndShoot : NetworkBehaviour
         canDrag = value;
     }
 
-    protected void SetIsDragging(bool value)
+    public void SetIsDragging(bool value)
     {
         isDragging = value;
     }
 
-    protected void SetIsShowingDots(bool value)
+    public void SetIsShowingDots(bool value)
     {
         isShowingDots = value;
     }
