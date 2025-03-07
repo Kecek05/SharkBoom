@@ -21,8 +21,11 @@ public class Player : NetworkBehaviour
     private bool playerCanJumpThisTurn = false;
     private bool playerCanShootThisTurn = false;
 
+    private PlayerStateMachine playerStateMachine;
 
     //Publics
+
+    public PlayerStateMachine PlayerStateMachine => playerStateMachine;
     public PlayerInventory PlayerInventory => playerInventory;
     public PlayerInventoryUI PlayerInventoryUI => playerInventoryUI;
     public PlayerHealth PlayerHealth => playerHealth;
@@ -39,6 +42,10 @@ public class Player : NetworkBehaviour
         {
             GameFlowManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
             GameFlowManager.OnMyTurnEnded += GameFlowManager_OnMyTurnEnded;
+
+            playerStateMachine = new PlayerStateMachine();
+
+            playerStateMachine.Initialize(playerStateMachine.idleState);
         }
     }
 
