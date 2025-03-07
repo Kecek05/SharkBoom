@@ -29,6 +29,7 @@ public class CameraFollowing : MonoBehaviour
         while (cinemachineFollowCamera != null)
         {
             cinemachineFollowCamera.FollowOffset.z = CameraManager.Instance.CameraObjectToFollow.position.z;
+            Debug.Log("Following");
             yield return null;
         }
         FollowingEnded();
@@ -41,6 +42,7 @@ public class CameraFollowing : MonoBehaviour
             StopCoroutine(followingCourotine);
             followingCourotine = null;
             cinemachineFollowCamera = null;
+            Debug.Log("Camera default");
             CameraManager.Instance.SetCameraState(CameraManager.CameraState.Default);
         }
     }
