@@ -7,7 +7,6 @@ public class BaseItemThrowable : MonoBehaviour, IDraggable
 {
     [BetterHeader("References")]
     [SerializeField] protected bool isServerObject;
-    [SerializeField] protected bool canDoDamage = true;
     [SerializeField] protected ItemSO itemSO;
     [SerializeField] protected Rigidbody rb;
     [SerializeField] protected CinemachineFollow cinemachineFollow;
@@ -36,7 +35,7 @@ public class BaseItemThrowable : MonoBehaviour, IDraggable
 
     protected void OnCollisionEnter(Collision collision)
     {
-        if (!isServerObject || !canDoDamage)
+        if (!isServerObject)
         {
             //Change latter
             Destroy(gameObject);

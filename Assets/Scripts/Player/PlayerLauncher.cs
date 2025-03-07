@@ -40,7 +40,7 @@ public class PlayerLauncher : NetworkBehaviour
         //    player.PlayerShooted();
         //}
 
-        if (player.PlayerInventory.SelectedItemIndex.Value == 0) //Jump
+        if (player.PlayerInventory.SelectedItemInventoryIndex.Value == 0) //Jump
         {
             player.PlayerJumped();
 
@@ -49,7 +49,7 @@ public class PlayerLauncher : NetworkBehaviour
         {
             player.PlayerShooted();
         }
-        Debug.Log($"Release, SelectedItemIndex: {player.PlayerInventory.SelectedItemIndex.Value}");
+        Debug.Log($"Release, SelectedItemIndex: {player.PlayerInventory.SelectedItemInventoryIndex.Value}");
     }
 
 

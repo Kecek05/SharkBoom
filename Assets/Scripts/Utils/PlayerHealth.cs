@@ -27,9 +27,9 @@ public class PlayerHealth : Health
             return;
         }
 
-        ModifyHealth(-(damageableSO.damage * selectedMultiplier));
+        Debug.Log($"Damage: {damageableSO.damage} in: {bodyPart} with multiplier: {selectedMultiplier} total: {damageableSO.damage * selectedMultiplier} damageableSO: {damageableSO}");
 
-        Debug.Log($"Damage: {damageableSO.damage} in: {bodyPart} with multiplier: {selectedMultiplier} total: {damageableSO.damage * selectedMultiplier}");
+        ModifyHealth(-(damageableSO.damage * selectedMultiplier));
     }
 
     protected override void Die()

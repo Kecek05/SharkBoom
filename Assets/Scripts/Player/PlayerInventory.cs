@@ -21,9 +21,9 @@ public class PlayerInventory : NetworkBehaviour
     /// <summary>
     /// The index of the selected item in the player inventory
     /// </summary>
-    private NetworkVariable<int> selectedItemIndex = new();
+    private NetworkVariable<int> selectedItemInventoryIndex = new();
 
-    public NetworkVariable<int> SelectedItemIndex => selectedItemIndex;
+    public NetworkVariable<int> SelectedItemInventoryIndex => selectedItemInventoryIndex;
 
 
     private bool canInteractWithInventory = false;
@@ -41,8 +41,12 @@ public class PlayerInventory : NetworkBehaviour
             player.OnPlayerCanPlay += Player_OnPlayerCanPlay;
             player.OnPlayerCantPlay += Player_OnPlayerCantPlay;
 
+            selectedItemInventoryIndex.OnValueChanged += SelectedItemIndex_OnValueChanged;
+
         }
     }
+
+
 
     private void Player_OnPlayerCanPlay()
     {
@@ -71,7 +75,7 @@ public class PlayerInventory : NetworkBehaviour
         //Round ended
         DecreaseAllItemsCooldownRpc();
         //UseItemByInventoryIndexRpc(selectedItemData.Value.itemInventoryIndex);
-        UseItemByInventoryIndexRpc(selectedItemIndex.Value);
+        UseItemByInventoryIndexRpc(selectedItemInventoryIndex.Value);
         SetPlayerJumpedRpc(false);
         SelectItemDataByItemInventoryIndex();
     }
@@ -167,25 +171,22 @@ public class PlayerInventory : NetworkBehaviour
     [Rpc(SendTo.Server)]
     private void SetSelectedItemIndexRpc(int itemInventoryIndex)
     {
-        selectedItemIndex.Value = itemInventoryIndex;
-        selectedItemIndex.Value = itemInventoryIndex;
+        selectedItemInventoryIndex.Value = itemInventoryIndex;
 
-        TriggerSetDragAndShootRpc();
-        TriggerOnItemSelectedClientsRpc(itemInventoryIndex);
     }
 
-    [Rpc(SendTo.Owner)]
-    private void TriggerSetDragAndShootRpc()
+    private void SelectedItemIndex_OnValueChanged(int previousValue, int newValue)
     {
+        //Owner only
+        // Need to be an OnValueChanged event because the lag between the client and the server
+
+        Debug.Log(selectedItemInventoryIndex.Value);
+
         player.PlayerDragController.SetDragAndShoot(GetSelectedItemSO().rb);
 
+        Debug.Log($"Set Selected Item Index to {selectedItemInventoryIndex.Value}");
         Debug.Log("I Trigger");
-    }
-
-    [Rpc(SendTo.Owner)]
-    private void TriggerOnItemSelectedClientsRpc(int itemInventoryIndex)
-    {
-        OnItemSelected?.Invoke(itemInventoryIndex);
+        OnItemSelected?.Invoke(selectedItemInventoryIndex.Value);
     }
 
     [Rpc(SendTo.Server)]
@@ -220,7 +221,7 @@ public class PlayerInventory : NetworkBehaviour
 
     public ItemSO GetSelectedItemSO()
     {
-        return GetItemSOByItemSOIndex(playerInventory[selectedItemIndex.Value].itemSOIndex);
+        return GetItemSOByItemSOIndex(playerInventory[selectedItemInventoryIndex.Value].itemSOIndex);
     }
 
     public ItemSO GetItemSOByItemSOIndex(int itemSOIndex)
