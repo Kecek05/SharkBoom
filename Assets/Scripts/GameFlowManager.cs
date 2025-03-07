@@ -76,11 +76,26 @@ public class GameFlowManager : NetworkBehaviour
                 localPlayableState = PlayableState.Player2Playing;
                 localPlayedState = PlayableState.Player2Played;
             }
-
         }
-
-
     }
+
+    [Rpc(SendTo.Server)]
+    public void PlayerPlayedRpc(PlayableState playerPlayingState)
+    {
+        if(playerPlayingState == PlayableState.Player1Playing)
+        {
+            currentPlayableState.Value = PlayableState.Player1Played;
+
+            DelayChangeState(PlayableState.Player2Playing);
+        }
+        else if (playerPlayingState == PlayableState.Player2Playing)
+        {
+            currentPlayableState.Value = PlayableState.Player2Played;
+
+            DelayChangeState(PlayableState.Player1Playing);
+        }
+    }
+    
 
     private void CurrentPlayableState_OnValueChanged(PlayableState previousValue, PlayableState newValue)
     {
@@ -93,6 +108,8 @@ public class GameFlowManager : NetworkBehaviour
             //Local Player cant play
             OnMyTurnEnded?.Invoke();
         }
+
+        Debug.Log($"Current Playable State Changed to: {newValue.ToString()}");
     }
 
     private void GameState_OnValueChanged(GameState previousValue, GameState newValue)
@@ -107,8 +124,7 @@ public class GameFlowManager : NetworkBehaviour
                     RandomizePlayerItems();
 
                     int randomStartPlayer = UnityEngine.Random.Range(0, 2);
-
-                    CurrentPlayableState.Value = PlayableState.Player1Playing;
+                    CurrentPlayableState.Value = PlayableState.Player2Playing;
                     //currentPlayableState.Value = randomStartPlayer == 0 ? PlayableState.Player1Playing : PlayableState.Player2Playing;
                 }
                 break;
@@ -120,10 +136,10 @@ public class GameFlowManager : NetworkBehaviour
     }
 
 
-    private async void DelayChangeState(GameState newGameState)
+    private async void DelayChangeState(PlayableState playableState)
     {
         await Task.Delay(2000);
-        SetGameStateRpc(newGameState);
+        SetPlayableStateRpc(playableState);
     }
 
     [Command("gameFlowManager-randomizePlayersItems")]
@@ -150,8 +166,6 @@ public class GameFlowManager : NetworkBehaviour
                 Debug.Log($"Player: {playerInventory.gameObject.name}");
             }
         }
-
-        SetGameStateRpc(GameState.GameStarted);
     }
 
     public Vector3 GetRandomSpawnPoint()
@@ -188,6 +202,13 @@ public class GameFlowManager : NetworkBehaviour
     public void SetGameStateRpc(GameState newState)
     {
         gameState.Value = newState;
+    }
+
+
+    [Rpc(SendTo.Server)]
+    public void SetPlayableStateRpc(PlayableState newState)
+    {
+        currentPlayableState.Value = newState;
     }
 
 }

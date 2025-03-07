@@ -50,11 +50,11 @@ public class NetworkServer : IDisposable
         response.Approved = true; //Connection is approved
         response.CreatePlayerObject = false;
 
-        if(networkManager.ConnectedClientsList.Count == 1) 
-        {
-            //Both players are connected
-            GameFlowManager.Instance.SetGameStateRpc(GameFlowManager.GameState.GameStarted);
-        }
+        //if(networkManager.ConnectedClientsList.Count == 1) 
+        //{
+        //    //Both players are connected
+        //    GameFlowManager.Instance.SetGameStateRpc(GameFlowManager.GameState.GameStarted);
+        //}
     }
 
     private async Task SpawnPlayerDelay(ulong clientId)
@@ -63,6 +63,12 @@ public class NetworkServer : IDisposable
         NetworkObject playerInstance = GameObject.Instantiate(playerPrefab, GameFlowManager.Instance.GetRandomSpawnPoint(), Quaternion.identity);
 
         playerInstance.SpawnAsPlayerObject(clientId);
+
+        if (networkManager.ConnectedClientsList.Count == 2)
+        {
+            //Both players are connected and spawned
+            GameFlowManager.Instance.SetGameStateRpc(GameFlowManager.GameState.GameStarted);
+        }
     }
 
     public UserData GetUserDataByClientId(ulong clientId)

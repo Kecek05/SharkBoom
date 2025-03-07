@@ -51,6 +51,8 @@ public class Player : NetworkBehaviour
         SetPlayerCanShootThisTurn(true);
 
         OnPlayerCanPlay?.Invoke();
+
+        Debug.Log("I can play!");
     }
 
     private void GameFlowManager_OnMyTurnEnded()
@@ -59,6 +61,8 @@ public class Player : NetworkBehaviour
 
 
         OnPlayerCantPlay?.Invoke();
+
+        Debug.Log("I cant play!");
     }
 
 
@@ -77,6 +81,7 @@ public class Player : NetworkBehaviour
 
         OnPlayerShooted?.Invoke();
 
+        GameFlowManager.Instance.PlayerPlayedRpc(GameFlowManager.Instance.LocalplayableState);
         //This player round ended, wait for the item to finish their action an then change the game state to the next player
         // GameFlowManager.Instance.SetGameStateRpc(GameFlowManager.Instance.LocalplayedState);
     }

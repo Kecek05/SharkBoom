@@ -167,6 +167,8 @@ public class PlayerInventory : NetworkBehaviour
     [Rpc(SendTo.Server)]
     public void SelectItemDataByItemInventoryIndexRpc(int itemInventoryIndex = 0) // Select a item to use, UI will call this, default (0) its Jump
     {
+        Debug.Log($"Try to select, can? {canInteractWithInventory}");
+
         if(!canInteractWithInventory) return;
 
 
@@ -188,6 +190,8 @@ public class PlayerInventory : NetworkBehaviour
     protected void TriggerSetDragAndShootRpc()
     {
         player.PlayerDragController.SetDragAndShoot(GetSelectedItemSO().rb);
+
+        Debug.Log("I Trigger");
     }
 
     [Rpc(SendTo.ClientsAndHost)]
