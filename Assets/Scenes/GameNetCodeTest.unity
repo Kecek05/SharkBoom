@@ -1518,7 +1518,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4845276930943762971, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000015258789
+      value: 0.000015258789
       objectReference: {fileID: 0}
     - target: {fileID: 4845637959249703711, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchorMax.y
@@ -2415,7 +2415,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45e3bd782b8ddc440bff2b69b68ab99a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cinemachineCamera: {fileID: 1402378577}
   cameraObjectToFollow: {fileID: 1668177987}
   cameraMovement: {fileID: 1700457213}
   cameraZoom: {fileID: 1700457210}

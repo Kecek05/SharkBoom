@@ -43,6 +43,7 @@ public class CameraManager : MonoBehaviour
     {
         cameraMovement.enabled = false; // We reset all camera Behaviours to false and enable them based on the state
         cameraZoom.enabled = false;
+        cameraFollowing.enabled = false;
 
         switch (cameraState)
         {

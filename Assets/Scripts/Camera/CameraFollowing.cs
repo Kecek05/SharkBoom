@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Security.Cryptography;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -5,43 +6,42 @@ using UnityEngine;
 public class CameraFollowing : MonoBehaviour
 {
 
-    public void SetTheValuesOfCinemachine(CinemachineFollow cinemachineFollowCamera)
-    {
+    private CinemachineFollow cinemachineFollowCamera;
+    private Coroutine followingCourotine;
 
-        if (cinemachineFollowCamera != null)
+    
+    public void SetTheValuesOfCinemachine(CinemachineFollow _cinemachineFollowCamera)
+    {
+        cinemachineFollowCamera = _cinemachineFollowCamera;
+        FollowingStarted();
+    }
+
+    private void FollowingStarted()
+    {
+        if (followingCourotine == null)
+        {
+            followingCourotine = StartCoroutine(FollowingCourotine());
+        }
+    }
+
+    private IEnumerator FollowingCourotine()
+    {
+        while (cinemachineFollowCamera != null)
         {
             cinemachineFollowCamera.FollowOffset.z = CameraManager.Instance.CameraObjectToFollow.position.z;
+            yield return null;
         }
-        else
+        FollowingEnded();
+    }
+
+    private void FollowingEnded()
+    {
+        if (followingCourotine != null)
         {
-            Debug.LogError("CinemachineFollow não encontrado nos filhos de ");
+            StopCoroutine(followingCourotine);
+            followingCourotine = null;
+            cinemachineFollowCamera = null;
+            CameraManager.Instance.SetCameraState(CameraManager.CameraState.Default);
         }
     }
-
-    /*public void SetCameraFollowingObject(Transform _cameraTarget)
-    {
-        cameraObjectFollowPos = CameraManager.Instance.CameraObjectToFollow.position;
-        cameraObjectFollowPos.x += _cameraTarget.position.x;
-        cameraObjectFollowPos.y += _cameraTarget.position.y;
-        cameraTarget = _cameraTarget;
-
-        Debug.Log(cameraObjectFollowPos.x + ", " + cameraObjectFollowPos.y);
-        CameraManager.Instance.CameraObjectToFollow.position = Vector3.MoveTowards(CameraManager.Instance.CameraObjectToFollow.position, _cameraTarget.transform.position, 100f * Time.deltaTime);
-        Debug.Log(_cameraTarget + " É o alvo da camera");
-    }
-
-    private void Update()
-    {
-        if(cameraTarget == null)
-        {
-            return;
-        }
-        SetCameraFollowingObject(cameraTarget);
-    }
-    
-
-    public void ResetCameraObject()
-    {
-        CameraManager.Instance.CinemachineCamera.Follow = CameraManager.Instance.CameraObjectToFollow;
-    } */
 }

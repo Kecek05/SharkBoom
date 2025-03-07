@@ -13,11 +13,15 @@ public class BaseItemThrowable : MonoBehaviour, IDraggable
     [SerializeField] protected CinemachineFollow cinemachineFollow;
     protected Transform shooterTransform;
 
+    private void OnEnable()
+    {
+        CameraManager.Instance.SetCameraState(CameraManager.CameraState.Following);
+    }
 
     public void Release(float force, Vector3 direction, Transform _shooterTransform)
     {
         shooterTransform = _shooterTransform;
-        CameraManager.Instance.SetCameraState(CameraManager.CameraState.Following);
+        
         CameraManager.Instance.CameraFollowing.SetTheValuesOfCinemachine(cinemachineFollow);
         ItemReleased(force, direction);
         
