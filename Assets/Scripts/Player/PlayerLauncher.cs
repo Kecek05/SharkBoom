@@ -29,11 +29,21 @@ public class PlayerLauncher : NetworkBehaviour
 
         //CameraManager.Instance.SetCameraState(CameraManager.CameraState.Following);
         //CameraManager.Instance.CameraFollowing.SetCameraFollowingObject(projetctile.transform);
-        if (player.PlayerInventory.SelectedItemData.Value.itemInventoryIndex == 0) //Jump
+        //if (player.PlayerInventory.SelectedItemData.Value.itemInventoryIndex == 0) //Jump
+        //{
+        //    player.PlayerJumped();
+
+        //} else
+        //{
+        //    player.PlayerShooted();
+        //}
+
+        if (player.PlayerInventory.SelectedItemIndex.Value == 0) //Jump
         {
             player.PlayerJumped();
 
-        } else
+        }
+        else
         {
             player.PlayerShooted();
         }

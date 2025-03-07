@@ -16,13 +16,15 @@ public class PlayerInventory : NetworkBehaviour
     private NetworkList<ItemDataStruct> playerInventory = new();
 
 
-    private NetworkVariable<ItemDataStruct> selectedItemData = new();
-    public NetworkVariable<ItemDataStruct> SelectedItemData => selectedItemData;
+    //private NetworkVariable<ItemDataStruct> selectedItemData = new();
+    //public NetworkVariable<ItemDataStruct> SelectedItemData => selectedItemData;
 
     /// <summary>
     /// The index of the selected item in the player inventory
     /// </summary>
-    private int selectedItemIndex;
+    private NetworkVariable<int> selectedItemIndex;
+
+    public NetworkVariable<int> SelectedItemIndex => selectedItemIndex;
 
 
     private bool canInteractWithInventory = false;
@@ -62,16 +64,17 @@ public class PlayerInventory : NetworkBehaviour
     {
         //Jumped, can shoot
         SetPlayerJumpedRpc(true);
-        SelectItemDataByItemInventoryIndexRpc(SelectFirstItemInventoryIndexAvailable());
+        SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
     }
 
     private void Player_OnPlayerShooted()
     {
         //Round ended
         DecreaseAllItemsCooldownRpc();
-        UseItemByInventoryIndexRpc(selectedItemData.Value.itemInventoryIndex);
+        //UseItemByInventoryIndexRpc(selectedItemData.Value.itemInventoryIndex);
+        UseItemByInventoryIndexRpc(selectedItemIndex.Value);
         SetPlayerJumpedRpc(false);
-        SelectItemDataByItemInventoryIndexRpc();
+        SelectItemDataByItemInventoryIndex();
     }
 
     [Rpc(SendTo.Server)]
@@ -144,7 +147,7 @@ public class PlayerInventory : NetworkBehaviour
     [Command("playerInventory-printPlayerSelectedItem", MonoTargetType.All)]
     public void PrintPlayerSelectedItem() //DEBUG
     {
-        Debug.Log($"Player: {gameObject.name} Selected Item: {GetItemSOByItemSOIndex(selectedItemData.Value.itemSOIndex).itemName}");
+        Debug.Log($"Player: {gameObject.name} Selected Item: {GetItemSOByItemSOIndex(playerInventory[selectedItemIndex.Value].itemSOIndex).itemName}");
     }
     #endregion
 
@@ -159,13 +162,12 @@ public class PlayerInventory : NetworkBehaviour
             itemCooldownRemaining = 0,
             itemCanBeUsed = true,
         });
-        SelectItemDataByItemInventoryIndexRpc(); //Default to Jump
+        SelectItemDataByItemInventoryIndex(); //Default to Jump
     }
 
 
     [Command("playerInventory-selectItemDataByIndex")]
-    [Rpc(SendTo.Server)]
-    public void SelectItemDataByItemInventoryIndexRpc(int itemInventoryIndex = 0) // Select a item to use, UI will call this, default (0) its Jump
+    public void SelectItemDataByItemInventoryIndex(int itemInventoryIndex = 0) // Select a item to use, UI will call this, default (0) its Jump
     {
         Debug.Log($"Try to select, can? {canInteractWithInventory}");
 
@@ -178,27 +180,31 @@ public class PlayerInventory : NetworkBehaviour
             return;
         }
 
-        selectedItemIndex = itemInventoryIndex;
-        selectedItemData.Value = playerInventory[itemInventoryIndex];
-
-        TriggerSetDragAndShootRpc();
-        TriggerOnItemSelectedClientsRpc(itemInventoryIndex);
+        SetSelectedItemIndexRpc(itemInventoryIndex);
 
     }
 
+    [Rpc(SendTo.Server)]
+    private void SetSelectedItemIndexRpc(int itemInventoryIndex)
+    {
+        selectedItemIndex.Value = itemInventoryIndex;
+        selectedItemIndex.Value = itemInventoryIndex;
+
+        TriggerSetDragAndShootRpc();
+        TriggerOnItemSelectedClientsRpc(itemInventoryIndex);
+    }
+
     [Rpc(SendTo.Owner)]
-    protected void TriggerSetDragAndShootRpc()
+    private void TriggerSetDragAndShootRpc()
     {
         player.PlayerDragController.SetDragAndShoot(GetSelectedItemSO().rb);
 
         Debug.Log("I Trigger");
     }
 
-    [Rpc(SendTo.ClientsAndHost)]
+    [Rpc(SendTo.Owner)]
     private void TriggerOnItemSelectedClientsRpc(int itemInventoryIndex)
     {
-        if(!IsOwner) return;
-
         OnItemSelected?.Invoke(itemInventoryIndex);
     }
 
@@ -237,7 +243,7 @@ public class PlayerInventory : NetworkBehaviour
 
     public ItemSO GetSelectedItemSO()
     {
-        return GetItemSOByItemSOIndex(selectedItemData.Value.itemSOIndex);
+        return GetItemSOByItemSOIndex(playerInventory[selectedItemIndex.Value].itemSOIndex);
     }
 
     public ItemSO GetItemSOByItemSOIndex(int itemSOIndex)

@@ -25,7 +25,7 @@ public class PlayerInventoryUI : NetworkBehaviour
 
         jumpButton.onClick.AddListener(() =>
         {
-            player.PlayerInventory.SelectItemDataByItemInventoryIndexRpc(0); //Jump Index
+            player.PlayerInventory.SelectItemDataByItemInventoryIndex(0); //Jump Index
         });
     }
 
@@ -85,7 +85,7 @@ public class PlayerInventoryUI : NetworkBehaviour
 
     public void SelecItem(int itemInventoryIndex)
     {
-        player.PlayerInventory.SelectItemDataByItemInventoryIndexRpc(itemInventoryIndex);
+        player.PlayerInventory.SelectItemDataByItemInventoryIndex(itemInventoryIndex);
     }
 
     private void Player_OnPlayerReady()

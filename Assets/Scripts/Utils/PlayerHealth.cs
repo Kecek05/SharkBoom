@@ -13,7 +13,6 @@ public class PlayerHealth : Health
         Foot
     }
 
-    [Command("health-takeDamage")]
     public void PlayerTakeDamage(DamageableSO damageableSO, BodyPartEnum bodyPart)
     {
         if(!IsServer) return;
