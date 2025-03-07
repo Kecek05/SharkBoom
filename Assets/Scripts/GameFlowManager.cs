@@ -111,7 +111,6 @@ public class GameFlowManager : NetworkBehaviour
             OnMyTurnEnded?.Invoke();
         }
 
-        Debug.Log($"Current Playable State Changed to: {newValue.ToString()}");
     }
 
     private void GameState_OnValueChanged(GameState previousValue, GameState newValue)
@@ -126,7 +125,7 @@ public class GameFlowManager : NetworkBehaviour
                     RandomizePlayerItems();
 
                     int randomStartPlayer = UnityEngine.Random.Range(0, 2);
-                    CurrentPlayableState.Value = PlayableState.Player2Playing;
+                    CurrentPlayableState.Value = PlayableState.Player1Playing;
                     //currentPlayableState.Value = randomStartPlayer == 0 ? PlayableState.Player1Playing : PlayableState.Player2Playing;
                 }
                 break;
@@ -140,7 +139,7 @@ public class GameFlowManager : NetworkBehaviour
 
     private async void DelayChangeState(PlayableState playableState)
     {
-        await Task.Delay(2000);
+        await Task.Delay(5000);
         SetPlayableStateRpc(playableState);
     }
 

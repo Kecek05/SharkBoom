@@ -24,6 +24,7 @@ public class PlayerLauncher : NetworkBehaviour
     [Command("playerLauncher-release")]
     private void PlayerDragAndShoot_OnDragRelease()
     {
+
         //Spawn Object, only owner
         SpawnProjectileServerRpc(player.PlayerDragController.DragForce, player.PlayerDragController.DirectionOfDrag); //Spawn real projectile on server need to send the speed and force values through the network
 

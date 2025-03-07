@@ -192,7 +192,7 @@ public class PlayerInventory : NetworkBehaviour
     [Rpc(SendTo.Server)]
     public void UseItemByInventoryIndexRpc(int itemInventoryIndex) // Use the item, Server will call this when both players ready
     {
-        if (!canInteractWithInventory);
+        if (!canInteractWithInventory) return;
 
         if (ItemCanBeUsed(itemInventoryIndex))
         {
@@ -240,6 +240,8 @@ public class PlayerInventory : NetworkBehaviour
 
             player.OnPlayerCanPlay -= Player_OnPlayerCanPlay;
             player.OnPlayerCantPlay -= Player_OnPlayerCantPlay;
+
+            selectedItemInventoryIndex.OnValueChanged -= SelectedItemIndex_OnValueChanged;
         }
     }
 }

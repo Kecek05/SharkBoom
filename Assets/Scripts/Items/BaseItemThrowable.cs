@@ -50,6 +50,6 @@ public class BaseItemThrowable : MonoBehaviour, IDraggable
                 Debug.Log("Dealt " + itemSO.damageableSO.damage + " damage to " + collision.gameObject.name);
             }
         }
-
+        Destroy(gameObject);
     }
 }
