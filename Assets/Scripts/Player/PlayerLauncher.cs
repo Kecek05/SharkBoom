@@ -1,3 +1,4 @@
+using QFSW.QC;
 using Sortify;
 using System;
 using Unity.Netcode;
@@ -20,6 +21,7 @@ public class PlayerLauncher : NetworkBehaviour
         }
     }
 
+    [Command("playerLauncher-release")]
     private void PlayerDragAndShoot_OnDragRelease()
     {
         //Spawn Object, only owner

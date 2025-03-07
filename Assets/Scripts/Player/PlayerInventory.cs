@@ -1,4 +1,3 @@
-using QFSW.QC;
 using System;
 using Unity.Netcode;
 using UnityEngine;
@@ -22,7 +21,7 @@ public class PlayerInventory : NetworkBehaviour
     /// <summary>
     /// The index of the selected item in the player inventory
     /// </summary>
-    private NetworkVariable<int> selectedItemIndex;
+    private NetworkVariable<int> selectedItemIndex = new();
 
     public NetworkVariable<int> SelectedItemIndex => selectedItemIndex;
 
@@ -134,23 +133,6 @@ public class PlayerInventory : NetworkBehaviour
         }
     }
 
-    #region DEBUG
-
-    [Command("playerInventory-printPlayerInventory", MonoTargetType.All)]
-    public void PrintPlayerInventory() //DEBUG
-    {
-        for (int i = 0; i < playerInventory.Count; i++)
-        {
-            Debug.Log($"Player: {gameObject.name} Item: {GetItemSOByItemSOIndex(playerInventory[i].itemSOIndex).itemName} Cooldown: {GetItemSOByItemSOIndex(playerInventory[i].itemSOIndex).cooldown} Can be used: {playerInventory[i].itemCanBeUsed} Item Inventory Index: {playerInventory[i].itemInventoryIndex}");
-        }
-    }
-    [Command("playerInventory-printPlayerSelectedItem", MonoTargetType.All)]
-    public void PrintPlayerSelectedItem() //DEBUG
-    {
-        Debug.Log($"Player: {gameObject.name} Selected Item: {GetItemSOByItemSOIndex(playerInventory[selectedItemIndex.Value].itemSOIndex).itemName}");
-    }
-    #endregion
-
 
     public void SetPlayerItems(int itemSOIndex) //Set the items that player have when starting the game
     {
@@ -165,8 +147,6 @@ public class PlayerInventory : NetworkBehaviour
         SelectItemDataByItemInventoryIndex(); //Default to Jump
     }
 
-
-    [Command("playerInventory-selectItemDataByIndex")]
     public void SelectItemDataByItemInventoryIndex(int itemInventoryIndex = 0) // Select a item to use, UI will call this, default (0) its Jump
     {
         Debug.Log($"Try to select, can? {canInteractWithInventory}");
@@ -208,7 +188,6 @@ public class PlayerInventory : NetworkBehaviour
         OnItemSelected?.Invoke(itemInventoryIndex);
     }
 
-    [Command("playerInventory-useItem")]
     [Rpc(SendTo.Server)]
     public void UseItemByInventoryIndexRpc(int itemInventoryIndex) // Use the item, Server will call this when both players ready
     {
@@ -232,8 +211,6 @@ public class PlayerInventory : NetworkBehaviour
         }
     }
 
-
-    [Command("playerInventory-itemCanBeUsed")]
     public bool ItemCanBeUsed(int itemInventoryIndex) // Returns if the item can be used
     {
 
