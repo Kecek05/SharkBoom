@@ -37,7 +37,7 @@ public class CameraZoom : MonoBehaviour
 
     private void InputReader_OnSecondaryTouchContactEvent(InputAction.CallbackContext context)
     {
-        if (context.started && this.enabled)
+        if (context.started)
         {
             ZoomStarted(); // when we have two fingers on the screen
             CameraManager.Instance.SetCameraState(CameraManager.CameraState.Zoom);

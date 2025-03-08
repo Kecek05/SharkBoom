@@ -2,6 +2,7 @@ using Sortify;
 using System;
 using System.Collections;
 using Unity.Cinemachine;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -18,7 +19,7 @@ public class CameraMovement : MonoBehaviour
     private bool dragMoveActive = false; // hold if the drag move is active
     private Vector2 lastTouchPosition;
 
-
+    private Vector3 cameraMovementPosition;
     private void Start()
     {
         inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
@@ -77,9 +78,12 @@ public class CameraMovement : MonoBehaviour
     private void MoveCamera(Vector2 movementDelta)
     {
         Vector3 moveDir = new Vector3(-movementDelta.x, -movementDelta.y, 0) * dragMoveSpeed * Time.deltaTime; // we put a negative value to invert the movement, making the sensation of dragging the camera
-        moveDir.x = Mathf.Clamp(moveDir.x, -20, 20);
-        moveDir.y = Mathf.Clamp(moveDir.y, 0, 10);
-        CameraManager.Instance.CameraObjectToFollow.position += moveDir;
+        
+        CameraManager.Instance.CameraObjectToFollow.position = new Vector3(
+            Mathf.Clamp(CameraManager.Instance.CameraObjectToFollow.position.x + moveDir.x, -15, 15), 
+            Mathf.Clamp(CameraManager.Instance.CameraObjectToFollow.position.y + moveDir.y, -10, 10),  
+            CameraManager.Instance.CameraObjectToFollow.position.z 
+        ); 
     }
 }
 
