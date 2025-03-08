@@ -1,3 +1,4 @@
+using QFSW.QC;
 using Sortify;
 using System;
 using Unity.Netcode;
@@ -5,12 +6,6 @@ using UnityEngine;
 
 public class Player : NetworkBehaviour
 {
-    //public event Action OnPlayerReady;
-    //public event Action OnPlayerCanPlay;
-    //public event Action OnPlayerCantPlay;
-    //public event Action OnPlayerJumped;
-    //public event Action OnPlayerShooted;
-
     [BetterHeader("References")]
     [SerializeField] private PlayerInventory playerInventory;
     [SerializeField] private PlayerInventoryUI playerInventoryUI;
@@ -41,7 +36,6 @@ public class Player : NetworkBehaviour
         if(IsOwner)
         {
             GameFlowManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
-            GameFlowManager.OnMyTurnEnded += GameFlowManager_OnMyTurnEnded;
 
             playerStateMachine = new PlayerStateMachine(this);
 
@@ -57,61 +51,7 @@ public class Player : NetworkBehaviour
         playerStateMachine.TransitionTo(playerStateMachine.myTurnStartedState);
         Debug.Log("I can play!");
 
-        //SetPlayerCanJumpThisTurn(true);
-        //SetPlayerCanShootThisTurn(true);
-
-        //OnPlayerCanPlay?.Invoke();
-
-
     }
-
-    private void GameFlowManager_OnMyTurnEnded()
-    {
-        //My Turn Ended, I cant play
-
-
-        //OnPlayerCantPlay?.Invoke();
-
-        Debug.Log("I cant play!");
-    }
-
-
-    //public void PlayerJumped()
-    //{
-    //    SetPlayerCanJumpThisTurn(false);
-
-    //    //OnPlayerJumped?.Invoke();
-    //}
-
-    //public void PlayerShooted()
-    //{
-    //    Player Shooted, cant do any thing else.Round ended
-    //    SetPlayerCanJumpThisTurn(false);
-    //    SetPlayerCanShootThisTurn(false);
-
-    //    OnPlayerShooted?.Invoke();
-
-
-    //    This player round ended, wait for the item to finish their action an then change the game state to the next player
-    //     GameFlowManager.Instance.SetGameStateRpc(GameFlowManager.Instance.LocalplayedState);
-    //}
-
-
-    //public void SetPlayerReady()
-    //{
-    //    if(playerInventory.GetSelectedItemSO() == null)
-    //    {
-    //        Debug.LogWarning("Item was not selected");
-    //        return;
-    //    }
-
-
-    //    GameFlowManager.Instance.SetPlayerReadyServerRpc();
-
-    //    OnPlayerReady?.Invoke();
-
-    //    Debug.Log("Player Setted to Ready");
-    //}
 
     public void SetPlayerCanJumpThisTurn(bool canJump)
     {
@@ -124,12 +64,20 @@ public class Player : NetworkBehaviour
     }
 
 
+    //DEBUG
+    [Command("player-passTurn")]
+    private void PassTurn()
+    {
+        GameFlowManager.Instance.PlayerPlayedRpc(GameFlowManager.Instance.LocalplayableState);
+
+    }
+
+
     public override void OnNetworkDespawn()
     {
         if (IsOwner)
         {
             GameFlowManager.OnMyTurnStarted -= GameFlowManager_OnMyTurnStarted;
-            GameFlowManager.OnMyTurnEnded -= GameFlowManager_OnMyTurnEnded;
         }
     }
 }

@@ -115,19 +115,11 @@ public class DragAndShoot : NetworkBehaviour
 
         if (context.canceled && isDragging)
         {
-            CancelledDrag();
+            SetIsDragging(false);
+            trajectory.SetSimulation(false);
+            OnDragRelease?.Invoke();
+            CameraManager.Instance.SetCameraState(CameraManager.CameraState.Default);
         }
-    }
-
-    [Command("dragAndShoot-release")]
-    private void CancelledDrag() //FOR DEBUG
-    {
-        if(!IsOwner) return;
-
-        SetIsDragging(false);
-        trajectory.SetSimulation(false);
-        OnDragRelease?.Invoke();
-        CameraManager.Instance.SetCameraState(CameraManager.CameraState.Default);
     }
 
     protected void InputReader_OnPrimaryFingerPositionEvent(InputAction.CallbackContext context)

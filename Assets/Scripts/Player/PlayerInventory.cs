@@ -60,9 +60,6 @@ public class PlayerInventory : NetworkBehaviour
         {
             SetCanInteractWithInventory(false);
 
-            //DecreaseAllItemsCooldownRpc();
-            //UseItemByInventoryIndexRpc(selectedItemInventoryIndex.Value);
-            //SelectItemDataByItemInventoryIndex();
         }
         else if (state == player.PlayerStateMachine.dragReleaseJump)
         {
@@ -118,7 +115,6 @@ public class PlayerInventory : NetworkBehaviour
         {
             if (playerInventory[i].itemCanBeUsed)
             {
-                Debug.Log($"Item {i} is available");
                 return i;
             }
         }
@@ -136,16 +132,6 @@ public class PlayerInventory : NetworkBehaviour
                 break;
             case NetworkListEvent<ItemDataStruct>.EventType.Value:
                 OnItemChanged?.Invoke(changeEvent.Value);
-
-                if(changeEvent.Value.itemInventoryIndex == 0) //its jump
-                {
-                    if(!changeEvent.Value.itemCanBeUsed)
-                    {
-                        //Jumped just now, select other item
-                        //SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
-                        Debug.Log("Jumped, select other item");
-                    }
-                }
                 break;
         }
     }
@@ -194,8 +180,6 @@ public class PlayerInventory : NetworkBehaviour
         player.PlayerDragController.SetDragAndShoot(GetSelectedItemSO().rb);
 
         OnItemSelected?.Invoke(selectedItemInventoryIndex.Value);
-
-        Debug.Log($"Selected Item Index: {newValue}");
 
     }
 

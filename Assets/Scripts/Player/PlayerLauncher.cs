@@ -25,9 +25,9 @@ public class PlayerLauncher : NetworkBehaviour
     {
         if(state == player.PlayerStateMachine.dragReleaseJump || state == player.PlayerStateMachine.dragReleaseItem)
         {
+
             Launch();
 
-            Debug.Log($"Release, SelectedItemIndex: {player.PlayerInventory.SelectedItemInventoryIndex.Value}");
         }
     }
 
