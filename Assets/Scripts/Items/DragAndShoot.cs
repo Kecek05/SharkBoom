@@ -70,6 +70,9 @@ public class DragAndShoot : NetworkBehaviour
 
     public Rigidbody SelectedRb => selectedRb; //DEBUG
 
+    private bool isCancelingDrag = false;
+    private bool canCancelDrag = false;
+
     public override void OnNetworkSpawn()
     {
         if (!IsOwner) return;
@@ -114,8 +117,9 @@ public class DragAndShoot : NetworkBehaviour
             }
         }
 
-        if (context.canceled && isDragging)
-        {
+        if (context.canceled && isDragging && !isCancelingDrag)
+        { 
+            isCancelingDrag = true;
             SetIsDragging(false);
             trajectory.SetSimulation(false);
             OnDragRelease?.Invoke();
@@ -131,7 +135,7 @@ public class DragAndShoot : NetworkBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //CHANGE TO CONTEXT
        
 
-        if (plane.Raycast(ray, out outDistancePlane) && Input.touchCount == 1) // this input touch count is a check for avoid the player bug if accidentally touch the screen with two fingers
+        if (plane.Raycast(ray, out outDistancePlane) && Input.touchCount == 1 && !isCancelingDrag) // this input touch count is a check for avoid the player bug if accidentally touch the screen with two fingers
         {
             endPosDrag = ray.GetPoint(outDistancePlane); // get the position of the click instantaneously
             directionOfDrag = (startDragPos.position - endPosDrag).normalized; // calculate the direction of the drag on Vector3
@@ -147,15 +151,27 @@ public class DragAndShoot : NetworkBehaviour
                 zoomForce = dragForce * zoomMultiplier * dragDistance;
                 isZoomIncreasing = zoomForce > lastZoomForce; // Check is zoomForce is increasing
 
+                if (dragDistance > 2f)
+                {
+                    canCancelDrag = true;
+                }
+
                 if (isZoomIncreasing)
                 {
                     // zoom out
                     CameraManager.Instance.CameraZoom.ChangeZoom(-5f, zoomDragSpeed);
+                    
                 }
                 else
                 {
                     // zoom in
                     CameraManager.Instance.CameraZoom.ChangeZoom(5f, zoomDragSpeed);
+
+                    if(dragDistance < 0.9f && canCancelDrag)
+                    {
+                        Debug.Log("Setou como true");
+                        isCancelingDrag = true;
+                    }
                 }
 
                 lastZoomForce = zoomForce; // Update the last zoom force
