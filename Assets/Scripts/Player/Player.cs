@@ -54,7 +54,7 @@ public class Player : NetworkBehaviour
     private void GameFlowManager_OnMyTurnStarted()
     {
         // My Turn Started, I can play
-        playerStateMachine.TransitionTo(playerStateMachine.idleMyTurnState);
+        playerStateMachine.TransitionTo(playerStateMachine.myTurnStartedState);
         Debug.Log("I can play!");
 
         //SetPlayerCanJumpThisTurn(true);

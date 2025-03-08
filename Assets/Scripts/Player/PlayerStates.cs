@@ -61,8 +61,7 @@ public class IdleMyTurnState : IState
     {
         player.PlayerDragController.OnDragStart += PlayerDragController_OnDragStart;
 
-        player.PlayerInventory.SetCanInteractWIthInventory(true);
-        player.PlayerDragController.TurnOnDrag();
+
         //Set Can Move Camera
         Debug.Log("Entering Idle State");
     }
@@ -96,6 +95,7 @@ public class DraggingJump : IState
     //Started Dragging the jump
     //Cant Move Camera, Cant Choose items, Only Drag
     //Change to Release Jump if release the jump
+
     private Player player;
 
 
@@ -106,15 +106,13 @@ public class DraggingJump : IState
     public void Enter()
     {
         player.PlayerDragController.OnDragRelease += PlayerDragController_OnDragRelease;
-
-        player.PlayerInventory.SetCanInteractWIthInventory(false);
         //Set Cant move camera
         Debug.Log("Entering Dragging Jump State");
     }
 
     private void PlayerDragController_OnDragRelease()
     {
-        //Can Shoot, Go to Idle
+        player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.dragReleaseJump);
     }
 
     public void Execute()
@@ -148,12 +146,14 @@ public class DraggingItem : IState
     {
         player.PlayerDragController.OnDragRelease += PlayerDragController_OnDragRelease;
 
+        //Set Cant move camera
+
         Debug.Log("Entering Dragging Item State");
     }
 
     private void PlayerDragController_OnDragRelease()
     {
-        
+        player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.dragReleaseItem);
     }
 
     public void Execute()
@@ -176,12 +176,22 @@ public class DragReleaseJump : IState
     //Cant Move Camera, Cant Choose items, Cant Drag, Camera following the action
     //Change to the IdleMyTurn after the item Callback
 
-    public DragReleaseJump()
+    public event Action OnPlayerJumped;
+
+    private Player player;
+
+    public DragReleaseJump(Player player)
     {
         //our builder
+        this.player = player;
     }
     public void Enter()
     {
+        player.SetPlayerCanJumpThisTurn(false);
+
+        //Set Camera cant move
+
+        //player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleMyTurnState); // On the Call Back
         Debug.Log("Entering Drag Release Jump State");
     }
     public void Execute()
@@ -199,12 +209,21 @@ public class DragReleaseItem : IState
     //Released the item
     //Cant Move Camera, Cant Choose items, Cant Drag, Camera following the action
     //Change to the MyTurnEnded after the item Callback
-    public DragReleaseItem()
+
+    private Player player;
+
+    public DragReleaseItem(Player player)
     {
         //our builder
+        this.player = player;
     }
     public void Enter()
     {
+        //Set Camera cant move
+        player.SetPlayerCanShootThisTurn(false);
+
+        //player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.MyTurnEnded); // On the Call Back
+
         Debug.Log("Entering Drag Release Item State");
     }
     public void Execute()

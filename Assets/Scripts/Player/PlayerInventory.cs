@@ -29,53 +29,52 @@ public class PlayerInventory : NetworkBehaviour
         if(IsOwner)
         {
 
-            player.OnPlayerJumped += Player_OnPlayerJumped;
-            player.OnPlayerShooted += Player_OnPlayerShooted;
-
             playerInventory.OnListChanged += PlayerInventory_OnListChanged;
 
-            player.OnPlayerCanPlay += Player_OnPlayerCanPlay;
-            player.OnPlayerCantPlay += Player_OnPlayerCantPlay;
+            player.PlayerStateMachine.OnStateChanged += PlayerStateMachine_OnStateChanged;
 
             selectedItemInventoryIndex.OnValueChanged += SelectedItemIndex_OnValueChanged;
 
         }
     }
 
-
-
-    private void Player_OnPlayerCanPlay()
+    private void PlayerStateMachine_OnStateChanged(IState state)
     {
-        //Can interact with inventory
+        if (state == player.PlayerStateMachine.myTurnStartedState)
+        {
+            SetCanInteractWIthInventory(true);
+            SelectItemDataByItemInventoryIndex(); //Default to Jump
+        }
+        else if (state == player.PlayerStateMachine.idleMyTurnState)
+        {
+            SetCanInteractWIthInventory(true);
+        }
+        else if (state == player.PlayerStateMachine.draggingJump || state == player.PlayerStateMachine.draggingItem)
+        {
+            SetCanInteractWIthInventory(false);
+        }
+        else if (state == player.PlayerStateMachine.dragReleaseItem)
+        {
+            SetCanInteractWIthInventory(false);
 
-        canInteractWithInventory = true;
+            DecreaseAllItemsCooldownRpc();
+            UseItemByInventoryIndexRpc(selectedItemInventoryIndex.Value);
+            SetPlayerJumpedRpc(false);
+            SelectItemDataByItemInventoryIndex();
+        }
+        else if (state == player.PlayerStateMachine.dragReleaseJump)
+        {
+            SetCanInteractWIthInventory(false);
 
-        SelectItemDataByItemInventoryIndex(); //Default to Jump
-    }
+            //Jumped, can shoot
+            SetPlayerJumpedRpc(true);
+            SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
+        }
+        else if (state == player.PlayerStateMachine.myTurnEndedState)
+        {
+            SetCanInteractWIthInventory(false);
+        }
 
-
-    private void Player_OnPlayerCantPlay()
-    {
-        //Cant interact with inventory
-        canInteractWithInventory = false;
-    }
-
-
-    private void Player_OnPlayerJumped()
-    {
-        //Jumped, can shoot
-        SetPlayerJumpedRpc(true);
-        SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
-    }
-
-    private void Player_OnPlayerShooted()
-    {
-        //Round ended
-        DecreaseAllItemsCooldownRpc();
-        //UseItemByInventoryIndexRpc(selectedItemData.Value.itemInventoryIndex);
-        UseItemByInventoryIndexRpc(selectedItemInventoryIndex.Value);
-        SetPlayerJumpedRpc(false);
-        SelectItemDataByItemInventoryIndex();
     }
 
     [Rpc(SendTo.Server)]
@@ -146,7 +145,6 @@ public class PlayerInventory : NetworkBehaviour
             itemCooldownRemaining = 0,
             itemCanBeUsed = true,
         });
-        //SelectItemDataByItemInventoryIndex(); //Default to Jump
     }
 
     public void SelectItemDataByItemInventoryIndex(int itemInventoryIndex = 0) // Select a item to use, UI will call this, default (0) its Jump
@@ -222,7 +220,7 @@ public class PlayerInventory : NetworkBehaviour
         return itemsListSO.allItemsSOList[itemSOIndex];
     }
 
-    public void SetCanInteractWIthInventory(bool canInteract)
+    private void SetCanInteractWIthInventory(bool canInteract)
     {
         canInteractWithInventory = canInteract;
     }
@@ -233,13 +231,9 @@ public class PlayerInventory : NetworkBehaviour
         {
             playerInventory.OnListChanged -= PlayerInventory_OnListChanged;
 
-            player.OnPlayerJumped -= Player_OnPlayerJumped;
-            player.OnPlayerShooted -= Player_OnPlayerShooted;
-
-            player.OnPlayerCanPlay -= Player_OnPlayerCanPlay;
-            player.OnPlayerCantPlay -= Player_OnPlayerCantPlay;
-
             selectedItemInventoryIndex.OnValueChanged -= SelectedItemIndex_OnValueChanged;
+
+            player.PlayerStateMachine.OnStateChanged -= PlayerStateMachine_OnStateChanged;
         }
     }
 }

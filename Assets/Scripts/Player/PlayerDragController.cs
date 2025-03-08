@@ -13,27 +13,21 @@ public class PlayerDragController : DragAndShoot
 
         if (!IsOwner) return;
 
-        player.PlayerDragController.OnDragRelease += PlayerDragController_OnDragRelease;
-        player.OnPlayerCanPlay += Player_OnPlayerCanPlay;
-        player.OnPlayerCantPlay += Player_OnPlayerCantPlay;
+        player.PlayerStateMachine.OnStateChanged += PlayerStateMachine_OnStateChanged;
 
     }
 
-
-
-    private void Player_OnPlayerCanPlay()
+    private void PlayerStateMachine_OnStateChanged(IState state)
     {
-        TurnOnDrag();
-    }
-
-    private void Player_OnPlayerCantPlay()
-    {
-        TurnOffDrag();
-    }
-
-    private void PlayerDragController_OnDragRelease()
-    {
-        ResetDrag();
+        if(state == player.PlayerStateMachine.idleMyTurnState)
+        {
+            TurnOnDrag();
+        } 
+        else if (state == player.PlayerStateMachine.dragReleaseJump || state == player.PlayerStateMachine.dragReleaseItem)
+        {
+            TurnOffDrag();
+            ResetDrag();
+        }
     }
 
 
@@ -41,6 +35,6 @@ public class PlayerDragController : DragAndShoot
     {
         if (!IsOwner) return;
 
-        player.PlayerDragController.OnDragRelease -= PlayerDragController_OnDragRelease;
+        player.PlayerStateMachine.OnStateChanged -= PlayerStateMachine_OnStateChanged;
     }
 }

@@ -17,31 +17,25 @@ public class PlayerLauncher : NetworkBehaviour
     {
         if (IsOwner)
         {
-            player.PlayerDragController.OnDragRelease += PlayerDragAndShoot_OnDragRelease;
+            player.PlayerStateMachine.OnStateChanged += PlayerStateMachine_OnStateChanged;
         }
     }
 
-    private void PlayerDragAndShoot_OnDragRelease()
+    private void PlayerStateMachine_OnStateChanged(IState state)
     {
+        if(state == player.PlayerStateMachine.dragReleaseJump || state == player.PlayerStateMachine.dragReleaseItem)
+        {
+            Launch();
 
-        //Spawn Object, only owner
+            Debug.Log($"Release, SelectedItemIndex: {player.PlayerInventory.SelectedItemInventoryIndex.Value}");
+        }
+    }
+
+    private void Launch()
+    {
         SpawnProjectileServerRpc(player.PlayerDragController.DragForce, player.PlayerDragController.DirectionOfDrag); //Spawn real projectile on server need to send the speed and force values through the network
 
         SpawnDummyProjectile(player.PlayerDragController.DragForce, player.PlayerDragController.DirectionOfDrag); //Spawn fake projectile on client
-
-        //CameraManager.Instance.SetCameraState(CameraManager.CameraState.Following);
-        //CameraManager.Instance.CameraFollowing.SetCameraFollowingObject(projetctile.transform);
-
-        if (player.PlayerInventory.SelectedItemInventoryIndex.Value == 0) //Jump
-        {
-            player.PlayerJumped();
-
-        }
-        else
-        {
-            player.PlayerShooted();
-        }
-        Debug.Log($"Release, SelectedItemIndex: {player.PlayerInventory.SelectedItemInventoryIndex.Value}");
     }
 
 
@@ -106,7 +100,7 @@ public class PlayerLauncher : NetworkBehaviour
     {
         if(IsOwner)
         {
-            player.PlayerDragController.OnDragRelease -= PlayerDragAndShoot_OnDragRelease;
+            player.PlayerStateMachine.OnStateChanged -= PlayerStateMachine_OnStateChanged;
         }
     }
 

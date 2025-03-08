@@ -25,11 +25,11 @@ public class PlayerStateMachine
     public PlayerStateMachine(Player player)
     {
         //our builder
-        this.myTurnStartedState = new MyTurnStartedState();
+        this.myTurnStartedState = new MyTurnStartedState(player);
         this.idleMyTurnState = new IdleMyTurnState(player);
-        this.draggingJump = new DraggingJump();
-        this.draggingItem = new DraggingItem();
-        this.dragReleaseJump = new DragReleaseJump();
+        this.draggingJump = new DraggingJump(player);
+        this.draggingItem = new DraggingItem(player);
+        this.dragReleaseJump = new DragReleaseJump(player);
         this.myTurnEndedState = new MyTurnEndedState();
         this.idleEnemyTurnState = new IdleEnemyTurnState();
         this.playerWatchingState = new PlayerWatchingState();
