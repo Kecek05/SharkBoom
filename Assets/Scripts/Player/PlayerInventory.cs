@@ -68,7 +68,6 @@ public class PlayerInventory : NetworkBehaviour
 
             //Jumped, can shoot
             SetPlayerJumpedRpc(false);
-            SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
         }
         else if (state == player.PlayerStateMachine.myTurnEndedState)
         {
@@ -130,6 +129,15 @@ public class PlayerInventory : NetworkBehaviour
                 break;
             case NetworkListEvent<ItemDataStruct>.EventType.Value:
                 OnItemChanged?.Invoke(changeEvent.Value);
+
+                if(changeEvent.Value.itemInventoryIndex == 0) //its jump
+                {
+                    if(!changeEvent.Value.itemCanBeUsed)
+                    {
+                        //Jumped just now, select other item
+                        SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
+                    }
+                }
                 break;
         }
     }
@@ -178,6 +186,7 @@ public class PlayerInventory : NetworkBehaviour
         player.PlayerDragController.SetDragAndShoot(GetSelectedItemSO().rb);
 
         OnItemSelected?.Invoke(selectedItemInventoryIndex.Value);
+
     }
 
     [Rpc(SendTo.Server)]

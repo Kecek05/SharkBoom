@@ -11,6 +11,7 @@ public class PlayerDebugCanvas : NetworkBehaviour
     public Player player;
     public TextMeshProUGUI selectedItemIndexText;
     public TextMeshProUGUI selectedRbText;
+    public TextMeshProUGUI playerStateText;
 
     public override void OnNetworkSpawn()
     {
@@ -34,6 +35,8 @@ public class PlayerDebugCanvas : NetworkBehaviour
             selectedRbText.text = player.PlayerDragController.SelectedRb.ToString();
         }
 
+
+        playerStateText.text = player.PlayerStateMachine.CurrentState.ToString();
     }
 
     private void SelectedItemIndex_OnValueChanged(int previousValue, int newValue)
