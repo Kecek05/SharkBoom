@@ -37,12 +37,14 @@ public class CameraMovement : MonoBehaviour
         {
             dragMoveActive = true;
             MoveStarted();
-            
+            CameraManager.Instance.SetCameraState(CameraManager.CameraState.Move); // Set the camera state to Move
+
         }
         else if (context.canceled) // When we release the screen
         {
             dragMoveActive = false;
             MoveFinish();
+            CameraManager.Instance.SetCameraState(CameraManager.CameraState.Default);
         }
     }
 
@@ -75,6 +77,8 @@ public class CameraMovement : MonoBehaviour
     private void MoveCamera(Vector2 movementDelta)
     {
         Vector3 moveDir = new Vector3(-movementDelta.x, -movementDelta.y, 0) * dragMoveSpeed * Time.deltaTime; // we put a negative value to invert the movement, making the sensation of dragging the camera
+        moveDir.x = Mathf.Clamp(moveDir.x, -20, 20);
+        moveDir.y = Mathf.Clamp(moveDir.y, 0, 10);
         CameraManager.Instance.CameraObjectToFollow.position += moveDir;
     }
 }
