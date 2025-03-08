@@ -92,6 +92,7 @@ public class DragAndShoot : NetworkBehaviour
 
         if (context.started) // capture the first frame when the touch is pressed
         {
+ 
             Ray rayStart = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
@@ -130,7 +131,7 @@ public class DragAndShoot : NetworkBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //CHANGE TO CONTEXT
        
 
-        if (plane.Raycast(ray, out outDistancePlane))
+        if (plane.Raycast(ray, out outDistancePlane) && Input.touchCount == 1) // this input touch count is a check for avoid the player bug if accidentally touch the screen with two fingers
         {
             endPosDrag = ray.GetPoint(outDistancePlane); // get the position of the click instantaneously
             directionOfDrag = (startDragPos.position - endPosDrag).normalized; // calculate the direction of the drag on Vector3

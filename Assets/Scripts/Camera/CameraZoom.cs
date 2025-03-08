@@ -37,13 +37,13 @@ public class CameraZoom : MonoBehaviour
 
     private void InputReader_OnSecondaryTouchContactEvent(InputAction.CallbackContext context)
     {
-        if (context.started)
+        if (context.started && CameraManager.Instance.GetCameraState != CameraManager.CameraState.Dragging)
         {
-            ZoomStarted(); // when we have two fingers on the screen
             CameraManager.Instance.SetCameraState(CameraManager.CameraState.Zoom);
+            ZoomStarted(); // when we have two fingers on the screen
         }
 
-        if (context.canceled)
+        if (context.canceled && CameraManager.Instance.GetCameraState != CameraManager.CameraState.Dragging)
         {
             ZoomEnded();
             CameraManager.Instance.SetCameraState(CameraManager.CameraState.Default);
@@ -76,11 +76,11 @@ public class CameraZoom : MonoBehaviour
 
             if (currentDistance > previousDistance) // zoom in
             {
-                ChangeZoom(1f);
+                ChangeZoom(0.5f);
             }
             else if (currentDistance < previousDistance) // zoom out
             {
-                ChangeZoom(-1f);
+                ChangeZoom(-0.5f);
             }
 
             previousDistance = currentDistance;
@@ -110,15 +110,6 @@ public class CameraZoom : MonoBehaviour
 
         cameraObjectFollowPos.z = Mathf.Clamp(cameraObjectFollowPos.z, minZoom, maxZoom);
         CameraManager.Instance.CameraObjectToFollow.position = Vector3.MoveTowards(CameraManager.Instance.CameraObjectToFollow.position, cameraObjectFollowPos, zoomSpeed * Time.deltaTime); // Move towards is better for movimentation
-    }
-
-
-    public void ResetZoom(Transform startDragPos, float zoomSpeed = 100f)
-    {
-        cameraObjectFollowPos = CameraManager.Instance.CameraObjectToFollow.position;
-        cameraObjectFollowPos.z -= startDragPos.position.z;
-
-        CameraManager.Instance.CameraObjectToFollow.position = Vector3.Lerp(CameraManager.Instance.CameraObjectToFollow.position, cameraObjectFollowPos, Time.deltaTime * zoomSpeed); // We use lerp because the move is automatic, so we need to control the velocity
     }
 
     private void OnDestroy()

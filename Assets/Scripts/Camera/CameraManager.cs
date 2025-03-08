@@ -14,7 +14,7 @@ public class CameraManager : MonoBehaviour
     public CameraZoom CameraZoom => cameraZoom;
 
     public CameraFollowing CameraFollowing => cameraFollowing;
-
+    public CameraState GetCameraState => cameraState;
 
     public enum CameraState // Enum for all camera states
     {
@@ -25,7 +25,7 @@ public class CameraManager : MonoBehaviour
         Following
     }
 
-    private CameraState cameraState;
+    [SerializeField] private CameraState cameraState;
 
     private void Awake() // Singleton
     {
