@@ -68,6 +68,7 @@ public class Player : NetworkBehaviour
     [Command("player-passTurn")]
     private void PassTurn()
     {
+        playerStateMachine.TransitionTo(playerStateMachine.idleEnemyTurnState);
         GameFlowManager.Instance.PlayerPlayedRpc(GameFlowManager.Instance.LocalplayableState);
 
     }
