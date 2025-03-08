@@ -74,30 +74,35 @@ public class CameraManager : MonoBehaviour
     private void Move()
     {
         cameraMovement.enabled = true;
+        CameraZoom.enabled = false;
+        cameraFollowing.enabled = false;
     }
 
     private void Zoom()
     {
         cameraZoom.enabled = true;
+        cameraMovement.enabled = false;
+        cameraFollowing.enabled = false;
     }
 
     private void Dragging()
     {
-        cameraMovement.enabled = false;
         cameraZoom.enabled = true;
+        cameraMovement.enabled = false;
+        cameraFollowing.enabled = false;
     }
 
     private void CameraReset()
     {
         cameraMovement.enabled = true;
         cameraZoom.enabled = true;
+        cameraFollowing.enabled = true;
     }
 
     private void Following()
     {
+        cameraFollowing.enabled = true;
         cameraMovement.enabled = false;
         cameraZoom.enabled = false;
-        cameraFollowing.enabled = true;
-        Debug.Log("Camera Following is true");
     }
 }
