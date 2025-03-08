@@ -42,50 +42,50 @@ public class PlayerInventory : NetworkBehaviour
     {
         if (state == player.PlayerStateMachine.myTurnStartedState)
         {
-            SetCanInteractWIthInventory(true);
+            SetPlayerJumpedRpc(true); //can jump
+            SetCanInteractWithInventory(true);
             SelectItemDataByItemInventoryIndex(); //Default to Jump
         }
         else if (state == player.PlayerStateMachine.idleMyTurnState)
         {
-            SetCanInteractWIthInventory(true);
+            SetCanInteractWithInventory(true);
         }
         else if (state == player.PlayerStateMachine.draggingJump || state == player.PlayerStateMachine.draggingItem)
         {
-            SetCanInteractWIthInventory(false);
+            SetCanInteractWithInventory(false);
         }
         else if (state == player.PlayerStateMachine.dragReleaseItem)
         {
-            SetCanInteractWIthInventory(false);
+            SetCanInteractWithInventory(false);
 
             DecreaseAllItemsCooldownRpc();
             UseItemByInventoryIndexRpc(selectedItemInventoryIndex.Value);
-            SetPlayerJumpedRpc(false);
             SelectItemDataByItemInventoryIndex();
         }
         else if (state == player.PlayerStateMachine.dragReleaseJump)
         {
-            SetCanInteractWIthInventory(false);
+            SetCanInteractWithInventory(false);
 
             //Jumped, can shoot
-            SetPlayerJumpedRpc(true);
+            SetPlayerJumpedRpc(false);
             SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
         }
         else if (state == player.PlayerStateMachine.myTurnEndedState)
         {
-            SetCanInteractWIthInventory(false);
+            SetCanInteractWithInventory(false);
         }
 
     }
 
     [Rpc(SendTo.Server)]
-    private void SetPlayerJumpedRpc(bool jumped)
+    private void SetPlayerJumpedRpc(bool canJump)
     {
         playerInventory[0] = new ItemDataStruct
         {
             itemInventoryIndex = playerInventory[0].itemInventoryIndex, //first in inventory
             itemSOIndex = playerInventory[0].itemSOIndex, //first in itemsListSO
             itemCooldownRemaining = GetItemSOByItemSOIndex(playerInventory[0].itemSOIndex).cooldown, // No cooldown
-            itemCanBeUsed = !jumped, // if jumped, cant jump
+            itemCanBeUsed = canJump, // if jumped, cant jump
         };
     }
 
@@ -220,7 +220,7 @@ public class PlayerInventory : NetworkBehaviour
         return itemsListSO.allItemsSOList[itemSOIndex];
     }
 
-    private void SetCanInteractWIthInventory(bool canInteract)
+    private void SetCanInteractWithInventory(bool canInteract)
     {
         canInteractWithInventory = canInteract;
     }

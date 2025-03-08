@@ -194,6 +194,12 @@ public class DragReleaseJump : IState
         //player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleMyTurnState); // On the Call Back
         Debug.Log("Entering Drag Release Jump State");
     }
+
+    private void JumpCallback()
+    {
+        player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleMyTurnState);
+    }
+
     public void Execute()
     {
         Debug.Log("Executing Drag Release Jump State");
@@ -224,8 +230,15 @@ public class DragReleaseItem : IState
 
         //player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.MyTurnEnded); // On the Call Back
 
+
         Debug.Log("Entering Drag Release Item State");
     }
+
+    private void ItemCallback()
+    {
+        player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.myTurnEndedState);
+    }
+
     public void Execute()
     {
         Debug.Log("Executing Drag Release Item State");
@@ -240,12 +253,23 @@ public class MyTurnEndedState : IState
 {
     //My Turn ended, next is enemy turn
 
-    public MyTurnEndedState()
+    private Player player;
+
+    public MyTurnEndedState(Player player)
     {
         //our builder
+        this.player = player;
     }
     public void Enter()
     {
+
+        player.SetPlayerCanJumpThisTurn(false);
+        player.SetPlayerCanShootThisTurn(false);
+
+        GameFlowManager.Instance.PlayerPlayedRpc(GameFlowManager.Instance.LocalplayableState);
+
+        player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleEnemyTurnState);
+
         Debug.Log("Entering My Turn End State");
     }
     public void Execute()

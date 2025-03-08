@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class Player : NetworkBehaviour
 {
-    public event Action OnPlayerReady;
-    public event Action OnPlayerCanPlay;
-    public event Action OnPlayerCantPlay;
-    public event Action OnPlayerJumped;
-    public event Action OnPlayerShooted;
+    //public event Action OnPlayerReady;
+    //public event Action OnPlayerCanPlay;
+    //public event Action OnPlayerCantPlay;
+    //public event Action OnPlayerJumped;
+    //public event Action OnPlayerShooted;
 
     [BetterHeader("References")]
     [SerializeField] private PlayerInventory playerInventory;
@@ -70,48 +70,48 @@ public class Player : NetworkBehaviour
         //My Turn Ended, I cant play
 
 
-        OnPlayerCantPlay?.Invoke();
+        //OnPlayerCantPlay?.Invoke();
 
         Debug.Log("I cant play!");
     }
 
 
-    public void PlayerJumped()
-    {
-        SetPlayerCanJumpThisTurn(false);
+    //public void PlayerJumped()
+    //{
+    //    SetPlayerCanJumpThisTurn(false);
 
-        OnPlayerJumped?.Invoke();
-    }
+    //    //OnPlayerJumped?.Invoke();
+    //}
 
-    public void PlayerShooted()
-    {
-        //Player Shooted, cant do any thing else. Round ended
-        SetPlayerCanJumpThisTurn(false);
-        SetPlayerCanShootThisTurn(false);
+    //public void PlayerShooted()
+    //{
+    //    Player Shooted, cant do any thing else.Round ended
+    //    SetPlayerCanJumpThisTurn(false);
+    //    SetPlayerCanShootThisTurn(false);
 
-        OnPlayerShooted?.Invoke();
-
-        GameFlowManager.Instance.PlayerPlayedRpc(GameFlowManager.Instance.LocalplayableState);
-        //This player round ended, wait for the item to finish their action an then change the game state to the next player
-        // GameFlowManager.Instance.SetGameStateRpc(GameFlowManager.Instance.LocalplayedState);
-    }
+    //    OnPlayerShooted?.Invoke();
 
 
-    public void SetPlayerReady()
-    {
-        if(playerInventory.GetSelectedItemSO() == null)
-        {
-            Debug.LogWarning("Item was not selected");
-            return;
-        }
+    //    This player round ended, wait for the item to finish their action an then change the game state to the next player
+    //     GameFlowManager.Instance.SetGameStateRpc(GameFlowManager.Instance.LocalplayedState);
+    //}
 
 
-        GameFlowManager.Instance.SetPlayerReadyServerRpc();
+    //public void SetPlayerReady()
+    //{
+    //    if(playerInventory.GetSelectedItemSO() == null)
+    //    {
+    //        Debug.LogWarning("Item was not selected");
+    //        return;
+    //    }
 
-        OnPlayerReady?.Invoke();
 
-        Debug.Log("Player Setted to Ready");
-    }
+    //    GameFlowManager.Instance.SetPlayerReadyServerRpc();
+
+    //    OnPlayerReady?.Invoke();
+
+    //    Debug.Log("Player Setted to Ready");
+    //}
 
     public void SetPlayerCanJumpThisTurn(bool canJump)
     {
