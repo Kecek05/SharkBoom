@@ -29,7 +29,6 @@ public class CameraFollowing : MonoBehaviour
         while (cinemachineFollowCamera != null)
         {
             cinemachineFollowCamera.FollowOffset.z = CameraManager.Instance.CameraObjectToFollow.position.z;
-            Debug.Log("Following");
             yield return null;
         }
         FollowingEnded();
