@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 
 [Serializable]
@@ -30,7 +31,7 @@ public class PlayerStateMachine
         this.draggingJump = new DraggingJump(player);
         this.draggingItem = new DraggingItem(player);
         this.dragReleaseJump = new DragReleaseJump(player);
-        this.myTurnEndedState = new MyTurnEndedState();
+        this.myTurnEndedState = new MyTurnEndedState(player);
         this.idleEnemyTurnState = new IdleEnemyTurnState();
         this.playerWatchingState = new PlayerWatchingState();
         this.deadState = new DeadState();
@@ -47,10 +48,14 @@ public class PlayerStateMachine
     public void TransitionTo(IState nextState)
     {
         currentState.Exit();
+        Debug.Log($"Old State: {currentState} | Changing to: {nextState}");
+
+
         currentState = nextState;
         nextState.Enter();
 
         OnStateChanged?.Invoke(nextState);
+
     }
 
     public void Execute()

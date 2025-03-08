@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
 
 
@@ -192,11 +193,14 @@ public class DragReleaseJump : IState
         //Set Camera cant move
 
         //player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleMyTurnState); // On the Call Back
+        JumpCallback();
+
         Debug.Log("Entering Drag Release Jump State");
     }
 
-    private void JumpCallback()
+    private async void JumpCallback()
     {
+        await Task.Delay(4000);
         player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleMyTurnState);
     }
 
@@ -229,13 +233,14 @@ public class DragReleaseItem : IState
         player.SetPlayerCanShootThisTurn(false);
 
         //player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.MyTurnEnded); // On the Call Back
-
+        ItemCallback();
 
         Debug.Log("Entering Drag Release Item State");
     }
 
-    private void ItemCallback()
+    private async void ItemCallback()
     {
+        await Task.Delay(4000);
         player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.myTurnEndedState);
     }
 

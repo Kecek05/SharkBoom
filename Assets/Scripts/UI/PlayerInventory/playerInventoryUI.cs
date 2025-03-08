@@ -39,11 +39,22 @@ public class PlayerInventoryUI : NetworkBehaviour
 
         //Owner Code below
 
-        player.OnPlayerReady += Player_OnPlayerReady;
-        GameFlowManager.OnRoundPreparing += GameFlowManager_OnRoundPreparing;
         player.PlayerInventory.OnItemAdded += PlayerInventory_OnItemAdded;
         player.PlayerInventory.OnItemChanged += PlayerInventory_OnItemChanged;
         player.PlayerInventory.OnItemSelected += PlayerInventory_OnItemSelected;
+
+        player.PlayerStateMachine.OnStateChanged += PlayerStateMachine_OnStateChanged;
+    }
+
+    private void PlayerStateMachine_OnStateChanged(IState state)
+    {
+        if (state == player.PlayerStateMachine.draggingItem || state == player.PlayerStateMachine.draggingJump)
+        {
+            Hide();
+        } else
+        {
+            Show();
+        }
     }
 
     private void PlayerInventory_OnItemSelected(int itemInventoryIndex)
@@ -88,17 +99,6 @@ public class PlayerInventoryUI : NetworkBehaviour
         player.PlayerInventory.SelectItemDataByItemInventoryIndex(itemInventoryIndex);
     }
 
-    private void Player_OnPlayerReady()
-    {
-        Hide();
-    }
-
-    private void GameFlowManager_OnRoundPreparing()
-    {
-        Show();
-    }
-
-
 
     private void Hide()
     {
@@ -113,10 +113,11 @@ public class PlayerInventoryUI : NetworkBehaviour
     {
         if (!IsOwner) return;
 
-        player.OnPlayerReady -= Player_OnPlayerReady;
-        GameFlowManager.OnRoundPreparing -= GameFlowManager_OnRoundPreparing;
+
         player.PlayerInventory.OnItemAdded -= PlayerInventory_OnItemAdded;
         player.PlayerInventory.OnItemChanged -= PlayerInventory_OnItemChanged;
+
+        player.PlayerStateMachine.OnStateChanged -= PlayerStateMachine_OnStateChanged;
     }
 
 }
