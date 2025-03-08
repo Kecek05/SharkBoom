@@ -44,11 +44,13 @@ public class PlayerInventory : NetworkBehaviour
         {
             SetPlayerJumpedRpc(true); //can jump
             SetCanInteractWithInventory(true);
-            SelectItemDataByItemInventoryIndex(); //Default to Jump
+            SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
         }
         else if (state == player.PlayerStateMachine.idleMyTurnState)
         {
             SetCanInteractWithInventory(true);
+
+            SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
         }
         else if (state == player.PlayerStateMachine.draggingJump || state == player.PlayerStateMachine.draggingItem)
         {
@@ -72,7 +74,6 @@ public class PlayerInventory : NetworkBehaviour
         else if (state == player.PlayerStateMachine.myTurnEndedState)
         {
             SetCanInteractWithInventory(false);
-
 
             DecreaseAllItemsCooldownRpc();
             UseItemByInventoryIndexRpc(selectedItemInventoryIndex.Value);
@@ -141,7 +142,7 @@ public class PlayerInventory : NetworkBehaviour
                     if(!changeEvent.Value.itemCanBeUsed)
                     {
                         //Jumped just now, select other item
-                        SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
+                        //SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
                         Debug.Log("Jumped, select other item");
                     }
                 }

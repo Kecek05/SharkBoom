@@ -7,7 +7,6 @@ using UnityEngine;
 
 public class MyTurnStartedState : IState
 {
-    public event Action OnPlayerCanPlay;
 
     //My Turn started, set up only
     private Player player;
@@ -22,8 +21,6 @@ public class MyTurnStartedState : IState
     {
         player.SetPlayerCanJumpThisTurn(true);
         player.SetPlayerCanShootThisTurn(true);
-
-        OnPlayerCanPlay?.Invoke();
 
         player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleMyTurnState);
         Debug.Log("Entering My Turn Started State");
@@ -43,8 +40,6 @@ public class MyTurnStartedState : IState
 
 public class IdleMyTurnState : IState
 {
-    public Action OnPlayerCanPlay;
-
 
     //Idle in my turn
     // Can Move Camera, Choose items and drag
@@ -176,8 +171,6 @@ public class DragReleaseJump : IState
     //Released the jump
     //Cant Move Camera, Cant Choose items, Cant Drag, Camera following the action
     //Change to the IdleMyTurn after the item Callback
-
-    public event Action OnPlayerJumped;
 
     private Player player;
 

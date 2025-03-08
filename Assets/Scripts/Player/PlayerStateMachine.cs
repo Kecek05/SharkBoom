@@ -31,6 +31,7 @@ public class PlayerStateMachine
         this.draggingJump = new DraggingJump(player);
         this.draggingItem = new DraggingItem(player);
         this.dragReleaseJump = new DragReleaseJump(player);
+        this.dragReleaseItem = new DragReleaseItem(player);
         this.myTurnEndedState = new MyTurnEndedState(player);
         this.idleEnemyTurnState = new IdleEnemyTurnState();
         this.playerWatchingState = new PlayerWatchingState();
