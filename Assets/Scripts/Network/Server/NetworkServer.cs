@@ -60,7 +60,10 @@ public class NetworkServer : IDisposable
     private async Task SpawnPlayerDelay(ulong clientId)
     {
         await Task.Delay(1000);
-        NetworkObject playerInstance = GameObject.Instantiate(playerPrefab, GameFlowManager.Instance.GetRandomSpawnPoint(), Quaternion.identity);
+
+        Transform randomSpawnPointSelected = GameFlowManager.Instance.GetRandomSpawnPoint();
+
+        NetworkObject playerInstance = GameObject.Instantiate(playerPrefab, randomSpawnPointSelected.position, randomSpawnPointSelected.rotation);
 
         playerInstance.SpawnAsPlayerObject(clientId);
 

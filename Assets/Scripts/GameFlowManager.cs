@@ -175,11 +175,11 @@ public class GameFlowManager : NetworkBehaviour
         }
     }
 
-    public Vector3 GetRandomSpawnPoint()
+    public Transform GetRandomSpawnPoint()
     {
         Transform selectedSpawnPoint = spawnPointsPos[UnityEngine.Random.Range(0, spawnPointsPos.Count)];
         spawnPointsPos.Remove(selectedSpawnPoint);
-        return selectedSpawnPoint.position;
+        return selectedSpawnPoint;
     }
 
     [ServerRpc(RequireOwnership = false)]
