@@ -4,17 +4,17 @@ using System;
 using Unity.Netcode;
 using UnityEngine;
 
-public class Health : NetworkBehaviour, IDamageable
+public class Health : NetworkBehaviour
 {
     //Events
     public event Action OnDie;
 
 
     [BetterHeader("Settings")]
-    [SerializeField] private float maxHealth;
-    private NetworkVariable<float> currentHealth = new();
+    [SerializeField] protected float maxHealth;
+    protected NetworkVariable<float> currentHealth = new();
 
-    private bool isDead = false;
+    protected bool isDead = false;
 
     public override void OnNetworkSpawn()
     {
@@ -23,19 +23,9 @@ public class Health : NetworkBehaviour, IDamageable
         currentHealth.Value = maxHealth;
     }
 
-    [Command("health-takeDamage")]
-    public void TakeDamage(float damage)
-    {
-        if(!IsServer) return;
-
-        if(isDead) return;
-
-        ModifyHealth(-damage);
-    }
-
 
     [Command("health-heal")]
-    public void Heal(float healthToHeal) //only server
+    protected void Heal(float healthToHeal) //only server
     {
         if (!IsServer) return;
 
@@ -53,7 +43,7 @@ public class Health : NetworkBehaviour, IDamageable
     }
 
 
-    private void ModifyHealth(float value) //only server
+    protected void ModifyHealth(float value) //only server
     {
         if (!IsServer) return;
 
@@ -73,17 +63,17 @@ public class Health : NetworkBehaviour, IDamageable
     }
 
     [Command("health-die")]
-    public void Die()
-    {
-        if(!IsServer) return;
+     protected virtual void Die()
+     {
+          if(!IsServer) return;
 
-        OnDie?.Invoke();
-        //Temp, after will only invoke the event 
+          OnDie?.Invoke();
+          //Temp, after will only invoke the event 
 
-        if(gameObject.TryGetComponent(out NetworkObject networkObject))
-        {
-            networkObject.Despawn(true);
-        }
-    }
+          if(gameObject.TryGetComponent(out NetworkObject networkObject))
+          {
+              networkObject.Despawn(true);
+          }
+     } 
 
 }

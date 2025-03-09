@@ -1,96 +1,84 @@
+using QFSW.QC;
 using Sortify;
+using System;
 using Unity.Netcode;
 using UnityEngine;
 
 public class Player : NetworkBehaviour
 {
-
     [BetterHeader("References")]
-    [SerializeField] private Transform spawnThrowablePos;
     [SerializeField] private PlayerInventory playerInventory;
-    [SerializeField] private DragAndShoot dragAndShoot;
-    [SerializeField] private Collider playerCollider;
-    [SerializeField] private GameObject clientProjectilePrefabDebug;
-    [SerializeField] private GameObject serverProjectileDebug;
+    [SerializeField] private PlayerInventoryUI playerInventoryUI;
+    [SerializeField] private PlayerHealth playerHealth;
+    [SerializeField] private PlayerDragController playerDragController;
+    [SerializeField] private PlayerLauncher playerLauncher;
+
+    private bool playerCanJumpThisTurn = false;
+    private bool playerCanShootThisTurn = false;
+
+    private PlayerStateMachine playerStateMachine;
+
+    //Publics
+
+    public PlayerStateMachine PlayerStateMachine => playerStateMachine;
+    public PlayerInventory PlayerInventory => playerInventory;
+    public PlayerInventoryUI PlayerInventoryUI => playerInventoryUI;
+    public PlayerHealth PlayerHealth => playerHealth;
+    public PlayerDragController PlayerDragController => playerDragController;
+    public PlayerLauncher PlayerLauncher => playerLauncher;
+    public bool PlayerCanJumpThisTurn => playerCanJumpThisTurn;
+    public bool PlayerCanShootThisTurn => playerCanShootThisTurn;
 
     public override void OnNetworkSpawn()
     {
+        gameObject.name = "Player " + UnityEngine.Random.Range(0, 100).ToString();
+
         if(IsOwner)
         {
-            dragAndShoot.Initialize();
+            GameFlowManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
 
-            dragAndShoot.OnDragRelease += DragAndShoot_OnDragRelease;
+            playerStateMachine = new PlayerStateMachine(this);
+
+            playerStateMachine.Initialize(playerStateMachine.idleEnemyTurnState);
         }
     }
 
-    private void DragAndShoot_OnDragRelease()
+
+
+    private void GameFlowManager_OnMyTurnStarted()
     {
-        //REFACTOR
+        // My Turn Started, I can play
+        playerStateMachine.TransitionTo(playerStateMachine.myTurnStartedState);
+        Debug.Log("I can play!");
 
-        SpawnProjectileServerRpc(dragAndShoot.Force, dragAndShoot.Direction); //Spawn real projectile on server need to send the speed and force values through the network
-
-        SpawnDummyProjectile(dragAndShoot.Force, dragAndShoot.Direction); //Spawn fake projectile on client
-
-        dragAndShoot.ResetDragPos();
     }
 
-    [Rpc(SendTo.Server)]
-    private void SpawnProjectileServerRpc(float dragForce, Vector3 dragDirection) // on server 
+    public void SetPlayerCanJumpThisTurn(bool canJump)
     {
-        GameObject gameObject = Instantiate(serverProjectileDebug, spawnThrowablePos.position, Quaternion.identity);
-
-        Physics.IgnoreCollision(playerCollider, gameObject.GetComponent<Collider>()); // Ignore collision between the player and the projectile
-
-        if (gameObject.transform.TryGetComponent(out IDraggable draggable))
-        {
-            draggable.Release(dragForce, dragDirection); //Call interface
-        }
-
-        SpawnProjectileClientRpc(dragForce, dragDirection);
+        playerCanJumpThisTurn = canJump;
     }
 
-    [Rpc(SendTo.ClientsAndHost)]
-    private void SpawnProjectileClientRpc(float dragForce, Vector3 dragDirection) // on client
+    public void SetPlayerCanShootThisTurn(bool canShoot)
     {
-        if(IsOwner) return; // already spawned
-
-        SpawnDummyProjectile(dragForce, dragDirection); 
-
-        Debug.Log("Spawn Projectile Client");
+        playerCanShootThisTurn = canShoot;
     }
 
-    private void SpawnDummyProjectile(float dragForce, Vector3 dragDirection)
+
+    //DEBUG
+    [Command("player-passTurn")]
+    private void PassTurn()
     {
+        playerStateMachine.TransitionTo(playerStateMachine.idleEnemyTurnState);
+        GameFlowManager.Instance.PlayerPlayedRpc(GameFlowManager.Instance.LocalplayableState);
 
-        GameObject gameObject = Instantiate(clientProjectilePrefabDebug, spawnThrowablePos.position, Quaternion.identity);
-
-        Physics.IgnoreCollision(playerCollider, gameObject.GetComponent<Collider>()); // Ignore collision between the player and the projectile
-
-        if (gameObject.transform.TryGetComponent(out IDraggable draggable))
-        {
-            draggable.Release(dragForce, dragDirection); //Call interface
-        }
     }
 
 
     public override void OnNetworkDespawn()
     {
-        if(!IsOwner) return;
-
-        dragAndShoot.OnDragRelease -= DragAndShoot_OnDragRelease;
-    }
-
-    public ItemSO GetSelectedItemSO() // used for get the mass, // used for get the mass, probably we will refactor for get all the itemSO, but for now 
-    {
-
-        ItemSO selectedItemSO = playerInventory.GetItemSOByIndex(playerInventory.SelectedItemData.itemSOIndex); // get the itemSO from the player inventory and the index
-
-        if (selectedItemSO == null) // check if the itemSO is null for not break the code
+        if (IsOwner)
         {
-            Debug.LogWarning("Didnt found the ItemSO!");
-            return null;
+            GameFlowManager.OnMyTurnStarted -= GameFlowManager_OnMyTurnStarted;
         }
-
-        return selectedItemSO; // get the mass of the itemSO
     }
 }

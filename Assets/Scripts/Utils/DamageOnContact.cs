@@ -3,20 +3,20 @@ using UnityEngine;
 
 public class DamageOnContact : MonoBehaviour
 {
-    [SerializeField] private float damage;
-    public float Damage => damage;
+    [SerializeField] private DamageableSO damageableSO;
+
+    
     private void OnCollisionEnter(Collision collision)
     {
-
-        if (collision.gameObject.TryGetComponent(out IDamageable damageableObject))
+        if (collision.collider.gameObject.TryGetComponent(out IDamageable damageable))
         {
             if (NetworkManager.Singleton.IsServer)
             {
-                damageableObject.TakeDamage(damage);
-                Debug.Log("Dealt " + damage + " damage to " + collision.gameObject.name);
+                damageable.TakeDamage(damageableSO);
+                Debug.Log("Dealt " + damageableSO.damage + " damage to " + collision.gameObject.name);
             }
-            Destroy(gameObject);
         }
+        Destroy(gameObject);
 
     }
 

@@ -13,44 +13,59 @@ public class PlayerItemSingleUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI itemNameText;
     [SerializeField] private Image itemImageIcon;
     [SerializeField] private TextMeshProUGUI itemCooldownText;
-    [SerializeField] private TextMeshProUGUI ownerDebugText;
     [SerializeField] private TextMeshProUGUI itemCanBeUsedText;
-    [SerializeField] private Button selectItemButton;
+    [SerializeField] private Button selectThisItemButton;
     [SerializeField] private TextMeshProUGUI itemInventoryIndexText;
+    [SerializeField] private Image backgroundImage;
+    private PlayerInventoryUI playerInventoryUI;
 
     private int myIndexItemInventory;
     public int ItemIndex => myIndexItemInventory;
 
+    [BetterHeader("Settings")]
+    [SerializeField] private Color selectedColor;
+    [SerializeField] private Color unSelectedColor;
+
     private void Awake()
     {
-        selectItemButton.onClick.AddListener(() =>
+        selectThisItemButton.onClick.AddListener(() =>
         {
-            OnItemSingleSelected?.Invoke(myIndexItemInventory);
-            Debug.Log($"Item {myIndexItemInventory} selected");
+            playerInventoryUI.SelecItem(myIndexItemInventory);
         });
     }
 
-    public void Setup(string itemName, Image itemIcon, string itemCooldown, FixedString32Bytes ownerDebug, bool itemCanBeUsed, int indexItemInventory)
+    public void Setup(string itemName, Image itemIcon, string itemCooldown, bool itemCanBeUsed, int indexItemInventory, PlayerInventoryUI _playerInventoryUI)
     {
         itemNameText.text = itemName;
         //itemImageIcon.sprite = itemIcon.sprite;
         itemCooldownText.text = itemCooldown;
 
-        ownerDebugText.text = ownerDebug.ToString();
         itemCanBeUsedText.text = itemCanBeUsed.ToString();
 
         myIndexItemInventory = indexItemInventory;
 
         itemInventoryIndexText.text = indexItemInventory.ToString();
+
+        playerInventoryUI = _playerInventoryUI;
     }
 
-    internal void UpdateCooldown(string newCooldown)
+    public void UpdateCooldown(string newCooldown)
     {
         itemCooldownText.text = newCooldown;
     }
 
-    internal void UpdateCanBeUsed(bool itemCanBeUsed)
+    public void UpdateCanBeUsed(bool itemCanBeUsed)
     {
         itemCanBeUsedText.text = itemCanBeUsed.ToString();
+    }
+
+    public void SelectedThisItem()
+    {
+        backgroundImage.color = selectedColor;
+    }
+
+    public void UnSelectedThisItem()
+    {
+        backgroundImage.color = unSelectedColor;
     }
 }

@@ -6,7 +6,10 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/PlayerScene3.unity
+    path: Assets/Scenes/NetBootstrap.unity
+    guid: 9fd29d165a40ed3428efdb3ef43fa425
+  - enabled: 1
+    path: Assets/Scenes/GameNetCodeTest.unity
     guid: 82ab4848476cf51458683385366153cd
   - enabled: 1
     path: Assets/Scenes/PlayerScene.unity
@@ -18,8 +21,11 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
-    path: Assets/Scenes/PlayerScene2.unity
-    guid: 69467b90e4d1f3e4fb77f6edb6b54de5
+    path: Assets/Scenes/MainMenu.unity
+    guid: fede5cb164ae7994890ab2e43e72d048
+  - enabled: 1
+    path: Assets/Scenes/PlayerScene4.unity
+    guid: de124dde9d63318479f9cd566210610a
   m_configObjects:
     com.unity.adaptiveperformance.google.android.provider_settings: {fileID: 11400000, guid: ec7432e224261ca418cf3059d0a599b1, type: 2}
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: 31c58dcd31d6b9f43877e3853c6d9696, type: 2}

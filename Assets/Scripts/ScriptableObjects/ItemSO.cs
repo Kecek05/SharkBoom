@@ -1,3 +1,4 @@
+using Sortify;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,14 +10,16 @@ public class ItemSO : ScriptableObject
     public GameObject itemServerPrefab;
     public string itemName;
     public Image itemIcon;
+    public Rigidbody rb;
     [Space(5)]
-    public float damage;
-    public float mass;
-    public float linearDamping;
-    public bool gravity;
+
+    [BetterHeader("Item Settings", 12)]
+    public DamageableSO damageableSO;
 
     /// <summary>
     /// Numbers of turns that need to wait to use the item again
     /// </summary>
     public int cooldown;
+
+
 }
