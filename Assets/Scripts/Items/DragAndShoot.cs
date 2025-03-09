@@ -72,6 +72,9 @@ public class DragAndShoot : NetworkBehaviour
 
     private bool isCancelingDrag = false;
     private bool canCancelDrag = false;
+    private float canceDraglLimit = 0.9f;
+    private float minDragDistanceCancel = 2f;
+    private float zoomThreshold = 0.2f;
 
     public override void OnNetworkSpawn()
     {
@@ -152,32 +155,36 @@ public class DragAndShoot : NetworkBehaviour
                 zoomForce = dragForce * zoomMultiplier * dragDistance;
                 isZoomIncreasing = zoomForce > lastZoomForce; // Check is zoomForce is increasing
 
-                if (dragDistance > 2f)
+                if (dragDistance > minDragDistanceCancel)
                 {
                     canCancelDrag = true;
                 }
-
-                if (isZoomIncreasing)
+                if(Mathf.Abs(zoomForce - lastZoomForce) > zoomThreshold)
                 {
-                    // zoom out
-                    CameraManager.Instance.CameraZoom.ChangeZoom(-5f, zoomDragSpeed);
-                }
-                else
-                {
-                    // zoom in
-                    CameraManager.Instance.CameraZoom.ChangeZoom(5f, zoomDragSpeed);
-
-                    if(dragDistance < 0.9f && canCancelDrag)
+                    if (isZoomIncreasing)
                     {
-                        isCancelingDrag = true;
-                        isDragging = false;
-                        trajectory.Hide();
-                        SetIsShowingDots(false);
+                        // zoom out
+                        CameraManager.Instance.CameraZoom.ChangeZoom(-5f, zoomDragSpeed);
                     }
-                }
+                    else
+                    {
+                        // zoom in
+                        CameraManager.Instance.CameraZoom.ChangeZoom(5f, zoomDragSpeed);
+
+                        if (dragDistance < canceDraglLimit && canCancelDrag)
+                        {
+                            isCancelingDrag = true;
+                            isDragging = false;
+                            trajectory.Hide();
+                            SetIsShowingDots(false);
+                        }
+                    }
+                
+                
 
                 lastZoomForce = zoomForce; // Update the last zoom force
                 lastCheckTime = Time.time; // Update the last check time
+                }
             }
 
             if (!isShowingDots && !isCancelingDrag)
