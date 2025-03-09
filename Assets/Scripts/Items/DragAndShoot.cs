@@ -104,6 +104,8 @@ public class DragAndShoot : NetworkBehaviour
                 if(hit.collider.gameObject == this.gameObject)
                 {
                     //Start Dragging
+                    isCancelingDrag = false;
+                    canCancelDrag = false;
                     trajectory.SetSimulation(true);
                     CameraManager.Instance.SetCameraState(CameraManager.CameraState.Dragging);
                     startZoomPos = CameraManager.Instance.CameraObjectToFollow;
@@ -119,7 +121,6 @@ public class DragAndShoot : NetworkBehaviour
 
         if (context.canceled && isDragging && !isCancelingDrag)
         { 
-            isCancelingDrag = true;
             SetIsDragging(false);
             trajectory.SetSimulation(false);
             OnDragRelease?.Invoke();
@@ -160,7 +161,6 @@ public class DragAndShoot : NetworkBehaviour
                 {
                     // zoom out
                     CameraManager.Instance.CameraZoom.ChangeZoom(-5f, zoomDragSpeed);
-                    
                 }
                 else
                 {
@@ -169,8 +169,10 @@ public class DragAndShoot : NetworkBehaviour
 
                     if(dragDistance < 0.9f && canCancelDrag)
                     {
-                        Debug.Log("Setou como true");
                         isCancelingDrag = true;
+                        isDragging = false;
+                        trajectory.Hide();
+                        SetIsShowingDots(false);
                     }
                 }
 
@@ -178,7 +180,7 @@ public class DragAndShoot : NetworkBehaviour
                 lastCheckTime = Time.time; // Update the last check time
             }
 
-            if (!isShowingDots)
+            if (!isShowingDots && !isCancelingDrag)
             {
                 trajectory.Show(); // call the function for show dots
                 SetIsShowingDots(true);
