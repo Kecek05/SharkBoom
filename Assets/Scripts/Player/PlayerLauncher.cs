@@ -1,8 +1,8 @@
-using QFSW.QC;
 using Sortify;
 using System;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerLauncher : NetworkBehaviour
 {
@@ -14,16 +14,37 @@ public class PlayerLauncher : NetworkBehaviour
 
 
     [BetterHeader("References")]
+    [SerializeField] private InputReader inputReader;
     [SerializeField] private Transform spawnItemPos;
     [SerializeField] private Collider[] playerColliders;
     [SerializeField] private Player player;
 
+    private IActivable itemActivable;
+    private bool itemActivated = false;
 
     public override void OnNetworkSpawn()
     {
         if (IsOwner)
         {
             player.PlayerStateMachine.OnStateChanged += PlayerStateMachine_OnStateChanged;
+
+            inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
+        }
+    }
+
+    private void InputReader_OnTouchPressEvent(InputAction.CallbackContext context)
+    {
+        Debug.Log($"Debug Touch itemActivated: {itemActivated} ItemActivable: {itemActivable}");
+
+        if(context.started && !itemActivated && itemActivable != null)
+        {
+            //touched, isnt activated and has an activable item
+            itemActivated = true;
+            itemActivable.Activate();
+
+            itemActivable = null;
+
+            Debug.Log("Trying to active the item");
         }
     }
 
@@ -38,6 +59,8 @@ public class PlayerLauncher : NetworkBehaviour
 
     private void Launch()
     {
+        itemActivated = false;
+
         SpawnProjectileServerRpc(player.PlayerDragController.DragForce, player.PlayerDragController.DirectionOfDrag, player.PlayerInventory.GetSelectedItemSOIndex()); //Spawn real projectile on server need to send the speed and force values through the network
 
         SpawnDummyProjectile(player.PlayerDragController.DragForce, player.PlayerDragController.DirectionOfDrag, player.PlayerInventory.GetSelectedItemSOIndex()); //Spawn fake projectile on client
@@ -52,7 +75,7 @@ public class PlayerLauncher : NetworkBehaviour
     {
         if(player.PlayerInventory.GetItemSOByItemSOIndex(selectedItemSOIndex).itemServerPrefab == null)
         {
-            Debug.LogWarning("ItemSOIndex: " + selectedItemSOIndex + " has no server prefab");
+            Debug.LogWarning($"ItemSOIndex: {selectedItemSOIndex} has no server prefab");
             return;
         }
 
@@ -70,7 +93,6 @@ public class PlayerLauncher : NetworkBehaviour
         if (gameObject.transform.TryGetComponent(out IDraggable draggable))
         {
             draggable.Release(dragForce, dragDirection, transform); //Call interface
-
         }
         
         SpawnProjectileClientRpc(dragForce, dragDirection, selectedItemSOIndex);
@@ -89,7 +111,7 @@ public class PlayerLauncher : NetworkBehaviour
     {
         if (player.PlayerInventory.GetItemSOByItemSOIndex(selectedItemSOIndex).itemClientPrefab == null)
         {
-            Debug.LogWarning("ItemSOIndex: " + selectedItemSOIndex + " has no client prefab");
+            Debug.LogWarning($"ItemSOIndex: {selectedItemSOIndex} has no client prefab");
             return;
         }
 
@@ -109,6 +131,12 @@ public class PlayerLauncher : NetworkBehaviour
             draggable.Release(dragForce, dragDirection, transform); //Call interface
         }
 
+        if (gameObject.transform.TryGetComponent(out IActivable activable))
+        {
+            //Get the ref to active the item
+            itemActivable = activable;
+        }
+
     }
 
     public override void OnNetworkDespawn()
@@ -116,6 +144,8 @@ public class PlayerLauncher : NetworkBehaviour
         if(IsOwner)
         {
             player.PlayerStateMachine.OnStateChanged -= PlayerStateMachine_OnStateChanged;
+
+            inputReader.OnTouchPressEvent -= InputReader_OnTouchPressEvent;
         }
     }
 

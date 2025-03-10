@@ -1876,7 +1876,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4845276930943762971, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.000038146973
+      value: 0.000022888184
       objectReference: {fileID: 0}
     - target: {fileID: 4845637959249703711, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchorMax.y
@@ -2779,6 +2779,7 @@ MonoBehaviour:
   cameraMovement: {fileID: 1700457213}
   cameraZoom: {fileID: 1700457210}
   cameraFollowing: {fileID: 1700457212}
+  cameraState: 0
 --- !u!114 &1700457212
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2805,6 +2806,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
   dragMoveSpeed: 1
+  minMovX: -15
+  maxMovX: 15
+  minMovY: -10
+  maxMovY: 10
 --- !u!1 &1765298811
 GameObject:
   m_ObjectHideFlags: 0

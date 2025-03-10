@@ -33,9 +33,8 @@ public class BaseItemThrowable : MonoBehaviour, IDraggable
 
     protected virtual void ItemCallbackAction()
     {
-        if (isServerObject) return;
-        Debug.Log("Item Callback Action" + " " + this.gameObject.name);
 
+        Debug.Log($"Item Callback Action: {gameObject.name}");
     }
 
     protected void OnCollisionEnter(Collision collision)
