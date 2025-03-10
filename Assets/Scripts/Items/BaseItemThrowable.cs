@@ -33,6 +33,8 @@ public class BaseItemThrowable : MonoBehaviour, IDraggable
 
     protected virtual void ItemCallbackAction()
     {
+        if (isServerObject) return;
+        Debug.Log("Item Callback Action" + " " + this.gameObject.name);
 
     }
 
@@ -54,5 +56,9 @@ public class BaseItemThrowable : MonoBehaviour, IDraggable
             }
         }
         Destroy(gameObject);
+    }
+    private void OnDestroy()
+    {
+        ItemCallbackAction();
     }
 }
