@@ -7,7 +7,7 @@ public interface IDamageable
 
 public interface IDraggable
 {
-    public void Release(float force, Vector3 direction, Transform shooterTransform);
+    public void Release(float force, Vector3 direction);
 }
 
 
@@ -24,4 +24,9 @@ public interface IState
 public interface IActivable
 {
     public void Activate();
+}
+
+public interface IFollowable
+{
+    public void Follow(Transform target);
 }

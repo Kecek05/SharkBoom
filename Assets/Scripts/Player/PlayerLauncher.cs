@@ -78,8 +78,8 @@ public class PlayerLauncher : NetworkBehaviour
             Debug.LogWarning($"ItemSOIndex: {selectedItemSOIndex} has no server prefab");
             return;
         }
-
-
+        
+        
         GameObject gameObject = Instantiate(player.PlayerInventory.GetItemSOByItemSOIndex(selectedItemSOIndex).itemServerPrefab, spawnItemPos.position, Quaternion.identity);
 
         if (gameObject.TryGetComponent(out Collider projectileCollider))
@@ -92,9 +92,14 @@ public class PlayerLauncher : NetworkBehaviour
 
         if (gameObject.transform.TryGetComponent(out IDraggable draggable))
         {
-            draggable.Release(dragForce, dragDirection, transform); //Call interface
+            draggable.Release(dragForce, dragDirection); //Call interface
         }
-        
+
+        if (gameObject.transform.TryGetComponent(out IFollowable followable))
+        {
+            followable.Follow(transform); //Call interface
+        }
+
         SpawnProjectileClientRpc(dragForce, dragDirection, selectedItemSOIndex);
     }
 
@@ -126,9 +131,14 @@ public class PlayerLauncher : NetworkBehaviour
             }
         }
 
-        if (projetctile.transform.TryGetComponent(out IDraggable draggable))
+        if (gameObject.transform.TryGetComponent(out IDraggable draggable))
         {
-            draggable.Release(dragForce, dragDirection, transform); //Call interface
+            draggable.Release(dragForce, dragDirection); //Call interface
+        }
+
+        if (gameObject.transform.TryGetComponent(out IFollowable followable))
+        {
+            followable.Follow(transform); //Call interface
         }
 
         if (projetctile.transform.TryGetComponent(out IActivable activable))

@@ -10,16 +10,15 @@ public class BaseItemThrowable : MonoBehaviour, IDraggable
     [SerializeField] protected ItemSO itemSO;
     [SerializeField] protected Rigidbody rb;
     [SerializeField] protected CinemachineFollow cinemachineFollow;
-    protected Transform shooterTransform;
+    protected Player myPlayer;
 
     private void OnEnable()
     {
         CameraManager.Instance.SetCameraState(CameraManager.CameraState.Following);
     }
 
-    public void Release(float force, Vector3 direction, Transform _shooterTransform)
+    public void Release(float force, Vector3 direction)
     {
-        shooterTransform = _shooterTransform;
         
         CameraManager.Instance.CameraFollowing.SetTheValuesOfCinemachine(cinemachineFollow);
         ItemReleased(force, direction);
@@ -33,6 +32,8 @@ public class BaseItemThrowable : MonoBehaviour, IDraggable
 
     protected virtual void ItemCallbackAction()
     {
+        if(!isServerObject) return; // Only the server should call the callback action
+
 
         Debug.Log($"Item Callback Action: {gameObject.name}");
     }
