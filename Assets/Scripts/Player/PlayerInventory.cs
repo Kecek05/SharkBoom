@@ -42,15 +42,13 @@ public class PlayerInventory : NetworkBehaviour
     {
         if (state == player.PlayerStateMachine.myTurnStartedState)
         {
-            SetPlayerJumpedRpc(true); //can jump
+            SetPlayerCanJumpRpc(true); //can jump
             SetCanInteractWithInventory(true);
             SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
         }
         else if (state == player.PlayerStateMachine.idleMyTurnState)
         {
             SetCanInteractWithInventory(true);
-
-            SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
         }
         else if (state == player.PlayerStateMachine.draggingJump || state == player.PlayerStateMachine.draggingItem)
         {
@@ -66,7 +64,7 @@ public class PlayerInventory : NetworkBehaviour
             SetCanInteractWithInventory(false);
 
             //Jumped, can shoot
-            SetPlayerJumpedRpc(false);
+            SetPlayerCanJumpRpc(false);
         }
         else if (state == player.PlayerStateMachine.myTurnEndedState)
         {
@@ -80,7 +78,7 @@ public class PlayerInventory : NetworkBehaviour
     }
 
     [Rpc(SendTo.Server)]
-    private void SetPlayerJumpedRpc(bool canJump)
+    private void SetPlayerCanJumpRpc(bool canJump)
     {
         playerInventory[0] = new ItemDataStruct
         {
@@ -132,6 +130,11 @@ public class PlayerInventory : NetworkBehaviour
                 break;
             case NetworkListEvent<ItemDataStruct>.EventType.Value:
                 OnItemChanged?.Invoke(changeEvent.Value);
+
+                if(changeEvent.Value.itemInventoryIndex == 0) //Jumped, Select other item
+                {
+                    SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
+                }
                 break;
         }
     }
