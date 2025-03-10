@@ -5,14 +5,13 @@ using UnityEngine;
 
 public class BaseItemThrowable : MonoBehaviour, IDraggable
 {
-    [BetterHeader("References")]
+    [BetterHeader("Base Item References")]
     [SerializeField] protected bool isServerObject;
     [SerializeField] protected ItemSO itemSO;
     [SerializeField] protected Rigidbody rb;
     [SerializeField] protected CinemachineFollow cinemachineFollow;
-    protected Player myPlayer;
 
-    private void OnEnable()
+    protected virtual void OnEnable()
     {
         CameraManager.Instance.SetCameraState(CameraManager.CameraState.Following);
     }
@@ -57,7 +56,7 @@ public class BaseItemThrowable : MonoBehaviour, IDraggable
         }
         Destroy(gameObject);
     }
-    private void OnDestroy()
+    protected void OnDestroy()
     {
         ItemCallbackAction();
     }

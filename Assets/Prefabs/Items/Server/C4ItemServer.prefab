@@ -74,11 +74,53 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_Name
-      value: BaseItemThrowableServer1
+      value: C4ItemServer
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8896217447416486367, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+    - {fileID: 4368214002554539844, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6716241361635138832}
   m_SourcePrefab: {fileID: 100100000, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+--- !u!114 &1826919950752638168 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8531394715748984986, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+  m_PrefabInstance: {fileID: 8016156986958908482}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b617507da6d07e749b7efdb34e1173e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!54 &3604553637772792886 stripped
+Rigidbody:
+  m_CorrespondingSourceObject: {fileID: 6717943621661333620, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+  m_PrefabInstance: {fileID: 8016156986958908482}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4373393495679015644 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+  m_PrefabInstance: {fileID: 8016156986958908482}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6716241361635138832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4373393495679015644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c25c608c89e5a9b42a5779cacd9434c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isServerObject: 1
+  itemSO: {fileID: 11400000, guid: d920d99b67057b34eb71bc10d40ec3c8, type: 2}
+  rb: {fileID: 3604553637772792886}
+  cinemachineFollow: {fileID: 1826919950752638168}
+  inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}

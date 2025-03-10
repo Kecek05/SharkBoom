@@ -19,8 +19,7 @@ public class PlayerLauncher : NetworkBehaviour
     [SerializeField] private Collider[] playerColliders;
     [SerializeField] private Player player;
 
-    private IActivable itemActivable;
-    private bool itemActivated = false;
+    private BaseItemThrowableActiveable itemThrowableActivable;
 
     public override void OnNetworkSpawn()
     {
@@ -36,15 +35,9 @@ public class PlayerLauncher : NetworkBehaviour
     {
         //Debug.Log($"Debug Touch itemActivated: {itemActivated} ItemActivable: {itemActivable}");
 
-        if(context.started && !itemActivated && itemActivable != null)
+        if(context.started && itemThrowableActivable != null)
         {
-            //touched, isnt activated and has an activable item
-            itemActivated = true;
-            itemActivable.Activate();
-
-            itemActivable = null;
-
-            //Debug.Log("Trying to active the item");
+            itemThrowableActivable.TryActivate();
         }
     }
 
@@ -59,7 +52,6 @@ public class PlayerLauncher : NetworkBehaviour
 
     private void Launch()
     {
-        itemActivated = false;
 
         SpawnProjectileServerRpc(player.PlayerDragController.DragForce, player.PlayerDragController.DirectionOfDrag, player.PlayerInventory.GetSelectedItemSOIndex()); //Spawn real projectile on server need to send the speed and force values through the network
 
@@ -80,9 +72,9 @@ public class PlayerLauncher : NetworkBehaviour
         }
         
         
-        GameObject gameObject = Instantiate(player.PlayerInventory.GetItemSOByItemSOIndex(selectedItemSOIndex).itemServerPrefab, spawnItemPos.position, Quaternion.identity);
+        GameObject projetctile = Instantiate(player.PlayerInventory.GetItemSOByItemSOIndex(selectedItemSOIndex).itemServerPrefab, spawnItemPos.position, Quaternion.identity);
 
-        if (gameObject.TryGetComponent(out Collider projectileCollider))
+        if (projetctile.TryGetComponent(out Collider projectileCollider))
         {
             foreach(Collider playerCollider in playerColliders)
             {
@@ -90,14 +82,20 @@ public class PlayerLauncher : NetworkBehaviour
             }
         }
 
-        if (gameObject.transform.TryGetComponent(out IDraggable draggable))
+        if (projetctile.transform.TryGetComponent(out IDraggable draggable))
         {
             draggable.Release(dragForce, dragDirection); //Call interface
         }
 
-        if (gameObject.transform.TryGetComponent(out IFollowable followable))
+        if (projetctile.transform.TryGetComponent(out IFollowable followable))
         {
             followable.Follow(transform); //Call interface
+        }
+
+        if (projetctile.transform.TryGetComponent(out BaseItemThrowableActiveable activable))
+        {
+            //Get the ref to active the item
+            itemThrowableActivable = activable;
         }
 
         SpawnProjectileClientRpc(dragForce, dragDirection, selectedItemSOIndex);
@@ -139,12 +137,6 @@ public class PlayerLauncher : NetworkBehaviour
         if (gameObject.transform.TryGetComponent(out IFollowable followable))
         {
             followable.Follow(transform); //Call interface
-        }
-
-        if (projetctile.transform.TryGetComponent(out IActivable activable))
-        {
-            //Get the ref to active the item
-            itemActivable = activable;
         }
 
     }

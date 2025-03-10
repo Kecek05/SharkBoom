@@ -23,6 +23,8 @@ public interface IState
 
 public interface IActivable
 {
+    public void Setup();
+
     public void Activate();
 }
 
