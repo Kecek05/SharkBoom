@@ -50,6 +50,12 @@ public class PlayerLauncher : NetworkBehaviour
     [Rpc(SendTo.Server)]
     private void SpawnProjectileServerRpc(float dragForce, Vector3 dragDirection, int selectedItemSOIndex) // on server, need to pass the prefab for the other clients instantiate it
     {
+        if(player.PlayerInventory.GetItemSOByItemSOIndex(selectedItemSOIndex).itemServerPrefab == null)
+        {
+            Debug.LogWarning("ItemSOIndex: " + selectedItemSOIndex + " has no server prefab");
+            return;
+        }
+
 
         GameObject gameObject = Instantiate(player.PlayerInventory.GetItemSOByItemSOIndex(selectedItemSOIndex).itemServerPrefab, spawnItemPos.position, Quaternion.identity);
 
@@ -81,6 +87,12 @@ public class PlayerLauncher : NetworkBehaviour
 
     private void SpawnDummyProjectile(float dragForce, Vector3 dragDirection, int selectedItemSOIndex) // on client, need to pass the prefab for the other clients instantiate it
     {
+        if (player.PlayerInventory.GetItemSOByItemSOIndex(selectedItemSOIndex).itemClientPrefab == null)
+        {
+            Debug.LogWarning("ItemSOIndex: " + selectedItemSOIndex + " has no client prefab");
+            return;
+        }
+
 
         GameObject projetctile = Instantiate(player.PlayerInventory.GetItemSOByItemSOIndex(selectedItemSOIndex).itemClientPrefab, spawnItemPos.position, Quaternion.identity);
 

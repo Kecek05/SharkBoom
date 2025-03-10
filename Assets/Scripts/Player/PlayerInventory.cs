@@ -74,8 +74,6 @@ public class PlayerInventory : NetworkBehaviour
 
             //Jumped, can shoot
             SetPlayerCanJumpRpc(false);
-
-
         }
         else if (state == player.PlayerStateMachine.myTurnEndedState)
         {
@@ -83,7 +81,6 @@ public class PlayerInventory : NetworkBehaviour
 
             DecreaseAllItemsCooldownRpc();
             UseItemByInventoryIndexRpc(selectedItemInventoryIndex);
-            SelectItemDataByItemInventoryIndex();
         }
 
     }
@@ -173,7 +170,7 @@ public class PlayerInventory : NetworkBehaviour
 
         if (!ItemCanBeUsed(itemInventoryIndex))
         {
-            Debug.LogWarning("Item can't be used!");
+            Debug.LogWarning("Item can't be selected!");
             return;
         }
 
@@ -184,7 +181,6 @@ public class PlayerInventory : NetworkBehaviour
     [Rpc(SendTo.Server)]
     public void UseItemByInventoryIndexRpc(int itemInventoryIndex) // Use the item, Server will call this when both players ready
     {
-        if (!canInteractWithInventory) return;
 
         if (ItemCanBeUsed(itemInventoryIndex))
         {
@@ -200,7 +196,7 @@ public class PlayerInventory : NetworkBehaviour
 
         } else
         {
-            Debug.LogWarning("Item can't be used!");
+            Debug.LogWarning("Used an item that can't be used!");
         }
     }
 
