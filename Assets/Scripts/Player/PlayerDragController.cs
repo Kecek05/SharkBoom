@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class PlayerDragController : DragAndShoot
 {
-    [BetterHeader("References")]
-    [SerializeField] private Player player;
 
     public override void OnNetworkSpawn()
     {

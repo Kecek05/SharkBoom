@@ -13,7 +13,7 @@ public class DragAndShoot : NetworkBehaviour
     public event Action OnDragStart;
 
     [BetterHeader("References")]
-
+    [SerializeField] protected Player player;
     [SerializeField] protected Trajectory trajectory;
     [SerializeField] protected InputReader inputReader;
     [Tooltip("Center position of the drag")]
@@ -177,6 +177,7 @@ public class DragAndShoot : NetworkBehaviour
                             isDragging = false;
                             trajectory.Hide();
                             SetIsShowingDots(false);
+                            player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleMyTurnState);
                         }
                     }
                 

@@ -29,8 +29,11 @@ public class BaseItemThrowable : MonoBehaviour, IDraggable
     protected virtual void ItemReleased(float force, Vector3 direction)
     {
         rb.AddForce(direction * force, ForceMode.Impulse);
-        
-       
+    }
+
+    protected virtual void ItemCallbackAction()
+    {
+
     }
 
     protected void OnCollisionEnter(Collision collision)

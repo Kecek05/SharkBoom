@@ -21,4 +21,7 @@ public interface IState
     public void Exit(); // Code that runs when we exit the state
 }
 
-
+public interface IActivable
+{
+    public void Activate();
+}
