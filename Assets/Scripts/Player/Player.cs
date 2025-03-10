@@ -13,21 +13,15 @@ public class Player : NetworkBehaviour
     [SerializeField] private PlayerDragController playerDragController;
     [SerializeField] private PlayerLauncher playerLauncher;
 
-    private bool playerCanJumpThisTurn = false;
-    private bool playerCanShootThisTurn = false;
-
     private PlayerStateMachine playerStateMachine;
 
     //Publics
-
     public PlayerStateMachine PlayerStateMachine => playerStateMachine;
     public PlayerInventory PlayerInventory => playerInventory;
     public PlayerInventoryUI PlayerInventoryUI => playerInventoryUI;
     public PlayerHealth PlayerHealth => playerHealth;
     public PlayerDragController PlayerDragController => playerDragController;
     public PlayerLauncher PlayerLauncher => playerLauncher;
-    public bool PlayerCanJumpThisTurn => playerCanJumpThisTurn;
-    public bool PlayerCanShootThisTurn => playerCanShootThisTurn;
 
     public override void OnNetworkSpawn()
     {
@@ -52,17 +46,6 @@ public class Player : NetworkBehaviour
         Debug.Log("I can play!");
 
     }
-
-    public void SetPlayerCanJumpThisTurn(bool canJump)
-    {
-        playerCanJumpThisTurn = canJump;
-    }
-
-    public void SetPlayerCanShootThisTurn(bool canShoot)
-    {
-        playerCanShootThisTurn = canShoot;
-    }
-
 
     //DEBUG
     [Command("player-passTurn")]

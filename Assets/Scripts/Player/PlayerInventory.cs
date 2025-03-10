@@ -24,6 +24,8 @@ public class PlayerInventory : NetworkBehaviour
 
     private bool canInteractWithInventory = false;
 
+    public bool CanInteractWithInventory => canInteractWithInventory; //DEBUG
+
     public override void OnNetworkSpawn()
     {
         if(IsOwner)
@@ -56,6 +58,10 @@ public class PlayerInventory : NetworkBehaviour
             SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
         }
         else if (state == player.PlayerStateMachine.idleMyTurnState)
+        {
+            SetCanInteractWithInventory(true);
+        }
+        else if (state == player.PlayerStateMachine.idleEnemyTurnState)
         {
             SetCanInteractWithInventory(true);
         }
@@ -137,14 +143,15 @@ public class PlayerInventory : NetworkBehaviour
                 OnItemAdded?.Invoke(changeEvent.Value);
                 break;
             case NetworkListEvent<ItemDataStruct>.EventType.Value:
-                if(changeEvent.Value.itemInventoryIndex == 0) //Jumped, Select other item
-                {
-                    SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable()); // direct on RPC to ignore canInteractWithInventory
-                    Debug.Log($"Jump can be used: {changeEvent.Value.itemCanBeUsed}, Select other item");
-                } else
-                {
-                    OnItemChanged?.Invoke(changeEvent.Value);
-                }
+                OnItemChanged?.Invoke(changeEvent.Value);
+                //if(changeEvent.Value.itemInventoryIndex == 0) //Jumped, Select other item
+                //{
+                //    SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable()); // direct on RPC to ignore canInteractWithInventory
+                //    Debug.Log($"Jump can be used: {changeEvent.Value.itemCanBeUsed}, Select other item");
+                //} else
+                //{
+                //    OnItemChanged?.Invoke(changeEvent.Value);
+                //}
                 break;
         }
     }

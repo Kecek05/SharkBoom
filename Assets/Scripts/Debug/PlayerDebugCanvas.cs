@@ -12,6 +12,7 @@ public class PlayerDebugCanvas : NetworkBehaviour
     public TextMeshProUGUI selectedItemIndexText;
     public TextMeshProUGUI selectedRbText;
     public TextMeshProUGUI playerStateText;
+    public TextMeshProUGUI playerCanInteractWithInventoryText;
 
     public override void OnNetworkSpawn()
     {
@@ -38,6 +39,8 @@ public class PlayerDebugCanvas : NetworkBehaviour
         playerStateText.text = player.PlayerStateMachine.CurrentState.ToString();
 
         selectedItemIndexText.text = player.PlayerInventory.SelectedItemInventoryIndex.ToString();
+
+        playerCanInteractWithInventoryText.text = player.PlayerInventory.CanInteractWithInventory.ToString();
     }
 
 
