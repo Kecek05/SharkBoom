@@ -16,9 +16,11 @@ public class DragAndShoot : NetworkBehaviour
     [SerializeField] protected Player player;
     [SerializeField] protected Trajectory trajectory;
     [SerializeField] protected InputReader inputReader;
+    [SerializeField] protected GameObject areaOfStartDrag;
     [Tooltip("Center position of the drag")]
-    [SerializeField] protected Transform startDragPos;
+    [SerializeField] protected Transform startTrajectoryPos;
     [SerializeField] protected LayerMask touchLayer;
+    
 
 
     [BetterHeader("Force Settings")]
@@ -83,7 +85,7 @@ public class DragAndShoot : NetworkBehaviour
         inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
         inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
 
-        trajectory.Initialize(startDragPos);
+        trajectory.Initialize(startTrajectoryPos);
     }
 
     public void SetDragAndShoot(Rigidbody rb)
@@ -104,7 +106,7 @@ public class DragAndShoot : NetworkBehaviour
 
             if (Physics.Raycast(rayStart, out hit, Mathf.Infinity, touchLayer)) // compare if the touch hit on the object
             {
-                if(hit.collider.gameObject == this.gameObject)
+                if(hit.collider.gameObject == areaOfStartDrag)
                 {
                     //Start Dragging
                     isCancelingDrag = false;
@@ -113,7 +115,7 @@ public class DragAndShoot : NetworkBehaviour
                     CameraManager.Instance.SetCameraState(CameraManager.CameraState.Dragging);
                     startZoomPos = CameraManager.Instance.CameraObjectToFollow;
 
-                    plane = new Plane(Vector3.forward, startDragPos.position); // we create the plane to calculate the Z, because a click is a 2D position
+                    plane = new Plane(Vector3.forward, Input.mousePosition); // we create the plane to calculate the Z, because a click is a 2D position
 
                     SetIsShowingDots(false);
                     SetIsDragging(true);
@@ -142,8 +144,8 @@ public class DragAndShoot : NetworkBehaviour
         if (plane.Raycast(ray, out outDistancePlane) && Input.touchCount == 1 && !isCancelingDrag) // this input touch count is a check for avoid the player bug if accidentally touch the screen with two fingers
         {
             endPosDrag = ray.GetPoint(outDistancePlane); // get the position of the click instantaneously
-            directionOfDrag = (startDragPos.position - endPosDrag).normalized; // calculate the direction of the drag on Vector3
-            dragDistance = Vector3.Distance(startDragPos.position, endPosDrag); // calculate the distance of the drag on float
+            directionOfDrag = (startTrajectoryPos.position - endPosDrag).normalized; // calculate the direction of the drag on Vector3
+            dragDistance = Vector3.Distance(startTrajectoryPos.position, endPosDrag); // calculate the distance of the drag on float
 
             dragForce = dragDistance * offsetForceMultiplier; //Calculate the force linearly
             dragForce = Mathf.Clamp(dragForce, minForceMultiplier, maxForceMultiplier);
