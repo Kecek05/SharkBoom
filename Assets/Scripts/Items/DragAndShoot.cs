@@ -60,8 +60,6 @@ public class DragAndShoot : NetworkBehaviour
     protected Plane plane; // Cache for the clicks
     protected float outDistancePlane; // store the distance of the plane and screen
 
-    protected bool isShowingDots; //Cache for show dots
-
 
     public Vector3 DirectionOfDrag => directionOfDrag;
     public float DragForce => dragForce;
@@ -88,10 +86,9 @@ public class DragAndShoot : NetworkBehaviour
         trajectory.Initialize(startTrajectoryPos);
     }
 
-    public void SetDragAndShoot(Rigidbody rb)
+    public void SetDragRb(Rigidbody rb)
     {
         selectedRb = rb;
-        SetCanDrag(true);
     }
 
     protected void InputReader_OnTouchPressEvent(InputAction.CallbackContext context)
@@ -117,7 +114,7 @@ public class DragAndShoot : NetworkBehaviour
 
                     plane = new Plane(Vector3.forward, Input.mousePosition); // we create the plane to calculate the Z, because a click is a 2D position
 
-                    SetIsShowingDots(false);
+
                     SetIsDragging(true);
                     OnDragStart?.Invoke();
                 }
@@ -176,9 +173,7 @@ public class DragAndShoot : NetworkBehaviour
                         if (dragDistance < canceDraglLimit && canCancelDrag)
                         {
                             isCancelingDrag = true;
-                            isDragging = false;
-                            trajectory.Hide();
-                            SetIsShowingDots(false);
+                            SetIsDragging(false);
                             player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleMyTurnState);
                         }
                     }
@@ -188,12 +183,6 @@ public class DragAndShoot : NetworkBehaviour
                 lastZoomForce = zoomForce; // Update the last zoom force
                 lastCheckTime = Time.time; // Update the last check time
                 }
-            }
-
-            if (!isShowingDots && !isCancelingDrag)
-            {
-                trajectory.Show(); // call the function for show dots
-                SetIsShowingDots(true);
             }
         }
     }
@@ -205,15 +194,8 @@ public class DragAndShoot : NetworkBehaviour
         //CameraManager.Instance.CameraZoom.ResetZoom(startZoomPos); // Reset the zoom for start position
         trajectory.UpdateDots(transform.position, directionOfDrag * minForceMultiplier, selectedRb);
 
-        ReleaseDrag();
-
-    }
-
-    public void ReleaseDrag()
-    {
         SetIsDragging(false);
-        SetIsShowingDots(false);
-        trajectory.Hide();
+
     }
 
 
@@ -233,14 +215,17 @@ public class DragAndShoot : NetworkBehaviour
         canDrag = value;
     }
 
-    public void SetIsDragging(bool value)
+    public void SetIsDragging(bool dragging)
     {
-        isDragging = value;
-    }
+        isDragging = dragging;
 
-    public void SetIsShowingDots(bool value)
-    {
-        isShowingDots = value;
+        if(dragging)
+        {
+            trajectory.Show();
+        } else
+        {
+            trajectory.Hide();
+        }
     }
 
     public override void OnNetworkDespawn()

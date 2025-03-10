@@ -238,7 +238,7 @@ public class PlayerInventory : NetworkBehaviour
     {
         selectedItemInventoryIndex = newItemInventoryIndex;
 
-        player.PlayerDragController.SetDragAndShoot(GetSelectedItemSO().rb);
+        player.PlayerDragController.SetDragRb(GetSelectedItemSO().rb);
 
         OnItemSelected?.Invoke(selectedItemInventoryIndex);
 

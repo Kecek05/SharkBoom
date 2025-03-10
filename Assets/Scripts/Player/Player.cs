@@ -48,9 +48,14 @@ public class Player : NetworkBehaviour
     }
 
     //DEBUG
-    [Command("player-passTurn")]
+    [Command("player-passTurn", MonoTargetType.All)]
     private void PassTurn()
     {
+        if(!IsOwner)
+        {
+            return;
+        }
+
         playerStateMachine.TransitionTo(playerStateMachine.idleEnemyTurnState);
         GameFlowManager.Instance.PlayerPlayedRpc(GameFlowManager.Instance.LocalplayableState);
 

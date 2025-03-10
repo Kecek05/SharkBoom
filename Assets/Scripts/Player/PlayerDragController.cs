@@ -21,7 +21,7 @@ public class PlayerDragController : DragAndShoot
         {
             TurnOnDrag();
         } 
-        else if (state == player.PlayerStateMachine.dragReleaseJump || state == player.PlayerStateMachine.dragReleaseItem)
+        else if (state == player.PlayerStateMachine.dragReleaseJump || state == player.PlayerStateMachine.dragReleaseItem || state == player.PlayerStateMachine.idleEnemyTurnState)
         {
             TurnOffDrag();
             ResetDrag();
