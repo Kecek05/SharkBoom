@@ -30,6 +30,12 @@ public class PlayerInventory : NetworkBehaviour
     {
         if(IsOwner)
         {
+            //Default jump on Spawn
+
+            player.PlayerDragController.SetDragRb(GetItemSOByItemSOIndex(0).rb); //get jump's rb
+
+            OnItemSelected?.Invoke(selectedItemInventoryIndex);
+
 
             playerInventory.OnListChanged += PlayerInventory_OnListChanged;
 
@@ -162,7 +168,7 @@ public class PlayerInventory : NetworkBehaviour
 
     public void SetPlayerItems(int itemSOIndex) //Set the items that player have when starting the game
     {
-
+        //Server Code
         playerInventory.Add(new ItemDataStruct
         {
             itemInventoryIndex = playerInventory.Count, //get the index

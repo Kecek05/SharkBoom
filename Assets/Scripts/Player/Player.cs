@@ -12,7 +12,7 @@ public class Player : NetworkBehaviour
     [SerializeField] private PlayerHealth playerHealth;
     [SerializeField] private PlayerDragController playerDragController;
     [SerializeField] private PlayerLauncher playerLauncher;
-
+    [SerializeField] private Collider playerTouchColl;
     private PlayerStateMachine playerStateMachine;
 
     //Publics
@@ -34,6 +34,10 @@ public class Player : NetworkBehaviour
             playerStateMachine = new PlayerStateMachine(this);
 
             playerStateMachine.Initialize(playerStateMachine.idleEnemyTurnState);
+        } else
+        {
+            //if not owner, turn off touch collider
+            playerTouchColl.enabled = false;
         }
     }
 
