@@ -15,9 +15,9 @@ public class PlayerInventory : NetworkBehaviour
     private NetworkList<ItemDataStruct> playerInventory = new();
 
     /// <summary>
-    /// The index of the selected item in the player inventory
+    /// The index of the selected item in the player's inventory
     /// </summary>
-    private int selectedItemInventoryIndex = -1; //-1 to start change to 0 and Call OnValueChanged
+    private int selectedItemInventoryIndex = 0;
 
     public int SelectedItemInventoryIndex => selectedItemInventoryIndex;
 
@@ -54,8 +54,9 @@ public class PlayerInventory : NetworkBehaviour
         if (state == player.PlayerStateMachine.myTurnStartedState)
         {
             SetCanInteractWithInventory(true);
-            SetPlayerCanJumpRpc(true); //can jump
-            SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
+
+            if(!ItemCanBeUsed(selectedItemInventoryIndex)) // If selected item can't be used, select other one
+                SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
         }
         else if (state == player.PlayerStateMachine.idleMyTurnState)
         {
@@ -87,6 +88,8 @@ public class PlayerInventory : NetworkBehaviour
 
             DecreaseAllItemsCooldownRpc();
             UseItemByInventoryIndexRpc(selectedItemInventoryIndex);
+
+            SetPlayerCanJumpRpc(true); //can jump, set before next round to be able to select
         }
 
     }
