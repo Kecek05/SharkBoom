@@ -64,7 +64,7 @@ public class IdleMyTurnState : IState
 
     private void PlayerDragController_OnDragStart()
     {
-        if (player.PlayerInventory.SelectedItemInventoryIndex.Value == 0)
+        if (player.PlayerInventory.SelectedItemInventoryIndex == 0)
         {
             player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.draggingJump);
         } else

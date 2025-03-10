@@ -7,6 +7,12 @@ using UnityEngine;
 public class PlayerLauncher : NetworkBehaviour
 {
 
+    /// <summary>
+    /// item launched, pass itemInventoryIndex
+    /// </summary>
+    public event Action<int> OnItemLaunched; 
+
+
     [BetterHeader("References")]
     [SerializeField] private Transform spawnItemPos;
     [SerializeField] private Collider[] playerColliders;
@@ -23,29 +29,29 @@ public class PlayerLauncher : NetworkBehaviour
 
     private void PlayerStateMachine_OnStateChanged(IState state)
     {
-        if(state == player.PlayerStateMachine.dragReleaseJump || state == player.PlayerStateMachine.dragReleaseItem)
+
+        if (state == player.PlayerStateMachine.dragReleaseJump || state == player.PlayerStateMachine.dragReleaseItem)
         {
-
             Launch();
-
         }
     }
 
     private void Launch()
     {
-        SpawnProjectileServerRpc(player.PlayerDragController.DragForce, player.PlayerDragController.DirectionOfDrag); //Spawn real projectile on server need to send the speed and force values through the network
+        SpawnProjectileServerRpc(player.PlayerDragController.DragForce, player.PlayerDragController.DirectionOfDrag, player.PlayerInventory.GetSelectedItemSOIndex()); //Spawn real projectile on server need to send the speed and force values through the network
 
-        SpawnDummyProjectile(player.PlayerDragController.DragForce, player.PlayerDragController.DirectionOfDrag); //Spawn fake projectile on client
+        SpawnDummyProjectile(player.PlayerDragController.DragForce, player.PlayerDragController.DirectionOfDrag, player.PlayerInventory.GetSelectedItemSOIndex()); //Spawn fake projectile on client
+    
+        OnItemLaunched?.Invoke(player.PlayerInventory.SelectedItemInventoryIndex); //pass itemInventoryIndex
     }
 
 
 
     [Rpc(SendTo.Server)]
-    private void SpawnProjectileServerRpc(float dragForce, Vector3 dragDirection) // on server 
+    private void SpawnProjectileServerRpc(float dragForce, Vector3 dragDirection, int selectedItemSOIndex) // on server, need to pass the prefab for the other clients instantiate it
     {
-        if (player.PlayerInventory.GetSelectedItemSO().itemServerPrefab == null) return;
 
-        GameObject gameObject = Instantiate(player.PlayerInventory.GetSelectedItemSO().itemServerPrefab, spawnItemPos.position, Quaternion.identity);
+        GameObject gameObject = Instantiate(player.PlayerInventory.GetItemSOByItemSOIndex(selectedItemSOIndex).itemServerPrefab, spawnItemPos.position, Quaternion.identity);
 
         if (gameObject.TryGetComponent(out Collider projectileCollider))
         {
@@ -61,25 +67,22 @@ public class PlayerLauncher : NetworkBehaviour
 
         }
         
-        SpawnProjectileClientRpc(dragForce, dragDirection);
+        SpawnProjectileClientRpc(dragForce, dragDirection, selectedItemSOIndex);
     }
 
     [Rpc(SendTo.ClientsAndHost)]
-    private void SpawnProjectileClientRpc(float dragForce, Vector3 dragDirection) // on client
+    private void SpawnProjectileClientRpc(float dragForce, Vector3 dragDirection, int selectedItemSOIndex) //pass info to other clients
     {
         if (IsOwner) return; // already spawned
 
-        SpawnDummyProjectile(dragForce, dragDirection);
+        SpawnDummyProjectile(dragForce, dragDirection, selectedItemSOIndex);
 
     }
 
-    private void SpawnDummyProjectile(float dragForce, Vector3 dragDirection)
+    private void SpawnDummyProjectile(float dragForce, Vector3 dragDirection, int selectedItemSOIndex) // on client, need to pass the prefab for the other clients instantiate it
     {
 
-        if (player.PlayerInventory.GetSelectedItemSO().itemClientPrefab == null) return;
-
-
-        GameObject projetctile = Instantiate(player.PlayerInventory.GetSelectedItemSO().itemClientPrefab, spawnItemPos.position, Quaternion.identity);
+        GameObject projetctile = Instantiate(player.PlayerInventory.GetItemSOByItemSOIndex(selectedItemSOIndex).itemClientPrefab, spawnItemPos.position, Quaternion.identity);
 
         if (projetctile.TryGetComponent(out Collider projectileCollider))
         {

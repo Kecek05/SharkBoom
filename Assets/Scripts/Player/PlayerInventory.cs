@@ -17,9 +17,9 @@ public class PlayerInventory : NetworkBehaviour
     /// <summary>
     /// The index of the selected item in the player inventory
     /// </summary>
-    private NetworkVariable<int> selectedItemInventoryIndex = new(-1); //-1 to start change to 0 and Call OnValueChanged
+    private int selectedItemInventoryIndex = -1; //-1 to start change to 0 and Call OnValueChanged
 
-    public NetworkVariable<int> SelectedItemInventoryIndex => selectedItemInventoryIndex;
+    public int SelectedItemInventoryIndex => selectedItemInventoryIndex;
 
 
     private bool canInteractWithInventory = false;
@@ -33,8 +33,17 @@ public class PlayerInventory : NetworkBehaviour
 
             player.PlayerStateMachine.OnStateChanged += PlayerStateMachine_OnStateChanged;
 
-            selectedItemInventoryIndex.OnValueChanged += SelectedItemIndex_OnValueChanged;
+            player.PlayerLauncher.OnItemLaunched += PlayerLauncher_OnItemLaunched;
 
+        }
+    }
+
+    private void PlayerLauncher_OnItemLaunched(int itemInventoryIndex)
+    {
+        //item Launched
+        if(itemInventoryIndex == 0) //Jumped
+        {
+            SetSelectedItemInventoryIndex(SelectFirstItemInventoryIndexAvailable()); // direct on Set to ignore canInteractWithInventory
         }
     }
 
@@ -42,8 +51,8 @@ public class PlayerInventory : NetworkBehaviour
     {
         if (state == player.PlayerStateMachine.myTurnStartedState)
         {
-            SetPlayerCanJumpRpc(true); //can jump
             SetCanInteractWithInventory(true);
+            SetPlayerCanJumpRpc(true); //can jump
             SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
         }
         else if (state == player.PlayerStateMachine.idleMyTurnState)
@@ -65,13 +74,15 @@ public class PlayerInventory : NetworkBehaviour
 
             //Jumped, can shoot
             SetPlayerCanJumpRpc(false);
+
+
         }
         else if (state == player.PlayerStateMachine.myTurnEndedState)
         {
             SetCanInteractWithInventory(false);
 
             DecreaseAllItemsCooldownRpc();
-            UseItemByInventoryIndexRpc(selectedItemInventoryIndex.Value);
+            UseItemByInventoryIndexRpc(selectedItemInventoryIndex);
             SelectItemDataByItemInventoryIndex();
         }
 
@@ -107,7 +118,7 @@ public class PlayerInventory : NetworkBehaviour
         }
     }
 
-    private int SelectFirstItemInventoryIndexAvailable()
+    public int SelectFirstItemInventoryIndexAvailable()
     {
         for (int i = 0; i < playerInventory.Count; i++)
         {
@@ -129,11 +140,13 @@ public class PlayerInventory : NetworkBehaviour
                 OnItemAdded?.Invoke(changeEvent.Value);
                 break;
             case NetworkListEvent<ItemDataStruct>.EventType.Value:
-                OnItemChanged?.Invoke(changeEvent.Value);
-
                 if(changeEvent.Value.itemInventoryIndex == 0) //Jumped, Select other item
                 {
-                    SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
+                    SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable()); // direct on RPC to ignore canInteractWithInventory
+                    Debug.Log($"Jump can be used: {changeEvent.Value.itemCanBeUsed}, Select other item");
+                } else
+                {
+                    OnItemChanged?.Invoke(changeEvent.Value);
                 }
                 break;
         }
@@ -164,25 +177,7 @@ public class PlayerInventory : NetworkBehaviour
             return;
         }
 
-        SetSelectedItemIndexRpc(itemInventoryIndex);
-
-    }
-
-    [Rpc(SendTo.Server)]
-    private void SetSelectedItemIndexRpc(int itemInventoryIndex)
-    {
-        selectedItemInventoryIndex.Value = itemInventoryIndex;
-
-    }
-
-    private void SelectedItemIndex_OnValueChanged(int previousValue, int newValue)
-    {
-        //Owner only
-        // Need to be an OnValueChanged event because the lag between the client and the server
-
-        player.PlayerDragController.SetDragAndShoot(GetSelectedItemSO().rb);
-
-        OnItemSelected?.Invoke(selectedItemInventoryIndex.Value);
+        SetSelectedItemInventoryIndex(itemInventoryIndex);
 
     }
 
@@ -216,9 +211,14 @@ public class PlayerInventory : NetworkBehaviour
             
     }
 
+    public int GetSelectedItemSOIndex()
+    {
+        return playerInventory[selectedItemInventoryIndex].itemSOIndex;
+    }
+
     public ItemSO GetSelectedItemSO()
     {
-        return GetItemSOByItemSOIndex(playerInventory[selectedItemInventoryIndex.Value].itemSOIndex);
+        return GetItemSOByItemSOIndex(playerInventory[selectedItemInventoryIndex].itemSOIndex);
     }
 
     public ItemSO GetItemSOByItemSOIndex(int itemSOIndex)
@@ -231,15 +231,27 @@ public class PlayerInventory : NetworkBehaviour
         canInteractWithInventory = canInteract;
     }
 
+    private void SetSelectedItemInventoryIndex(int newItemInventoryIndex)
+    {
+        selectedItemInventoryIndex = newItemInventoryIndex;
+
+        player.PlayerDragController.SetDragAndShoot(GetSelectedItemSO().rb);
+
+        OnItemSelected?.Invoke(selectedItemInventoryIndex);
+
+        Debug.Log($"Selected item inventory index: {selectedItemInventoryIndex}");
+    }
+
     public override void OnNetworkDespawn()
     {
         if (IsOwner)
         {
             playerInventory.OnListChanged -= PlayerInventory_OnListChanged;
 
-            selectedItemInventoryIndex.OnValueChanged -= SelectedItemIndex_OnValueChanged;
 
             player.PlayerStateMachine.OnStateChanged -= PlayerStateMachine_OnStateChanged;
+
+            player.PlayerLauncher.OnItemLaunched -= PlayerLauncher_OnItemLaunched;
         }
     }
 }
