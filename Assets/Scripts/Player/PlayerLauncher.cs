@@ -34,7 +34,7 @@ public class PlayerLauncher : NetworkBehaviour
 
     private void InputReader_OnTouchPressEvent(InputAction.CallbackContext context)
     {
-        Debug.Log($"Debug Touch itemActivated: {itemActivated} ItemActivable: {itemActivable}");
+        //Debug.Log($"Debug Touch itemActivated: {itemActivated} ItemActivable: {itemActivable}");
 
         if(context.started && !itemActivated && itemActivable != null)
         {
@@ -44,7 +44,7 @@ public class PlayerLauncher : NetworkBehaviour
 
             itemActivable = null;
 
-            Debug.Log("Trying to active the item");
+            //Debug.Log("Trying to active the item");
         }
     }
 
@@ -131,7 +131,7 @@ public class PlayerLauncher : NetworkBehaviour
             draggable.Release(dragForce, dragDirection, transform); //Call interface
         }
 
-        if (gameObject.transform.TryGetComponent(out IActivable activable))
+        if (projetctile.transform.TryGetComponent(out IActivable activable))
         {
             //Get the ref to active the item
             itemActivable = activable;
