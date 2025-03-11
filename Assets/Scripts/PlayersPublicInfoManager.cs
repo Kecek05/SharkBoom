@@ -10,7 +10,7 @@ public class PlayersPublicInfoManager : MonoBehaviour
     private static PlayersPublicInfoManager instance;
     public static PlayersPublicInfoManager Instance => instance;
 
-    public Dictionary<PlayableState, GameObject> playerStateToGameObject = new Dictionary<PlayableState, GameObject>();
+    private Dictionary<PlayableState, GameObject> playerStateToGameObject = new Dictionary<PlayableState, GameObject>();
 
 
     private void Awake()
