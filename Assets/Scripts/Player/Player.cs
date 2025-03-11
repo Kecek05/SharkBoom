@@ -15,6 +15,11 @@ public class Player : NetworkBehaviour
     [SerializeField] private Collider playerTouchColl;
     private PlayerStateMachine playerStateMachine;
 
+    [BetterHeader("Settings")]
+    [SerializeField] private int player1Layer;
+    [SerializeField] private int player2Layer;
+    private GameFlowManager.PlayableState thisPlayableState;
+
     //Publics
     public PlayerStateMachine PlayerStateMachine => playerStateMachine;
     public PlayerInventory PlayerInventory => playerInventory;
@@ -36,10 +41,22 @@ public class Player : NetworkBehaviour
             playerStateMachine = new PlayerStateMachine(this);
 
             playerStateMachine.Initialize(playerStateMachine.idleEnemyTurnState);
+
+            GameFlowManager.Instance.SetLocalStates(thisPlayableState);
+
         } else
         {
             //if not owner, turn off touch collider
             playerTouchColl.enabled = false;
+        }
+
+        if (thisPlayableState == GameFlowManager.PlayableState.Player1Playing)
+        {
+            gameObject.layer = player1Layer;
+        }
+        else
+        {
+            gameObject.layer = player2Layer;
         }
     }
 
@@ -68,6 +85,11 @@ public class Player : NetworkBehaviour
     }
 
 
+    public void SetThisPlayableState(GameFlowManager.PlayableState playableState)
+    {
+        thisPlayableState = playableState;
+    }
+
     public override void OnNetworkDespawn()
     {
         if (IsOwner)
@@ -75,4 +97,5 @@ public class Player : NetworkBehaviour
             GameFlowManager.OnMyTurnStarted -= GameFlowManager_OnMyTurnStarted;
         }
     }
+
 }

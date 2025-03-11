@@ -68,17 +68,23 @@ public class GameFlowManager : NetworkBehaviour
         {
             currentPlayableState.OnValueChanged += CurrentPlayableState_OnValueChanged;
 
-            if (NetworkManager.Singleton.LocalClientId == 0)
-            {
+        }
+    }
+
+    public void SetLocalStates(PlayableState playingState)
+    {
+        switch(playingState)
+        {
+            case PlayableState.Player1Playing:
                 localPlayableState = PlayableState.Player1Playing;
                 localPlayedState = PlayableState.Player1Played;
-            }
-            else
-            {
+                break;
+            case PlayableState.Player2Playing:
                 localPlayableState = PlayableState.Player2Playing;
                 localPlayedState = PlayableState.Player2Played;
-            }
+                break;
         }
+
     }
 
     [Rpc(SendTo.Server)]
