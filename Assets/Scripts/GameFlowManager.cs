@@ -88,9 +88,16 @@ public class GameFlowManager : NetworkBehaviour
         }
     }
 
-    public void PlayerJumped(PlayableState playableState)
+    [Rpc(SendTo.Server)]
+    public void PlayerJumpedServerRpc(PlayableState playableState)
     {
-        if(localPlayableState == playableState)
+        PlayerJumpedClientRpc(playableState);
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void PlayerJumpedClientRpc(PlayableState playableState)
+    {
+        if (localPlayableState == playableState)
         {
             //if the jump item is the same as the player playing, owner jumped
             OnMyTurnJumped?.Invoke();

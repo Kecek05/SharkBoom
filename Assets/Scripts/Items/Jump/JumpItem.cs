@@ -17,14 +17,16 @@ public class JumpItem : BaseItemThrowable, IFollowable
     protected override void ItemReleased(float force, Vector3 direction)
     {
         base.ItemReleased(force, direction);
-        StartCoroutine(PlayerFollowFirework());
+
+        if(isServerObject)
+            StartCoroutine(PlayerFollowFirework());
     }
 
     protected override void ItemCallbackAction()
     {
         if (!isServerObject) return; // Only the server should call the callback action
 
-        GameFlowManager.Instance.PlayerJumped(ownerPlayableState);
+        GameFlowManager.Instance.PlayerJumpedServerRpc(ownerPlayableState);
 
         //GameFlowManager.Instance.ItemFinishOurAction();
 
