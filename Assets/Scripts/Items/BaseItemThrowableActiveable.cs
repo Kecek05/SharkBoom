@@ -2,13 +2,13 @@ using Sortify;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public abstract class BaseItemThrowableActiveable : BaseItemThrowable
+public class BaseItemThrowableActiveable : BaseItemThrowable
 {
 
     [BetterHeader("Base Activeable References", 11)]
     [SerializeField] protected InputReader inputReader;
 
-    private bool itemActivated = false;
+    protected bool itemActivated = false;
 
     protected override void OnEnable()
     {
@@ -19,12 +19,15 @@ public abstract class BaseItemThrowableActiveable : BaseItemThrowable
 
     public void TryActivate()
     {
-        if (itemActivated || !isServerObject) return; //only server activates the item
+        if (itemActivated) return;
         ActivateItem();
-        itemActivated = true;
     }
 
 
-    protected abstract void ActivateItem();
+    protected virtual void ActivateItem()
+    {
+        itemActivated = true;
+        Debug.Log("Item Activated");
+    }
     
 }

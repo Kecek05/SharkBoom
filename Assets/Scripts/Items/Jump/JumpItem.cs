@@ -22,6 +22,8 @@ public class JumpItem : BaseItemThrowable, IFollowable
 
     private IEnumerator PlayerFollowFirework()
     {
+        if(objectToFollowTransform == null) yield break; // if object to follow is null, isnt the owner
+
         currentFollowingTime = 0f;
         while (currentFollowingTime < followingTime)
         {

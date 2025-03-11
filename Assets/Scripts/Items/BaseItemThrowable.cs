@@ -27,6 +27,7 @@ public class BaseItemThrowable : MonoBehaviour, IDraggable
     protected virtual void ItemReleased(float force, Vector3 direction)
     {
         rb.AddForce(direction * force, ForceMode.Impulse);
+        Debug.Log($"Released: {gameObject.name} Force: {force} Direction: {direction}");
     }
 
     protected virtual void ItemCallbackAction()
@@ -42,7 +43,7 @@ public class BaseItemThrowable : MonoBehaviour, IDraggable
         if (!isServerObject)
         {
             //Change latter
-            Destroy(gameObject);
+            Destroy(gameObject); //Client doesnt do damage
             return;
         }
 
