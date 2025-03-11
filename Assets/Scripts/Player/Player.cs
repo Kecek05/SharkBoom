@@ -15,9 +15,6 @@ public class Player : NetworkBehaviour
     [SerializeField] private Collider playerTouchColl;
     private PlayerStateMachine playerStateMachine;
 
-    [BetterHeader("Settings")]
-    [SerializeField] private int player1Layer;
-    [SerializeField] private int player2Layer;
     private NetworkVariable<GameFlowManager.PlayableState> thisPlayableState = new();
 
     //Publics
@@ -31,15 +28,6 @@ public class Player : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         gameObject.name = "Player " + UnityEngine.Random.Range(0, 100).ToString();
-
-        //if (NetworkManager.Singleton.ConnectedClients.Count == 1)
-        //{
-        //    SetThisPlayableState(GameFlowManager.PlayableState.Player1Playing);
-        //}
-        //else
-        //{
-        //    SetThisPlayableState(GameFlowManager.PlayableState.Player2Playing);
-        //}
 
         thisPlayableState.OnValueChanged += PlayableStateChanged;
         PlayableStateChanged(thisPlayableState.Value, thisPlayableState.Value);
@@ -108,11 +96,11 @@ public class Player : NetworkBehaviour
 
         if (thisPlayableState.Value == GameFlowManager.PlayableState.Player1Playing)
         {
-            gameObject.layer = player1Layer;
+            gameObject.layer = GameFlowManager.PLAYER_1_LAYER;
         }
         else
         {
-            gameObject.layer = player2Layer;
+            gameObject.layer = GameFlowManager.PLAYER_2_LAYER;
         }
 
 

@@ -12,6 +12,9 @@ public class GameFlowManager : NetworkBehaviour
     private static GameFlowManager instance;
     public static GameFlowManager Instance => instance;
 
+    public static int PLAYER_1_LAYER = 8;
+    public static int PLAYER_2_LAYER = 9;
+
     [BetterHeader("References")]
     [SerializeField] private ItemsListSO itemsListSO;
     [SerializeField] private List<Transform> spawnPointsPos;
@@ -223,19 +226,5 @@ public class GameFlowManager : NetworkBehaviour
     public void SetPlayableStateRpc(PlayableState newState)
     {
         currentPlayableState.Value = newState;
-    }
-
-    public void ItemFinishOurAction()
-    {
-        // When item finish action, change state
-
-        if (currentPlayableState.Value == PlayableState.Player1Playing)
-        {
-            PlayerPlayedRpc(PlayableState.Player1Playing);
-        }
-        else if (currentPlayableState.Value == PlayableState.Player2Playing)
-        {
-            PlayerPlayedRpc(PlayableState.Player2Playing);
-        }
     }
 }

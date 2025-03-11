@@ -13,11 +13,27 @@ public class BaseItemThrowable : MonoBehaviour, IDraggable
     [SerializeField] protected ItemSO itemSO;
     [SerializeField] protected Rigidbody rb;
     [SerializeField] protected CinemachineFollow cinemachineFollow;
-
+    private GameFlowManager.PlayableState ownerPlayableState;
 
     protected virtual void OnEnable()
     {
         CameraManager.Instance.SetCameraState(CameraManager.CameraState.Following);
+    }
+
+    public void Initialize(GameFlowManager.PlayableState _ownerPlayableState)
+    {
+        ownerPlayableState = _ownerPlayableState;
+
+        switch(ownerPlayableState)
+        {
+            case GameFlowManager.PlayableState.Player1Playing:
+                gameObject.layer = GameFlowManager.PLAYER_1_LAYER;
+                break;
+            case GameFlowManager.PlayableState.Player2Playing:
+                gameObject.layer = GameFlowManager.PLAYER_2_LAYER;
+                break;
+        }
+
     }
 
     public void Release(float force, Vector3 direction)
@@ -38,7 +54,9 @@ public class BaseItemThrowable : MonoBehaviour, IDraggable
     {
         if(!isServerObject) return; // Only the server should call the callback action
 
-        GameFlowManager.Instance.ItemFinishOurAction();
+        GameFlowManager.Instance.PlayerPlayedRpc(ownerPlayableState);
+
+        //GameFlowManager.Instance.ItemFinishOurAction();
     }
 
     protected void OnCollisionEnter(Collision collision)

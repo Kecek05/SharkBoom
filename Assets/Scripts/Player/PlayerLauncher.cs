@@ -61,9 +61,9 @@ public class PlayerLauncher : NetworkBehaviour
         //itemThrowableActivableServer = null;
         ItemActivableManager.Instance.ResetItemActivable();
 
-        SpawnProjectileServerRpc(player.PlayerDragController.DragForce, player.PlayerDragController.DirectionOfDrag, player.PlayerInventory.GetSelectedItemSOIndex()); //Spawn real projectile on server need to send the speed and force values through the network
+        SpawnProjectileServerRpc(player.PlayerDragController.DragForce, player.PlayerDragController.DirectionOfDrag, player.PlayerInventory.GetSelectedItemSOIndex(), GameFlowManager.Instance.LocalplayableState); //Spawn real projectile on server need to send the speed and force values through the network
 
-        SpawnDummyProjectile(player.PlayerDragController.DragForce, player.PlayerDragController.DirectionOfDrag, player.PlayerInventory.GetSelectedItemSOIndex()); //Spawn fake projectile on client
+        SpawnDummyProjectile(player.PlayerDragController.DragForce, player.PlayerDragController.DirectionOfDrag, player.PlayerInventory.GetSelectedItemSOIndex(), GameFlowManager.Instance.LocalplayableState); //Spawn fake projectile on client
     
         OnItemLaunched?.Invoke(player.PlayerInventory.SelectedItemInventoryIndex); //pass itemInventoryIndex
     }
@@ -71,7 +71,7 @@ public class PlayerLauncher : NetworkBehaviour
 
 
     [Rpc(SendTo.Server)]
-    private void SpawnProjectileServerRpc(float dragForce, Vector3 dragDirection, int selectedItemSOIndex) // on server, need to pass the prefab for the other clients instantiate it
+    private void SpawnProjectileServerRpc(float dragForce, Vector3 dragDirection, int selectedItemSOIndex, GameFlowManager.PlayableState ownerPlayableState) // on server, need to pass the prefab for the other clients instantiate it
     {
         if(player.PlayerInventory.GetItemSOByItemSOIndex(selectedItemSOIndex).itemServerPrefab == null)
         {
@@ -83,17 +83,22 @@ public class PlayerLauncher : NetworkBehaviour
         GameObject projetctile = Instantiate(player.PlayerInventory.GetItemSOByItemSOIndex(selectedItemSOIndex).itemServerPrefab, spawnItemPos.position, Quaternion.identity);
 
 
-        Collider[] projectileColliders = projetctile.GetComponentsInChildren<Collider>();
+        //Collider[] projectileColliders = projetctile.GetComponentsInChildren<Collider>();
 
-        if(projectileColliders.Length > 0)
+        //if(projectileColliders.Length > 0)
+        //{
+        //    for(int i = 0; i < projectileColliders.Length; i++)
+        //    {
+        //        foreach (Collider playerCollider in playerColliders)
+        //        {
+        //            Physics.IgnoreCollision(playerCollider, projectileColliders[i]); // Ignore collision between the player and the projectile
+        //        }
+        //    }
+        //}
+
+        if(projetctile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
         {
-            for(int i = 0; i < projectileColliders.Length; i++)
-            {
-                foreach (Collider playerCollider in playerColliders)
-                {
-                    Physics.IgnoreCollision(playerCollider, projectileColliders[i]); // Ignore collision between the player and the projectile
-                }
-            }
+            itemThrowable.Initialize(ownerPlayableState);
         }
 
         if (projetctile.transform.TryGetComponent(out IDraggable draggable))
@@ -108,25 +113,26 @@ public class PlayerLauncher : NetworkBehaviour
 
         if (projetctile.transform.TryGetComponent(out BaseItemThrowableActivable activable))
         {
-            //Get the ref to active the item
-           // itemThrowableActivableServer = activable;
+
            ItemActivableManager.Instance.SetItemThrowableActivableServer(activable);
         }
 
-        SpawnProjectileClientRpc(dragForce, dragDirection, selectedItemSOIndex);
+
+
+        SpawnProjectileClientRpc(dragForce, dragDirection, selectedItemSOIndex, ownerPlayableState);
     }
 
 
     [Rpc(SendTo.ClientsAndHost)]
-    private void SpawnProjectileClientRpc(float dragForce, Vector3 dragDirection, int selectedItemSOIndex) //pass info to other clients
+    private void SpawnProjectileClientRpc(float dragForce, Vector3 dragDirection, int selectedItemSOIndex, GameFlowManager.PlayableState ownerPlayableState) //pass info to other clients
     {
         if (IsOwner) return; // already spawned
 
-        SpawnDummyProjectile(dragForce, dragDirection, selectedItemSOIndex);
+        SpawnDummyProjectile(dragForce, dragDirection, selectedItemSOIndex, ownerPlayableState);
 
     }
 
-    private void SpawnDummyProjectile(float dragForce, Vector3 dragDirection, int selectedItemSOIndex) // on client, need to pass the prefab for the other clients instantiate it
+    private void SpawnDummyProjectile(float dragForce, Vector3 dragDirection, int selectedItemSOIndex, GameFlowManager.PlayableState ownerPlayableState) // on client, need to pass the prefab for the other clients instantiate it
     {
         if (player.PlayerInventory.GetItemSOByItemSOIndex(selectedItemSOIndex).itemClientPrefab == null)
         {
@@ -137,17 +143,22 @@ public class PlayerLauncher : NetworkBehaviour
 
         GameObject projetctile = Instantiate(player.PlayerInventory.GetItemSOByItemSOIndex(selectedItemSOIndex).itemClientPrefab, spawnItemPos.position, Quaternion.identity);
 
-        Collider[] projectileColliders = projetctile.GetComponentsInChildren<Collider>();
+        //Collider[] projectileColliders = projetctile.GetComponentsInChildren<Collider>();
 
-        if (projectileColliders.Length > 0) //i think not working
+        //if (projectileColliders.Length > 0) //i think not working
+        //{
+        //    for (int i = 0; i < projectileColliders.Length; i++)
+        //    {
+        //        foreach (Collider playerCollider in playerColliders)
+        //        {
+        //            Physics.IgnoreCollision(playerCollider, projectileColliders[i]); // Ignore collision between the player and the projectile
+        //        }
+        //    }
+        //}
+
+        if (projetctile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
         {
-            for (int i = 0; i < projectileColliders.Length; i++)
-            {
-                foreach (Collider playerCollider in playerColliders)
-                {
-                    Physics.IgnoreCollision(playerCollider, projectileColliders[i]); // Ignore collision between the player and the projectile
-                }
-            }
+            itemThrowable.Initialize(ownerPlayableState);
         }
 
         if (projetctile.transform.TryGetComponent(out IDraggable draggable))
