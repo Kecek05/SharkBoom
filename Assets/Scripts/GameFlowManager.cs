@@ -50,7 +50,7 @@ public class GameFlowManager : NetworkBehaviour
     private Dictionary<ulong, bool> playersReady = new();
     //private Dictionary<ulong, algo> playersRoundData = new();
 
-    public NetworkVariable<GameState> CurrentGameState => gameState; 
+    public NetworkVariable<GameState> CurrentGameState => gameState;
     public NetworkVariable<PlayableState> CurrentPlayableState => currentPlayableState;
     public PlayableState LocalplayableState => localPlayableState;
     public PlayableState LocalplayedState => localPlayedState;
@@ -64,7 +64,7 @@ public class GameFlowManager : NetworkBehaviour
     {
         gameState.OnValueChanged += GameState_OnValueChanged;
 
-        if(IsClient)
+        if (IsClient)
         {
             currentPlayableState.OnValueChanged += CurrentPlayableState_OnValueChanged;
 
@@ -84,7 +84,7 @@ public class GameFlowManager : NetworkBehaviour
     [Rpc(SendTo.Server)]
     public void PlayerPlayedRpc(PlayableState playerPlayingState)
     {
-        if(playerPlayingState == PlayableState.Player1Playing)
+        if (playerPlayingState == PlayableState.Player1Playing)
         {
             currentPlayableState.Value = PlayableState.Player1Played;
 
@@ -97,15 +97,16 @@ public class GameFlowManager : NetworkBehaviour
             DelayChangeState(PlayableState.Player1Playing);
         }
     }
-    
+
 
     private void CurrentPlayableState_OnValueChanged(PlayableState previousValue, PlayableState newValue)
     {
-        if(newValue == localPlayableState)
+        if (newValue == localPlayableState)
         {
             //Local Player can play
             OnMyTurnStarted?.Invoke();
-        } else if (newValue == localPlayedState)
+        }
+        else if (newValue == localPlayedState)
         {
             //Local Player cant play
             OnMyTurnEnded?.Invoke();
@@ -115,12 +116,12 @@ public class GameFlowManager : NetworkBehaviour
 
     private void GameState_OnValueChanged(GameState previousValue, GameState newValue)
     {
-        switch(newValue)
+        switch (newValue)
         {
             case GameState.WaitingForPlayers:
                 break;
             case GameState.GameStarted:
-                if(IsServer)
+                if (IsServer)
                 {
                     RandomizePlayerItems();
 
@@ -218,4 +219,17 @@ public class GameFlowManager : NetworkBehaviour
         currentPlayableState.Value = newState;
     }
 
+    public void ItemFinishOurAction()
+    {
+        // When item finish action, change state
+
+        if (currentPlayableState.Value == PlayableState.Player1Playing)
+        {
+            PlayerPlayedRpc(PlayableState.Player1Playing);
+        }
+        else if (currentPlayableState.Value == PlayableState.Player2Playing)
+        {
+            PlayerPlayedRpc(PlayableState.Player2Playing);
+        }
+    }
 }

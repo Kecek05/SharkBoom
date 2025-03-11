@@ -1,15 +1,19 @@
 using Sortify;
+using System;
 using Unity.Cinemachine;
 using Unity.Netcode;
 using UnityEngine;
 
 public class BaseItemThrowable : MonoBehaviour, IDraggable
 {
+
+    public event Action OnItemFinishedAction;
     [BetterHeader("Base Item References")]
     [SerializeField] protected bool isServerObject;
     [SerializeField] protected ItemSO itemSO;
     [SerializeField] protected Rigidbody rb;
     [SerializeField] protected CinemachineFollow cinemachineFollow;
+
 
     protected virtual void OnEnable()
     {
@@ -34,8 +38,7 @@ public class BaseItemThrowable : MonoBehaviour, IDraggable
     {
         if(!isServerObject) return; // Only the server should call the callback action
 
-
-        Debug.Log($"Item Callback Action: {gameObject.name}");
+        GameFlowManager.Instance.ItemFinishOurAction();
     }
 
     protected void OnCollisionEnter(Collision collision)
@@ -57,6 +60,7 @@ public class BaseItemThrowable : MonoBehaviour, IDraggable
         }
         Destroy(gameObject);
     }
+
     protected void OnDestroy()
     {
         ItemCallbackAction();
