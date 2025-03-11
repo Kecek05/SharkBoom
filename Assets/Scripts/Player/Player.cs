@@ -18,7 +18,7 @@ public class Player : NetworkBehaviour
     [BetterHeader("Settings")]
     [SerializeField] private int player1Layer;
     [SerializeField] private int player2Layer;
-    private GameFlowManager.PlayableState thisPlayableState;
+    private NetworkVariable<GameFlowManager.PlayableState> thisPlayableState = new();
 
     //Publics
     public PlayerStateMachine PlayerStateMachine => playerStateMachine;
@@ -41,13 +41,16 @@ public class Player : NetworkBehaviour
         //    SetThisPlayableState(GameFlowManager.PlayableState.Player2Playing);
         //}
 
+        thisPlayableState.OnValueChanged += PlayableStateChanged;
+        PlayableStateChanged(thisPlayableState.Value, thisPlayableState.Value);
 
         if (IsOwner)
         {
-            GameFlowManager.Instance.SetLocalStates(thisPlayableState); //pass to GameFlow to know when its local turn
 
             CameraManager.Instance.SetPlayer(this);
             GameFlowManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
+
+            
 
             playerStateMachine = new PlayerStateMachine(this);
 
@@ -57,8 +60,8 @@ public class Player : NetworkBehaviour
         {
             //if not owner, turn off touch collider
             playerTouchColl.enabled = false;
-        }
 
+        }
 
     }
 
@@ -87,12 +90,23 @@ public class Player : NetworkBehaviour
     }
 
 
-    public void SetThisPlayableState(GameFlowManager.PlayableState playableState)
+    [Rpc(SendTo.Server)]
+    public void SetThisPlayableStateRpc(GameFlowManager.PlayableState playableState)
     {
         // Cant be OnnetworkSpawn because it needs to be called by NetworkServer
-        thisPlayableState = playableState;
+        thisPlayableState.Value = playableState;
 
-        if (thisPlayableState == GameFlowManager.PlayableState.Player1Playing)
+    }
+    
+
+    private void PlayableStateChanged(GameFlowManager.PlayableState previousValue, GameFlowManager.PlayableState newValue)
+    {
+        if (IsOwner)
+        {
+            GameFlowManager.Instance.SetLocalStates(thisPlayableState.Value); //pass to GameFlow to know when its local turn
+        }
+
+        if (thisPlayableState.Value == GameFlowManager.PlayableState.Player1Playing)
         {
             gameObject.layer = player1Layer;
         }
@@ -101,10 +115,13 @@ public class Player : NetworkBehaviour
             gameObject.layer = player2Layer;
         }
 
+
     }
 
     public override void OnNetworkDespawn()
     {
+        thisPlayableState.OnValueChanged -= PlayableStateChanged;
+
         if (IsOwner)
         {
             GameFlowManager.OnMyTurnStarted -= GameFlowManager_OnMyTurnStarted;
