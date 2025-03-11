@@ -5,6 +5,8 @@ using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
+using Unity.Services.Lobbies;
+using Unity.Services.Lobbies.Models;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using UnityEngine;
@@ -15,6 +17,8 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
     private NetworkClient networkClient;
 
     private JoinAllocation joinAllocation;
+
+    private bool isJoining = false;
 
     private UserData userData;
     public UserData UserData => userData;
@@ -79,6 +83,30 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         NetworkManager.Singleton.StartClient();
 
         Debug.Log("Started Client!");
+    }
+
+    public async Task QuickJoinLobbyAsync()
+    {
+        if(isJoining) return;
+
+        isJoining = true;
+
+        try
+        {
+            Lobby lobby = await LobbyService.Instance.QuickJoinLobbyAsync();
+            if (lobby != null)
+            {
+                string joinCode = lobby.Data["JoinCode"].Value;
+                await StartRelayClientAsync(joinCode);
+            }
+        }
+        catch (LobbyServiceException ex)
+        {
+            Debug.LogException(ex);
+        }
+
+        isJoining = false;
+
     }
 
 
