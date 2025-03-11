@@ -71,7 +71,7 @@ public struct ItemLauncherData : INetworkSerializable, IEquatable<ItemLauncherDa
     /// <summary>
     /// Owner of the Item launched
     /// </summary>
-    public PlayableState ownerPlayableState; 
+    public PlayableState ownerPlayableState;
 
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter

@@ -51,7 +51,7 @@ public class PlayerInventory : NetworkBehaviour
         //item Launched
         if(itemInventoryIndex == 0) //Jumped
         {
-            SetSelectedItemInventoryIndex(SelectFirstItemInventoryIndexAvailable()); // direct on Set to ignore canInteractWithInventory
+            SetSelectedItemInventoryIndex(SelectFirstItemInventoryIndexAvailable(1)); // direct on Set to ignore canInteractWithInventory
         }
     }
 
@@ -130,9 +130,9 @@ public class PlayerInventory : NetworkBehaviour
         }
     }
 
-    public int SelectFirstItemInventoryIndexAvailable()
+    public int SelectFirstItemInventoryIndexAvailable(int startingIndex = 0) //can pass a index to ignore previously itens
     {
-        for (int i = 0; i < playerInventory.Count; i++)
+        for (int i = startingIndex; i < playerInventory.Count; i++)
         {
             if (playerInventory[i].itemCanBeUsed)
             {
@@ -153,14 +153,6 @@ public class PlayerInventory : NetworkBehaviour
                 break;
             case NetworkListEvent<ItemInventoryData>.EventType.Value:
                 OnItemChanged?.Invoke(changeEvent.Value);
-                //if(changeEvent.Value.itemInventoryIndex == 0) //Jumped, Select other item
-                //{
-                //    SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable()); // direct on RPC to ignore canInteractWithInventory
-                //    Debug.Log($"Jump can be used: {changeEvent.Value.itemCanBeUsed}, Select other item");
-                //} else
-                //{
-                //    OnItemChanged?.Invoke(changeEvent.Value);
-                //}
                 break;
         }
     }

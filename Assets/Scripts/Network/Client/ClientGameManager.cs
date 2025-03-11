@@ -52,6 +52,8 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
 
     public async Task StartRelayClientAsync(string joinCode)
     {
+        if (joinCode == null || joinCode == string.Empty) return;
+
         try
         {
             joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);

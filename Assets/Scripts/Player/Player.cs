@@ -1,6 +1,7 @@
 using QFSW.QC;
 using Sortify;
 using System;
+using System.Threading.Tasks;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -60,7 +61,14 @@ public class Player : NetworkBehaviour
 
     private void GameFlowManager_OnMyTurnJumped()
     {
+        //DelayToChangeMyTurnJumped();
+        playerStateMachine.TransitionTo(playerStateMachine.idleMyTurnState);
+    }
+
+    private async void DelayToChangeMyTurnJumped()
+    {
         //this player jumped
+        await Task.Delay(3000);
         playerStateMachine.TransitionTo(playerStateMachine.idleMyTurnState);
     }
 

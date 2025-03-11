@@ -18,8 +18,6 @@ public class PlayersPublicInfoManager : MonoBehaviour
         instance = this;
     }
 
-
-
     public void AddPlayerToPlayersDictionary(PlayableState playerPlayableState, GameObject playerGameObject)
     {
         if (playerPlayableState == PlayableState.None) return; //Dont add None to the dictionary
@@ -40,8 +38,6 @@ public class PlayersPublicInfoManager : MonoBehaviour
             return null;
         }
     }
-
-
 
     [Command("playersPublicInfoManager-debugGetPlayer")] //DEBUG
     private void DebugGetPlayer(PlayableState playableState)
