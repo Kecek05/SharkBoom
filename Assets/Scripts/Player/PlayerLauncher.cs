@@ -37,11 +37,6 @@ public class PlayerLauncher : NetworkBehaviour
         if(context.started && (ItemActivableManager.Instance.ItemThrowableActivableClient != null || ItemActivableManager.Instance.ItemThrowableActivableServer != null))
         {
             ItemActivableManager.Instance.UseItem();
-            //if(itemThrowableActivableClient != null)
-            //    itemThrowableActivableClient.TryActivate();
-
-            //if (itemThrowableActivableServer != null)
-            //    itemThrowableActivableServer.TryActivate();
         }
     }
 

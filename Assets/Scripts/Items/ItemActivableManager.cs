@@ -20,8 +20,7 @@ public class ItemActivableManager : NetworkBehaviour
 
     public void UseItem()
     {
-        //always current machine will call this
-        Debug.Log("UseItem");
+        //always local machine will call this
 
         if (itemThrowableActivableClient != null)
             itemThrowableActivableClient.TryActivate();
@@ -32,7 +31,6 @@ public class ItemActivableManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void UseItemServerRpc(ServerRpcParams serverRpc = default)
     {
-        Debug.Log("UseItemServerRpc");
 
         if (itemThrowableActivableServer != null)
             itemThrowableActivableServer.TryActivate();
@@ -45,8 +43,6 @@ public class ItemActivableManager : NetworkBehaviour
     private void UseItemClientRpc(ulong clientIdUsed) //change to other thing rather than clientId
     {
         if (clientIdUsed == NetworkManager.Singleton.LocalClientId) return; //already called on client
-
-        Debug.Log("UseItemClientRpc");
 
         if (itemThrowableActivableClient != null)
             itemThrowableActivableClient.TryActivate();
