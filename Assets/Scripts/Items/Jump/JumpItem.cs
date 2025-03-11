@@ -26,7 +26,7 @@ public class JumpItem : BaseItemThrowable, IFollowable
     {
         if (!isServerObject) return; // Only the server should call the callback action
 
-        GameFlowManager.Instance.PlayerJumpedServerRpc(ownerPlayableState);
+        GameFlowManager.Instance.PlayerJumpedServerRpc(thisItemLaucherData.ownerPlayableState);
 
         //GameFlowManager.Instance.ItemFinishOurAction();
 

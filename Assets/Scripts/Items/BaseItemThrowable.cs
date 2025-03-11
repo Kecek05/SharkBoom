@@ -4,7 +4,7 @@ using Unity.Cinemachine;
 using Unity.Netcode;
 using UnityEngine;
 
-public class BaseItemThrowable : MonoBehaviour, IDraggable
+public class BaseItemThrowable : MonoBehaviour
 {
 
     public event Action OnItemFinishedAction;
@@ -14,18 +14,18 @@ public class BaseItemThrowable : MonoBehaviour, IDraggable
     [SerializeField] protected Rigidbody rb;
     [SerializeField] protected CinemachineFollow cinemachineFollow;
     [SerializeField] protected GameObject[] collidersToChangeLayer;
-    protected PlayableState ownerPlayableState;
+    protected ItemLauncherData thisItemLaucherData;
 
     protected virtual void OnEnable()
     {
         CameraManager.Instance.SetCameraState(CameraManager.CameraState.Following);
     }
 
-    public void Initialize(PlayableState _ownerPlayableState)
+    public virtual void Initialize(ItemLauncherData itemLauncherData)
     {
-        ownerPlayableState = _ownerPlayableState;
+        thisItemLaucherData = itemLauncherData;
 
-        switch(ownerPlayableState)
+        switch(thisItemLaucherData.ownerPlayableState)
         {
             case PlayableState.Player1Playing:
                 foreach(GameObject gameObject in collidersToChangeLayer)
@@ -41,29 +41,23 @@ public class BaseItemThrowable : MonoBehaviour, IDraggable
                 break;
         }
 
+        ItemReleased(thisItemLaucherData.dragForce, thisItemLaucherData.dragDirection);
     }
 
-    public void Release(float force, Vector3 direction)
-    {
-        
-        CameraManager.Instance.CameraFollowing.SetTheValuesOfCinemachine(cinemachineFollow);
-        ItemReleased(force, direction);
-        
-    }
 
     protected virtual void ItemReleased(float force, Vector3 direction)
     {
+        CameraManager.Instance.CameraFollowing.SetTheValuesOfCinemachine(cinemachineFollow);
+
         rb.AddForce(direction * force, ForceMode.Impulse);
-        Debug.Log($"Released: {gameObject.name} Force: {force} Direction: {direction}");
+
     }
 
     protected virtual void ItemCallbackAction()
     {
         if(!isServerObject) return; // Only the server should call the callback action
 
-        GameFlowManager.Instance.PlayerPlayedRpc(ownerPlayableState);
-
-        //GameFlowManager.Instance.ItemFinishOurAction();
+        GameFlowManager.Instance.PlayerPlayedRpc(thisItemLaucherData.ownerPlayableState);
     }
 
     protected void OnDestroy()

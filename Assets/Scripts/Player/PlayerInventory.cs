@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class PlayerInventory : NetworkBehaviour
 {
-    public event Action<ItemDataStruct> OnItemAdded;
-    public event Action<ItemDataStruct> OnItemChanged;
+    public event Action<ItemInventoryData> OnItemAdded;
+    public event Action<ItemInventoryData> OnItemChanged;
     public event Action<int> OnItemSelected;
 
     [SerializeField] private Player player;
 
     [SerializeField] private ItemsListSO itemsListSO;
 
-    private NetworkList<ItemDataStruct> playerInventory = new();
+    private NetworkList<ItemInventoryData> playerInventory = new();
 
     /// <summary>
     /// The index of the selected item in the player's inventory
@@ -103,7 +103,7 @@ public class PlayerInventory : NetworkBehaviour
     [Rpc(SendTo.Server)]
     private void SetPlayerCanJumpRpc(bool canJump)
     {
-        playerInventory[0] = new ItemDataStruct
+        playerInventory[0] = new ItemInventoryData
         {
             itemInventoryIndex = playerInventory[0].itemInventoryIndex, //first in inventory
             itemSOIndex = playerInventory[0].itemSOIndex, //first in itemsListSO
@@ -119,7 +119,7 @@ public class PlayerInventory : NetworkBehaviour
         {
             if (!playerInventory[i].itemCanBeUsed)
             {
-                playerInventory[i] = new ItemDataStruct
+                playerInventory[i] = new ItemInventoryData
                 {
                     itemInventoryIndex = playerInventory[i].itemInventoryIndex,
                     itemSOIndex = playerInventory[i].itemSOIndex,
@@ -143,15 +143,15 @@ public class PlayerInventory : NetworkBehaviour
         return -1;
     }
 
-    private void PlayerInventory_OnListChanged(NetworkListEvent<ItemDataStruct> changeEvent)
+    private void PlayerInventory_OnListChanged(NetworkListEvent<ItemInventoryData> changeEvent)
     {
         switch(changeEvent.Type)
         {
-            case NetworkListEvent<ItemDataStruct>.EventType.Add:
+            case NetworkListEvent<ItemInventoryData>.EventType.Add:
                 if (changeEvent.Value.itemInventoryIndex == 0) return; //Dont add item UI on Jump, index 0 is jump
                 OnItemAdded?.Invoke(changeEvent.Value);
                 break;
-            case NetworkListEvent<ItemDataStruct>.EventType.Value:
+            case NetworkListEvent<ItemInventoryData>.EventType.Value:
                 OnItemChanged?.Invoke(changeEvent.Value);
                 //if(changeEvent.Value.itemInventoryIndex == 0) //Jumped, Select other item
                 //{
@@ -169,7 +169,7 @@ public class PlayerInventory : NetworkBehaviour
     public void SetPlayerItems(int itemSOIndex) //Set the items that player have when starting the game
     {
         //Server Code
-        playerInventory.Add(new ItemDataStruct
+        playerInventory.Add(new ItemInventoryData
         {
             itemInventoryIndex = playerInventory.Count, //get the index
             itemSOIndex = itemSOIndex,
@@ -202,7 +202,7 @@ public class PlayerInventory : NetworkBehaviour
         {
             //Item Can be used
 
-            playerInventory[itemInventoryIndex] = new ItemDataStruct
+            playerInventory[itemInventoryIndex] = new ItemInventoryData
             {
                 itemInventoryIndex = playerInventory[itemInventoryIndex].itemInventoryIndex, //do not lose the index
                 itemSOIndex = playerInventory[itemInventoryIndex].itemSOIndex,

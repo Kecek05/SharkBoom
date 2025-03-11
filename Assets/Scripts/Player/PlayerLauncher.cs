@@ -56,13 +56,21 @@ public class PlayerLauncher : NetworkBehaviour
 
     private void Launch()
     {
-        //itemThrowableActivableClient = null; //reset value
-        //itemThrowableActivableServer = null;
+
         ItemActivableManager.Instance.ResetItemActivable();
 
-        SpawnProjectileServerRpc(player.PlayerDragController.DragForce, player.PlayerDragController.DirectionOfDrag, player.PlayerInventory.GetSelectedItemSOIndex(), GameFlowManager.Instance.LocalplayableState); //Spawn real projectile on server need to send the speed and force values through the network
 
-        SpawnDummyProjectile(player.PlayerDragController.DragForce, player.PlayerDragController.DirectionOfDrag, player.PlayerInventory.GetSelectedItemSOIndex(), GameFlowManager.Instance.LocalplayableState); //Spawn fake projectile on client
+        ItemLauncherData itemLauncherData = new ItemLauncherData
+        {
+            dragForce = player.PlayerDragController.DragForce, 
+            dragDirection = player.PlayerDragController.DirectionOfDrag,
+            selectedItemSOIndex = player.PlayerInventory.GetSelectedItemSOIndex(), 
+            ownerPlayableState = GameFlowManager.Instance.LocalplayableState,
+        };
+
+        SpawnProjectileServerRpc(itemLauncherData); //Spawn real projectile on server need to send the speed and force values through the network
+
+        SpawnDummyProjectile(itemLauncherData); //Spawn fake projectile on client
     
         OnItemLaunched?.Invoke(player.PlayerInventory.SelectedItemInventoryIndex); //pass itemInventoryIndex
     }
@@ -70,113 +78,64 @@ public class PlayerLauncher : NetworkBehaviour
 
 
     [Rpc(SendTo.Server)]
-    private void SpawnProjectileServerRpc(float dragForce, Vector3 dragDirection, int selectedItemSOIndex, PlayableState ownerPlayableState) // on server, need to pass the prefab for the other clients instantiate it
+    private void SpawnProjectileServerRpc(ItemLauncherData launcherData) // on server, need to pass the prefab for the other clients instantiate it
     {
-        if(player.PlayerInventory.GetItemSOByItemSOIndex(selectedItemSOIndex).itemServerPrefab == null)
+        if(player.PlayerInventory.GetItemSOByItemSOIndex(launcherData.selectedItemSOIndex).itemServerPrefab == null)
         {
-            Debug.LogWarning($"ItemSOIndex: {selectedItemSOIndex} has no server prefab");
+            Debug.LogWarning($"ItemSOIndex: {launcherData.selectedItemSOIndex} has no server prefab");
             return;
         }
         
         
-        GameObject projetctile = Instantiate(player.PlayerInventory.GetItemSOByItemSOIndex(selectedItemSOIndex).itemServerPrefab, spawnItemPos.position, Quaternion.identity);
+        GameObject projetctile = Instantiate(player.PlayerInventory.GetItemSOByItemSOIndex(launcherData.selectedItemSOIndex).itemServerPrefab, spawnItemPos.position, Quaternion.identity);
 
 
-        //Collider[] projectileColliders = projetctile.GetComponentsInChildren<Collider>();
-
-        //if(projectileColliders.Length > 0)
-        //{
-        //    for(int i = 0; i < projectileColliders.Length; i++)
-        //    {
-        //        foreach (Collider playerCollider in playerColliders)
-        //        {
-        //            Physics.IgnoreCollision(playerCollider, projectileColliders[i]); // Ignore collision between the player and the projectile
-        //        }
-        //    }
-        //}
-
-        if (projetctile.transform.TryGetComponent(out IFollowable followable))
+        if (projetctile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
         {
-            followable.Follow(transform); //Call interface
+            itemThrowable.Initialize(launcherData);
         }
 
         if (projetctile.transform.TryGetComponent(out BaseItemThrowableActivable activable))
         {
-
+            //Get the ref to active the item
             ItemActivableManager.Instance.SetItemThrowableActivableServer(activable);
         }
 
-        if (projetctile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
-        {
-            itemThrowable.Initialize(ownerPlayableState);
-        }
 
-        if (projetctile.transform.TryGetComponent(out IDraggable draggable))
-        {
-            draggable.Release(dragForce, dragDirection); //Call interface
-        }
-
-
-        SpawnProjectileClientRpc(dragForce, dragDirection, selectedItemSOIndex, ownerPlayableState);
+        SpawnProjectileClientRpc(launcherData);
     }
 
 
     [Rpc(SendTo.ClientsAndHost)]
-    private void SpawnProjectileClientRpc(float dragForce, Vector3 dragDirection, int selectedItemSOIndex, PlayableState ownerPlayableState) //pass info to other clients
+    private void SpawnProjectileClientRpc(ItemLauncherData launcherData) //pass info to other clients
     {
         if (IsOwner) return; // already spawned
 
-        SpawnDummyProjectile(dragForce, dragDirection, selectedItemSOIndex, ownerPlayableState);
+        SpawnDummyProjectile(launcherData);
 
     }
 
-    private void SpawnDummyProjectile(float dragForce, Vector3 dragDirection, int selectedItemSOIndex, PlayableState ownerPlayableState) // on client, need to pass the prefab for the other clients instantiate it
+    private void SpawnDummyProjectile(ItemLauncherData launcherData) // on client, need to pass the prefab for the other clients instantiate it
     {
-        if (player.PlayerInventory.GetItemSOByItemSOIndex(selectedItemSOIndex).itemClientPrefab == null)
+        if (player.PlayerInventory.GetItemSOByItemSOIndex(launcherData.selectedItemSOIndex).itemClientPrefab == null)
         {
-            Debug.LogWarning($"ItemSOIndex: {selectedItemSOIndex} has no client prefab");
+            Debug.LogWarning($"ItemSOIndex: {launcherData.selectedItemSOIndex} has no client prefab");
             return;
         }
 
 
-        GameObject projetctile = Instantiate(player.PlayerInventory.GetItemSOByItemSOIndex(selectedItemSOIndex).itemClientPrefab, spawnItemPos.position, Quaternion.identity);
+        GameObject projetctile = Instantiate(player.PlayerInventory.GetItemSOByItemSOIndex(launcherData.selectedItemSOIndex).itemClientPrefab, spawnItemPos.position, Quaternion.identity);
 
-        //Collider[] projectileColliders = projetctile.GetComponentsInChildren<Collider>();
 
-        //if (projectileColliders.Length > 0) //i think not working
-        //{
-        //    for (int i = 0; i < projectileColliders.Length; i++)
-        //    {
-        //        foreach (Collider playerCollider in playerColliders)
-        //        {
-        //            Physics.IgnoreCollision(playerCollider, projectileColliders[i]); // Ignore collision between the player and the projectile
-        //        }
-        //    }
-        //}
-
-        if (IsOwner)
+        if (projetctile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
         {
-            //only owner can follow the item
-            if (projetctile.transform.TryGetComponent(out IFollowable followable))
-            {
-                followable.Follow(transform); //Call interface
-            }
+            itemThrowable.Initialize(launcherData);
         }
 
         if (projetctile.transform.TryGetComponent(out BaseItemThrowableActivable activable))
         {
             //Get the ref to active the item
             ItemActivableManager.Instance.SetItemThrowableActivableClient(activable);
-        }
-
-        if (projetctile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
-        {
-            itemThrowable.Initialize(ownerPlayableState);
-        }
-
-        if (projetctile.transform.TryGetComponent(out IDraggable draggable))
-        {
-            draggable.Release(dragForce, dragDirection); //Call interface
         }
 
     }

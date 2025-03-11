@@ -1,8 +1,8 @@
 using System;
-using Unity.Collections;
 using Unity.Netcode;
+using UnityEngine;
 
-public struct ItemDataStruct : INetworkSerializable, IEquatable<ItemDataStruct>
+public struct ItemInventoryData : INetworkSerializable, IEquatable<ItemInventoryData>
 {
 
     /// <summary>
@@ -34,9 +34,49 @@ public struct ItemDataStruct : INetworkSerializable, IEquatable<ItemDataStruct>
         serializer.SerializeValue(ref itemInventoryIndex);
     }
 
-    public bool Equals(ItemDataStruct other)
+    public bool Equals(ItemInventoryData other)
     {
         //return itemSOIndex == other.itemSOIndex && itemCanBeUsed == other.itemCanBeUsed && itemCooldownRemaining == other.itemCooldownRemaining && ownerDebug == other.ownerDebug && itemInventoryIndex == other.itemInventoryIndex;
         return itemInventoryIndex == other.itemInventoryIndex;
+    }
+}
+
+
+public struct ItemLauncherData : INetworkSerializable, IEquatable<ItemLauncherData>
+{
+
+    /// <summary>
+    /// Force of the drag
+    /// </summary>
+    public float dragForce;
+
+    /// <summary>
+    /// Direction of the drag
+    /// </summary>
+    public Vector3 dragDirection;
+
+
+    /// <summary>
+    /// Index to get the itemSO from the ItemsListSO
+    /// </summary>
+    public int selectedItemSOIndex;
+
+    /// <summary>
+    /// Owner of the Item launched
+    /// </summary>
+    public PlayableState ownerPlayableState; 
+
+
+    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+    {
+        serializer.SerializeValue(ref dragForce);
+        serializer.SerializeValue(ref dragDirection);
+        serializer.SerializeValue(ref selectedItemSOIndex);
+        serializer.SerializeValue(ref ownerPlayableState);
+    }
+
+    public bool Equals(ItemLauncherData other)
+    {
+        return dragForce == other.dragForce && dragDirection == other.dragDirection && selectedItemSOIndex == other.selectedItemSOIndex && ownerPlayableState == other.ownerPlayableState;
     }
 }
