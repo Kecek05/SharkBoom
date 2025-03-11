@@ -1,8 +1,7 @@
 using Sortify;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
-public class BaseItemThrowableActiveable : BaseItemThrowable
+public class BaseItemThrowableActivable : BaseItemThrowable
 {
 
     [BetterHeader("Base Activeable References", 11)]

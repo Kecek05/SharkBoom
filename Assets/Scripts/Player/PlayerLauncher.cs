@@ -19,8 +19,8 @@ public class PlayerLauncher : NetworkBehaviour
     [SerializeField] private Collider[] playerColliders;
     [SerializeField] private Player player;
 
-    private BaseItemThrowableActiveable itemThrowableActivableClient;
-    private BaseItemThrowableActiveable itemThrowableActivableServer;
+    //private BaseItemThrowableActivable itemThrowableActivableClient;
+    //private BaseItemThrowableActivable itemThrowableActivableServer;
     public override void OnNetworkSpawn()
     {
         if (IsOwner)
@@ -35,13 +35,14 @@ public class PlayerLauncher : NetworkBehaviour
     {
         //Debug.Log($"Debug Touch itemActivated: {itemActivated} ItemActivable: {itemActivable}");
 
-        if(context.started)
+        if(context.started && (ItemActivableManager.Instance.ItemThrowableActivableClient != null || ItemActivableManager.Instance.ItemThrowableActivableServer != null))
         {
-            if(itemThrowableActivableClient != null)
-                itemThrowableActivableClient.TryActivate();
+            ItemActivableManager.Instance.UseItem();
+            //if(itemThrowableActivableClient != null)
+            //    itemThrowableActivableClient.TryActivate();
 
-            if (itemThrowableActivableServer != null)
-                itemThrowableActivableServer.TryActivate();
+            //if (itemThrowableActivableServer != null)
+            //    itemThrowableActivableServer.TryActivate();
         }
     }
 
@@ -56,8 +57,9 @@ public class PlayerLauncher : NetworkBehaviour
 
     private void Launch()
     {
-        itemThrowableActivableClient = null; //reset value
-        itemThrowableActivableServer = null;
+        //itemThrowableActivableClient = null; //reset value
+        //itemThrowableActivableServer = null;
+        ItemActivableManager.Instance.ResetItemActivable();
 
         SpawnProjectileServerRpc(player.PlayerDragController.DragForce, player.PlayerDragController.DirectionOfDrag, player.PlayerInventory.GetSelectedItemSOIndex()); //Spawn real projectile on server need to send the speed and force values through the network
 
@@ -98,14 +100,16 @@ public class PlayerLauncher : NetworkBehaviour
             followable.Follow(transform); //Call interface
         }
 
-        if (projetctile.transform.TryGetComponent(out BaseItemThrowableActiveable activable))
+        if (projetctile.transform.TryGetComponent(out BaseItemThrowableActivable activable))
         {
             //Get the ref to active the item
-            itemThrowableActivableServer = activable;
+           // itemThrowableActivableServer = activable;
+           ItemActivableManager.Instance.SetItemThrowableActivableServer(activable);
         }
 
         SpawnProjectileClientRpc(dragForce, dragDirection, selectedItemSOIndex);
     }
+
 
     [Rpc(SendTo.ClientsAndHost)]
     private void SpawnProjectileClientRpc(float dragForce, Vector3 dragDirection, int selectedItemSOIndex) //pass info to other clients
@@ -140,6 +144,14 @@ public class PlayerLauncher : NetworkBehaviour
             draggable.Release(dragForce, dragDirection); //Call interface
         }
 
+        //only owner can activate the item
+        if (projetctile.transform.TryGetComponent(out BaseItemThrowableActivable activable))
+        {
+            //Get the ref to active the item
+            ItemActivableManager.Instance.SetItemThrowableActivableClient(activable);
+        }
+
+
         if (IsOwner)
         {
             //only owner can follow the item
@@ -148,13 +160,6 @@ public class PlayerLauncher : NetworkBehaviour
                 followable.Follow(transform); //Call interface
             }
 
-
-            //only owner can activate the item
-            if (projetctile.transform.TryGetComponent(out BaseItemThrowableActiveable activable))
-            {
-                //Get the ref to active the item
-                itemThrowableActivableClient = activable;
-            }
         }
 
     }
