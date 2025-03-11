@@ -194,6 +194,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8360590805627951754, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4368214002554539844}
+    - targetCorrespondingSourceObject: {fileID: 8360590805627951754, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6129100009262690881}
   m_SourcePrefab: {fileID: 100100000, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
 --- !u!4 &1561311604723099721 stripped
 Transform:
@@ -236,6 +239,18 @@ MonoBehaviour:
   cinemachineFollow: {fileID: 8531394715748984986}
   collidersToChangeLayer:
   - {fileID: 6020880011412641438}
+--- !u!114 &6129100009262690881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6020880011412641438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edb9b1f76e7102c4cbc8dd8c7d5757f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!54 &6717943621661333620 stripped
 Rigidbody:
   m_CorrespondingSourceObject: {fileID: 8841218437626745952, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}

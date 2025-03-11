@@ -95,16 +95,6 @@ public class PlayerLauncher : NetworkBehaviour
         //    }
         //}
 
-        if(projetctile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
-        {
-            itemThrowable.Initialize(ownerPlayableState);
-        }
-
-        if (projetctile.transform.TryGetComponent(out IDraggable draggable))
-        {
-            draggable.Release(dragForce, dragDirection); //Call interface
-        }
-
         if (projetctile.transform.TryGetComponent(out IFollowable followable))
         {
             followable.Follow(transform); //Call interface
@@ -113,9 +103,18 @@ public class PlayerLauncher : NetworkBehaviour
         if (projetctile.transform.TryGetComponent(out BaseItemThrowableActivable activable))
         {
 
-           ItemActivableManager.Instance.SetItemThrowableActivableServer(activable);
+            ItemActivableManager.Instance.SetItemThrowableActivableServer(activable);
         }
 
+        if (projetctile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
+        {
+            itemThrowable.Initialize(ownerPlayableState);
+        }
+
+        if (projetctile.transform.TryGetComponent(out IDraggable draggable))
+        {
+            draggable.Release(dragForce, dragDirection); //Call interface
+        }
 
 
         SpawnProjectileClientRpc(dragForce, dragDirection, selectedItemSOIndex, ownerPlayableState);
@@ -155,6 +154,21 @@ public class PlayerLauncher : NetworkBehaviour
         //    }
         //}
 
+        if (IsOwner)
+        {
+            //only owner can follow the item
+            if (projetctile.transform.TryGetComponent(out IFollowable followable))
+            {
+                followable.Follow(transform); //Call interface
+            }
+        }
+
+        if (projetctile.transform.TryGetComponent(out BaseItemThrowableActivable activable))
+        {
+            //Get the ref to active the item
+            ItemActivableManager.Instance.SetItemThrowableActivableClient(activable);
+        }
+
         if (projetctile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
         {
             itemThrowable.Initialize(ownerPlayableState);
@@ -163,24 +177,6 @@ public class PlayerLauncher : NetworkBehaviour
         if (projetctile.transform.TryGetComponent(out IDraggable draggable))
         {
             draggable.Release(dragForce, dragDirection); //Call interface
-        }
-
-        //only owner can activate the item
-        if (projetctile.transform.TryGetComponent(out BaseItemThrowableActivable activable))
-        {
-            //Get the ref to active the item
-            ItemActivableManager.Instance.SetItemThrowableActivableClient(activable);
-        }
-
-
-        if (IsOwner)
-        {
-            //only owner can follow the item
-            if (projetctile.transform.TryGetComponent(out IFollowable followable))
-            {
-                followable.Follow(transform); //Call interface
-            }
-
         }
 
     }

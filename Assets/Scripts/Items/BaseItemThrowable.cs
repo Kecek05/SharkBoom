@@ -66,26 +66,6 @@ public class BaseItemThrowable : MonoBehaviour, IDraggable
         //GameFlowManager.Instance.ItemFinishOurAction();
     }
 
-    protected void OnCollisionEnter(Collision collision)
-    {
-        if (!isServerObject)
-        {
-            //Change latter
-            Destroy(gameObject); //Client doesnt do damage
-            return;
-        }
-
-        if (collision.collider.gameObject.TryGetComponent(out IDamageable damageable))
-        {
-            if (NetworkManager.Singleton.IsServer)
-            {
-                damageable.TakeDamage(itemSO.damageableSO);
-                Debug.Log("Dealt " + itemSO.damageableSO.damage + " damage to " + collision.gameObject.name);
-            }
-        }
-        Destroy(gameObject);
-    }
-
     protected void OnDestroy()
     {
         ItemCallbackAction();
