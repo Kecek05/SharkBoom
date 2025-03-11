@@ -145,7 +145,7 @@ public class GameFlowManager : NetworkBehaviour
 
     private async void DelayChangePlayableStateStart() //DEBUG
     {
-        await Task.Delay(6000);
+        await Task.Delay(8000);
         CurrentPlayableState.Value = PlayableState.Player1Playing;
     }
 

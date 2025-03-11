@@ -31,10 +31,21 @@ public class Player : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         gameObject.name = "Player " + UnityEngine.Random.Range(0, 100).ToString();
-       
+
+        //if (NetworkManager.Singleton.ConnectedClients.Count == 1)
+        //{
+        //    SetThisPlayableState(GameFlowManager.PlayableState.Player1Playing);
+        //}
+        //else
+        //{
+        //    SetThisPlayableState(GameFlowManager.PlayableState.Player2Playing);
+        //}
+
 
         if (IsOwner)
         {
+            GameFlowManager.Instance.SetLocalStates(thisPlayableState); //pass to GameFlow to know when its local turn
+
             CameraManager.Instance.SetPlayer(this);
             GameFlowManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
 
@@ -42,22 +53,13 @@ public class Player : NetworkBehaviour
 
             playerStateMachine.Initialize(playerStateMachine.idleEnemyTurnState);
 
-            GameFlowManager.Instance.SetLocalStates(thisPlayableState);
-
         } else
         {
             //if not owner, turn off touch collider
             playerTouchColl.enabled = false;
         }
 
-        if (thisPlayableState == GameFlowManager.PlayableState.Player1Playing)
-        {
-            gameObject.layer = player1Layer;
-        }
-        else
-        {
-            gameObject.layer = player2Layer;
-        }
+
     }
 
 
@@ -87,7 +89,18 @@ public class Player : NetworkBehaviour
 
     public void SetThisPlayableState(GameFlowManager.PlayableState playableState)
     {
+        // Cant be OnnetworkSpawn because it needs to be called by NetworkServer
         thisPlayableState = playableState;
+
+        if (thisPlayableState == GameFlowManager.PlayableState.Player1Playing)
+        {
+            gameObject.layer = player1Layer;
+        }
+        else
+        {
+            gameObject.layer = player2Layer;
+        }
+
     }
 
     public override void OnNetworkDespawn()

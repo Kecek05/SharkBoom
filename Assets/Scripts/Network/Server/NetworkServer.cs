@@ -69,11 +69,11 @@ public class NetworkServer : IDisposable
 
         if(networkManager.ConnectedClientsList.Count == 1)
         {
-            playerInstance.GetComponent<Player>().SetThisPlayableState(GameFlowManager.PlayableState.Player1Playing);
+            //playerInstance.GetComponent<Player>().SetThisPlayableState(GameFlowManager.PlayableState.Player1Playing);
 
         } else if (networkManager.ConnectedClientsList.Count == 2)
         {
-            playerInstance.GetComponent<Player>().SetThisPlayableState(GameFlowManager.PlayableState.Player2Playing);
+            //playerInstance.GetComponent<Player>().SetThisPlayableState(GameFlowManager.PlayableState.Player2Playing);
 
             //Both players are connected and spawned
             GameFlowManager.Instance.SetGameStateRpc(GameFlowManager.GameState.GameStarted);
