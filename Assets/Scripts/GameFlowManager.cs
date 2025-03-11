@@ -12,8 +12,7 @@ public class GameFlowManager : NetworkBehaviour
     private static GameFlowManager instance;
     public static GameFlowManager Instance => instance;
 
-    public static int PLAYER_1_LAYER = 8;
-    public static int PLAYER_2_LAYER = 9;
+
 
 
     public static event Action OnMyTurnStarted; //local player can play
@@ -210,11 +209,4 @@ public enum GameState
     GameEnded, //Game Over
 }
 
-public enum PlayableState
-{
-    None,
-    Player1Playing, //Player 1 Can Play
-    Player1Played, //Player 1 Cant Play
-    Player2Playing, //Player 2 Can Play
-    Player2Played, //Player 2 Cant Play
-}
+

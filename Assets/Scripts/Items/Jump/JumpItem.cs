@@ -1,24 +1,21 @@
 using System.Collections;
 using UnityEngine;
 
-public class JumpItem : BaseItemThrowable, IFollowable
+public class JumpItem : BaseItemThrowable
 {
 
     [SerializeField] private float followingTime = 1.5f;
     private float currentFollowingTime = 0f;
     private Transform objectToFollowTransform;
 
-    public void Follow(Transform objectToFollow)
-    {
-        objectToFollowTransform = objectToFollow;
-    }
-
 
     protected override void ItemReleased(float force, Vector3 direction)
     {
         base.ItemReleased(force, direction);
 
-        if(isServerObject)
+        objectToFollowTransform = PlayersPublicInfoManager.Instance.GetPlayerObjectByPlayableState(thisItemLaucherData.ownerPlayableState).transform;
+
+        if (isServerObject)
             StartCoroutine(PlayerFollowFirework());
     }
 
@@ -27,8 +24,6 @@ public class JumpItem : BaseItemThrowable, IFollowable
         if (!isServerObject) return; // Only the server should call the callback action
 
         GameFlowManager.Instance.PlayerJumpedServerRpc(thisItemLaucherData.ownerPlayableState);
-
-        //GameFlowManager.Instance.ItemFinishOurAction();
 
     }
 

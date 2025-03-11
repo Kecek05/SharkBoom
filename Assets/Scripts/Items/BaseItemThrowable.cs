@@ -30,13 +30,13 @@ public class BaseItemThrowable : MonoBehaviour
             case PlayableState.Player1Playing:
                 foreach(GameObject gameObject in collidersToChangeLayer)
                 {
-                    gameObject.layer = GameFlowManager.PLAYER_1_LAYER;
+                    gameObject.layer = PlayersPublicInfoManager.PLAYER_1_LAYER;
                 }
                 break;
             case PlayableState.Player2Playing:
                 foreach (GameObject gameObject in collidersToChangeLayer)
                 {
-                    gameObject.layer = GameFlowManager.PLAYER_2_LAYER;
+                    gameObject.layer = PlayersPublicInfoManager.PLAYER_2_LAYER;
                 }
                 break;
         }

@@ -31,7 +31,9 @@ public class Player : NetworkBehaviour
         gameObject.name = "Player " + UnityEngine.Random.Range(0, 100).ToString();
 
         thisPlayableState.OnValueChanged += PlayableStateChanged;
-        PlayableStateChanged(thisPlayableState.Value, thisPlayableState.Value);
+
+        if(!IsHost) // host will add itself twice
+            PlayableStateChanged(thisPlayableState.Value, thisPlayableState.Value);
 
         if (IsOwner)
         {
@@ -111,18 +113,18 @@ public class Player : NetworkBehaviour
 
             foreach(GameObject playerCollider in playerColliders)
             {
-                playerCollider.layer = GameFlowManager.PLAYER_1_LAYER;
+                playerCollider.layer = PlayersPublicInfoManager.PLAYER_1_LAYER;
             }
         }
         else
         {
             foreach (GameObject playerCollider in playerColliders)
             {
-                playerCollider.layer = GameFlowManager.PLAYER_2_LAYER;
+                playerCollider.layer = PlayersPublicInfoManager.PLAYER_2_LAYER;
             }
         }
 
-
+        PlayersPublicInfoManager.Instance.AddPlayerToPlayersDictionary(thisPlayableState.Value, gameObject);
     }
 
     public override void OnNetworkDespawn()

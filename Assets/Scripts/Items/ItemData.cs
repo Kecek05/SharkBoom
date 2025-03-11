@@ -2,6 +2,10 @@ using System;
 using Unity.Netcode;
 using UnityEngine;
 
+
+/// <summary>
+/// Item on inventory data
+/// </summary>
 public struct ItemInventoryData : INetworkSerializable, IEquatable<ItemInventoryData>
 {
 
@@ -42,6 +46,9 @@ public struct ItemInventoryData : INetworkSerializable, IEquatable<ItemInventory
 }
 
 
+/// <summary>
+/// Data to launch an item
+/// </summary>
 public struct ItemLauncherData : INetworkSerializable, IEquatable<ItemLauncherData>
 {
 
