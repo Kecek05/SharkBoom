@@ -16,7 +16,7 @@ public class Player : NetworkBehaviour
     [SerializeField] private GameObject[] playerColliders;
     private PlayerStateMachine playerStateMachine;
 
-    private NetworkVariable<GameFlowManager.PlayableState> thisPlayableState = new();
+    private NetworkVariable<PlayableState> thisPlayableState = new();
 
     //Publics
     public PlayerStateMachine PlayerStateMachine => playerStateMachine;
@@ -39,7 +39,9 @@ public class Player : NetworkBehaviour
             CameraManager.Instance.SetPlayer(this);
             GameFlowManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
 
-            
+            GameFlowManager.OnMyTurnEnded += GameFlowManager_OnMyTurnEnded;
+
+            GameFlowManager.OnMyTurnJumped += GameFlowManager_OnMyTurnJumped;
 
             playerStateMachine = new PlayerStateMachine(this);
 
@@ -54,7 +56,16 @@ public class Player : NetworkBehaviour
 
     }
 
+    private void GameFlowManager_OnMyTurnJumped()
+    {
+        //this player jumped
+        playerStateMachine.TransitionTo(playerStateMachine.idleMyTurnState);
+    }
 
+    private void GameFlowManager_OnMyTurnEnded()
+    {
+        playerStateMachine.TransitionTo(playerStateMachine.myTurnEndedState);
+    }
 
     private void GameFlowManager_OnMyTurnStarted()
     {
@@ -80,7 +91,7 @@ public class Player : NetworkBehaviour
 
 
     [Rpc(SendTo.Server)]
-    public void SetThisPlayableStateRpc(GameFlowManager.PlayableState playableState)
+    public void SetThisPlayableStateRpc(PlayableState playableState)
     {
         // Cant be OnnetworkSpawn because it needs to be called by NetworkServer
         thisPlayableState.Value = playableState;
@@ -88,14 +99,14 @@ public class Player : NetworkBehaviour
     }
     
 
-    private void PlayableStateChanged(GameFlowManager.PlayableState previousValue, GameFlowManager.PlayableState newValue)
+    private void PlayableStateChanged(PlayableState previousValue, PlayableState newValue)
     {
         if (IsOwner)
         {
             GameFlowManager.Instance.SetLocalStates(thisPlayableState.Value); //pass to GameFlow to know when its local turn
         }
 
-        if (thisPlayableState.Value == GameFlowManager.PlayableState.Player1Playing)
+        if (thisPlayableState.Value == PlayableState.Player1Playing)
         {
 
             foreach(GameObject playerCollider in playerColliders)
@@ -121,6 +132,10 @@ public class Player : NetworkBehaviour
         if (IsOwner)
         {
             GameFlowManager.OnMyTurnStarted -= GameFlowManager_OnMyTurnStarted;
+
+            GameFlowManager.OnMyTurnEnded -= GameFlowManager_OnMyTurnEnded;
+
+            GameFlowManager.OnMyTurnJumped -= GameFlowManager_OnMyTurnJumped;
         }
     }
 

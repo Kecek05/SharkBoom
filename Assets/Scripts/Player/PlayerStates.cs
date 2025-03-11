@@ -189,15 +189,8 @@ public class DragReleaseJump : IState
 
         //Set Camera cant move
 
-        //player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleMyTurnState); // On the Call Back
-        JumpCallback();
+        // Change to idle on callback
 
-    }
-
-    private async void JumpCallback()
-    {
-        await Task.Delay(4000);
-        player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleMyTurnState);
     }
 
     public void Execute()
@@ -228,15 +221,7 @@ public class DragReleaseItem : IState
         //Set Camera cant move
         Debug.Log("Entering Drag Release Item State");
 
-        //player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.MyTurnEnded); // On the Call Back
-        ItemCallback();
-
-    }
-
-    private async void ItemCallback()
-    {
-        await Task.Delay(4000);
-        player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.myTurnEndedState);
+        // Change to my turn ended on callback
     }
 
     public void Execute()

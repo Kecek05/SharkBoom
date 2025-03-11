@@ -70,7 +70,7 @@ public class PlayerLauncher : NetworkBehaviour
 
 
     [Rpc(SendTo.Server)]
-    private void SpawnProjectileServerRpc(float dragForce, Vector3 dragDirection, int selectedItemSOIndex, GameFlowManager.PlayableState ownerPlayableState) // on server, need to pass the prefab for the other clients instantiate it
+    private void SpawnProjectileServerRpc(float dragForce, Vector3 dragDirection, int selectedItemSOIndex, PlayableState ownerPlayableState) // on server, need to pass the prefab for the other clients instantiate it
     {
         if(player.PlayerInventory.GetItemSOByItemSOIndex(selectedItemSOIndex).itemServerPrefab == null)
         {
@@ -123,7 +123,7 @@ public class PlayerLauncher : NetworkBehaviour
 
 
     [Rpc(SendTo.ClientsAndHost)]
-    private void SpawnProjectileClientRpc(float dragForce, Vector3 dragDirection, int selectedItemSOIndex, GameFlowManager.PlayableState ownerPlayableState) //pass info to other clients
+    private void SpawnProjectileClientRpc(float dragForce, Vector3 dragDirection, int selectedItemSOIndex, PlayableState ownerPlayableState) //pass info to other clients
     {
         if (IsOwner) return; // already spawned
 
@@ -131,7 +131,7 @@ public class PlayerLauncher : NetworkBehaviour
 
     }
 
-    private void SpawnDummyProjectile(float dragForce, Vector3 dragDirection, int selectedItemSOIndex, GameFlowManager.PlayableState ownerPlayableState) // on client, need to pass the prefab for the other clients instantiate it
+    private void SpawnDummyProjectile(float dragForce, Vector3 dragDirection, int selectedItemSOIndex, PlayableState ownerPlayableState) // on client, need to pass the prefab for the other clients instantiate it
     {
         if (player.PlayerInventory.GetItemSOByItemSOIndex(selectedItemSOIndex).itemClientPrefab == null)
         {

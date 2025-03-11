@@ -14,26 +14,26 @@ public class BaseItemThrowable : MonoBehaviour, IDraggable
     [SerializeField] protected Rigidbody rb;
     [SerializeField] protected CinemachineFollow cinemachineFollow;
     [SerializeField] protected GameObject[] collidersToChangeLayer;
-    protected GameFlowManager.PlayableState ownerPlayableState;
+    protected PlayableState ownerPlayableState;
 
     protected virtual void OnEnable()
     {
         CameraManager.Instance.SetCameraState(CameraManager.CameraState.Following);
     }
 
-    public void Initialize(GameFlowManager.PlayableState _ownerPlayableState)
+    public void Initialize(PlayableState _ownerPlayableState)
     {
         ownerPlayableState = _ownerPlayableState;
 
         switch(ownerPlayableState)
         {
-            case GameFlowManager.PlayableState.Player1Playing:
+            case PlayableState.Player1Playing:
                 foreach(GameObject gameObject in collidersToChangeLayer)
                 {
                     gameObject.layer = GameFlowManager.PLAYER_1_LAYER;
                 }
                 break;
-            case GameFlowManager.PlayableState.Player2Playing:
+            case PlayableState.Player2Playing:
                 foreach (GameObject gameObject in collidersToChangeLayer)
                 {
                     gameObject.layer = GameFlowManager.PLAYER_2_LAYER;

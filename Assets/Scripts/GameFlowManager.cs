@@ -16,34 +16,15 @@ public class GameFlowManager : NetworkBehaviour
     public static int PLAYER_2_LAYER = 9;
 
 
+    public static event Action OnMyTurnStarted; //local player can play
+    public static event Action OnMyTurnEnded;
+    public static event Action OnMyTurnJumped;
+
 
     [BetterHeader("References")]
     [SerializeField] private ItemsListSO itemsListSO;
     [SerializeField] private List<Transform> spawnPointsPos;
 
-
-    //public static event Action OnRoundPreparing; //Preparing fase, players can play
-    //public static event Action OnRoundStarted; // Round started, players just watch
-    //public static event Action OnRoundEnd; // Round finished, future implementations
-    public static event Action OnMyTurnStarted; //local player can play
-    public static event Action OnMyTurnEnded;
-
-    public enum GameState
-    {
-        None,
-        WaitingForPlayers, //Waiting for players to connect
-        GameStarted, //all players connected
-        GameEnded, //Game Over
-    }
-
-    public enum PlayableState
-    {
-        None,
-        Player1Playing, //Player 1 Can Play
-        Player1Played, //Player 1 Cant Play
-        Player2Playing, //Player 2 Can Play
-        Player2Played, //Player 2 Cant Play
-    }
 
     private PlayableState localPlayableState = new();
     private PlayableState localPlayedState = new();
@@ -51,9 +32,6 @@ public class GameFlowManager : NetworkBehaviour
     private NetworkVariable<PlayableState> currentPlayableState = new(PlayableState.None);
 
     private NetworkVariable<GameState> gameState = new(GameState.WaitingForPlayers);
-
-    private Dictionary<ulong, bool> playersReady = new();
-    //private Dictionary<ulong, algo> playersRoundData = new();
 
     public NetworkVariable<GameState> CurrentGameState => gameState;
     public NetworkVariable<PlayableState> CurrentPlayableState => currentPlayableState;
@@ -72,7 +50,6 @@ public class GameFlowManager : NetworkBehaviour
         if (IsClient)
         {
             currentPlayableState.OnValueChanged += CurrentPlayableState_OnValueChanged;
-
         }
     }
 
@@ -97,18 +74,28 @@ public class GameFlowManager : NetworkBehaviour
     {
         if (playerPlayingState == PlayableState.Player1Playing)
         {
+            //recived item callback from player 1
             currentPlayableState.Value = PlayableState.Player1Played;
 
             DelayChangeState(PlayableState.Player2Playing);
         }
         else if (playerPlayingState == PlayableState.Player2Playing)
         {
+            //recived item callback from player 2
             currentPlayableState.Value = PlayableState.Player2Played;
 
             DelayChangeState(PlayableState.Player1Playing);
         }
     }
 
+    public void PlayerJumped(PlayableState playableState)
+    {
+        if(localPlayableState == playableState)
+        {
+            //if the jump item is the same as the player playing, owner jumped
+            OnMyTurnJumped?.Invoke();
+        }
+    }
 
     private void CurrentPlayableState_OnValueChanged(PlayableState previousValue, PlayableState newValue)
     {
@@ -194,29 +181,6 @@ public class GameFlowManager : NetworkBehaviour
         return selectedSpawnPoint;
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void SetPlayerReadyServerRpc(ServerRpcParams serverRpcParams = default)
-    {
-        playersReady[serverRpcParams.Receive.SenderClientId] = true;
-
-        bool allClientsReady = true;
-        foreach (ulong clientID in NetworkManager.Singleton.ConnectedClientsIds)
-        {
-            if (!playersReady.ContainsKey(clientID) || !playersReady[clientID])
-            {
-                //This player is not ready
-                allClientsReady = false;
-                break;
-            }
-        }
-
-        if (allClientsReady)
-        {
-            //SetGameStateRpc(GameState.RoundStarted);
-            playersReady.Clear(); //Clear for next round
-        }
-    }
-
     [Rpc(SendTo.Server)]
     public void SetGameStateRpc(GameState newState)
     {
@@ -229,4 +193,21 @@ public class GameFlowManager : NetworkBehaviour
     {
         currentPlayableState.Value = newState;
     }
+}
+
+public enum GameState
+{
+    None,
+    WaitingForPlayers, //Waiting for players to connect
+    GameStarted, //all players connected
+    GameEnded, //Game Over
+}
+
+public enum PlayableState
+{
+    None,
+    Player1Playing, //Player 1 Can Play
+    Player1Played, //Player 1 Cant Play
+    Player2Playing, //Player 2 Can Play
+    Player2Played, //Player 2 Cant Play
 }

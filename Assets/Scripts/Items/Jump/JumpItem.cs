@@ -20,6 +20,16 @@ public class JumpItem : BaseItemThrowable, IFollowable
         StartCoroutine(PlayerFollowFirework());
     }
 
+    protected override void ItemCallbackAction()
+    {
+        if (!isServerObject) return; // Only the server should call the callback action
+
+        GameFlowManager.Instance.PlayerJumped(ownerPlayableState);
+
+        //GameFlowManager.Instance.ItemFinishOurAction();
+
+    }
+
     private IEnumerator PlayerFollowFirework()
     {
         if(objectToFollowTransform == null) yield break; // if object to follow is null, isnt the owner
