@@ -82,11 +82,17 @@ public class PlayerLauncher : NetworkBehaviour
         
         GameObject projetctile = Instantiate(player.PlayerInventory.GetItemSOByItemSOIndex(selectedItemSOIndex).itemServerPrefab, spawnItemPos.position, Quaternion.identity);
 
-        if (projetctile.TryGetComponent(out Collider projectileCollider))
+
+        Collider[] projectileColliders = projetctile.GetComponentsInChildren<Collider>();
+
+        if(projectileColliders.Length > 0)
         {
-            foreach(Collider playerCollider in playerColliders)
+            for(int i = 0; i < projectileColliders.Length; i++)
             {
-                Physics.IgnoreCollision(playerCollider, projectileCollider); // Ignore collision between the player and the projectile
+                foreach (Collider playerCollider in playerColliders)
+                {
+                    Physics.IgnoreCollision(playerCollider, projectileColliders[i]); // Ignore collision between the player and the projectile
+                }
             }
         }
 
@@ -131,11 +137,16 @@ public class PlayerLauncher : NetworkBehaviour
 
         GameObject projetctile = Instantiate(player.PlayerInventory.GetItemSOByItemSOIndex(selectedItemSOIndex).itemClientPrefab, spawnItemPos.position, Quaternion.identity);
 
-        if (projetctile.TryGetComponent(out Collider projectileCollider))
+        Collider[] projectileColliders = projetctile.GetComponentsInChildren<Collider>();
+
+        if (projectileColliders.Length > 0) //i think not working
         {
-            foreach (Collider playerCollider in playerColliders)
+            for (int i = 0; i < projectileColliders.Length; i++)
             {
-                Physics.IgnoreCollision(playerCollider, projectileCollider); // Ignore collision between the player and the projectile
+                foreach (Collider playerCollider in playerColliders)
+                {
+                    Physics.IgnoreCollision(playerCollider, projectileColliders[i]); // Ignore collision between the player and the projectile
+                }
             }
         }
 
