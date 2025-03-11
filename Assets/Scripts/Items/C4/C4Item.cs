@@ -9,6 +9,5 @@ public class C4Item : BaseItemThrowableActivable
         itemActivated = true;
 
         explosionObj.SetActive(true);
-        Debug.Log("C4Item Activated");
     }
 }

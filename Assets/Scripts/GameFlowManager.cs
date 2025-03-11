@@ -22,9 +22,9 @@ public class GameFlowManager : NetworkBehaviour
     [SerializeField] private List<Transform> spawnPointsPos;
 
 
-    public static event Action OnRoundPreparing; //Preparing fase, players can play
-    public static event Action OnRoundStarted; // Round started, players just watch
-    public static event Action OnRoundEnd; // Round finished, future implementations
+    //public static event Action OnRoundPreparing; //Preparing fase, players can play
+    //public static event Action OnRoundStarted; // Round started, players just watch
+    //public static event Action OnRoundEnd; // Round finished, future implementations
     public static event Action OnMyTurnStarted; //local player can play
     public static event Action OnMyTurnEnded;
 
