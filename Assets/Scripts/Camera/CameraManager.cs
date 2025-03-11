@@ -9,6 +9,8 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private CameraZoom cameraZoom;
     [SerializeField] private CameraFollowing cameraFollowing;
 
+    private Player player;
+
     public static CameraManager Instance { get; private set; }
     public Transform CameraObjectToFollow => cameraObjectToFollow;
     public CameraZoom CameraZoom => cameraZoom;
@@ -105,4 +107,11 @@ public class CameraManager : MonoBehaviour
         cameraMovement.enabled = false;
         cameraZoom.enabled = false;
     }
+
+    public void SetPlayer(Player _player)
+    {
+        player = _player;
+        Debug.Log($"Player set to camera manager {_player.name}");
+    }
+
 }

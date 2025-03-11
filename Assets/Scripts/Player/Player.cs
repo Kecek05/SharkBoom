@@ -26,9 +26,11 @@ public class Player : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         gameObject.name = "Player " + UnityEngine.Random.Range(0, 100).ToString();
+       
 
-        if(IsOwner)
+        if (IsOwner)
         {
+            CameraManager.Instance.SetPlayer(this);
             GameFlowManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
 
             playerStateMachine = new PlayerStateMachine(this);
