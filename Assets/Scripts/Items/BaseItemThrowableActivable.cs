@@ -7,6 +7,7 @@ public class BaseItemThrowableActivable : BaseItemThrowable
     [BetterHeader("Base Activeable References", 11)]
     [SerializeField] protected InputReader inputReader;
 
+
     protected bool itemActivated = false;
 
     protected override void OnEnable()

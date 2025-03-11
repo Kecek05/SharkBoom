@@ -13,6 +13,7 @@ public class Player : NetworkBehaviour
     [SerializeField] private PlayerDragController playerDragController;
     [SerializeField] private PlayerLauncher playerLauncher;
     [SerializeField] private Collider playerTouchColl;
+    [SerializeField] private GameObject[] playerColliders;
     private PlayerStateMachine playerStateMachine;
 
     private NetworkVariable<GameFlowManager.PlayableState> thisPlayableState = new();
@@ -96,11 +97,18 @@ public class Player : NetworkBehaviour
 
         if (thisPlayableState.Value == GameFlowManager.PlayableState.Player1Playing)
         {
-            gameObject.layer = GameFlowManager.PLAYER_1_LAYER;
+
+            foreach(GameObject playerCollider in playerColliders)
+            {
+                playerCollider.layer = GameFlowManager.PLAYER_1_LAYER;
+            }
         }
         else
         {
-            gameObject.layer = GameFlowManager.PLAYER_2_LAYER;
+            foreach (GameObject playerCollider in playerColliders)
+            {
+                playerCollider.layer = GameFlowManager.PLAYER_2_LAYER;
+            }
         }
 
 

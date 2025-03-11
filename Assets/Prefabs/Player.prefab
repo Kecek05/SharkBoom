@@ -377,6 +377,11 @@ MonoBehaviour:
   playerDragController: {fileID: 5120579722876303172}
   playerLauncher: {fileID: 1987240186612080187}
   playerTouchColl: {fileID: 6113847500229148107}
+  playerColliders:
+  - {fileID: 3077044857443190407}
+  - {fileID: 1482397564086282568}
+  - {fileID: 773857424255861932}
+  - {fileID: 1244250245066138330}
 --- !u!114 &6377254783256832976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -407,10 +412,6 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
   spawnItemPos: {fileID: 8518103509723896872}
-  playerColliders:
-  - {fileID: 1847687033026414544}
-  - {fileID: 3015071477265737548}
-  - {fileID: 7365868197530410558}
   player: {fileID: 2871544100916734757}
 --- !u!114 &5120579722876303172
 MonoBehaviour:

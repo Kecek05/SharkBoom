@@ -13,7 +13,8 @@ public class BaseItemThrowable : MonoBehaviour, IDraggable
     [SerializeField] protected ItemSO itemSO;
     [SerializeField] protected Rigidbody rb;
     [SerializeField] protected CinemachineFollow cinemachineFollow;
-    private GameFlowManager.PlayableState ownerPlayableState;
+    [SerializeField] protected GameObject[] collidersToChangeLayer;
+    protected GameFlowManager.PlayableState ownerPlayableState;
 
     protected virtual void OnEnable()
     {
@@ -27,10 +28,16 @@ public class BaseItemThrowable : MonoBehaviour, IDraggable
         switch(ownerPlayableState)
         {
             case GameFlowManager.PlayableState.Player1Playing:
-                gameObject.layer = GameFlowManager.PLAYER_1_LAYER;
+                foreach(GameObject gameObject in collidersToChangeLayer)
+                {
+                    gameObject.layer = GameFlowManager.PLAYER_1_LAYER;
+                }
                 break;
             case GameFlowManager.PlayableState.Player2Playing:
-                gameObject.layer = GameFlowManager.PLAYER_2_LAYER;
+                foreach (GameObject gameObject in collidersToChangeLayer)
+                {
+                    gameObject.layer = GameFlowManager.PLAYER_2_LAYER;
+                }
                 break;
         }
 

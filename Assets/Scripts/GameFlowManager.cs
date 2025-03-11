@@ -15,6 +15,8 @@ public class GameFlowManager : NetworkBehaviour
     public static int PLAYER_1_LAYER = 8;
     public static int PLAYER_2_LAYER = 9;
 
+
+
     [BetterHeader("References")]
     [SerializeField] private ItemsListSO itemsListSO;
     [SerializeField] private List<Transform> spawnPointsPos;
