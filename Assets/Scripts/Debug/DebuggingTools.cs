@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using TMPro;
 using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
 using UnityEngine;
 
 public class DebuggingTools : NetworkBehaviour
