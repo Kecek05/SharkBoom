@@ -175,7 +175,6 @@ public class GameFlowManager : NetworkBehaviour
             {
 
                 playerInventory.SetPlayerItems(randomItemSOIndex);
-                Debug.Log($"Player: {playerInventory.gameObject.name}");
             }
         }
     }
