@@ -25,7 +25,7 @@ public class AuthenticateUI : MonoBehaviour
             HideButtons();
             ShowTxt();
             //auth mobile
-            //await ClientSingleton.Instance.AuthClient();
+            await ClientSingleton.Instance.AuthClient();
         });
         authAnonymouslyBtn.onClick.AddListener(async () =>
         {
@@ -39,6 +39,13 @@ public class AuthenticateUI : MonoBehaviour
     private void Start()
     {
         AuthenticationWrapper.OnSignInFail += AuthenticationWrapper_OnSignInFail;
+
+
+
+        if(Application.platform == RuntimePlatform.Android)
+        {
+            //Loggin with Google Play
+        }
     }
 
     private void AuthenticationWrapper_OnSignInFail()

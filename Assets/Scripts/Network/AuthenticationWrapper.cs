@@ -76,6 +76,8 @@ public static class AuthenticationWrapper
         //}
 
 
+
+
         PlayerAccountService.Instance.SignedIn += SignedIn;
 
         PlayerAccountService.Instance.SignInFailed += SignInFailed;
