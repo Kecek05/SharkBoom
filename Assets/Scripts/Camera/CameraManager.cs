@@ -58,11 +58,16 @@ public class CameraManager : NetworkBehaviour
 
     private void PlayerStateMachine_OnStateChanged(IState playerState)
     {
-        if(playerState == player.PlayerStateMachine.idleEnemyTurnState)
+        cameraMovement.enabled = false; // We reset all camera Behaviours to false and enable them based on the state
+        cameraZoom.enabled = false;
+        cameraFollowing.enabled = false;
+        //CameraMove();
+
+        if (playerState == player.PlayerStateMachine.idleEnemyTurnState)
         {
             CameraMove();
         }
-        else if(playerState == player.PlayerStateMachine.myTurnEndedState)
+        else if (playerState == player.PlayerStateMachine.myTurnEndedState)
         {
             CameraReset();
         }
@@ -86,7 +91,7 @@ public class CameraManager : NetworkBehaviour
         {
             CameraMove();
         }
-        
+
         Debug.Log($"Player State: {player.PlayerStateMachine.CurrentState}");
     }
 
@@ -126,26 +131,14 @@ public class CameraManager : NetworkBehaviour
 
     private void CameraMove()
     {
-        if(Input.touchCount == 1)
-        {
-            cameraMovement.enabled = true;
-            cameraZoom.enabled = false;
-            cameraFollowing.enabled = false;
-            Debug.Log("one input");
-        }
-        else
-        {
-            CameraZoom.enabled = true;
-            cameraMovement.enabled = false;
-            cameraFollowing.enabled = false;
-        }
+        cameraMovement.enabled = true;
+        cameraZoom.enabled = true;
+        Debug.Log("one input");
     }
 
     private void Dragging()
     {
         cameraZoom.enabled = true;
-        cameraMovement.enabled = false;
-        cameraFollowing.enabled = false;
     }
 
     private void CameraReset()
@@ -158,8 +151,6 @@ public class CameraManager : NetworkBehaviour
     private void Following()
     {
         cameraFollowing.enabled = true;
-        cameraMovement.enabled = false;
-        cameraZoom.enabled = false;
     }
 
     public override void OnNetworkDespawn()
