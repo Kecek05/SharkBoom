@@ -1,15 +1,17 @@
 using Unity.Cinemachine;
+using Unity.Netcode;
 using UnityEngine;
+using static UnityEngine.CullingGroup;
 
-public class CameraManager : MonoBehaviour
+public class CameraManager : NetworkBehaviour
 {
 
-    [SerializeField] private Transform cameraObjectToFollow;
     [SerializeField] private CameraMovement cameraMovement;
     [SerializeField] private CameraZoom cameraZoom;
     [SerializeField] private CameraFollowing cameraFollowing;
+    [SerializeField] private Player player;
 
-    private Player player;
+    private Transform cameraObjectToFollow;
 
     public static CameraManager Instance { get; private set; }
     public Transform CameraObjectToFollow => cameraObjectToFollow;
@@ -41,6 +43,53 @@ public class CameraManager : MonoBehaviour
         }
     }
 
+
+
+    public override void OnNetworkSpawn()
+    {
+        if (IsOwner)
+        {
+            player.PlayerStateMachine.OnStateChanged += PlayerStateMachine_OnStateChanged;
+            cameraObjectToFollow = new GameObject("CameraObjectToFollow").transform;
+        }
+    }
+
+    
+
+    private void PlayerStateMachine_OnStateChanged(IState playerState)
+    {
+        if(playerState == player.PlayerStateMachine.idleEnemyTurnState)
+        {
+            CameraMove();
+        }
+        else if(playerState == player.PlayerStateMachine.myTurnEndedState)
+        {
+            CameraReset();
+        }
+        else if (playerState == player.PlayerStateMachine.myTurnStartedState)
+        {
+            CameraMove();
+        }
+        else if (playerState == player.PlayerStateMachine.draggingJump || playerState == player.PlayerStateMachine.draggingItem)
+        {
+            Dragging();
+        }
+        else if (playerState == player.PlayerStateMachine.dragReleaseJump || playerState == player.PlayerStateMachine.dragReleaseItem)
+        {
+            Following();
+        }
+        else if (playerState == player.PlayerStateMachine.deadState)
+        {
+            CameraReset();
+        }
+        else if (playerState == player.PlayerStateMachine.playerWatchingState)
+        {
+            CameraMove();
+        }
+        
+        Debug.Log($"Player State: {player.PlayerStateMachine.CurrentState}");
+    }
+
     public void CameraManagerState()
     {
         cameraMovement.enabled = false; // We reset all camera Behaviours to false and enable them based on the state
@@ -66,52 +115,30 @@ public class CameraManager : MonoBehaviour
         //        break;
         //}
 
-        switch (player.PlayerStateMachine.CurrentState)
-        {
-            case IdleMyTurnState:
-                CameraMove();
-                break;
-            case DraggingJump:
-                Dragging();
-                break;
-            case DraggingItem:
-                Dragging();
-                break;
-            case DragReleaseJump:
-                Following();
-                break;
-            case DragReleaseItem:
-                Following();
-                break;
-            case MyTurnEndedState:
-                CameraMove(); // here we can put a default move or other behaviour
-                break;
-            case IdleEnemyTurnState:
-                CameraMove();
-                break;
-            case PlayerWatchingState:
-                CameraMove();
-                break;
-            case DeadState:
-                CameraReset();
-                break;
-            case MyTurnStartedState:
-                CameraMove();
-                break;
-        }
+        
     }
 
-    public void SetCameraState(CameraState newState) // Function to update the camera state, parameter for set new state from other scripts
-    {
-        cameraState = newState;
-        CameraManagerState();
-    }
+    //public void SetCameraState(CameraState newState) // Function to update the camera state, parameter for set new state from other scripts
+    //{
+    //    cameraState = newState;
+    //    CameraManagerState();
+    //}
 
     private void CameraMove()
     {
-        cameraMovement.enabled = true;
-        CameraZoom.enabled = true;
-        cameraFollowing.enabled = false;
+        if(Input.touchCount == 1)
+        {
+            cameraMovement.enabled = true;
+            cameraZoom.enabled = false;
+            cameraFollowing.enabled = false;
+            Debug.Log("one input");
+        }
+        else
+        {
+            CameraZoom.enabled = true;
+            cameraMovement.enabled = false;
+            cameraFollowing.enabled = false;
+        }
     }
 
     private void Dragging()
@@ -135,10 +162,8 @@ public class CameraManager : MonoBehaviour
         cameraZoom.enabled = false;
     }
 
-    public void SetPlayer(Player _player)
+    public override void OnNetworkDespawn()
     {
-        player = _player;
-        Debug.Log($"Player set to camera manager {_player.name}");
+        player.PlayerStateMachine.OnStateChanged -= PlayerStateMachine_OnStateChanged;
     }
-
 }

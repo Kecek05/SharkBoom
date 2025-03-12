@@ -51,14 +51,14 @@ public class CameraMovement : MonoBehaviour
         {
             dragMoveActive = true;
             MoveStarted();
-            CameraManager.Instance.SetCameraState(CameraManager.CameraState.Move); // Set the camera state to Move
+            // CameraManager.Instance.SetCameraState(CameraManager.CameraState.Move); // Set the camera state to Move
 
         }
         else if (context.canceled) // When we release the screen
         {
             dragMoveActive = false;
             MoveFinish();
-            CameraManager.Instance.SetCameraState(CameraManager.CameraState.Default);
+            // CameraManager.Instance.SetCameraState(CameraManager.CameraState.Default);
         }
     }
 

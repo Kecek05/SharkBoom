@@ -42,7 +42,7 @@ public class CameraFollowing : MonoBehaviour
             followingCourotine = null;
             cinemachineFollowCamera = null;
             Debug.Log("Camera default");
-            CameraManager.Instance.SetCameraState(CameraManager.CameraState.Default);
+            // CameraManager.Instance.SetCameraState(CameraManager.CameraState.Default);
         }
     }
 }

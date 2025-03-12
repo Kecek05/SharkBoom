@@ -39,7 +39,6 @@ public class Player : NetworkBehaviour
         if (IsOwner)
         {
 
-            CameraManager.Instance.SetPlayer(this);
             GameFlowManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
 
             GameFlowManager.OnMyTurnEnded += GameFlowManager_OnMyTurnEnded;

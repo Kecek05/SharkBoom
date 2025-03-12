@@ -109,7 +109,7 @@ public class DragAndShoot : NetworkBehaviour
                     isCancelingDrag = false;
                     canCancelDrag = false;
                     trajectory.SetSimulation(true);
-                    CameraManager.Instance.SetCameraState(CameraManager.CameraState.Dragging);
+                    // CameraManager.Instance.SetCameraState(CameraManager.CameraState.Dragging);
                     startZoomPos = CameraManager.Instance.CameraObjectToFollow;
 
                     plane = new Plane(Vector3.forward, Input.mousePosition); // we create the plane to calculate the Z, because a click is a 2D position
@@ -126,7 +126,7 @@ public class DragAndShoot : NetworkBehaviour
             SetIsDragging(false);
             trajectory.SetSimulation(false);
             OnDragRelease?.Invoke();
-            CameraManager.Instance.SetCameraState(CameraManager.CameraState.Default);
+            //  CameraManager.Instance.SetCameraState(CameraManager.CameraState.Default);
         }
     }
 
