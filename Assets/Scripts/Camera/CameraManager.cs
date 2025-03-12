@@ -47,22 +47,56 @@ public class CameraManager : MonoBehaviour
         cameraZoom.enabled = false;
         cameraFollowing.enabled = false;
 
-        switch (cameraState)
+        //switch (cameraState)
+        //{
+        //    case CameraState.Default:
+        //        CameraReset();
+        //        break;
+        //    case CameraState.Move:
+        //        Move();
+        //        break;
+        //    case CameraState.Zoom:
+        //        Zoom();
+        //        break;
+        //    case CameraState.Dragging:
+        //        Dragging();
+        //        break;
+        //    case CameraState.Following:
+        //        Following();
+        //        break;
+        //}
+
+        switch (player.PlayerStateMachine.CurrentState)
         {
-            case CameraState.Default:
-                CameraReset();
+            case IdleMyTurnState:
+                CameraMove();
                 break;
-            case CameraState.Move:
-                Move();
-                break;
-            case CameraState.Zoom:
-                Zoom();
-                break;
-            case CameraState.Dragging:
+            case DraggingJump:
                 Dragging();
                 break;
-            case CameraState.Following:
+            case DraggingItem:
+                Dragging();
+                break;
+            case DragReleaseJump:
                 Following();
+                break;
+            case DragReleaseItem:
+                Following();
+                break;
+            case MyTurnEndedState:
+                CameraMove(); // here we can put a default move or other behaviour
+                break;
+            case IdleEnemyTurnState:
+                CameraMove();
+                break;
+            case PlayerWatchingState:
+                CameraMove();
+                break;
+            case DeadState:
+                CameraReset();
+                break;
+            case MyTurnStartedState:
+                CameraMove();
                 break;
         }
     }
@@ -73,17 +107,10 @@ public class CameraManager : MonoBehaviour
         CameraManagerState();
     }
 
-    private void Move()
+    private void CameraMove()
     {
         cameraMovement.enabled = true;
-        CameraZoom.enabled = false;
-        cameraFollowing.enabled = false;
-    }
-
-    private void Zoom()
-    {
-        cameraZoom.enabled = true;
-        cameraMovement.enabled = false;
+        CameraZoom.enabled = true;
         cameraFollowing.enabled = false;
     }
 
