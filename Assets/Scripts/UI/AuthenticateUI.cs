@@ -22,8 +22,8 @@ public class AuthenticateUI : MonoBehaviour
 
         authBtn.onClick.AddListener(async () =>
         {
-            HideButtons();
-            ShowTxt();
+            //HideButtons();
+            //ShowTxt();
             //auth mobile
             // await ClientSingleton.Instance.AuthClientUnity();
         });
