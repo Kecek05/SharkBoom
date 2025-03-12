@@ -38,14 +38,19 @@ public class ClientSingleton : MonoBehaviour //Responsable for the client logic
         gameManager = new ClientGameManager();
     }
 
-    public async Task<bool> AuthClient()
+    public async Task<bool> AuthClientUnity()
     {
-        return await GameManager.InitAsync();
+        return await GameManager.InitAsync(AuthTypes.Unity);
+    }
+
+    public async Task<bool> AuthAndroid()
+    {
+        return await GameManager.InitAsync(AuthTypes.Android);
     }
 
     public async Task<bool> AuthClientAnonymously()
     {
-        return await GameManager.InitAsync(true);
+        return await GameManager.InitAsync(AuthTypes.Anonymous);
     }
 
     private void OnDestroy()

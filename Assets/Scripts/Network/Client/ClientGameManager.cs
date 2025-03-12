@@ -26,7 +26,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
     private string joinCode;
     public string JoinCode => joinCode;
 
-    public async Task<bool> InitAsync(bool isAnonymously = false)
+    public async Task<bool> InitAsync(AuthTypes authTypes)
     {
         //Authenticate Player
 
@@ -34,7 +34,21 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
 
         networkClient = new NetworkClient(NetworkManager.Singleton);
 
-        AuthState authState = isAnonymously ? await AuthenticationWrapper.DoAuthAnonymously() : await AuthenticationWrapper.DoAuth();
+        AuthState authState = AuthState.NotAuthenticated;
+
+        switch(authTypes)
+        {
+            case AuthTypes.Anonymous:
+                await AuthenticationWrapper.DoAuthAnonymously();
+                break;
+            case AuthTypes.Android:
+                await AuthenticationWrapper.DoAuthAndroid();
+                break;
+            case AuthTypes.Unity:
+                await AuthenticationWrapper.DoAuthUnity();
+                break;
+
+        }
 
         if(authState == AuthState.Authenticated)
         {
@@ -117,5 +131,13 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         networkClient?.Dispose();
     }
 
+}
 
+
+public enum AuthTypes
+{
+    Anonymous,
+    Unity,
+    Android,
+    IOS,
 }
