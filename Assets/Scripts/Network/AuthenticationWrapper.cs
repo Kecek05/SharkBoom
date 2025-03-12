@@ -73,6 +73,7 @@ public static class AuthenticationWrapper
     private static async Task SignInAndroidAsync()
     {
         AuthState = AuthState.Authenticating;
+        PlayGamesPlatform.Activate();
         PlayGamesPlatform.Instance.Authenticate(ProcessAuthentication);
     }
 
