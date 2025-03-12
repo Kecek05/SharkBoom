@@ -15,8 +15,8 @@ public class JumpItem : BaseItemThrowable
 
         objectToFollowTransform = PlayersPublicInfoManager.Instance.GetPlayerObjectByPlayableState(thisItemLaucherData.ownerPlayableState).transform;
 
-        if (isServerObject)
-            StartCoroutine(PlayerFollowFirework());
+
+        StartCoroutine(PlayerFollowFirework());
     }
 
     protected override void ItemCallbackAction()
