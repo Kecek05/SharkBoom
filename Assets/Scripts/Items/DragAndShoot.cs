@@ -60,14 +60,12 @@ public class DragAndShoot : NetworkBehaviour
     protected Plane plane; // Cache for the clicks
     protected float outDistancePlane; // store the distance of the plane and screen
 
-
     public Vector3 DirectionOfDrag => directionOfDrag;
     public float DragForce => dragForce;
     public bool CanDrag => canDrag;
 
 
     protected Rigidbody selectedRb;
-
     public Rigidbody SelectedRb => selectedRb; //DEBUG
 
     private bool isCancelingDrag = false;
@@ -97,7 +95,6 @@ public class DragAndShoot : NetworkBehaviour
 
         if (context.started) // capture the first frame when the touch is pressed
         {
- 
             Ray rayStart = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
@@ -112,7 +109,6 @@ public class DragAndShoot : NetworkBehaviour
                     startZoomPos = CameraManager.Instance.CameraObjectToFollow;
 
                     plane = new Plane(Vector3.forward, Input.mousePosition); // we create the plane to calculate the Z, because a click is a 2D position
-
 
                     SetIsDragging(true);
                     OnDragStart?.Invoke();

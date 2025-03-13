@@ -56,7 +56,6 @@ public class CameraManager : NetworkBehaviour
         cameraMovement.enabled = false; // We reset all camera Behaviours to false and enable them based on the state
         cameraZoom.enabled = false;
         cameraFollowing.enabled = false;
-        //CameraMove();
 
         if (playerState == player.PlayerStateMachine.idleEnemyTurnState)
         {
@@ -64,7 +63,7 @@ public class CameraManager : NetworkBehaviour
         }
         else if (playerState == player.PlayerStateMachine.myTurnEndedState)
         {
-            CameraReset();
+            CameraMove();
         }
         else if (playerState == player.PlayerStateMachine.myTurnStartedState)
         {
