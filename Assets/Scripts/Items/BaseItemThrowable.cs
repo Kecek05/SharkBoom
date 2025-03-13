@@ -1,55 +1,67 @@
 using Sortify;
+using System;
 using Unity.Cinemachine;
 using Unity.Netcode;
 using UnityEngine;
 
-public class BaseItemThrowable : MonoBehaviour, IDraggable
+public class BaseItemThrowable : MonoBehaviour
 {
-    [BetterHeader("References")]
+
+    public event Action OnItemFinishedAction;
+    [BetterHeader("Base Item References")]
     [SerializeField] protected bool isServerObject;
     [SerializeField] protected ItemSO itemSO;
     [SerializeField] protected Rigidbody rb;
     [SerializeField] protected CinemachineFollow cinemachineFollow;
-    protected Transform shooterTransform;
+    [SerializeField] protected GameObject[] collidersToChangeLayer;
+    protected ItemLauncherData thisItemLaucherData;
 
-    private void OnEnable()
+    protected virtual void OnEnable()
     {
-        CameraManager.Instance.SetCameraState(CameraManager.CameraState.Following);
+
     }
 
-    public void Release(float force, Vector3 direction, Transform _shooterTransform)
+    public virtual void Initialize(ItemLauncherData itemLauncherData)
     {
-        shooterTransform = _shooterTransform;
-        
-        CameraManager.Instance.CameraFollowing.SetTheValuesOfCinemachine(cinemachineFollow);
-        ItemReleased(force, direction);
-        
+        thisItemLaucherData = itemLauncherData;
+
+        switch(thisItemLaucherData.ownerPlayableState)
+        {
+            case PlayableState.Player1Playing:
+                foreach(GameObject gameObject in collidersToChangeLayer)
+                {
+                    gameObject.layer = PlayersPublicInfoManager.PLAYER_1_LAYER;
+                }
+                break;
+            case PlayableState.Player2Playing:
+                foreach (GameObject gameObject in collidersToChangeLayer)
+                {
+                    gameObject.layer = PlayersPublicInfoManager.PLAYER_2_LAYER;
+                }
+                break;
+        }
+
+        ItemReleased(thisItemLaucherData.dragForce, thisItemLaucherData.dragDirection);
     }
+
 
     protected virtual void ItemReleased(float force, Vector3 direction)
     {
+        CameraManager.Instance.CameraFollowing.SetTheValuesOfCinemachine(cinemachineFollow);
+
         rb.AddForce(direction * force, ForceMode.Impulse);
-        
-       
+
     }
 
-    protected void OnCollisionEnter(Collision collision)
+    protected virtual void ItemCallbackAction()
     {
-        if (!isServerObject)
-        {
-            //Change latter
-            Destroy(gameObject);
-            return;
-        }
+        if(!isServerObject) return; // Only the server should call the callback action
 
-        if (collision.collider.gameObject.TryGetComponent(out IDamageable damageable))
-        {
-            if (NetworkManager.Singleton.IsServer)
-            {
-                damageable.TakeDamage(itemSO.damageableSO);
-                Debug.Log("Dealt " + itemSO.damageableSO.damage + " damage to " + collision.gameObject.name);
-            }
-        }
-        Destroy(gameObject);
+        GameFlowManager.Instance.PlayerPlayedRpc(thisItemLaucherData.ownerPlayableState);
+    }
+
+    protected void OnDestroy()
+    {
+        ItemCallbackAction();
     }
 }

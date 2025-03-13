@@ -33,11 +33,11 @@ public class ApplicationController : MonoBehaviour //Responsable of launching th
             hostSingleton.CreateHost(playerPrefab);
 
             ClientSingleton clientSingleton = Instantiate(clientPrefab);
-            await clientSingleton.CreateClient();
+            clientSingleton.CreateClient();
 
 
             //Go to main menu
-            Loader.Load(Loader.Scene.MainMenu);
+            Loader.Load(Loader.Scene.AuthBootstrap);
 
         }
     }

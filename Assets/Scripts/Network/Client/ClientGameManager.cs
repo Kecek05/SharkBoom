@@ -5,6 +5,8 @@ using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
+using Unity.Services.Lobbies;
+using Unity.Services.Lobbies.Models;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using UnityEngine;
@@ -16,13 +18,15 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
 
     private JoinAllocation joinAllocation;
 
+    private bool isJoining = false;
+
     private UserData userData;
     public UserData UserData => userData;
 
     private string joinCode;
     public string JoinCode => joinCode;
 
-    public async Task<bool> InitAsync(bool isAnonymously = false)
+    public async Task<bool> InitAsync(AuthTypes authTypes)
     {
         //Authenticate Player
 
@@ -30,7 +34,21 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
 
         networkClient = new NetworkClient(NetworkManager.Singleton);
 
-        AuthState authState = isAnonymously ? await AuthenticationWrapper.DoAuthAnonymously() : await AuthenticationWrapper.DoAuth();
+        AuthState authState = AuthState.NotAuthenticated;
+
+        switch(authTypes)
+        {
+            case AuthTypes.Anonymous:
+                await AuthenticationWrapper.DoAuthAnonymously();
+                break;
+            case AuthTypes.Android:
+                await AuthenticationWrapper.DoAuthAndroid();
+                break;
+            case AuthTypes.Unity:
+                await AuthenticationWrapper.DoAuthUnity();
+                break;
+
+        }
 
         if(authState == AuthState.Authenticated)
         {
@@ -48,6 +66,8 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
 
     public async Task StartRelayClientAsync(string joinCode)
     {
+        if (joinCode == null || joinCode == string.Empty) return;
+
         try
         {
             joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
@@ -81,11 +101,43 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         Debug.Log("Started Client!");
     }
 
+    public async Task QuickJoinLobbyAsync()
+    {
+        if(isJoining) return;
+
+        isJoining = true;
+
+        try
+        {
+            Lobby lobby = await LobbyService.Instance.QuickJoinLobbyAsync();
+            if (lobby != null)
+            {
+                string joinCode = lobby.Data["JoinCode"].Value;
+                await StartRelayClientAsync(joinCode);
+            }
+        }
+        catch (LobbyServiceException ex)
+        {
+            Debug.LogException(ex);
+        }
+
+        isJoining = false;
+
+    }
+
 
     public void Dispose()
     {
         networkClient?.Dispose();
     }
 
+}
 
+
+public enum AuthTypes
+{
+    Anonymous,
+    Unity,
+    Android,
+    IOS,
 }

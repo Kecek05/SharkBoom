@@ -67,11 +67,18 @@ public class NetworkServer : IDisposable
 
         playerInstance.SpawnAsPlayerObject(clientId);
 
-        if (networkManager.ConnectedClientsList.Count == 2)
+        if(networkManager.ConnectedClientsList.Count == 1)
         {
+            playerInstance.GetComponent<Player>().SetThisPlayableStateRpc(PlayableState.Player1Playing);
+
+        } else if (networkManager.ConnectedClientsList.Count == 2)
+        {
+            playerInstance.GetComponent<Player>().SetThisPlayableStateRpc(PlayableState.Player2Playing);
+
             //Both players are connected and spawned
-            GameFlowManager.Instance.SetGameStateRpc(GameFlowManager.GameState.GameStarted);
+            GameFlowManager.Instance.SetGameStateRpc(GameState.GameStarted);
         }
+
     }
 
     public UserData GetUserDataByClientId(ulong clientId)

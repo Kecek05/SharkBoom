@@ -19,11 +19,15 @@ public class MyTurnStartedState : IState
 
     public void Enter()
     {
-        player.SetPlayerCanJumpThisTurn(true);
-        player.SetPlayerCanShootThisTurn(true);
-
-        player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleMyTurnState);
         Debug.Log("Entering My Turn Started State");
+
+        MyTurnStartedCallback();
+    }
+
+    private async void MyTurnStartedCallback()
+    {
+        await Task.Delay(2000);
+        player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleMyTurnState);
     }
 
     public void Execute()
@@ -55,16 +59,16 @@ public class IdleMyTurnState : IState
 
     public void Enter()
     {
+        Debug.Log("Entering Idle State");
+
         player.PlayerDragController.OnDragStart += PlayerDragController_OnDragStart;
 
-
         //Set Can Move Camera
-        Debug.Log("Entering Idle State");
     }
 
     private void PlayerDragController_OnDragStart()
     {
-        if (player.PlayerInventory.SelectedItemInventoryIndex.Value == 0)
+        if (player.PlayerInventory.SelectedItemInventoryIndex == 0)
         {
             player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.draggingJump);
         } else
@@ -101,9 +105,9 @@ public class DraggingJump : IState
     }
     public void Enter()
     {
-        player.PlayerDragController.OnDragRelease += PlayerDragController_OnDragRelease;
-        //Set Cant move camera
         Debug.Log("Entering Dragging Jump State");
+        //Set Cant move camera
+        player.PlayerDragController.OnDragRelease += PlayerDragController_OnDragRelease;
     }
 
     private void PlayerDragController_OnDragRelease()
@@ -140,11 +144,11 @@ public class DraggingItem : IState
     }
     public void Enter()
     {
-        player.PlayerDragController.OnDragRelease += PlayerDragController_OnDragRelease;
+        Debug.Log("Entering Dragging Item State");
 
+        player.PlayerDragController.OnDragRelease += PlayerDragController_OnDragRelease;
         //Set Cant move camera
 
-        Debug.Log("Entering Dragging Item State");
     }
 
     private void PlayerDragController_OnDragRelease()
@@ -181,20 +185,12 @@ public class DragReleaseJump : IState
     }
     public void Enter()
     {
-        player.SetPlayerCanJumpThisTurn(false);
+        Debug.Log("Entering Drag Release Jump State");
 
         //Set Camera cant move
 
-        //player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleMyTurnState); // On the Call Back
-        JumpCallback();
+        // Change to idle on callback
 
-        Debug.Log("Entering Drag Release Jump State");
-    }
-
-    private async void JumpCallback()
-    {
-        await Task.Delay(4000);
-        player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleMyTurnState);
     }
 
     public void Execute()
@@ -223,18 +219,9 @@ public class DragReleaseItem : IState
     public void Enter()
     {
         //Set Camera cant move
-        player.SetPlayerCanShootThisTurn(false);
-
-        //player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.MyTurnEnded); // On the Call Back
-        ItemCallback();
-
         Debug.Log("Entering Drag Release Item State");
-    }
 
-    private async void ItemCallback()
-    {
-        await Task.Delay(4000);
-        player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.myTurnEndedState);
+        // Change to my turn ended on callback
     }
 
     public void Execute()
@@ -260,15 +247,18 @@ public class MyTurnEndedState : IState
     }
     public void Enter()
     {
-
-        player.SetPlayerCanJumpThisTurn(false);
-        player.SetPlayerCanShootThisTurn(false);
+        Debug.Log("Entering My Turn End State");
 
         GameFlowManager.Instance.PlayerPlayedRpc(GameFlowManager.Instance.LocalplayableState);
 
-        player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleEnemyTurnState);
+        MyTurnEndedCallback();
 
-        Debug.Log("Entering My Turn End State");
+    }
+
+    private async void MyTurnEndedCallback()
+    {
+        await Task.Delay(2000);
+        player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleEnemyTurnState);
     }
     public void Execute()
     {
@@ -284,7 +274,7 @@ public class MyTurnEndedState : IState
 public class IdleEnemyTurnState : IState
 {
     //Idle in enemy turn
-    // Can Move camera
+    //Can select items, move camera
 
     public IdleEnemyTurnState()
     {

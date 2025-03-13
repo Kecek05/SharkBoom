@@ -12,6 +12,7 @@ public class PlayerDebugCanvas : NetworkBehaviour
     public TextMeshProUGUI selectedItemIndexText;
     public TextMeshProUGUI selectedRbText;
     public TextMeshProUGUI playerStateText;
+    public TextMeshProUGUI playerCanInteractWithInventoryText;
 
     public override void OnNetworkSpawn()
     {
@@ -21,7 +22,6 @@ public class PlayerDebugCanvas : NetworkBehaviour
             return;
         }
 
-        player.PlayerInventory.SelectedItemInventoryIndex.OnValueChanged += SelectedItemIndex_OnValueChanged;
     }
 
     private void Update()
@@ -37,11 +37,12 @@ public class PlayerDebugCanvas : NetworkBehaviour
 
 
         playerStateText.text = player.PlayerStateMachine.CurrentState.ToString();
+
+        selectedItemIndexText.text = player.PlayerInventory.SelectedItemInventoryIndex.ToString();
+
+        playerCanInteractWithInventoryText.text = player.PlayerInventory.CanInteractWithInventory.ToString();
     }
 
-    private void SelectedItemIndex_OnValueChanged(int previousValue, int newValue)
-    {
-        selectedItemIndexText.text = player.PlayerInventory.SelectedItemInventoryIndex.Value.ToString();
-    }
+
 
 }

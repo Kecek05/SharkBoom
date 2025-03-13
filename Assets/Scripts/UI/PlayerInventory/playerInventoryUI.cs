@@ -72,7 +72,7 @@ public class PlayerInventoryUI : NetworkBehaviour
         }
     }
 
-    private void PlayerInventory_OnItemChanged(ItemDataStruct itemData)
+    private void PlayerInventory_OnItemChanged(ItemInventoryData itemData)
     {
         //Update item on list
         foreach (PlayerItemSingleUI playerItemSingleUI in playerItemSingleUIs)
@@ -86,7 +86,7 @@ public class PlayerInventoryUI : NetworkBehaviour
         }
     }
 
-    private void PlayerInventory_OnItemAdded(ItemDataStruct itemData)
+    private void PlayerInventory_OnItemAdded(ItemInventoryData itemData)
     {
         //Add item on list
         PlayerItemSingleUI playerItemSingleUI = Instantiate(playerItemSingleUIPrefab, inventoryItemHolder).GetComponent<PlayerItemSingleUI>();

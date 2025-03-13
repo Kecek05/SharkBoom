@@ -1,97 +1,136 @@
-using QFSW.QC;
 using Sortify;
 using System;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerLauncher : NetworkBehaviour
 {
 
+    /// <summary>
+    /// item launched, pass itemInventoryIndex
+    /// </summary>
+    public event Action<int> OnItemLaunched; 
+
+
     [BetterHeader("References")]
+    [SerializeField] private InputReader inputReader;
     [SerializeField] private Transform spawnItemPos;
-    [SerializeField] private Collider[] playerColliders;
     [SerializeField] private Player player;
 
-
+    //private BaseItemThrowableActivable itemThrowableActivableClient;
+    //private BaseItemThrowableActivable itemThrowableActivableServer;
     public override void OnNetworkSpawn()
     {
         if (IsOwner)
         {
             player.PlayerStateMachine.OnStateChanged += PlayerStateMachine_OnStateChanged;
+
+            inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
+        }
+    }
+
+    private void InputReader_OnTouchPressEvent(InputAction.CallbackContext context)
+    {
+        //Debug.Log($"Debug Touch itemActivated: {itemActivated} ItemActivable: {itemActivable}");
+
+        if(context.started && (ItemActivableManager.Instance.ItemThrowableActivableClient != null || ItemActivableManager.Instance.ItemThrowableActivableServer != null))
+        {
+            ItemActivableManager.Instance.UseItem();
         }
     }
 
     private void PlayerStateMachine_OnStateChanged(IState state)
     {
-        if(state == player.PlayerStateMachine.dragReleaseJump || state == player.PlayerStateMachine.dragReleaseItem)
+
+        if (state == player.PlayerStateMachine.dragReleaseJump || state == player.PlayerStateMachine.dragReleaseItem)
         {
-
             Launch();
-
         }
     }
 
     private void Launch()
     {
-        SpawnProjectileServerRpc(player.PlayerDragController.DragForce, player.PlayerDragController.DirectionOfDrag); //Spawn real projectile on server need to send the speed and force values through the network
 
-        SpawnDummyProjectile(player.PlayerDragController.DragForce, player.PlayerDragController.DirectionOfDrag); //Spawn fake projectile on client
+        ItemActivableManager.Instance.ResetItemActivable();
+
+
+        ItemLauncherData itemLauncherData = new ItemLauncherData
+        {
+            dragForce = player.PlayerDragController.DragForce, 
+            dragDirection = player.PlayerDragController.DirectionOfDrag,
+            selectedItemSOIndex = player.PlayerInventory.GetSelectedItemSOIndex(), 
+            ownerPlayableState = GameFlowManager.Instance.LocalplayableState,
+        };
+
+        SpawnProjectileServerRpc(itemLauncherData); //Spawn real projectile on server need to send the speed and force values through the network
+
+        SpawnDummyProjectile(itemLauncherData); //Spawn fake projectile on client
+    
+        OnItemLaunched?.Invoke(player.PlayerInventory.SelectedItemInventoryIndex); //pass itemInventoryIndex
     }
 
 
 
     [Rpc(SendTo.Server)]
-    private void SpawnProjectileServerRpc(float dragForce, Vector3 dragDirection) // on server 
+    private void SpawnProjectileServerRpc(ItemLauncherData launcherData) // on server, need to pass the prefab for the other clients instantiate it
     {
-        if (player.PlayerInventory.GetSelectedItemSO().itemServerPrefab == null) return;
-
-        GameObject gameObject = Instantiate(player.PlayerInventory.GetSelectedItemSO().itemServerPrefab, spawnItemPos.position, Quaternion.identity);
-
-        if (gameObject.TryGetComponent(out Collider projectileCollider))
+        if(player.PlayerInventory.GetItemSOByItemSOIndex(launcherData.selectedItemSOIndex).itemServerPrefab == null)
         {
-            foreach(Collider playerCollider in playerColliders)
-            {
-                Physics.IgnoreCollision(playerCollider, projectileCollider); // Ignore collision between the player and the projectile
-            }
-        }
-
-        if (gameObject.transform.TryGetComponent(out IDraggable draggable))
-        {
-            draggable.Release(dragForce, dragDirection, transform); //Call interface
-
+            Debug.LogWarning($"ItemSOIndex: {launcherData.selectedItemSOIndex} has no server prefab");
+            return;
         }
         
-        SpawnProjectileClientRpc(dragForce, dragDirection);
+        
+        GameObject projetctile = Instantiate(player.PlayerInventory.GetItemSOByItemSOIndex(launcherData.selectedItemSOIndex).itemServerPrefab, spawnItemPos.position, Quaternion.identity);
+
+
+        if (projetctile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
+        {
+            itemThrowable.Initialize(launcherData);
+        }
+
+        if (projetctile.transform.TryGetComponent(out BaseItemThrowableActivable activable))
+        {
+            //Get the ref to active the item
+            ItemActivableManager.Instance.SetItemThrowableActivableServer(activable);
+        }
+
+
+        SpawnProjectileClientRpc(launcherData);
     }
 
+
     [Rpc(SendTo.ClientsAndHost)]
-    private void SpawnProjectileClientRpc(float dragForce, Vector3 dragDirection) // on client
+    private void SpawnProjectileClientRpc(ItemLauncherData launcherData) //pass info to other clients
     {
         if (IsOwner) return; // already spawned
 
-        SpawnDummyProjectile(dragForce, dragDirection);
+        SpawnDummyProjectile(launcherData);
 
     }
 
-    private void SpawnDummyProjectile(float dragForce, Vector3 dragDirection)
+    private void SpawnDummyProjectile(ItemLauncherData launcherData) // on client, need to pass the prefab for the other clients instantiate it
     {
-
-        if (player.PlayerInventory.GetSelectedItemSO().itemClientPrefab == null) return;
-
-
-        GameObject projetctile = Instantiate(player.PlayerInventory.GetSelectedItemSO().itemClientPrefab, spawnItemPos.position, Quaternion.identity);
-
-        if (projetctile.TryGetComponent(out Collider projectileCollider))
+        if (player.PlayerInventory.GetItemSOByItemSOIndex(launcherData.selectedItemSOIndex).itemClientPrefab == null)
         {
-            foreach (Collider playerCollider in playerColliders)
-            {
-                Physics.IgnoreCollision(playerCollider, projectileCollider); // Ignore collision between the player and the projectile
-            }
+            Debug.LogWarning($"ItemSOIndex: {launcherData.selectedItemSOIndex} has no client prefab");
+            return;
         }
 
-        if (projetctile.transform.TryGetComponent(out IDraggable draggable))
+
+        GameObject projetctile = Instantiate(player.PlayerInventory.GetItemSOByItemSOIndex(launcherData.selectedItemSOIndex).itemClientPrefab, spawnItemPos.position, Quaternion.identity);
+
+
+        if (projetctile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
         {
-            draggable.Release(dragForce, dragDirection, transform); //Call interface
+            itemThrowable.Initialize(launcherData);
+        }
+
+        if (projetctile.transform.TryGetComponent(out BaseItemThrowableActivable activable))
+        {
+            //Get the ref to active the item
+            ItemActivableManager.Instance.SetItemThrowableActivableClient(activable);
         }
 
     }
@@ -101,6 +140,8 @@ public class PlayerLauncher : NetworkBehaviour
         if(IsOwner)
         {
             player.PlayerStateMachine.OnStateChanged -= PlayerStateMachine_OnStateChanged;
+
+            inputReader.OnTouchPressEvent -= InputReader_OnTouchPressEvent;
         }
     }
 

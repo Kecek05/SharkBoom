@@ -11,6 +11,7 @@ public class MainMenuController : MonoBehaviour
     [SerializeField] private Button lobbiesButton;
     [SerializeField] private Button exitButton;
     [SerializeField] private TMP_InputField lobbyCodeInputField;
+    [SerializeField] private Button quickJoinButton;
 
     private async void Awake()
     {
@@ -31,6 +32,13 @@ public class MainMenuController : MonoBehaviour
             clientButton.interactable = false;
             await ClientSingleton.Instance.GameManager.StartRelayClientAsync(lobbyCodeInputField.text);
             clientButton.interactable = true;
+        });
+
+        quickJoinButton.onClick.AddListener(async () =>
+        {
+            quickJoinButton.interactable = false;
+            await ClientSingleton.Instance.GameManager.QuickJoinLobbyAsync();
+            quickJoinButton.interactable = true;
         });
     }
 }

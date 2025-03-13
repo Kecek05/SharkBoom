@@ -4,37 +4,54 @@ using UnityEngine;
 
 public class PlayerInventory : NetworkBehaviour
 {
-    public event Action<ItemDataStruct> OnItemAdded;
-    public event Action<ItemDataStruct> OnItemChanged;
+    public event Action<ItemInventoryData> OnItemAdded;
+    public event Action<ItemInventoryData> OnItemChanged;
     public event Action<int> OnItemSelected;
 
     [SerializeField] private Player player;
 
     [SerializeField] private ItemsListSO itemsListSO;
 
-    private NetworkList<ItemDataStruct> playerInventory = new();
+    private NetworkList<ItemInventoryData> playerInventory = new();
 
     /// <summary>
-    /// The index of the selected item in the player inventory
+    /// The index of the selected item in the player's inventory
     /// </summary>
-    private NetworkVariable<int> selectedItemInventoryIndex = new(-1); //-1 to start change to 0 and Call OnValueChanged
+    private int selectedItemInventoryIndex = 0;
 
-    public NetworkVariable<int> SelectedItemInventoryIndex => selectedItemInventoryIndex;
+    public int SelectedItemInventoryIndex => selectedItemInventoryIndex;
 
 
     private bool canInteractWithInventory = false;
+
+    public bool CanInteractWithInventory => canInteractWithInventory; //DEBUG
 
     public override void OnNetworkSpawn()
     {
         if(IsOwner)
         {
+            //Default jump on Spawn
+
+            player.PlayerDragController.SetDragRb(GetItemSOByItemSOIndex(0).rb); //get jump's rb
+
+            OnItemSelected?.Invoke(selectedItemInventoryIndex);
+
 
             playerInventory.OnListChanged += PlayerInventory_OnListChanged;
 
             player.PlayerStateMachine.OnStateChanged += PlayerStateMachine_OnStateChanged;
 
-            selectedItemInventoryIndex.OnValueChanged += SelectedItemIndex_OnValueChanged;
+            player.PlayerLauncher.OnItemLaunched += PlayerLauncher_OnItemLaunched;
 
+        }
+    }
+
+    private void PlayerLauncher_OnItemLaunched(int itemInventoryIndex)
+    {
+        //item Launched
+        if(itemInventoryIndex == 0) //Jumped
+        {
+            SetSelectedItemInventoryIndex(SelectFirstItemInventoryIndexAvailable(1)); // direct on Set to ignore canInteractWithInventory
         }
     }
 
@@ -42,15 +59,18 @@ public class PlayerInventory : NetworkBehaviour
     {
         if (state == player.PlayerStateMachine.myTurnStartedState)
         {
-            SetPlayerJumpedRpc(true); //can jump
             SetCanInteractWithInventory(true);
-            SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
+
+            if(!ItemCanBeUsed(selectedItemInventoryIndex)) // If selected item can't be used, select other one
+                SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
         }
         else if (state == player.PlayerStateMachine.idleMyTurnState)
         {
             SetCanInteractWithInventory(true);
-
-            SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
+        }
+        else if (state == player.PlayerStateMachine.idleEnemyTurnState)
+        {
+            SetCanInteractWithInventory(true);
         }
         else if (state == player.PlayerStateMachine.draggingJump || state == player.PlayerStateMachine.draggingItem)
         {
@@ -66,23 +86,24 @@ public class PlayerInventory : NetworkBehaviour
             SetCanInteractWithInventory(false);
 
             //Jumped, can shoot
-            SetPlayerJumpedRpc(false);
+            SetPlayerCanJumpRpc(false);
         }
         else if (state == player.PlayerStateMachine.myTurnEndedState)
         {
             SetCanInteractWithInventory(false);
 
             DecreaseAllItemsCooldownRpc();
-            UseItemByInventoryIndexRpc(selectedItemInventoryIndex.Value);
-            SelectItemDataByItemInventoryIndex();
+            UseItemByInventoryIndexRpc(selectedItemInventoryIndex);
+
+            SetPlayerCanJumpRpc(true); //can jump, set before next round to be able to select
         }
 
     }
 
     [Rpc(SendTo.Server)]
-    private void SetPlayerJumpedRpc(bool canJump)
+    private void SetPlayerCanJumpRpc(bool canJump)
     {
-        playerInventory[0] = new ItemDataStruct
+        playerInventory[0] = new ItemInventoryData
         {
             itemInventoryIndex = playerInventory[0].itemInventoryIndex, //first in inventory
             itemSOIndex = playerInventory[0].itemSOIndex, //first in itemsListSO
@@ -98,7 +119,7 @@ public class PlayerInventory : NetworkBehaviour
         {
             if (!playerInventory[i].itemCanBeUsed)
             {
-                playerInventory[i] = new ItemDataStruct
+                playerInventory[i] = new ItemInventoryData
                 {
                     itemInventoryIndex = playerInventory[i].itemInventoryIndex,
                     itemSOIndex = playerInventory[i].itemSOIndex,
@@ -109,9 +130,9 @@ public class PlayerInventory : NetworkBehaviour
         }
     }
 
-    private int SelectFirstItemInventoryIndexAvailable()
+    public int SelectFirstItemInventoryIndexAvailable(int startingIndex = 0) //can pass a index to ignore previously itens
     {
-        for (int i = 0; i < playerInventory.Count; i++)
+        for (int i = startingIndex; i < playerInventory.Count; i++)
         {
             if (playerInventory[i].itemCanBeUsed)
             {
@@ -122,15 +143,15 @@ public class PlayerInventory : NetworkBehaviour
         return -1;
     }
 
-    private void PlayerInventory_OnListChanged(NetworkListEvent<ItemDataStruct> changeEvent)
+    private void PlayerInventory_OnListChanged(NetworkListEvent<ItemInventoryData> changeEvent)
     {
         switch(changeEvent.Type)
         {
-            case NetworkListEvent<ItemDataStruct>.EventType.Add:
+            case NetworkListEvent<ItemInventoryData>.EventType.Add:
                 if (changeEvent.Value.itemInventoryIndex == 0) return; //Dont add item UI on Jump, index 0 is jump
                 OnItemAdded?.Invoke(changeEvent.Value);
                 break;
-            case NetworkListEvent<ItemDataStruct>.EventType.Value:
+            case NetworkListEvent<ItemInventoryData>.EventType.Value:
                 OnItemChanged?.Invoke(changeEvent.Value);
                 break;
         }
@@ -139,8 +160,8 @@ public class PlayerInventory : NetworkBehaviour
 
     public void SetPlayerItems(int itemSOIndex) //Set the items that player have when starting the game
     {
-
-        playerInventory.Add(new ItemDataStruct
+        //Server Code
+        playerInventory.Add(new ItemInventoryData
         {
             itemInventoryIndex = playerInventory.Count, //get the index
             itemSOIndex = itemSOIndex,
@@ -157,42 +178,23 @@ public class PlayerInventory : NetworkBehaviour
 
         if (!ItemCanBeUsed(itemInventoryIndex))
         {
-            Debug.LogWarning("Item can't be used!");
+            Debug.LogWarning("Item can't be selected!");
             return;
         }
 
-        SetSelectedItemIndexRpc(itemInventoryIndex);
-
-    }
-
-    [Rpc(SendTo.Server)]
-    private void SetSelectedItemIndexRpc(int itemInventoryIndex)
-    {
-        selectedItemInventoryIndex.Value = itemInventoryIndex;
-
-    }
-
-    private void SelectedItemIndex_OnValueChanged(int previousValue, int newValue)
-    {
-        //Owner only
-        // Need to be an OnValueChanged event because the lag between the client and the server
-
-        player.PlayerDragController.SetDragAndShoot(GetSelectedItemSO().rb);
-
-        OnItemSelected?.Invoke(selectedItemInventoryIndex.Value);
+        SetSelectedItemInventoryIndex(itemInventoryIndex);
 
     }
 
     [Rpc(SendTo.Server)]
     public void UseItemByInventoryIndexRpc(int itemInventoryIndex) // Use the item, Server will call this when both players ready
     {
-        if (!canInteractWithInventory) return;
 
         if (ItemCanBeUsed(itemInventoryIndex))
         {
             //Item Can be used
 
-            playerInventory[itemInventoryIndex] = new ItemDataStruct
+            playerInventory[itemInventoryIndex] = new ItemInventoryData
             {
                 itemInventoryIndex = playerInventory[itemInventoryIndex].itemInventoryIndex, //do not lose the index
                 itemSOIndex = playerInventory[itemInventoryIndex].itemSOIndex,
@@ -202,7 +204,7 @@ public class PlayerInventory : NetworkBehaviour
 
         } else
         {
-            Debug.LogWarning("Item can't be used!");
+            Debug.LogWarning("Used an item that can't be used!");
         }
     }
 
@@ -213,9 +215,14 @@ public class PlayerInventory : NetworkBehaviour
             
     }
 
+    public int GetSelectedItemSOIndex()
+    {
+        return playerInventory[selectedItemInventoryIndex].itemSOIndex;
+    }
+
     public ItemSO GetSelectedItemSO()
     {
-        return GetItemSOByItemSOIndex(playerInventory[selectedItemInventoryIndex.Value].itemSOIndex);
+        return GetItemSOByItemSOIndex(playerInventory[selectedItemInventoryIndex].itemSOIndex);
     }
 
     public ItemSO GetItemSOByItemSOIndex(int itemSOIndex)
@@ -228,15 +235,27 @@ public class PlayerInventory : NetworkBehaviour
         canInteractWithInventory = canInteract;
     }
 
+    private void SetSelectedItemInventoryIndex(int newItemInventoryIndex)
+    {
+        selectedItemInventoryIndex = newItemInventoryIndex;
+
+        player.PlayerDragController.SetDragRb(GetSelectedItemSO().rb);
+
+        OnItemSelected?.Invoke(selectedItemInventoryIndex);
+
+        Debug.Log($"Selected item inventory index: {selectedItemInventoryIndex}");
+    }
+
     public override void OnNetworkDespawn()
     {
         if (IsOwner)
         {
             playerInventory.OnListChanged -= PlayerInventory_OnListChanged;
 
-            selectedItemInventoryIndex.OnValueChanged -= SelectedItemIndex_OnValueChanged;
 
             player.PlayerStateMachine.OnStateChanged -= PlayerStateMachine_OnStateChanged;
+
+            player.PlayerLauncher.OnItemLaunched -= PlayerLauncher_OnItemLaunched;
         }
     }
 }

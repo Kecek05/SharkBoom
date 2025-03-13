@@ -12,33 +12,18 @@ public class GameFlowManager : NetworkBehaviour
     private static GameFlowManager instance;
     public static GameFlowManager Instance => instance;
 
+
+
+
+    public static event Action OnMyTurnStarted; //local player can play
+    public static event Action OnMyTurnEnded;
+    public static event Action OnMyTurnJumped;
+
+
     [BetterHeader("References")]
     [SerializeField] private ItemsListSO itemsListSO;
     [SerializeField] private List<Transform> spawnPointsPos;
 
-
-    public static event Action OnRoundPreparing; //Preparing fase, players can play
-    public static event Action OnRoundStarted; // Round started, players just watch
-    public static event Action OnRoundEnd; // Round finished, future implementations
-    public static event Action OnMyTurnStarted; //local player can play
-    public static event Action OnMyTurnEnded;
-
-    public enum GameState
-    {
-        None,
-        WaitingForPlayers, //Waiting for players to connect
-        GameStarted, //all players connected
-        GameEnded, //Game Over
-    }
-
-    public enum PlayableState
-    {
-        None,
-        Player1Playing, //Player 1 Can Play
-        Player1Played, //Player 1 Cant Play
-        Player2Playing, //Player 2 Can Play
-        Player2Played, //Player 2 Cant Play
-    }
 
     private PlayableState localPlayableState = new();
     private PlayableState localPlayedState = new();
@@ -47,10 +32,7 @@ public class GameFlowManager : NetworkBehaviour
 
     private NetworkVariable<GameState> gameState = new(GameState.WaitingForPlayers);
 
-    private Dictionary<ulong, bool> playersReady = new();
-    //private Dictionary<ulong, algo> playersRoundData = new();
-
-    public NetworkVariable<GameState> CurrentGameState => gameState; 
+    public NetworkVariable<GameState> CurrentGameState => gameState;
     public NetworkVariable<PlayableState> CurrentPlayableState => currentPlayableState;
     public PlayableState LocalplayableState => localPlayableState;
     public PlayableState LocalplayedState => localPlayedState;
@@ -64,48 +46,71 @@ public class GameFlowManager : NetworkBehaviour
     {
         gameState.OnValueChanged += GameState_OnValueChanged;
 
-        if(IsClient)
+        if (IsClient)
         {
             currentPlayableState.OnValueChanged += CurrentPlayableState_OnValueChanged;
+        }
+    }
 
-            if (NetworkManager.Singleton.LocalClientId == 0)
-            {
+    public void SetLocalStates(PlayableState playingState)
+    {
+        switch(playingState)
+        {
+            case PlayableState.Player1Playing:
                 localPlayableState = PlayableState.Player1Playing;
                 localPlayedState = PlayableState.Player1Played;
-            }
-            else
-            {
+                break;
+            case PlayableState.Player2Playing:
                 localPlayableState = PlayableState.Player2Playing;
                 localPlayedState = PlayableState.Player2Played;
-            }
+                break;
         }
+
     }
 
     [Rpc(SendTo.Server)]
     public void PlayerPlayedRpc(PlayableState playerPlayingState)
     {
-        if(playerPlayingState == PlayableState.Player1Playing)
+        if (playerPlayingState == PlayableState.Player1Playing)
         {
+            //recived item callback from player 1
             currentPlayableState.Value = PlayableState.Player1Played;
 
             DelayChangeState(PlayableState.Player2Playing);
         }
         else if (playerPlayingState == PlayableState.Player2Playing)
         {
+            //recived item callback from player 2
             currentPlayableState.Value = PlayableState.Player2Played;
 
             DelayChangeState(PlayableState.Player1Playing);
         }
     }
-    
+
+    [Rpc(SendTo.Server)]
+    public void PlayerJumpedServerRpc(PlayableState playableState)
+    {
+        PlayerJumpedClientRpc(playableState);
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void PlayerJumpedClientRpc(PlayableState playableState)
+    {
+        if (localPlayableState == playableState)
+        {
+            //if the jump item is the same as the player playing, owner jumped
+            OnMyTurnJumped?.Invoke();
+        }
+    }
 
     private void CurrentPlayableState_OnValueChanged(PlayableState previousValue, PlayableState newValue)
     {
-        if(newValue == localPlayableState)
+        if (newValue == localPlayableState)
         {
             //Local Player can play
             OnMyTurnStarted?.Invoke();
-        } else if (newValue == localPlayedState)
+        }
+        else if (newValue == localPlayedState)
         {
             //Local Player cant play
             OnMyTurnEnded?.Invoke();
@@ -115,12 +120,12 @@ public class GameFlowManager : NetworkBehaviour
 
     private void GameState_OnValueChanged(GameState previousValue, GameState newValue)
     {
-        switch(newValue)
+        switch (newValue)
         {
             case GameState.WaitingForPlayers:
                 break;
             case GameState.GameStarted:
-                if(IsServer)
+                if (IsServer)
                 {
                     RandomizePlayerItems();
 
@@ -138,7 +143,7 @@ public class GameFlowManager : NetworkBehaviour
 
     private async void DelayChangePlayableStateStart() //DEBUG
     {
-        await Task.Delay(6000);
+        await Task.Delay(8000);
         CurrentPlayableState.Value = PlayableState.Player1Playing;
     }
 
@@ -170,7 +175,6 @@ public class GameFlowManager : NetworkBehaviour
             {
 
                 playerInventory.SetPlayerItems(randomItemSOIndex);
-                Debug.Log($"Player: {playerInventory.gameObject.name}");
             }
         }
     }
@@ -180,29 +184,6 @@ public class GameFlowManager : NetworkBehaviour
         Transform selectedSpawnPoint = spawnPointsPos[UnityEngine.Random.Range(0, spawnPointsPos.Count)];
         spawnPointsPos.Remove(selectedSpawnPoint);
         return selectedSpawnPoint;
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    public void SetPlayerReadyServerRpc(ServerRpcParams serverRpcParams = default)
-    {
-        playersReady[serverRpcParams.Receive.SenderClientId] = true;
-
-        bool allClientsReady = true;
-        foreach (ulong clientID in NetworkManager.Singleton.ConnectedClientsIds)
-        {
-            if (!playersReady.ContainsKey(clientID) || !playersReady[clientID])
-            {
-                //This player is not ready
-                allClientsReady = false;
-                break;
-            }
-        }
-
-        if (allClientsReady)
-        {
-            //SetGameStateRpc(GameState.RoundStarted);
-            playersReady.Clear(); //Clear for next round
-        }
     }
 
     [Rpc(SendTo.Server)]
@@ -217,5 +198,14 @@ public class GameFlowManager : NetworkBehaviour
     {
         currentPlayableState.Value = newState;
     }
-
 }
+
+public enum GameState
+{
+    None,
+    WaitingForPlayers, //Waiting for players to connect
+    GameStarted, //all players connected
+    GameEnded, //Game Over
+}
+
+

@@ -41,8 +41,6 @@ public class CameraFollowing : MonoBehaviour
             StopCoroutine(followingCourotine);
             followingCourotine = null;
             cinemachineFollowCamera = null;
-            Debug.Log("Camera default");
-            CameraManager.Instance.SetCameraState(CameraManager.CameraState.Default);
         }
     }
 }
