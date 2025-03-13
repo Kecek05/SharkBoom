@@ -11,25 +11,17 @@ public class CameraManager : NetworkBehaviour
     [SerializeField] private CameraFollowing cameraFollowing;
     [SerializeField] private Player player;
 
+    private CinemachineCamera cinemachineCamera;
     private Transform cameraObjectToFollow;
 
     public static CameraManager Instance { get; private set; }
     public Transform CameraObjectToFollow => cameraObjectToFollow;
     public CameraZoom CameraZoom => cameraZoom;
-
     public CameraFollowing CameraFollowing => cameraFollowing;
-    public CameraState GetCameraState => cameraState;
-
-    public enum CameraState // Enum for all camera states
-    {
-        Move,
-        Zoom,
-        Dragging,
-        Default,
-        Following
-    }
+    public CameraMovement CameraMovement => cameraMovement;
 
     [SerializeField] private CameraState cameraState;
+
 
     private void Awake() // Singleton
     {
@@ -43,18 +35,21 @@ public class CameraManager : NetworkBehaviour
         }
     }
 
-
-
     public override void OnNetworkSpawn()
     {
         if (IsOwner)
         {
             player.PlayerStateMachine.OnStateChanged += PlayerStateMachine_OnStateChanged;
             cameraObjectToFollow = new GameObject("CameraObjectToFollow").transform;
+            cameraObjectToFollow.position = new Vector3(0, 0, 0);
+
+            if (cinemachineCamera == null)
+            {
+                cinemachineCamera = Object.FindFirstObjectByType<CinemachineCamera>();
+                cinemachineCamera.Target.TrackingTarget = cameraObjectToFollow;
+            }
         }
     }
-
-    
 
     private void PlayerStateMachine_OnStateChanged(IState playerState)
     {
@@ -95,45 +90,10 @@ public class CameraManager : NetworkBehaviour
         Debug.Log($"Player State: {player.PlayerStateMachine.CurrentState}");
     }
 
-    public void CameraManagerState()
-    {
-        cameraMovement.enabled = false; // We reset all camera Behaviours to false and enable them based on the state
-        cameraZoom.enabled = false;
-        cameraFollowing.enabled = false;
-
-        //switch (cameraState)
-        //{
-        //    case CameraState.Default:
-        //        CameraReset();
-        //        break;
-        //    case CameraState.Move:
-        //        Move();
-        //        break;
-        //    case CameraState.Zoom:
-        //        Zoom();
-        //        break;
-        //    case CameraState.Dragging:
-        //        Dragging();
-        //        break;
-        //    case CameraState.Following:
-        //        Following();
-        //        break;
-        //}
-
-        
-    }
-
-    //public void SetCameraState(CameraState newState) // Function to update the camera state, parameter for set new state from other scripts
-    //{
-    //    cameraState = newState;
-    //    CameraManagerState();
-    //}
-
     private void CameraMove()
     {
         cameraMovement.enabled = true;
         cameraZoom.enabled = true;
-        Debug.Log("one input");
     }
 
     private void Dragging()
