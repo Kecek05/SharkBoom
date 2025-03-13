@@ -29,8 +29,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
     public async Task<bool> InitAsync(AuthTypes authTypes)
     {
         //Authenticate Player
-
-        await UnityServices.InitializeAsync();
+        //await UnityServices.InitializeAsync();
 
         networkClient = new NetworkClient(NetworkManager.Singleton);
 

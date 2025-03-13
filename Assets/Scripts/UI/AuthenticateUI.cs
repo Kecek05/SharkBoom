@@ -1,3 +1,4 @@
+using GooglePlayGames;
 using Sortify;
 using TMPro;
 using UnityEngine;
@@ -8,7 +9,8 @@ public class AuthenticateUI : MonoBehaviour
     [BetterHeader("References")]
     [SerializeField] private TextMeshProUGUI authTxt;
     [SerializeField] private GameObject buttonsParent;
-
+    [SerializeField] private TextMeshProUGUI authAndroidTxt;
+    [SerializeField] private TextMeshProUGUI authStateTxt;
 
     [Space(3)]
     [SerializeField] private Button authBtn;
@@ -48,7 +50,13 @@ public class AuthenticateUI : MonoBehaviour
             HideButtons();
             ShowTxt();
             await ClientSingleton.Instance.AuthAndroid();
+            authAndroidTxt.text = $"Token: {AuthenticationWrapper.GooglePlayToken} name: {PlayGamesPlatform.Instance.GetUserDisplayName()} ID: {PlayGamesPlatform.Instance.GetUserId()}";
         }
+    }
+
+    private void Update()
+    {
+        authStateTxt.text = AuthenticationWrapper.AuthState.ToString();
     }
 
     private void AuthenticationWrapper_OnSignInFail()

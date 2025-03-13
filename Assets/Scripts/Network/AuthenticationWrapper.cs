@@ -22,6 +22,8 @@ public static class AuthenticationWrapper
 
     public static async Task<AuthState> DoAuthUnity()
     {
+        await UnityServices.InitializeAsync();
+
         if (AuthState == AuthState.Authenticated) return AuthState;
 
         if (AuthState == AuthState.Authenticating)
@@ -39,6 +41,8 @@ public static class AuthenticationWrapper
 
     public static async Task<AuthState> DoAuthAnonymously(int maxTries = 5)
     {
+        await UnityServices.InitializeAsync();
+
         if (AuthState == AuthState.Authenticated) return AuthState;
 
         if (AuthState == AuthState.Authenticating)
@@ -76,46 +80,73 @@ public static class AuthenticationWrapper
     {
         AuthState = AuthState.Authenticating;
         PlayGamesPlatform.Activate();
-        PlayGamesPlatform.Instance.Authenticate(ProcessAuthentication);
+        await UnityServices.InitializeAsync();
+
+        PlayGamesPlatform.Instance.Authenticate((status) =>
+        {
+            if (status == SignInStatus.Success)
+            {
+                Debug.Log("Login with Google was successful");
+
+                PlayGamesPlatform.Instance.RequestServerSideAccess(true, code =>
+                {
+                    Debug.Log($"{code} <-Auth code");
+                    GooglePlayToken = code;
+                });
+
+                AuthState = AuthState.Authenticated;
+            }
+            else
+            {
+                AuthState = AuthState.Error;
+                OnSignInFail?.Invoke();
+                GooglePlayError = "Failed to retrive GPG auth code";
+                Debug.LogWarning("SignIn failed.");
+            }
+
+        });
+
+        await AuthAndroidWithUnity();
+    }
+
+
+    private static async Task AuthAndroidWithUnity()
+    {
+        try
+        {
+            await AuthenticationService.Instance.SignInWithGoogleAsync(GooglePlayToken);
+
+            Debug.Log("AUTHENTICATED WITH GOOGLE UNITY");
+            return;
+            //Loader.Load(Loader.Scene.MainMenu);
+        }
+        catch (AuthenticationException ex)
+        {
+            Debug.LogException(ex);
+        }
+        catch (RequestFailedException ex)
+        {
+            Debug.LogException(ex);
+        }
 
         try
         {
             await AuthenticationService.Instance.SignInWithGooglePlayGamesAsync(GooglePlayToken);
 
-
-        } catch (AuthenticationException ex)
+            Debug.Log("AUTHENTICATED WITH GOOGLE PLAY GAMES UNITY");
+            return;
+            //Loader.Load(Loader.Scene.MainMenu);
+        }
+        catch (AuthenticationException ex)
         {
             Debug.LogException(ex);
-            throw;
-        } catch (RequestFailedException ex)
+        }
+        catch (RequestFailedException ex)
         {
             Debug.LogException(ex);
-            throw;
         }
     }
 
-    internal static void ProcessAuthentication(SignInStatus status)
-    {
-        if (status == SignInStatus.Success)
-        {
-            Debug.Log("Login with Google was successful");
-
-            PlayGamesPlatform.Instance.RequestServerSideAccess(true, code =>
-            {
-                Debug.Log($"{code} <-Auth code");
-                GooglePlayToken = code;
-            });
-
-            Loader.Load(Loader.Scene.MainMenu);
-        }
-        else
-        {
-            AuthState = AuthState.Error;
-            OnSignInFail?.Invoke();
-            GooglePlayError = "Failed to retrive GPG auth code";
-            Debug.LogWarning("SignIn failed.");
-        }
-    }
 
     private static async Task SignInUnityAsync()
     {
