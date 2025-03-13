@@ -13,7 +13,6 @@ public class BaseItemThrowableActivable : BaseItemThrowable
     protected override void OnEnable()
     {
         base.OnEnable();
-
         itemActivated = false;
     }
 

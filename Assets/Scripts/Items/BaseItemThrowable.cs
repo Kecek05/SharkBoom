@@ -18,7 +18,7 @@ public class BaseItemThrowable : MonoBehaviour
 
     protected virtual void OnEnable()
     {
-       // CameraManager.Instance.SetCameraState(CameraManager.CameraState.Following);
+
     }
 
     public virtual void Initialize(ItemLauncherData itemLauncherData)
