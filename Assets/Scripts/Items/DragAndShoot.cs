@@ -12,7 +12,6 @@ public class DragAndShoot : NetworkBehaviour
     public event Action OnDragRelease;
     public event Action OnDragStart;
     public event Action OnDragChange;
-    public event Action OnDragCancel;
 
     [BetterHeader("References")]
     [SerializeField] protected Player player;
@@ -232,6 +231,11 @@ public class DragAndShoot : NetworkBehaviour
     public float GetForcePercentage()
     {
         return (dragForce / maxForceMultiplier) * 100f;
+    }
+
+    public Vector3 GetOpositeFingerPos()
+    {
+        return (startTrajectoryPos.position - endPosDrag) + startTrajectoryPos.position;
     }
 
     public override void OnNetworkDespawn()

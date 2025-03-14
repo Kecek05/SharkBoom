@@ -1,3 +1,4 @@
+using Sortify;
 using System;
 using System.Collections;
 using Unity.Netcode;
@@ -5,49 +6,35 @@ using UnityEngine;
 
 public class PlayerRotateToAim : NetworkBehaviour
 {
+    [BetterHeader("References")]
     [SerializeField] private Transform aimTransform;
     [SerializeField] private Transform aimDefaultPosition;
     [SerializeField] private Player player;
-    [SerializeField] private Vector3 aimPosOffset;
-    [SerializeField] private Transform playerPos;
-
-    private Coroutine changeAimPositionCoroutine;
 
     public override void OnNetworkSpawn()
     {
         if(IsOwner)
         {
             player.PlayerStateMachine.OnStateChanged += PlayerStateMachine_OnStateChanged;
+            player.PlayerDragController.OnDragChange += PlayerDragController_OnDragChange;
         }
+    }
+
+    private void PlayerDragController_OnDragChange()
+    {
+        //Change the pos of aim when the finger change pos
+        aimTransform.position = player.PlayerDragController.GetOpositeFingerPos();
     }
 
     private void PlayerStateMachine_OnStateChanged(IState newState)
     {
-        if(newState == player.PlayerStateMachine.draggingItem || newState == player.PlayerStateMachine.draggingJump)
-        {
-            //Change pos of aim
-            changeAimPositionCoroutine = StartCoroutine(ChangeAimPosition());
-        }
-        else
+        if(newState != player.PlayerStateMachine.draggingItem && newState != player.PlayerStateMachine.draggingJump)
         {
             // stop changing pos of aim
-            if (changeAimPositionCoroutine != null)
-            {
-                StopCoroutine(changeAimPositionCoroutine);
-            }
-
             aimTransform.position = aimDefaultPosition.position;
         }
     }
 
-    private IEnumerator ChangeAimPosition()
-    {
-        while (true)
-        {
-            aimTransform.position = (playerPos.position - player.PlayerDragController.EndPosDrag) + playerPos.position;
-            yield return null;
-        }
-    }
 
 
     public override void OnNetworkDespawn()
@@ -55,6 +42,7 @@ public class PlayerRotateToAim : NetworkBehaviour
         if (IsOwner)
         {
             player.PlayerStateMachine.OnStateChanged -= PlayerStateMachine_OnStateChanged;
+            player.PlayerDragController.OnDragChange -= PlayerDragController_OnDragChange;
         }
     }
 }
