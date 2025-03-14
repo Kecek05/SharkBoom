@@ -10,33 +10,40 @@ public class PlayerDragUi : MonoBehaviour
     [SerializeField] private Player player;
 
     private float angle;
-    private int forcePercentage;
-    private int force;
+    private float forcePercentage;
 
     private void Start()
     {
-       player.PlayerDragController.OnDragDistanceChange += PlayerDrag_OnDragDistanceChange;
+       player.PlayerDragController.OnDragChange += PlayerDrag_OnDragChange;
+       
     }
 
-    private void PlayerDrag_OnDragDistanceChange(float _force, Vector3 direction)
+    private void PlayerDrag_OnDragChange()
     {
-        angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        
-        force = (int)_force;
-        forcePercentage = (force / 50) * 100; // change for max multiplier
-
-        SetForceText(forcePercentage);
-        SetAngleText(angle);
+        SetForceText();
+        SetAngleText();
     }
 
-    private void SetForceText(int _force)
+    private void SetForceText()
     {
-        forceText.text = "Force: " + _force;
-        Debug.Log("Force: " + _force);
+        forceText.text = "Force: " + Mathf.RoundToInt(player.PlayerDragController.GetForcePercentage());
     }
 
-    private void SetAngleText(float _angle)
+    private void SetAngleText()
     {
-        directionText.text = "Direction: " + _angle;
+        directionText.text = "Direction: " + Mathf.RoundToInt(player.PlayerDragController.GetAngle());
     }
+
+    private void ShowText()
+    {
+        forceText.enabled = true;
+        directionText.enabled = true;
+    }
+
+    private void HideText()
+    {
+        forceText.enabled = false;
+        directionText.enabled = false;
+    }
+
 }
