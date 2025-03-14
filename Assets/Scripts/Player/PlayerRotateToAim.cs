@@ -4,45 +4,25 @@ using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerRotateToAim : NetworkBehaviour
+public class PlayerRotateToAim : DragListener
 {
     [BetterHeader("References")]
     [SerializeField] private Transform aimTransform;
     [SerializeField] private Transform aimDefaultPosition;
-    [SerializeField] private Player player;
 
-    public override void OnNetworkSpawn()
+    protected override void DoOnSpawn()
     {
-        if(IsOwner)
-        {
-            player.PlayerStateMachine.OnStateChanged += PlayerStateMachine_OnStateChanged;
-            player.PlayerDragController.OnDragChange += PlayerDragController_OnDragChange;
-        }
+        aimTransform.position = aimDefaultPosition.position;
     }
 
-    private void PlayerDragController_OnDragChange()
+    protected override void DoOnDragChange()
     {
-        //Change the pos of aim when the finger change pos
         aimTransform.position = player.PlayerDragController.GetOpositeFingerPos();
     }
 
-    private void PlayerStateMachine_OnStateChanged(IState newState)
+    protected override void DoOnDragStopped()
     {
-        if(newState != player.PlayerStateMachine.draggingItem && newState != player.PlayerStateMachine.draggingJump)
-        {
-            // stop changing pos of aim
-            aimTransform.position = aimDefaultPosition.position;
-        }
+        aimTransform.position = aimDefaultPosition.position;
     }
 
-
-
-    public override void OnNetworkDespawn()
-    {
-        if (IsOwner)
-        {
-            player.PlayerStateMachine.OnStateChanged -= PlayerStateMachine_OnStateChanged;
-            player.PlayerDragController.OnDragChange -= PlayerDragController_OnDragChange;
-        }
-    }
 }

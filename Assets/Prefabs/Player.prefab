@@ -374,7 +374,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1244250245066138330}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -390,7 +390,7 @@ Transform:
   - {fileID: 3641900726820850059}
   - {fileID: 6845962985718886839}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!54 &5883967289743233380
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1626,7 +1626,7 @@ MonoBehaviour:
         weight: 0
     m_Offset: {x: 0, y: 0, z: 0}
     m_MinLimit: -180
-    m_MaxLimit: 53
+    m_MaxLimit: 83
     m_AimAxis: 1
     m_UpAxis: 2
     m_WorldUpType: 0
@@ -2317,7 +2317,7 @@ Transform:
   m_GameObject: {fileID: 6592583399948323890}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.02, z: -4.13}
+  m_LocalPosition: {x: -0, y: 3.08, z: -5.99}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2670,11 +2670,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  player: {fileID: 2871544100916734757}
   aimTransform: {fileID: 2806491636382606881}
   aimDefaultPosition: {fileID: 1345439288451705463}
-  player: {fileID: 2871544100916734757}
-  aimPosOffset: {x: 0, y: 3, z: 3}
-  playerPos: {fileID: 2498330595957626671}
 --- !u!114 &5874533860640660207
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2687,6 +2685,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26df5d66cb451e4408293265e79bd481, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  player: {fileID: 2871544100916734757}
+  playerGfxTransform: {fileID: 2927350467601940059}
 --- !u!1 &9159321432021852501
 GameObject:
   m_ObjectHideFlags: 0
@@ -2790,6 +2791,22 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: f92172a1b3edbf84fbfd94be69d76f44, type: 2}
+    - target: {fileID: 6294978504487740898, guid: 3a3e12dc36871bd4c8b48c7675073369, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.87634015
+      objectReference: {fileID: 0}
+    - target: {fileID: 6294978504487740898, guid: 3a3e12dc36871bd4c8b48c7675073369, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.000000057961408
+      objectReference: {fileID: 0}
+    - target: {fileID: 6294978504487740898, guid: 3a3e12dc36871bd4c8b48c7675073369, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.00000019408881
+      objectReference: {fileID: 0}
+    - target: {fileID: 6294978504487740898, guid: 3a3e12dc36871bd4c8b48c7675073369, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.4816928
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5866666021909216657, guid: 3a3e12dc36871bd4c8b48c7675073369, type: 3}
     m_RemovedGameObjects: []

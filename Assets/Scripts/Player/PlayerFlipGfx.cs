@@ -1,16 +1,29 @@
+using Sortify;
+using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerFlipGfx : MonoBehaviour
+public class PlayerFlipGfx : DragListener
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [BetterHeader("References")]
+    [SerializeField] private Transform playerGfxTransform;
+    private Vector3 startEulerAngles;
+
+    protected override void DoOnSpawn()
     {
-        
+        startEulerAngles = playerGfxTransform.eulerAngles;
     }
 
-    // Update is called once per frame
-    void Update()
+    protected override void DoOnDragChange()
     {
-        
+        if(player.PlayerDragController.GetOpositeFingerPos().x > playerGfxTransform.position.x)
+            transform.eulerAngles = new Vector3(transform.eulerAngles.x, -90f , transform.eulerAngles.z);
+        else if (player.PlayerDragController.GetOpositeFingerPos().x < playerGfxTransform.position.x)
+            transform.eulerAngles = new Vector3(transform.eulerAngles.x, 90f, transform.eulerAngles.z);
     }
+
+    protected override void DoOnDragStopped()
+    {
+        playerGfxTransform.eulerAngles = startEulerAngles;
+    }
+
 }
