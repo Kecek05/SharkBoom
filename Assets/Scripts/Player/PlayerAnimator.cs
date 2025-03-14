@@ -7,7 +7,21 @@ public class PlayerAnimator : NetworkBehaviour
     [BetterHeader("References")]
     [SerializeField] private Animator animator;
     [SerializeField] private Player player;
-    private string currentAnimation = "";
+
+
+
+
+    private readonly static int[] animations =
+    {
+        Animator.StringToHash("Idle"),
+        Animator.StringToHash("Shoot"),
+        Animator.StringToHash("Jump"),
+        Animator.StringToHash("AimJump"),
+        Animator.StringToHash("Aim"),
+    };
+
+    private Animations currentAnimation;
+    private bool locked;
 
     public override void OnNetworkSpawn()
     {
@@ -39,4 +53,14 @@ public class PlayerAnimator : NetworkBehaviour
             player.PlayerStateMachine.OnStateChanged -= PlayerStateMachine_OnStateChanged;
         }
     }
+}
+
+public enum Animations
+{
+    None,
+    Idle,
+    Shoot,
+    Jump,
+    AimJump,
+    Aim,
 }
