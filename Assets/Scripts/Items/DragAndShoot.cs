@@ -147,7 +147,7 @@ public class DragAndShoot : NetworkBehaviour
 
 
 
-            trajectory.UpdateDots(transform.position, directionOfDrag * dragForce, selectedRb); // update the dots position 
+            trajectory.UpdateDots(startTrajectoryPos.position, directionOfDrag * dragForce, selectedRb); // update the dots position 
 
             OnDragChange?.Invoke();
 
@@ -190,7 +190,7 @@ public class DragAndShoot : NetworkBehaviour
     public void ResetDrag()
     {
         // Reset the dots position
-        trajectory.UpdateDots(transform.position, directionOfDrag * minForceMultiplier, selectedRb);
+        trajectory.UpdateDots(startTrajectoryPos.position, directionOfDrag * minForceMultiplier, selectedRb);
         SetIsDragging(false);
     }
 
