@@ -20,7 +20,7 @@ public class PlayerRotateToAim : DragListener
         aimTransform.position = player.PlayerDragController.GetOpositeFingerPos();
     }
 
-    protected override void DoOnDragStopped()
+    protected override void DoOnDragRelease()
     {
         aimTransform.position = aimDefaultPosition.position;
     }

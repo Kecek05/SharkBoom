@@ -1,37 +1,44 @@
+using Sortify;
 using System;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class PlayerDragUi : MonoBehaviour
+public class PlayerDragUi : DragListener
 {
+    [BetterHeader("References")]
     [SerializeField] private TextMeshProUGUI forceText;
     [SerializeField] private TextMeshProUGUI directionText;
-    [SerializeField] private Player player;
 
-    private float angle;
-    private float forcePercentage;
-
-    private void Start()
+    public override void OnNetworkSpawn()
     {
-       player.PlayerDragController.OnDragChange += PlayerDrag_OnDragChange;
-       
+        base.OnNetworkSpawn();
+
+        HideText(); //hide enemy ui
     }
 
-    private void PlayerDrag_OnDragChange()
+    protected override void DoOnSpawn()
     {
-        SetForceText();
-        SetAngleText();
+        HideText();
+        player.PlayerDragController.OnDragStart += PlayerDragController_OnDragStart;
     }
 
-    private void SetForceText()
+
+    private void PlayerDragController_OnDragStart()
+    {
+        ShowText();
+    }
+
+    protected override void DoOnDragChange()
     {
         forceText.text = "Force: " + Mathf.RoundToInt(player.PlayerDragController.GetForcePercentage());
+
+        directionText.text = "Direction: " + Mathf.RoundToInt(player.PlayerDragController.GetAngle());
     }
 
-    private void SetAngleText()
+    protected override void DoOnDragRelease()
     {
-        directionText.text = "Direction: " + Mathf.RoundToInt(player.PlayerDragController.GetAngle());
+        HideText();
     }
 
     private void ShowText()
@@ -46,4 +53,14 @@ public class PlayerDragUi : MonoBehaviour
         directionText.enabled = false;
     }
 
+
+    public override void OnNetworkDespawn()
+    {
+        base.OnNetworkDespawn();
+
+        if(IsOwner)
+        {
+            player.PlayerDragController.OnDragStart -= PlayerDragController_OnDragStart;
+        }
+    }
 }
