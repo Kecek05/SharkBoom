@@ -14,26 +14,36 @@ public class PlayerDragUi : MonoBehaviour
 
     private void Start()
     {
-       player.PlayerDragController.OnDragDistanceChange += PlayerDrag_OnDragDistanceChange;
+       player.PlayerDragController.OnDragChange += PlayerDrag_OnDragChange;
+       
     }
 
-    private void PlayerDrag_OnDragDistanceChange(float _force, Vector3 direction, float maxForceMultiplier)
+    private void PlayerDrag_OnDragChange()
     {
-        angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        
-        forcePercentage = (_force / maxForceMultiplier) * 100f; // change for max multiplier
-
-        SetForceText(forcePercentage);
-        SetAngleText(angle);
+        SetForceText();
+        SetAngleText();
     }
 
-    private void SetForceText(float _forcePercentage)
+    private void SetForceText()
     {
-        forceText.text = "Force: " + (int)forcePercentage;
+        forceText.text = "Force: " + Mathf.RoundToInt(player.PlayerDragController.GetForcePercentage());
     }
 
-    private void SetAngleText(float _angle)
+    private void SetAngleText()
     {
-        directionText.text = "Direction: " + _angle;
+        directionText.text = "Direction: " + Mathf.RoundToInt(player.PlayerDragController.GetAngle());
     }
+
+    private void ShowText()
+    {
+        forceText.enabled = true;
+        directionText.enabled = true;
+    }
+
+    private void HideText()
+    {
+        forceText.enabled = false;
+        directionText.enabled = false;
+    }
+
 }

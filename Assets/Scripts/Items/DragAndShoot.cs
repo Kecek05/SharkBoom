@@ -11,7 +11,8 @@ public class DragAndShoot : NetworkBehaviour
     
     public event Action OnDragRelease;
     public event Action OnDragStart;
-    public event Action<float, Vector3, float> OnDragDistanceChange;
+    public event Action OnDragChange;
+    public event Action OnDragCancel;
 
     [BetterHeader("References")]
     [SerializeField] protected Player player;
@@ -64,6 +65,7 @@ public class DragAndShoot : NetworkBehaviour
     public Vector3 DirectionOfDrag => directionOfDrag;
     public float DragForce => dragForce;
     public bool CanDrag => canDrag;
+    public float MaxForceMultiplier => maxForceMultiplier;  
 
 
     protected Rigidbody selectedRb;
@@ -142,9 +144,11 @@ public class DragAndShoot : NetworkBehaviour
             dragForce = dragDistance * offsetForceMultiplier; //Calculate the force linearly
             dragForce = Mathf.Clamp(dragForce, minForceMultiplier, maxForceMultiplier);
 
+
+
             trajectory.UpdateDots(transform.position, directionOfDrag * dragForce, selectedRb); // update the dots position 
 
-            OnDragDistanceChange?.Invoke(dragForce, directionOfDrag, maxForceMultiplier);
+            OnDragChange?.Invoke();
 
             if (Time.time - lastCheckTime >= checkMovementInterval)
             {
@@ -174,9 +178,6 @@ public class DragAndShoot : NetworkBehaviour
                             player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleMyTurnState);
                         }
                     }
-                
-                
-
                 lastZoomForce = zoomForce; // Update the last zoom force
                 lastCheckTime = Time.time; // Update the last check time
                 }
@@ -220,6 +221,15 @@ public class DragAndShoot : NetworkBehaviour
         {
             trajectory.Hide();
         }
+    }
+    public float GetAngle()
+    {
+        return Mathf.Atan2(directionOfDrag.y, directionOfDrag.x) * Mathf.Rad2Deg;
+    }
+
+    public float GetForcePercentage()
+    {
+        return (dragForce / maxForceMultiplier) * 100f;
     }
 
     public override void OnNetworkDespawn()
