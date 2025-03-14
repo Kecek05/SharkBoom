@@ -22,8 +22,6 @@ public static class AuthenticationWrapper
 
     public static async Task<AuthState> DoAuthUnity()
     {
-        await UnityServices.InitializeAsync();
-
         if (AuthState == AuthState.Authenticated) return AuthState;
 
         if (AuthState == AuthState.Authenticating)
@@ -41,7 +39,6 @@ public static class AuthenticationWrapper
 
     public static async Task<AuthState> DoAuthAnonymously(int maxTries = 5)
     {
-        await UnityServices.InitializeAsync();
 
         if (AuthState == AuthState.Authenticated) return AuthState;
 
@@ -80,7 +77,6 @@ public static class AuthenticationWrapper
     {
         AuthState = AuthState.Authenticating;
         PlayGamesPlatform.Activate();
-        await UnityServices.InitializeAsync();
 
         PlayGamesPlatform.Instance.Authenticate((status) =>
         {
@@ -118,7 +114,6 @@ public static class AuthenticationWrapper
 
             Debug.Log("AUTHENTICATED WITH GOOGLE UNITY");
             return;
-            //Loader.Load(Loader.Scene.MainMenu);
         }
         catch (AuthenticationException ex)
         {
@@ -135,7 +130,6 @@ public static class AuthenticationWrapper
 
             Debug.Log("AUTHENTICATED WITH GOOGLE PLAY GAMES UNITY");
             return;
-            //Loader.Load(Loader.Scene.MainMenu);
         }
         catch (AuthenticationException ex)
         {
@@ -238,8 +232,6 @@ public static class AuthenticationWrapper
 
             Debug.Log(playerName + AuthState);
 
-            Loader.Load(Loader.Scene.MainMenu);
-
         }
         catch (AuthenticationException ex)
         {
@@ -272,8 +264,6 @@ public static class AuthenticationWrapper
                     playerName = await AuthenticationService.Instance.GetPlayerNameAsync();
 
                     Debug.Log(playerName + AuthState);
-
-                    Loader.Load(Loader.Scene.MainMenu);
 
                     break;
                 }

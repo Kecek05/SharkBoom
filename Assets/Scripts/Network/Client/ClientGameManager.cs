@@ -29,25 +29,12 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
     public async Task<bool> InitAsync(AuthTypes authTypes)
     {
         //Authenticate Player
-        //await UnityServices.InitializeAsync();
+        await UnityServices.InitializeAsync();
 
         networkClient = new NetworkClient(NetworkManager.Singleton);
 
-        AuthState authState = AuthState.NotAuthenticated;
+        AuthState authState = authTypes == AuthTypes.Anonymous ? await AuthenticationWrapper.DoAuthAnonymously() : authTypes == AuthTypes.Unity ? await AuthenticationWrapper.DoAuthUnity() : authTypes == AuthTypes.Android ? await AuthenticationWrapper.DoAuthAndroid() : AuthState.NotAuthenticated;
 
-        switch(authTypes)
-        {
-            case AuthTypes.Anonymous:
-                await AuthenticationWrapper.DoAuthAnonymously();
-                break;
-            case AuthTypes.Android:
-                await AuthenticationWrapper.DoAuthAndroid();
-                break;
-            case AuthTypes.Unity:
-                await AuthenticationWrapper.DoAuthUnity();
-                break;
-
-        }
 
         if(authState == AuthState.Authenticated)
         {
@@ -56,6 +43,8 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
                 userName = AuthenticationWrapper.PlayerName,
                 userAuthId = AuthenticationService.Instance.PlayerId,
             };
+
+            Loader.Load(Loader.Scene.MainMenu);
 
             return true;
         }
