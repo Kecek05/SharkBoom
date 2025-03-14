@@ -88,6 +88,7 @@ public class CameraZoom : MonoBehaviour
         }
     }
 
+
     private void ZoomEnded()
     {
         if (zoomCoroutine != null)
@@ -107,9 +108,9 @@ public class CameraZoom : MonoBehaviour
     {
         cameraObjectFollowPos = CameraManager.Instance.CameraObjectToFollow.position; // get the current position of the camera
         cameraObjectFollowPos.z += value; // add the values for move the camera
-
         cameraObjectFollowPos.z = Mathf.Clamp(cameraObjectFollowPos.z, minZoom, maxZoom);
         CameraManager.Instance.CameraObjectToFollow.position = Vector3.MoveTowards(CameraManager.Instance.CameraObjectToFollow.position, cameraObjectFollowPos, zoomSpeed * Time.deltaTime); // Move towards is better for movimentation
+        Debug.Log($"Object to follow Z pos: {cameraObjectFollowPos.z}");
     }
 
     private void OnDestroy()

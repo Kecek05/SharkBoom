@@ -247,6 +247,7 @@ public class DragAndShoot : NetworkBehaviour
         }
         else
         {
+            SetCanCancelDrag(false);
             OnDragCancelable?.Invoke(false);
         }
     }
