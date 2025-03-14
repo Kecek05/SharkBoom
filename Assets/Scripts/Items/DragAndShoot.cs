@@ -63,6 +63,8 @@ public class DragAndShoot : NetworkBehaviour
     protected float outDistancePlane; // store the distance of the plane and screen
 
     public Vector3 DirectionOfDrag => directionOfDrag;
+    public Vector3 EndPosDrag => endPosDrag;
+
     public float DragForce => dragForce;
     public bool CanDrag => canDrag;
     public float MaxForceMultiplier => maxForceMultiplier;  
