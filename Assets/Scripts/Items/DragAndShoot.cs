@@ -11,7 +11,7 @@ public class DragAndShoot : NetworkBehaviour
     
     public event Action OnDragRelease;
     public event Action OnDragStart;
-    public event Action<float, Vector3> OnDragDistanceChange;
+    public event Action<float, Vector3, float> OnDragDistanceChange;
 
     [BetterHeader("References")]
     [SerializeField] protected Player player;
@@ -143,7 +143,9 @@ public class DragAndShoot : NetworkBehaviour
             dragForce = Mathf.Clamp(dragForce, minForceMultiplier, maxForceMultiplier);
 
             trajectory.UpdateDots(transform.position, directionOfDrag * dragForce, selectedRb); // update the dots position 
-            OnDragDistanceChange?.Invoke(dragForce, directionOfDrag);
+
+            OnDragDistanceChange?.Invoke(dragForce, directionOfDrag, maxForceMultiplier);
+
             if (Time.time - lastCheckTime >= checkMovementInterval)
             {
                 zoomForce = dragForce * zoomMultiplier * dragDistance;
