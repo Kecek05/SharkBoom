@@ -53,19 +53,11 @@ public class CameraManager : NetworkBehaviour
 
     private void PlayerStateMachine_OnStateChanged(IState playerState)
     {
-        cameraMovement.enabled = false; // We reset all camera Behaviours to false and enable them based on the state
-        cameraZoom.enabled = false;
-        cameraFollowing.enabled = false;
-
         if (playerState == player.PlayerStateMachine.idleEnemyTurnState)
         {
             CameraMove();
         }
-        else if (playerState == player.PlayerStateMachine.myTurnEndedState)
-        {
-            CameraMove();
-        }
-        else if (playerState == player.PlayerStateMachine.myTurnStartedState)
+        else if (playerState == player.PlayerStateMachine.idleMyTurnState)
         {
             CameraMove();
         }
@@ -83,10 +75,8 @@ public class CameraManager : NetworkBehaviour
         }
         else if (playerState == player.PlayerStateMachine.playerWatchingState)
         {
-            CameraMove();
+            // when enemy realase the item
         }
-
-        Debug.Log($"Player State: {player.PlayerStateMachine.CurrentState}");
     }
 
     private void CameraMove()
@@ -98,6 +88,7 @@ public class CameraManager : NetworkBehaviour
     private void Dragging()
     {
         cameraZoom.enabled = true;
+        cameraMovement.enabled = false;
     }
 
     private void CameraReset()
