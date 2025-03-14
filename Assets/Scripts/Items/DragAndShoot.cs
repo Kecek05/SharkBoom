@@ -61,7 +61,7 @@ public class DragAndShoot : NetworkBehaviour
     protected Vector3 endPosDrag;
     protected Vector3 directionOfDrag;
     protected float dragForce;
-    protected float lastDragForce;
+    protected float lastDragDistance;
     [SerializeField] protected float dragChangedOffset; 
     protected bool isDragging = false;
     protected bool canDrag = false;
@@ -81,6 +81,9 @@ public class DragAndShoot : NetworkBehaviour
     public Vector3 DirectionOfDrag => directionOfDrag;
     public Vector3 EndPosDrag => endPosDrag;
 
+    public float DragDistance => dragDistance;
+    public float LastDragDistance => lastDragDistance;
+
     public float DragForce => dragForce;
     public bool CanDrag => canDrag;
     public float MaxForceMultiplier => maxForce;
@@ -91,7 +94,7 @@ public class DragAndShoot : NetworkBehaviour
 
 
     private bool canCancelDrag = false;
-    [SerializeField] private float canceDraglLimit = 0.9f;
+    [SerializeField] private float canceDragLimit = 0.9f;
     private float minDragDistanceCancel = 2f;
     private float zoomThreshold = 0.2f;
 
@@ -182,54 +185,60 @@ public class DragAndShoot : NetworkBehaviour
 
             OnDragChange?.Invoke();
 
-            lastDragForce += offsetForce;
-            lastDragForce = Mathf.Clamp(lastDragForce, minForce, maxForce);
 
-            Debug.Log($"Drag Force Abs: {Mathf.Abs(dragForce)} Last drag force abs: {Mathf.Abs(lastDragForce)}  With offset: {Mathf.Abs(lastDragForce) + offsetForce}");
-            if (Mathf.Abs(lastDragForce) < Mathf.Abs(dragForce))
+
+            int roundedLastDragDistance = Mathf.Abs(Mathf.RoundToInt(lastDragDistance));
+            int roundedDragDistance = Mathf.Abs(Mathf.RoundToInt(dragDistance));
+
+            if (roundedDragDistance > roundedLastDragDistance)
             {
                 Debug.Log("Force is increasing");
-            } else
+            } else if (roundedDragDistance < roundedLastDragDistance)
             {
                 Debug.Log("Force is decreasing");
-            }
-
-            if (Time.time - lastCheckTime >= checkMovementInterval)
+            } else
             {
-                zoomForce = dragForce * zoomMultiplier;
-                isZoomIncreasing = zoomForce > lastZoomForce; // Check is zoomForce is increasing
-
-                //if (dragDistance > minDragDistanceCancel)
-                //{
-                //    canCancelDrag = true;
-                //}
-                if (Mathf.Abs(zoomForce - lastZoomForce) > zoomThreshold)
-                {
-                    if (isZoomIncreasing)
-                    {
-                        // zoom out
-                        CameraManager.Instance.CameraZoom.ChangeZoom(-5f, zoomDragSpeed);
-                    }
-                    else
-                    {
-                        // zoom in
-                        CameraManager.Instance.CameraZoom.ChangeZoom(5f, zoomDragSpeed);
-
-                        if (dragDistance < canceDraglLimit)
-                        {
-                            SetCanCancelDrag(true);
-                            OnDragCancelable?.Invoke(true);
-                        } else
-                        {
-                            OnDragCancelable?.Invoke(false);
-                        }
-                    }
-                    lastZoomForce = zoomForce; // Update the last zoom force
-                    lastCheckTime = Time.time; // Update the last check time
-                }
+                Debug.Log("Force is the same");
             }
 
-            lastDragForce = dragForce;
+
+            lastDragDistance = dragDistance;
+
+            //if (Time.time - lastCheckTime >= checkMovementInterval)
+            //{
+            //    zoomForce = dragForce * zoomMultiplier;
+            //    isZoomIncreasing = zoomForce > lastZoomForce; // Check is zoomForce is increasing
+
+            //    //if (dragDistance > minDragDistanceCancel)
+            //    //{
+            //    //    canCancelDrag = true;
+            //    //}
+            //    if (Mathf.Abs(zoomForce - lastZoomForce) > zoomThreshold)
+            //    {
+            //        if (isZoomIncreasing)
+            //        {
+            //            // zoom out
+            //            CameraManager.Instance.CameraZoom.ChangeZoom(-5f, zoomDragSpeed);
+            //        }
+            //        else
+            //        {
+            //            // zoom in
+            //            CameraManager.Instance.CameraZoom.ChangeZoom(5f, zoomDragSpeed);
+
+            //            if (dragDistance < canceDragLimit)
+            //            {
+            //                SetCanCancelDrag(true);
+            //                OnDragCancelable?.Invoke(true);
+            //            } else
+            //            {
+            //                OnDragCancelable?.Invoke(false);
+            //            }
+            //        }
+            //        lastZoomForce = zoomForce; // Update the last zoom force
+            //        lastCheckTime = Time.time; // Update the last check time
+            //    }
+            //}
+
         }
     }
 

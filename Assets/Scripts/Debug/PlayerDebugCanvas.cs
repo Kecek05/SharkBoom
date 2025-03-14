@@ -13,6 +13,7 @@ public class PlayerDebugCanvas : NetworkBehaviour
     public TextMeshProUGUI selectedRbText;
     public TextMeshProUGUI playerStateText;
     public TextMeshProUGUI playerCanInteractWithInventoryText;
+    public TextMeshProUGUI dragDistanceText;
 
     public override void OnNetworkSpawn()
     {
@@ -33,6 +34,12 @@ public class PlayerDebugCanvas : NetworkBehaviour
         else
         {
             selectedRbText.text = player.PlayerDragController.SelectedRb.ToString();
+
+        }
+
+        if(player.PlayerDragController != null) 
+        {
+            dragDistanceText.text = $"Drag Distance: {Mathf.Abs(Mathf.RoundToInt(player.PlayerDragController.DragDistance))} Last Drag Distance: {Mathf.Abs(Mathf.RoundToInt(player.PlayerDragController.LastDragDistance))}";
         }
 
 
