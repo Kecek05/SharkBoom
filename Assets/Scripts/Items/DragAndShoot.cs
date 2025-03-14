@@ -41,14 +41,14 @@ public class DragAndShoot : NetworkBehaviour
 
     [BetterHeader("Force Settings")]
     [Tooltip("Maximum Force that the Object can go")][RangeStep(1f, 50f, 1f)]
-    [SerializeField] protected float maxForceMultiplier = 50f;
+    [SerializeField] protected float maxForce = 50f;
 
     [Tooltip("Minimum Force that the Object can go")][RangeStep(1f, 50f, 1f)]
-    [SerializeField] protected float minForceMultiplier = 1f;
+    [SerializeField] protected float minForce = 1f;
 
     [Tooltip("Value to be add to not need to drag too far from the object")]
     [RangeStep(1.1f, 5f, 0.2f)]
-    [SerializeField] protected float offsetForceMultiplier = 0.1f;
+    [SerializeField] protected float offsetForce = 0.1f;
 
     [BetterHeader("Zoom Settings")]
     [Tooltip("Time to the drag updtae the zoom")]
@@ -61,6 +61,8 @@ public class DragAndShoot : NetworkBehaviour
     protected Vector3 endPosDrag;
     protected Vector3 directionOfDrag;
     protected float dragForce;
+    protected float lastDragForce;
+    [SerializeField] protected float dragChangedOffset; 
     protected bool isDragging = false;
     protected bool canDrag = false;
     protected float dragDistance;
@@ -81,7 +83,7 @@ public class DragAndShoot : NetworkBehaviour
 
     public float DragForce => dragForce;
     public bool CanDrag => canDrag;
-    public float MaxForceMultiplier => maxForceMultiplier;
+    public float MaxForceMultiplier => maxForce;
 
 
     protected Rigidbody selectedRb;
@@ -89,7 +91,7 @@ public class DragAndShoot : NetworkBehaviour
 
 
     private bool canCancelDrag = false;
-    private float canceDraglLimit = 0.9f;
+    [SerializeField] private float canceDraglLimit = 0.9f;
     private float minDragDistanceCancel = 2f;
     private float zoomThreshold = 0.2f;
 
@@ -171,8 +173,8 @@ public class DragAndShoot : NetworkBehaviour
             directionOfDrag = (startTrajectoryPos.position - endPosDrag).normalized; // calculate the direction of the drag on Vector3
             dragDistance = Vector3.Distance(startTrajectoryPos.position, endPosDrag); // calculate the distance of the drag on float
 
-            dragForce = dragDistance * offsetForceMultiplier; //Calculate the force linearly
-            dragForce = Mathf.Clamp(dragForce, minForceMultiplier, maxForceMultiplier);
+            dragForce = dragDistance * offsetForce; //Calculate the force linearly
+            dragForce = Mathf.Clamp(dragForce, minForce, maxForce);
 
 
 
@@ -180,9 +182,21 @@ public class DragAndShoot : NetworkBehaviour
 
             OnDragChange?.Invoke();
 
+            lastDragForce += offsetForce;
+            lastDragForce = Mathf.Clamp(lastDragForce, minForce, maxForce);
+
+            Debug.Log($"Drag Force Abs: {Mathf.Abs(dragForce)} Last drag force abs: {Mathf.Abs(lastDragForce)}  With offset: {Mathf.Abs(lastDragForce) + offsetForce}");
+            if (Mathf.Abs(lastDragForce) < Mathf.Abs(dragForce))
+            {
+                Debug.Log("Force is increasing");
+            } else
+            {
+                Debug.Log("Force is decreasing");
+            }
+
             if (Time.time - lastCheckTime >= checkMovementInterval)
             {
-                zoomForce = dragForce * zoomMultiplier * dragDistance;
+                zoomForce = dragForce * zoomMultiplier;
                 isZoomIncreasing = zoomForce > lastZoomForce; // Check is zoomForce is increasing
 
                 //if (dragDistance > minDragDistanceCancel)
@@ -214,6 +228,8 @@ public class DragAndShoot : NetworkBehaviour
                     lastCheckTime = Time.time; // Update the last check time
                 }
             }
+
+            lastDragForce = dragForce;
         }
     }
 
@@ -221,7 +237,7 @@ public class DragAndShoot : NetworkBehaviour
     public void ResetDrag()
     {
         // Reset the dots position
-        trajectory.UpdateDots(startTrajectoryPos.position, directionOfDrag * minForceMultiplier, selectedRb);
+        trajectory.UpdateDots(startTrajectoryPos.position, directionOfDrag * minForce, selectedRb);
         SetIsDragging(false);
     }
 
@@ -265,7 +281,7 @@ public class DragAndShoot : NetworkBehaviour
 
     public float GetForcePercentage()
     {
-        return (dragForce / maxForceMultiplier) * 100f;
+        return (dragForce / maxForce) * 100f;
     }
 
     public Vector3 GetOpositeFingerPos()
