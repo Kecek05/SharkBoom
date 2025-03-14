@@ -14,7 +14,24 @@ public class PlayerDragUi : DragListener
     {
         base.OnNetworkSpawn();
 
+        if (IsOwner)
+        {
+            player.PlayerDragController.OnDragCancelable += PlayerDragController_OnDragCancelable;
+        }
         HideText(); //hide enemy ui
+    }
+
+    private void PlayerDragController_OnDragCancelable(bool isCancelable)
+    {
+        if(isCancelable)
+        {
+            HideText();
+        } else if(!isCancelable && player.PlayerStateMachine.CurrentState == player.PlayerStateMachine.draggingItem || player.PlayerStateMachine.CurrentState == player.PlayerStateMachine.draggingJump)
+        {
+            //cant cancell and its dragging
+            ShowText();
+        }
+
     }
 
     protected override void DoOnSpawn()
@@ -61,6 +78,7 @@ public class PlayerDragUi : DragListener
         if(IsOwner)
         {
             player.PlayerDragController.OnDragStart -= PlayerDragController_OnDragStart;
+            player.PlayerDragController.OnDragCancelable -= PlayerDragController_OnDragCancelable;
         }
     }
 }

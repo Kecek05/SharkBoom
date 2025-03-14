@@ -8,10 +8,25 @@ using UnityEngine.InputSystem;
 
 public class DragAndShoot : NetworkBehaviour
 {
-    
+    /// <summary>
+    /// Event that is called when the drag is released, the object is launched
+    /// </summary>
     public event Action OnDragRelease;
+
+    /// <summary>
+    /// Event that is called when the drag is starting, finger is pressed
+    /// </summary>
     public event Action OnDragStart;
+
+    /// <summary>
+    /// Event that is called when the drag is changing position, finger changed pos
+    /// </summary>
     public event Action OnDragChange;
+
+    /// <summary>
+    /// Event that is called when the drag is cancelable
+    /// </summary>
+    public event Action<bool> OnDragCancelable;
 
     [BetterHeader("References")]
     [SerializeField] protected Player player;
@@ -21,14 +36,14 @@ public class DragAndShoot : NetworkBehaviour
     [Tooltip("Center position of the drag")]
     [SerializeField] protected Transform startTrajectoryPos;
     [SerializeField] protected LayerMask touchLayer;
-    
+
 
 
     [BetterHeader("Force Settings")]
-    [Tooltip("Maximum Force that the Object can go")] [RangeStep(1f, 50f, 1f)]
+    [Tooltip("Maximum Force that the Object can go")][RangeStep(1f, 50f, 1f)]
     [SerializeField] protected float maxForceMultiplier = 50f;
 
-    [Tooltip("Minimum Force that the Object can go")] [RangeStep(1f, 50f, 1f)]
+    [Tooltip("Minimum Force that the Object can go")][RangeStep(1f, 50f, 1f)]
     [SerializeField] protected float minForceMultiplier = 1f;
 
     [Tooltip("Value to be add to not need to drag too far from the object")]
@@ -36,10 +51,10 @@ public class DragAndShoot : NetworkBehaviour
     [SerializeField] protected float offsetForceMultiplier = 0.1f;
 
     [BetterHeader("Zoom Settings")]
-    [Tooltip("Time to the drag updtae the zoom")] 
+    [Tooltip("Time to the drag updtae the zoom")]
     [SerializeField] protected float zoomDragSpeed;
 
-    [Tooltip("Increase the force of zoom")] 
+    [Tooltip("Increase the force of zoom")]
     [SerializeField] protected float zoomMultiplier = 7f;
 
 
@@ -66,13 +81,13 @@ public class DragAndShoot : NetworkBehaviour
 
     public float DragForce => dragForce;
     public bool CanDrag => canDrag;
-    public float MaxForceMultiplier => maxForceMultiplier;  
+    public float MaxForceMultiplier => maxForceMultiplier;
 
 
     protected Rigidbody selectedRb;
     public Rigidbody SelectedRb => selectedRb; //DEBUG
 
-    private bool isCancelingDrag = false;
+
     private bool canCancelDrag = false;
     private float canceDraglLimit = 0.9f;
     private float minDragDistanceCancel = 2f;
@@ -104,11 +119,10 @@ public class DragAndShoot : NetworkBehaviour
 
             if (Physics.Raycast(rayStart, out hit, Mathf.Infinity, touchLayer)) // compare if the touch hit on the object
             {
-                if(hit.collider.gameObject == areaOfStartDrag)
+                if (hit.collider.gameObject == areaOfStartDrag)
                 {
                     //Start Dragging
-                    isCancelingDrag = false;
-                    canCancelDrag = false;
+                    SetCanCancelDrag(false);
                     trajectory.SetSimulation(true);
                     startZoomPos = CameraManager.Instance.CameraObjectToFollow;
 
@@ -120,23 +134,38 @@ public class DragAndShoot : NetworkBehaviour
             }
         }
 
-        if (context.canceled && isDragging && !isCancelingDrag)
-        { 
-            SetIsDragging(false);
-            trajectory.SetSimulation(false);
-            OnDragRelease?.Invoke();
+        if (context.canceled && isDragging)
+        {
+            //released the finger
+            if (canCancelDrag)
+            {
+                //reset all
+                SetCanCancelDrag(false);
+                SetIsDragging(false);
+                player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleMyTurnState);
+                OnDragCancelable?.Invoke(false);
+                return;
+            } else
+            {
+                //shoot
+                SetIsDragging(false);
+                trajectory.SetSimulation(false);
+                OnDragRelease?.Invoke();
+            }
+
+
         }
     }
 
     protected void InputReader_OnPrimaryFingerPositionEvent(InputAction.CallbackContext context)
     {
 
-        if(!canDrag || !isDragging || selectedRb == null) return;
+        if (!canDrag || !isDragging || selectedRb == null) return;
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //CHANGE TO CONTEXT
-       
 
-        if (plane.Raycast(ray, out outDistancePlane) && Input.touchCount == 1 && !isCancelingDrag) // this input touch count is a check for avoid the player bug if accidentally touch the screen with two fingers
+
+        if (plane.Raycast(ray, out outDistancePlane) && Input.touchCount == 1) // this input touch count is a check for avoid the player bug if accidentally touch the screen with two fingers
         {
             endPosDrag = ray.GetPoint(outDistancePlane); // get the position of the click instantaneously
             directionOfDrag = (startTrajectoryPos.position - endPosDrag).normalized; // calculate the direction of the drag on Vector3
@@ -156,11 +185,11 @@ public class DragAndShoot : NetworkBehaviour
                 zoomForce = dragForce * zoomMultiplier * dragDistance;
                 isZoomIncreasing = zoomForce > lastZoomForce; // Check is zoomForce is increasing
 
-                if (dragDistance > minDragDistanceCancel)
-                {
-                    canCancelDrag = true;
-                }
-                if(Mathf.Abs(zoomForce - lastZoomForce) > zoomThreshold)
+                //if (dragDistance > minDragDistanceCancel)
+                //{
+                //    canCancelDrag = true;
+                //}
+                if (Mathf.Abs(zoomForce - lastZoomForce) > zoomThreshold)
                 {
                     if (isZoomIncreasing)
                     {
@@ -172,15 +201,17 @@ public class DragAndShoot : NetworkBehaviour
                         // zoom in
                         CameraManager.Instance.CameraZoom.ChangeZoom(5f, zoomDragSpeed);
 
-                        if (dragDistance < canceDraglLimit && canCancelDrag)
+                        if (dragDistance < canceDraglLimit)
                         {
-                            isCancelingDrag = true;
-                            SetIsDragging(false);
-                            player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleMyTurnState);
+                            SetCanCancelDrag(true);
+                            OnDragCancelable?.Invoke(true);
+                        } else
+                        {
+                            OnDragCancelable?.Invoke(false);
                         }
                     }
-                lastZoomForce = zoomForce; // Update the last zoom force
-                lastCheckTime = Time.time; // Update the last check time
+                    lastZoomForce = zoomForce; // Update the last zoom force
+                    lastCheckTime = Time.time; // Update the last check time
                 }
             }
         }
@@ -211,6 +242,10 @@ public class DragAndShoot : NetworkBehaviour
         canDrag = value;
     }
 
+    private void SetCanCancelDrag(bool value)
+    {
+        canCancelDrag = value;
+    }
     public void SetIsDragging(bool dragging)
     {
         isDragging = dragging;
