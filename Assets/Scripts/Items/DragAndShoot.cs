@@ -44,15 +44,18 @@ public class DragAndShoot : NetworkBehaviour
     [SerializeField] protected float maxForce = 50f;
 
     [Tooltip("Minimum Force that the Object can go")][RangeStep(1f, 50f, 1f)]
-    [SerializeField] protected float minForce = 1f;
+    [SerializeField] private float minForce = 1f;
 
     [Tooltip("Value to be add to not need to drag too far from the object")]
     [RangeStep(1.1f, 5f, 0.2f)]
     [SerializeField] protected float offsetForce = 0.1f;
 
     [BetterHeader("Zoom Settings")]
-    [Tooltip("Time to the drag updtae the zoom")]
+    [Tooltip("Speed of the Zoom")]
     [SerializeField] protected float zoomDragSpeed;
+
+    [Tooltip("Amount of zoom to change")]
+    [SerializeField] protected float zoomAmountToChange = 5f;
 
     [Tooltip("Increase the force of zoom")]
     [SerializeField] protected float zoomMultiplier = 7f;
@@ -62,7 +65,10 @@ public class DragAndShoot : NetworkBehaviour
     protected Vector3 directionOfDrag;
     protected float dragForce;
     protected float lastDragDistance;
-    [SerializeField] protected float dragChangedOffset; 
+    [SerializeField] protected float dragChangedOffset;
+
+    [Tooltip("Will only detect the distance if exceeds threshold")]
+    [SerializeField] private float detectDistanceThreshold = 2f;
     protected bool isDragging = false;
     protected bool canDrag = false;
     protected float dragDistance;
@@ -77,6 +83,9 @@ public class DragAndShoot : NetworkBehaviour
 
     protected Plane plane; // Cache for the clicks
     protected float outDistancePlane; // store the distance of the plane and screen
+
+
+    //Publics
 
     public Vector3 DirectionOfDrag => directionOfDrag;
     public Vector3 EndPosDrag => endPosDrag;
@@ -94,9 +103,14 @@ public class DragAndShoot : NetworkBehaviour
 
 
     private bool canCancelDrag = false;
-    [SerializeField] private float canceDragLimit = 0.9f;
-    private float minDragDistanceCancel = 2f;
-    private float zoomThreshold = 0.2f;
+
+    [Tooltip("Distance to cancel the drag")]
+    [SerializeField] private float canceDragDistance = 0.9f;
+
+    private float deltaDetectDistance = 0f; //cache
+    private int roundedLastDragDistance = 0; //cache
+    private int roundedDragDistance = 0; //cache
+
 
     public override void OnNetworkSpawn()
     {
@@ -185,60 +199,55 @@ public class DragAndShoot : NetworkBehaviour
 
             OnDragChange?.Invoke();
 
+            CheckCancelDrag();
+
+            // Convert the drag distances to an absolute, rounded integer.
+            roundedLastDragDistance = Mathf.Abs(Mathf.RoundToInt(lastDragDistance));
+            roundedDragDistance = Mathf.Abs(Mathf.RoundToInt(dragDistance));
 
 
-            int roundedLastDragDistance = Mathf.Abs(Mathf.RoundToInt(lastDragDistance));
-            int roundedDragDistance = Mathf.Abs(Mathf.RoundToInt(dragDistance));
+            deltaDetectDistance = Mathf.Abs(roundedDragDistance - roundedLastDragDistance);
 
-            if (roundedDragDistance > roundedLastDragDistance)
+
+            if (deltaDetectDistance >= detectDistanceThreshold)
             {
-                Debug.Log("Force is increasing");
-            } else if (roundedDragDistance < roundedLastDragDistance)
-            {
-                Debug.Log("Force is decreasing");
-            } else
-            {
-                Debug.Log("Force is the same");
+                //Detected a change in distance
+
+                if (roundedDragDistance > roundedLastDragDistance)
+                {
+                    //Force is increasing
+                    CameraManager.Instance.CameraZoom.ChangeZoom(-zoomAmountToChange, zoomDragSpeed);
+                    Debug.Log("Force is increasing");
+                }
+                else if (roundedDragDistance < roundedLastDragDistance)
+                {
+                    //Force is decreasing
+
+                    CameraManager.Instance.CameraZoom.ChangeZoom(zoomAmountToChange, zoomDragSpeed);
+
+                    Debug.Log("Force is decreasing");
+                }
+
+
+                lastDragDistance = dragDistance; //only update if changed
             }
+            else
+            {
+                //Not detected a change in distance
+            }
+        }
+    }
 
-
-            lastDragDistance = dragDistance;
-
-            //if (Time.time - lastCheckTime >= checkMovementInterval)
-            //{
-            //    zoomForce = dragForce * zoomMultiplier;
-            //    isZoomIncreasing = zoomForce > lastZoomForce; // Check is zoomForce is increasing
-
-            //    //if (dragDistance > minDragDistanceCancel)
-            //    //{
-            //    //    canCancelDrag = true;
-            //    //}
-            //    if (Mathf.Abs(zoomForce - lastZoomForce) > zoomThreshold)
-            //    {
-            //        if (isZoomIncreasing)
-            //        {
-            //            // zoom out
-            //            CameraManager.Instance.CameraZoom.ChangeZoom(-5f, zoomDragSpeed);
-            //        }
-            //        else
-            //        {
-            //            // zoom in
-            //            CameraManager.Instance.CameraZoom.ChangeZoom(5f, zoomDragSpeed);
-
-            //            if (dragDistance < canceDragLimit)
-            //            {
-            //                SetCanCancelDrag(true);
-            //                OnDragCancelable?.Invoke(true);
-            //            } else
-            //            {
-            //                OnDragCancelable?.Invoke(false);
-            //            }
-            //        }
-            //        lastZoomForce = zoomForce; // Update the last zoom force
-            //        lastCheckTime = Time.time; // Update the last check time
-            //    }
-            //}
-
+    private void CheckCancelDrag()
+    {
+        if (Mathf.Abs(dragDistance) <= canceDragDistance)
+        {
+            SetCanCancelDrag(true);
+            OnDragCancelable?.Invoke(true);
+        }
+        else
+        {
+            OnDragCancelable?.Invoke(false);
         }
     }
 

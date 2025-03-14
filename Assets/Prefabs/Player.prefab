@@ -574,10 +574,11 @@ MonoBehaviour:
   maxForce: 26
   minForce: 1
   offsetForce: 2
-  zoomDragSpeed: 5
+  zoomDragSpeed: 7
   zoomMultiplier: 7
   dragChangedOffset: 2
-  canceDragLimit: 0.9
+  detectDistanceThreshold: 2
+  canceDragDistance: 1.5
 --- !u!114 &800024870368675109
 MonoBehaviour:
   m_ObjectHideFlags: 0
