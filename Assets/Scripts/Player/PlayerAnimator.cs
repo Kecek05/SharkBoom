@@ -41,7 +41,7 @@ public class PlayerAnimator : NetworkBehaviour
         }
         else if (newState == player.PlayerStateMachine.draggingJump)
         {
-            PlayAnimation(Animations.AimJump);
+            PlayAnimation(Animations.AimJump, 0);
         }
         else if (newState == player.PlayerStateMachine.dragReleaseItem)
         {
