@@ -16,11 +16,6 @@ public class BaseItemThrowable : MonoBehaviour
     [SerializeField] protected GameObject[] collidersToChangeLayer;
     protected ItemLauncherData thisItemLaucherData;
 
-    protected virtual void OnEnable()
-    {
-
-    }
-
     public virtual void Initialize(ItemLauncherData itemLauncherData)
     {
         thisItemLaucherData = itemLauncherData;
@@ -47,7 +42,7 @@ public class BaseItemThrowable : MonoBehaviour
 
     protected virtual void ItemReleased(float force, Vector3 direction)
     {
-        CameraManager.Instance.CameraFollowing.SetTheValuesOfCinemachine(cinemachineFollow);
+        //CameraManager.Instance.CameraFollowing.SetTheValuesOfCinemachine(cinemachineFollow);
 
         rb.AddForce(direction * force, ForceMode.Impulse);
 

@@ -10,9 +10,8 @@ public class BaseItemThrowableActivable : BaseItemThrowable
 
     protected bool itemActivated = false;
 
-    protected override void OnEnable()
+    protected void OnEnable()
     {
-        base.OnEnable();
         itemActivated = false;
     }
 

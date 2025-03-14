@@ -30,60 +30,58 @@ public class DragAndShoot : NetworkBehaviour
 
     [BetterHeader("References")]
     [SerializeField] protected Player player;
-    [SerializeField] protected Trajectory trajectory;
-    [SerializeField] protected InputReader inputReader;
-    [SerializeField] protected GameObject areaOfStartDrag;
+    [SerializeField] private Trajectory trajectory;
+    [SerializeField] private InputReader inputReader;
+    [SerializeField] private GameObject areaOfStartDrag;
     [Tooltip("Center position of the drag")]
-    [SerializeField] protected Transform startTrajectoryPos;
-    [SerializeField] protected LayerMask touchLayer;
+    [SerializeField] private Transform startTrajectoryPos;
+    [SerializeField] private LayerMask touchLayer;
 
 
 
     [BetterHeader("Force Settings")]
     [Tooltip("Maximum Force that the Object can go")][RangeStep(1f, 50f, 1f)]
-    [SerializeField] protected float maxForce = 50f;
+    [SerializeField] private float maxForce = 50f;
 
     [Tooltip("Minimum Force that the Object can go")][RangeStep(1f, 50f, 1f)]
     [SerializeField] private float minForce = 1f;
 
     [Tooltip("Value to be add to not need to drag too far from the object")]
     [RangeStep(1.1f, 5f, 0.2f)]
-    [SerializeField] protected float offsetForce = 0.1f;
+    [SerializeField] private float offsetForce = 0.1f;
 
     [BetterHeader("Zoom Settings")]
     [Tooltip("Speed of the Zoom")]
-    [SerializeField] protected float zoomDragSpeed;
+    [SerializeField] private float zoomDragSpeed;
 
     [Tooltip("Amount of zoom to change")]
-    [SerializeField] protected float zoomAmountToChange = 5f;
-
-    [Tooltip("Increase the force of zoom")]
-    [SerializeField] protected float zoomMultiplier = 7f;
-
-
-    protected Vector3 endPosDrag;
-    protected Vector3 directionOfDrag;
-    protected float dragForce;
-    protected float lastDragDistance;
-    [SerializeField] protected float dragChangedOffset;
+    [SerializeField] private float zoomAmountToChange = 5f;
 
     [Tooltip("Will only detect the distance if exceeds threshold")]
-    [SerializeField] private float detectDistanceThreshold = 2f;
-    protected bool isDragging = false;
-    protected bool canDrag = false;
-    protected float dragDistance;
+    [SerializeField] private int detectDistanceThreshold = 2;
+
+    private Vector3 endPosDrag;
+    private Vector3 directionOfDrag;
+    private float dragForce;
+    private float lastDragDistance;
+
+    private bool isDragging = false;
+    private bool canDrag = false;
+    private float dragDistance;
 
 
-    protected Transform startZoomPos; // store the original zoom position
-    protected float zoomForce; // current force of zoom
-    protected bool isZoomIncreasing; // bool for check if the force is decreasing or increasing and allow the zoom
-    protected float lastZoomForce = 0f; // Store the last zoom force
-    protected float checkMovementInterval = 0.001f; // control the time between checks of the zoom force, turn the difference bigger
-    protected float lastCheckTime = 0f; // control the time between checks
+    private Transform startZoomPos; // store the original zoom position
+    private float zoomForce; // current force of zoom
+    private bool isZoomIncreasing; // bool for check if the force is decreasing or increasing and allow the zoom
+    private float lastZoomForce = 0f; // Store the last zoom force
+    private float checkMovementInterval = 0.001f; // control the time between checks of the zoom force, turn the difference bigger
+    private float lastCheckTime = 0f; // control the time between checks
 
-    protected Plane plane; // Cache for the clicks
-    protected float outDistancePlane; // store the distance of the plane and screen
+    private Plane plane; // Cache for the clicks
+    private float outDistancePlane; // store the distance of the plane and screen
+    private bool canCancelDrag = false;
 
+    protected Rigidbody selectedRb;
 
     //Publics
 
@@ -98,11 +96,9 @@ public class DragAndShoot : NetworkBehaviour
     public float MaxForceMultiplier => maxForce;
 
 
-    protected Rigidbody selectedRb;
     public Rigidbody SelectedRb => selectedRb; //DEBUG
 
 
-    private bool canCancelDrag = false;
 
     [Tooltip("Distance to cancel the drag")]
     [SerializeField] private float canceDragDistance = 0.9f;
@@ -253,7 +249,7 @@ public class DragAndShoot : NetworkBehaviour
     }
 
 
-    public void ResetDrag()
+    protected void ResetDrag()
     {
         // Reset the dots position
         trajectory.UpdateDots(startTrajectoryPos.position, directionOfDrag * minForce, selectedRb);
@@ -261,18 +257,18 @@ public class DragAndShoot : NetworkBehaviour
     }
 
 
-    public void TurnOffDrag()
+    protected void TurnOffDrag()
     {
         SetCanDrag(false);
         SetIsDragging(false);
     }
 
-    public void TurnOnDrag()
+    protected void TurnOnDrag()
     {
         SetCanDrag(true);
     }
 
-    public void SetCanDrag(bool value)
+    private void SetCanDrag(bool value)
     {
         canDrag = value;
     }
@@ -281,7 +277,8 @@ public class DragAndShoot : NetworkBehaviour
     {
         canCancelDrag = value;
     }
-    public void SetIsDragging(bool dragging)
+
+    private void SetIsDragging(bool dragging)
     {
         isDragging = dragging;
 
@@ -293,6 +290,7 @@ public class DragAndShoot : NetworkBehaviour
             trajectory.Hide();
         }
     }
+
     public float GetAngle()
     {
         return Mathf.Atan2(directionOfDrag.y, directionOfDrag.x) * Mathf.Rad2Deg;
