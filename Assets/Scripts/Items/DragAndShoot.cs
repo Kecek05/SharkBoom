@@ -64,6 +64,7 @@ public class DragAndShoot : NetworkBehaviour
     public Vector3 DirectionOfDrag => directionOfDrag;
     public float DragForce => dragForce;
     public bool CanDrag => canDrag;
+    public Vector3 EndPosDrag => endPosDrag;
 
 
     protected Rigidbody selectedRb;
