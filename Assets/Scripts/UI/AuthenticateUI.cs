@@ -24,10 +24,11 @@ public class AuthenticateUI : MonoBehaviour
 
         authBtn.onClick.AddListener(async () =>
         {
-            //HideButtons();
-            //ShowTxt();
-            //auth mobile
-            // await ClientSingleton.Instance.AuthClientUnity();
+            //Loggin with Google Play
+            HideButtons();
+            ShowTxt();
+            await ClientSingleton.Instance.AuthAndroid();
+            authAndroidTxt.text = $"Token: {AuthenticationWrapper.GooglePlayToken} name: {PlayGamesPlatform.Instance.GetUserDisplayName()} ID: {PlayGamesPlatform.Instance.GetUserId()}";
         });
         authAnonymouslyBtn.onClick.AddListener(async () =>
         {
@@ -44,14 +45,14 @@ public class AuthenticateUI : MonoBehaviour
 
 
 
-        if(Application.platform == RuntimePlatform.Android)
-        {
-            //Loggin with Google Play
-            HideButtons();
-            ShowTxt();
-            await ClientSingleton.Instance.AuthAndroid();
-            authAndroidTxt.text = $"Token: {AuthenticationWrapper.GooglePlayToken} name: {PlayGamesPlatform.Instance.GetUserDisplayName()} ID: {PlayGamesPlatform.Instance.GetUserId()}";
-        }
+        //if(Application.platform == RuntimePlatform.Android)
+        //{
+        //    //Loggin with Google Play
+        //    HideButtons();
+        //    ShowTxt();
+        //    await ClientSingleton.Instance.AuthAndroid();
+        //    authAndroidTxt.text = $"Token: {AuthenticationWrapper.GooglePlayToken} name: {PlayGamesPlatform.Instance.GetUserDisplayName()} ID: {PlayGamesPlatform.Instance.GetUserId()}";
+        //}
     }
 
     private void Update()
