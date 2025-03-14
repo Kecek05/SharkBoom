@@ -1,5 +1,6 @@
 using Sortify;
 using Unity.Netcode;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 public class PlayerAnimator : NetworkBehaviour
@@ -7,9 +8,6 @@ public class PlayerAnimator : NetworkBehaviour
     [BetterHeader("References")]
     [SerializeField] private Animator animator;
     [SerializeField] private Player player;
-
-
-
 
     private readonly static int[] animations =
     {
@@ -21,7 +19,7 @@ public class PlayerAnimator : NetworkBehaviour
     };
 
     private Animations currentAnimation;
-    private bool locked;
+
 
     public override void OnNetworkSpawn()
     {
@@ -33,17 +31,38 @@ public class PlayerAnimator : NetworkBehaviour
 
     private void PlayerStateMachine_OnStateChanged(IState newState)
     {
-
+        if(newState == player.PlayerStateMachine.idleMyTurnState || newState == player.PlayerStateMachine.idleEnemyTurnState || newState == player.PlayerStateMachine.myTurnEndedState)
+        {
+            PlayAnimation(Animations.Idle);
+        } 
+        else if (newState == player.PlayerStateMachine.draggingItem)
+        {
+            PlayAnimation(Animations.Aim);
+        }
+        else if (newState == player.PlayerStateMachine.draggingJump)
+        {
+            PlayAnimation(Animations.AimJump);
+        }
+        else if (newState == player.PlayerStateMachine.dragReleaseItem)
+        {
+            PlayAnimation(Animations.Shoot);
+        }
+        else if (newState == player.PlayerStateMachine.dragReleaseJump)
+        {
+            PlayAnimation(Animations.Jump);
+        }
     }
 
-    private void ChangeAnimation(string newAnimation, float crossFade = 0.2f)
+    private void PlayAnimation(Animations newAnimation, float crossFade = 0.2f)
     {
-        if(currentAnimation != newAnimation)
-        {
-            currentAnimation = newAnimation;
-            animator.CrossFade(newAnimation, crossFade);
+        if(newAnimation == Animations.None) return; //none
 
-        }
+        if (currentAnimation == newAnimation) return; //already playing this animation
+
+        currentAnimation = newAnimation;
+
+        animator.CrossFade(animations[(int)currentAnimation], crossFade);
+
     }
 
     public override void OnNetworkDespawn()
@@ -57,10 +76,10 @@ public class PlayerAnimator : NetworkBehaviour
 
 public enum Animations
 {
-    None,
     Idle,
     Shoot,
     Jump,
     AimJump,
     Aim,
+    None, //at the bottom!
 }
