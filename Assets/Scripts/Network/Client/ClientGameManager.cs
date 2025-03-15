@@ -42,6 +42,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
             {
                 userName = AuthenticationWrapper.PlayerName,
                 userAuthId = AuthenticationService.Instance.PlayerId,
+                userPearls = UnityEngine.Random.Range(0, 1001), // random for debug
             };
 
             Loader.Load(Loader.Scene.MainMenu);

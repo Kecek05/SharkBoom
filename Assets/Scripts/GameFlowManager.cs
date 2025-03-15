@@ -124,6 +124,8 @@ public class GameFlowManager : NetworkBehaviour
         {
             case GameState.WaitingForPlayers:
                 break;
+            case GameState.LoadingToStart:
+                break;
             case GameState.GameStarted:
                 if (IsServer)
                 {
@@ -204,7 +206,8 @@ public enum GameState
 {
     None,
     WaitingForPlayers, //Waiting for players to connect
-    GameStarted, //all players connected
+    LoadingToStart, // All players connected, loading inventory
+    GameStarted, //Game Started
     GameEnded, //Game Over
 }
 

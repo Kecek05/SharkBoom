@@ -92,6 +92,7 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
         {
             userName = AuthenticationWrapper.PlayerName,
             userAuthId = AuthenticationService.Instance.PlayerId,
+            userPearls = UnityEngine.Random.Range(0, 1001), // random for debug
         };
 
         string payload = JsonUtility.ToJson(userData); //serialize the payload to json
