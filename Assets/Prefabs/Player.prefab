@@ -573,11 +573,11 @@ MonoBehaviour:
     m_Bits: 128
   maxForce: 26
   minForce: 1
-  offsetForce: 2
-  zoomDragSpeed: 40
+  forceAddMultiplier: 4.6
+  zoomDragSpeed: 20
   zoomAmountToChange: 2
   detectDistanceThreshold: 1
-  canceDragDistance: 1.5
+  canceDragDistance: 1
 --- !u!114 &800024870368675109
 MonoBehaviour:
   m_ObjectHideFlags: 0

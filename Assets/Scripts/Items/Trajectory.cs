@@ -90,12 +90,14 @@ public class Trajectory : MonoBehaviour
 
     public void Show()
     {
-        dotsParent.SetActive(true);
+        if(!dotsParent.activeSelf)
+            dotsParent.SetActive(true);
     }
 
     public void Hide()
     {
-        dotsParent.SetActive(false);
+        if (dotsParent.activeSelf)
+            dotsParent.SetActive(false);
     }
 
     public void SetSimulation(bool _isSimulating)

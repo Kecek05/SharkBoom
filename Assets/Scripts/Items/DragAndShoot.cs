@@ -48,7 +48,7 @@ public class DragAndShoot : NetworkBehaviour
 
     [Tooltip("Value to be add to not need to drag too far from the object")]
     [RangeStep(1.1f, 5f, 0.2f)]
-    [SerializeField] private float offsetForce = 0.1f;
+    [SerializeField] private float forceAddMultiplier = 0.1f;
 
     [BetterHeader("Zoom Settings")]
     [Tooltip("Speed of the Zoom")]
@@ -186,7 +186,7 @@ public class DragAndShoot : NetworkBehaviour
             directionOfDrag = (startTrajectoryPos.position - endPosDrag).normalized; // calculate the direction of the drag on Vector3
             dragDistance = Vector3.Distance(startTrajectoryPos.position, endPosDrag); // calculate the distance of the drag on float
 
-            dragForce = dragDistance * offsetForce; //Calculate the force linearly
+            dragForce = dragDistance * forceAddMultiplier; //Calculate the force linearly
             dragForce = Mathf.Clamp(dragForce, minForce, maxForce);
 
 
@@ -239,11 +239,13 @@ public class DragAndShoot : NetworkBehaviour
         if (Mathf.Abs(dragDistance) <= canceDragDistance)
         {
             SetCanCancelDrag(true);
+            trajectory.Hide();
             OnDragCancelable?.Invoke(true);
         }
         else
         {
             SetCanCancelDrag(false);
+            trajectory.Show();
             OnDragCancelable?.Invoke(false);
         }
     }

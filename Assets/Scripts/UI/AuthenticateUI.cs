@@ -45,7 +45,7 @@ public class AuthenticateUI : MonoBehaviour
 
 
 
-        //if(Application.platform == RuntimePlatform.Android)
+        //if (Application.platform == RuntimePlatform.Android)
         //{
         //    //Loggin with Google Play
         //    HideButtons();
