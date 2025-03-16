@@ -217,7 +217,7 @@ public enum GameState
 {
     None,
     WaitingForPlayers, //Waiting for players to connect
-    WaitingToStart, // All players connected, loading stuff
+    WaitingToStart, // All players connected, and Spawned
     GameStarted, //Game Started
     GameEnded, //Game Over
 }

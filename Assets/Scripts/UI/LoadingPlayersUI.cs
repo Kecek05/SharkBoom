@@ -1,5 +1,6 @@
 using Sortify;
 using TMPro;
+using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -32,18 +33,15 @@ public class LoadingPlayersUI : NetworkBehaviour
         {
             Player.OnPlayerSpawned += Player_OnPlayerSpawned;
         }
-
-        foreach(ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
-        {
-            GetUserDataRpc(clientId);
-        }
     }
 
     private void GameState_OnValueChanged(GameState previousValue, GameState newValue)
     {
+
         if(newValue == GameState.WaitingToStart)
         {
-            //All Connected
+            //All Connected and Spawned
+
             ShowPlayersInfo();
             HideWaitingForPlayers();
         } else if (newValue == GameState.GameStarted)
@@ -51,37 +49,54 @@ public class LoadingPlayersUI : NetworkBehaviour
             //Game Started
             HidePlayersInfo();
         }
-        Debug.Log(newValue);
     }
 
 
     private void Player_OnPlayerSpawned(Player player)
     {
-        
-    }
+        if(player.OwnerClientId == 1) //Only update if the second player is spawned
+            PlayerSpawnedServerRpc();
 
-    private void UpdatePlayer1UI(UserData userData)
-    {
-        player1NameText.text = userData.userName;
-        player1PearlsText.text = userData.userPearls.ToString();
-    }
-
-    private void UpdatePlayer2UI(UserData userData)
-    {
-        player2NameText.text = userData.userName;
-        player2PearlsText.text = userData.userPearls.ToString();
     }
 
     [Rpc(SendTo.Server)]
-    public void GetUserDataRpc(ulong clientId) //Call server to retrive client Id
+    private void PlayerSpawnedServerRpc()
     {
-        if(IsHost)
-        {
-            //Call from HostSingleton
+        //Send to server to send to all clients
 
-        } else
+        foreach(ulong connectedClientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
-            //Call from ServerSingleton
+            if(IsHost)
+            {
+                //Host Singleton
+                UserData playerUserData = HostSingleton.Instance.GameManager.NetworkServer.GetUserDataByClientId(connectedClientId);
+
+                PlayerSpawnedClientRpc(playerUserData.userName, playerUserData.userPearls, connectedClientId);
+            } else
+            {
+                //Server Singleton
+                //UserData playerUserData = ServerSingleton.Instance.GameManager.NetworkServer.GetUserDataByClientId(connectedClientId);
+
+                //PlayerSpawnedClientRpc(playerUserData.userName, playerUserData.userPearls, connectedClientId);
+            }
+        }
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void PlayerSpawnedClientRpc(FixedString32Bytes playerName, int playerPearls, ulong clientId)
+    {
+        //All clients listen to this
+        if (clientId == 0)
+        {
+            //Player 1
+            player1NameText.text = playerName.Value.ToString();
+            player1PearlsText.text = playerPearls.ToString();
+        }
+        else
+        {
+            //Player 2
+            player2NameText.text = playerName.Value.ToString();
+            player2PearlsText.text = playerPearls.ToString();
         }
     }
 
