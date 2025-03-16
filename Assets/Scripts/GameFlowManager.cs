@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -76,14 +77,14 @@ public class GameFlowManager : NetworkBehaviour
             //recived item callback from player 1
             currentPlayableState.Value = PlayableState.Player1Played;
 
-            DelayChangeState(PlayableState.Player2Playing);
+            DelayChangePlayableState(PlayableState.Player2Playing);
         }
         else if (playerPlayingState == PlayableState.Player2Playing)
         {
             //recived item callback from player 2
             currentPlayableState.Value = PlayableState.Player2Played;
 
-            DelayChangeState(PlayableState.Player1Playing);
+            DelayChangePlayableState(PlayableState.Player1Playing);
         }
     }
 
@@ -125,11 +126,16 @@ public class GameFlowManager : NetworkBehaviour
             case GameState.WaitingForPlayers:
                 break;
             case GameState.WaitingToStart:
+
+                if(IsServer)
+                {
+                    RandomizePlayerItems();
+                    DelayChangeGameState(GameState.GameStarted); // DEBUG
+                }
                 break;
             case GameState.GameStarted:
                 if (IsServer)
                 {
-                    RandomizePlayerItems();
 
                     DelayChangePlayableStateStart(); // DEBUG
                     int randomStartPlayer = UnityEngine.Random.Range(0, 2);
@@ -145,21 +151,26 @@ public class GameFlowManager : NetworkBehaviour
 
     private async void DelayChangePlayableStateStart() //DEBUG
     {
-        await Task.Delay(8000);
+        await Task.Delay(5000);
         CurrentPlayableState.Value = PlayableState.Player1Playing;
     }
 
 
-    private async void DelayChangeState(PlayableState playableState)
+    private async void DelayChangePlayableState(PlayableState playableState)
     {
         await Task.Delay(5000);
         SetPlayableStateRpc(playableState);
     }
 
-    [Command("gameFlowManager-randomizePlayersItems")]
-    public async void RandomizePlayerItems()
+    private async void DelayChangeGameState(GameState gameState)
     {
-        await Task.Delay(3000); //Delay for player to connect
+        await Task.Delay(3000);
+        SetGameStateRpc(gameState);
+    }
+
+    [Command("gameFlowManager-randomizePlayersItems")]
+    public void RandomizePlayerItems()
+    {
         //int itemsInInventory = UnityEngine.Random.Range(2, itemsListSO.allItemsSOList.Count); //Random qtd of items for now
         int itemsInInventory = itemsListSO.allItemsSOList.Count; //all items
 

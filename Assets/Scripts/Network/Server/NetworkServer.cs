@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class NetworkServer : IDisposable
 {
@@ -26,6 +27,16 @@ public class NetworkServer : IDisposable
     private void NetworkManager_OnServerStarted()
     {
         networkManager.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
+
+        networkManager.SceneManager.OnLoadComplete += SceneManager_OnLoadComplete;
+
+    }
+
+    private void SceneManager_OnLoadComplete(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
+    {
+        //Called when any client loads a scene
+        Debug.Log(sceneName + " Load Complete");
+        SpawnPlayer(clientId);
     }
 
     private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
@@ -44,22 +55,13 @@ public class NetworkServer : IDisposable
         clientIdToAuth[request.ClientNetworkId] = userData.userAuthId; //if dont exist, add to dictionary
         authIdToUserData[userData.userAuthId] = userData;
 
-
-        _ = SpawnPlayerDelay(request.ClientNetworkId);
-
         response.Approved = true; //Connection is approved
         response.CreatePlayerObject = false;
-
-        //if(networkManager.ConnectedClientsList.Count == 1) 
-        //{
-        //    //Both players are connected
-        //    GameFlowManager.Instance.SetGameStateRpc(GameFlowManager.GameState.GameStarted);
-        //}
     }
 
-    private async Task SpawnPlayerDelay(ulong clientId)
+    private void SpawnPlayer(ulong clientId)
     {
-        await Task.Delay(1000);
+        //await Task.Delay(1000);
 
         Transform randomSpawnPointSelected = GameFlowManager.Instance.GetRandomSpawnPoint();
 
@@ -76,7 +78,7 @@ public class NetworkServer : IDisposable
             playerInstance.GetComponent<Player>().SetThisPlayableStateRpc(PlayableState.Player2Playing);
 
             //Both players are connected and spawned
-            GameFlowManager.Instance.SetGameStateRpc(GameState.GameStarted);
+            GameFlowManager.Instance.SetGameStateRpc(GameState.WaitingToStart);
         }
 
     }
@@ -102,6 +104,8 @@ public class NetworkServer : IDisposable
             networkManager.ConnectionApprovalCallback -= ApprovalCheck;
             networkManager.OnServerStarted -= NetworkManager_OnServerStarted;
             networkManager.OnClientDisconnectCallback -= NetworkManager_OnClientDisconnectCallback;
+
+            networkManager.SceneManager.OnLoadComplete -= SceneManager_OnLoadComplete;
         }
 
         if (networkManager.IsListening)

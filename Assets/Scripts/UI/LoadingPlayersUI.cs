@@ -23,7 +23,7 @@ public class LoadingPlayersUI : NetworkBehaviour
         ShowWaitingForPlayers();
 
 
-        if(!IsServer)
+        if(IsClient)
         {
             GameFlowManager.Instance.CurrentGameState.OnValueChanged += GameState_OnValueChanged;
         }
@@ -51,6 +51,7 @@ public class LoadingPlayersUI : NetworkBehaviour
             //Game Started
             HidePlayersInfo();
         }
+        Debug.Log(newValue);
     }
 
 
