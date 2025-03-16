@@ -6,9 +6,6 @@ using UnityEngine;
 
 public class Health : NetworkBehaviour
 {
-    //Events
-    public event Action OnDie;
-
 
     [BetterHeader("Settings")]
     [SerializeField] protected float maxHealth;
@@ -67,7 +64,6 @@ public class Health : NetworkBehaviour
      {
           if(!IsServer) return;
 
-          OnDie?.Invoke();
           //Temp, after will only invoke the event 
 
           if(gameObject.TryGetComponent(out NetworkObject networkObject))

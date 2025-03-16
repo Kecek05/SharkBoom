@@ -35,6 +35,8 @@ public class Player : NetworkBehaviour
     public PlayerDragController PlayerDragController => playerDragController;
     public PlayerLauncher PlayerLauncher => playerLauncher;
 
+    public NetworkVariable<PlayableState> ThisPlayableState => thisPlayableState;
+
     public NetworkVariable<FixedString32Bytes> PlayerName => playerName;
 
     public NetworkVariable<int> PlayerPearls => playerPearls;

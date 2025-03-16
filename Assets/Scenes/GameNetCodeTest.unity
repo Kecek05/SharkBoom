@@ -4173,6 +4173,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1455302044}
+  - component: {fileID: 1455302045}
   m_Layer: 5
   m_Name: HUDUI
   m_TagString: Untagged
@@ -4200,6 +4201,22 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1455302045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1455302043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a95e66ef2043c3f4bad44416d40d676f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player1Image: {fileID: 1374073964}
+  player2Image: {fileID: 2123789594}
+  player1HealthSlider: {fileID: 1210409197}
+  player2HealthSlider: {fileID: 806868748}
 --- !u!1 &1489485622
 GameObject:
   m_ObjectHideFlags: 0
