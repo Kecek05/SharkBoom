@@ -2,11 +2,15 @@ using QFSW.QC;
 using Sortify;
 using System;
 using System.Threading.Tasks;
+using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
 public class Player : NetworkBehaviour
 {
+    public static event Action<Player> OnPlayerSpawned;
+
+
     [BetterHeader("References")]
     [SerializeField] private PlayerInventory playerInventory;
     [SerializeField] private PlayerInventoryUI playerInventoryUI;
@@ -19,6 +23,10 @@ public class Player : NetworkBehaviour
 
     private NetworkVariable<PlayableState> thisPlayableState = new();
 
+    private NetworkVariable<FixedString32Bytes> playerName = new();
+    private NetworkVariable<int> playerPearls = new();
+
+
     //Publics
     public PlayerStateMachine PlayerStateMachine => playerStateMachine;
     public PlayerInventory PlayerInventory => playerInventory;
@@ -27,9 +35,36 @@ public class Player : NetworkBehaviour
     public PlayerDragController PlayerDragController => playerDragController;
     public PlayerLauncher PlayerLauncher => playerLauncher;
 
+    public NetworkVariable<FixedString32Bytes> PlayerName => playerName;
+
+    public NetworkVariable<int> PlayerPearls => playerPearls;
+
     public override void OnNetworkSpawn()
     {
-        gameObject.name = "Player " + UnityEngine.Random.Range(0, 100).ToString();
+        if(IsServer)
+        {
+            UserData userData = null;
+
+            if(IsHost)
+            {
+                //Host Singleton
+                userData = HostSingleton.Instance.GameManager.NetworkServer.GetUserDataByClientId(OwnerClientId);
+
+            } else
+            {
+                //Server Singleton
+                //userData = ServerSingleton.Instance.GameManager.NetworkServer.GetUserDataByClientId(OwnerClientId);
+            }
+
+            playerName.Value = userData.userName;
+            playerPearls.Value = userData.userPearls;
+
+            OnPlayerSpawned?.Invoke(this);
+
+        }
+
+
+        gameObject.name = "Player " + playerName.Value;
 
         thisPlayableState.OnValueChanged += PlayableStateChanged;
 
