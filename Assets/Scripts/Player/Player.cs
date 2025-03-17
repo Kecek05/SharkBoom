@@ -34,11 +34,8 @@ public class Player : NetworkBehaviour
     public PlayerHealth PlayerHealth => playerHealth;
     public PlayerDragController PlayerDragController => playerDragController;
     public PlayerLauncher PlayerLauncher => playerLauncher;
-
     public NetworkVariable<PlayableState> ThisPlayableState => thisPlayableState;
-
     public NetworkVariable<FixedString32Bytes> PlayerName => playerName;
-
     public NetworkVariable<int> PlayerPearls => playerPearls;
 
     public override void OnNetworkSpawn()
