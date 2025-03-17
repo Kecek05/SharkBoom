@@ -21,7 +21,7 @@ public class GameFlowManager : NetworkBehaviour
     public static event Action OnMyTurnStarted; //local player can play
     public static event Action OnMyTurnEnded;
     public static event Action OnMyTurnJumped;
-
+    public static event Action OnLocalPlayableStateChanged;
 
     [BetterHeader("References")]
     [SerializeField] private ItemsListSO itemsListSO;
@@ -69,6 +69,7 @@ public class GameFlowManager : NetworkBehaviour
                 break;
         }
 
+        OnLocalPlayableStateChanged?.Invoke();
     }
 
     [Rpc(SendTo.Server)]
