@@ -60,8 +60,8 @@ public class DragAndShoot : NetworkBehaviour
     [Tooltip("Will only detect the distance if exceeds threshold")]
     [SerializeField] private int detectDistanceThreshold = 2;
 
-    private Vector2 endPosDrag;
-    private Vector2 directionOfDrag;
+    private Vector3 endPosDrag;
+    private Vector3 directionOfDrag;
     private float dragForce;
     private float lastDragDistance;
 
@@ -85,8 +85,8 @@ public class DragAndShoot : NetworkBehaviour
 
     //Publics
 
-    public Vector2 DirectionOfDrag => directionOfDrag;
-    public Vector2 EndPosDrag => endPosDrag;
+    public Vector3 DirectionOfDrag => directionOfDrag;
+    public Vector3 EndPosDrag => endPosDrag;
 
     public float DragDistance => dragDistance;
     public float LastDragDistance => lastDragDistance;
@@ -130,6 +130,8 @@ public class DragAndShoot : NetworkBehaviour
         if (context.started) // capture the first frame when the touch is pressed
         {
             Vector2 touchPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Debug.Log($"Touch Pos: {touchPos}");
+
             Collider2D hitCollider = Physics2D.OverlapPoint(touchPos, touchLayer);
 
             if (hitCollider == null) return;
@@ -176,18 +178,22 @@ public class DragAndShoot : NetworkBehaviour
 
     protected void InputReader_OnPrimaryFingerPositionEvent(InputAction.CallbackContext context)
     {
-
         if (!canDrag || !isDragging || selectedRb == null) return;
 
-        Vector2 touchPos = Camera.main.ScreenToWorldPoint(Input.mousePosition); //CHANGE TO CONTEXT
 
-        Collider2D hitCollider = Physics2D.OverlapPoint(touchPos, touchLayer);
+        Vector2 screenPosition = context.ReadValue<Vector2>();
 
-        if (hitCollider != null && Input.touchCount == 1) // this input touch count is a check for avoid the player bug if accidentally touch the screen with two fingers
+
+        Vector3 touchPos = Camera.main.ScreenToWorldPoint(new Vector3(screenPosition.x, screenPosition.y, Camera.main.nearClipPlane));
+
+        Debug.Log("Touch: " + touchPos);
+
+        if (Input.touchCount == 1) // this input touch count is a check for avoid the player bug if accidentally touch the screen with two fingers
         {
+
             endPosDrag = touchPos; // get the position of the click instantaneously
-            directionOfDrag = ((Vector2)startTrajectoryPos.position - endPosDrag).normalized; // calculate the direction of the drag on Vector2
-            dragDistance = Vector2.Distance(startTrajectoryPos.position, endPosDrag); // calculate the distance of the drag on float
+            directionOfDrag = (startTrajectoryPos.position - endPosDrag).normalized; // calculate the direction of the drag on Vector3
+            dragDistance = Vector3.Distance(startTrajectoryPos.position, endPosDrag); // calculate the distance of the drag on float
 
             dragForce = dragDistance * forceAddMultiplier; //Calculate the force linearly
             dragForce = Mathf.Clamp(dragForce, minForce, maxForce);
@@ -307,9 +313,9 @@ public class DragAndShoot : NetworkBehaviour
         return (dragForce / maxForce) * 100f;
     }
 
-    public Vector2 GetOpositeFingerPos()
+    public Vector3 GetOpositeFingerPos()
     {
-        return ((Vector2)startTrajectoryPos.position - endPosDrag) + (Vector2)startTrajectoryPos.position;
+        return (startTrajectoryPos.position - endPosDrag) + startTrajectoryPos.position;
     }
 
     public override void OnNetworkDespawn()

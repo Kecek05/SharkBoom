@@ -23,7 +23,7 @@ public class Trajectory : MonoBehaviour
     private Vector3 adjustedForceDamping;
     private float time; // current time of the dots
 
-    private List<Vector3> trajectoryPoints = new List<Vector3>();
+    private List<Vector2> trajectoryPoints = new List<Vector2>();
     private bool isSimulating;
     
 
