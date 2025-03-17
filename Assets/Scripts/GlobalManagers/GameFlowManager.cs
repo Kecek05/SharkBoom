@@ -125,19 +125,19 @@ public class GameFlowManager : NetworkBehaviour
         {
             case GameState.WaitingForPlayers:
                 break;
-            case GameState.WaitingToStart:
+            case GameState.WaitingToStart: //All connected, showing Players Info
 
                 if(IsServer)
                 {
                     RandomizePlayerItems();
-                    DelayChangeGameState(GameState.GameStarted); // DEBUG
+                    DelayChangeGameState(GameState.GameStarted); //Show delay
                 }
                 break;
             case GameState.GameStarted:
                 if (IsServer)
                 {
 
-                    DelayChangePlayableStateStart(); // DEBUG
+                    CurrentPlayableState.Value = PlayableState.Player1Playing; //DEBUG
                     int randomStartPlayer = UnityEngine.Random.Range(0, 2);
                     //currentPlayableState.Value = randomStartPlayer == 0 ? PlayableState.Player1Playing : PlayableState.Player2Playing;
                 }
@@ -149,16 +149,9 @@ public class GameFlowManager : NetworkBehaviour
         Debug.Log($"Game State Changed to: {newValue.ToString()}");
     }
 
-    private async void DelayChangePlayableStateStart() //DEBUG
-    {
-        await Task.Delay(5000);
-        CurrentPlayableState.Value = PlayableState.Player1Playing;
-    }
-
-
     private async void DelayChangePlayableState(PlayableState playableState)
     {
-        await Task.Delay(5000);
+        await Task.Delay(3000);
         SetPlayableStateRpc(playableState);
     }
 
