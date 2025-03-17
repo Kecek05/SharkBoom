@@ -24,7 +24,7 @@ public class NetworkClient : IDisposable //Actual Client Game Logic
     {
         if(SceneManager.GetActiveScene().name != Loader.Scene.MainMenu.ToString())
         {
-
+            Loader.Load(Loader.Scene.MainMenu);
         }
 
         if(networkManager.IsConnectedClient)

@@ -118,7 +118,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
     }
 
     /// <summary>
-    /// Call this to disconnect from the server
+    /// Call this to disconnect from the server and go to Main Menu
     /// </summary>
     public void Disconnect()
     {

@@ -25,9 +25,6 @@ public class GameOverUI : NetworkBehaviour
             }
 
             ClientSingleton.Instance.GameManager.Disconnect();
-
-            NetworkManager.Singleton.Shutdown();
-            Loader.Load(Loader.Scene.MainMenu);
         });
     }
 
@@ -56,17 +53,16 @@ public class GameOverUI : NetworkBehaviour
         if(GameFlowManager.Instance.LocalplayableState == GameFlowManager.Instance.LosePlayableState.Value)
         {
             playerResultText.text = "You Lose!";
+            playerResultText.color = Color.red;
 
             pearlsResultText.text = calculatePearlsManager.GetPearls(false).ToString();
         } else
         {
             playerResultText.text = "You Win!";
-
+            playerResultText.color = Color.green;
 
             pearlsResultText.text = calculatePearlsManager.GetPearls(true).ToString();
         }
-
-
     }
 
     private void Hide()

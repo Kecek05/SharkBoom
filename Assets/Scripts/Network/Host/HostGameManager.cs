@@ -132,7 +132,7 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
     }
 
     /// <summary>
-    /// Call this to shutdown the server. Doesn't go to main menu
+    /// Call this to shutdown the server. Doesn't go to Main Menu
     /// </summary>
     public async void ShutdownAsync()
     {
