@@ -12,12 +12,13 @@ public class Player : NetworkBehaviour
 
 
     [BetterHeader("References")]
+    [SerializeField] private GameObject playerGFX;
     [SerializeField] private PlayerInventory playerInventory;
     [SerializeField] private PlayerInventoryUI playerInventoryUI;
     [SerializeField] private PlayerHealth playerHealth;
     [SerializeField] private PlayerDragController playerDragController;
     [SerializeField] private PlayerLauncher playerLauncher;
-    [SerializeField] private Collider playerTouchColl;
+    [SerializeField] private BoxCollider2D playerTouchColl;
     [SerializeField] private GameObject[] playerColliders;
     private PlayerStateMachine playerStateMachine;
 
@@ -92,6 +93,15 @@ public class Player : NetworkBehaviour
 
     }
 
+    [Rpc(SendTo.Server)]
+    public void InitializePlayerRpc(PlayableState playableState, Quaternion GFXRotation)
+    {
+        // Cant be OnnetworkSpawn because it needs to be called by NetworkServer
+        thisPlayableState.Value = playableState;
+
+        playerGFX.transform.rotation = GFXRotation;
+    }
+
     private void GameFlowManager_OnMyTurnJumped()
     {
         //DelayToChangeMyTurnJumped();
@@ -132,14 +142,6 @@ public class Player : NetworkBehaviour
 
     }
 
-
-    [Rpc(SendTo.Server)]
-    public void SetThisPlayableStateRpc(PlayableState playableState)
-    {
-        // Cant be OnnetworkSpawn because it needs to be called by NetworkServer
-        thisPlayableState.Value = playableState;
-
-    }
     
 
     private void PlayableStateChanged(PlayableState previousValue, PlayableState newValue)

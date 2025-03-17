@@ -61,21 +61,20 @@ public class NetworkServer : IDisposable
 
     private void SpawnPlayer(ulong clientId)
     {
-        //await Task.Delay(1000);
 
         Transform randomSpawnPointSelected = GameFlowManager.Instance.GetRandomSpawnPoint();
 
-        NetworkObject playerInstance = GameObject.Instantiate(playerPrefab, randomSpawnPointSelected.position, randomSpawnPointSelected.rotation);
+        NetworkObject playerInstance = GameObject.Instantiate(playerPrefab, randomSpawnPointSelected.position, Quaternion.identity);
 
         playerInstance.SpawnAsPlayerObject(clientId);
 
         if(networkManager.ConnectedClientsList.Count == 1)
         {
-            playerInstance.GetComponent<Player>().SetThisPlayableStateRpc(PlayableState.Player1Playing);
+            playerInstance.GetComponent<Player>().InitializePlayerRpc(PlayableState.Player1Playing, randomSpawnPointSelected.rotation);
 
         } else if (networkManager.ConnectedClientsList.Count == 2)
         {
-            playerInstance.GetComponent<Player>().SetThisPlayableStateRpc(PlayableState.Player2Playing);
+            playerInstance.GetComponent<Player>().InitializePlayerRpc(PlayableState.Player2Playing, randomSpawnPointSelected.rotation);
 
             //Both players are connected and spawned
             GameFlowManager.Instance.SetGameStateRpc(GameState.WaitingToStart);
