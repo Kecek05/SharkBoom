@@ -18,7 +18,7 @@ public class Player : NetworkBehaviour
     [SerializeField] private PlayerHealth playerHealth;
     [SerializeField] private PlayerDragController playerDragController;
     [SerializeField] private PlayerLauncher playerLauncher;
-    [SerializeField] private BoxCollider2D playerTouchColl;
+    [SerializeField] private BoxCollider playerTouchColl;
     [SerializeField] private GameObject[] playerColliders;
     private PlayerStateMachine playerStateMachine;
 

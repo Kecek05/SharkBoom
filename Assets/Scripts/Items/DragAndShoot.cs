@@ -77,8 +77,8 @@ public class DragAndShoot : NetworkBehaviour
     private float checkMovementInterval = 0.001f; // control the time between checks of the zoom force, turn the difference bigger
     private float lastCheckTime = 0f; // control the time between checks
 
-    //private Plane plane; // Cache for the clicks
-    //private float outDistancePlane; // store the distance of the plane and screen
+    private Plane plane; // Cache for the clicks
+    private float outDistancePlane; // store the distance of the plane and screen
     private bool canCancelDrag = false;
 
     protected Rigidbody2D selectedRb;
@@ -123,33 +123,30 @@ public class DragAndShoot : NetworkBehaviour
         selectedRb = rb;
     }
 
+
     protected void InputReader_OnTouchPressEvent(InputAction.CallbackContext context)
     {
         if (!canDrag) return;
 
         if (context.started) // capture the first frame when the touch is pressed
         {
-            Vector2 touchPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Debug.Log($"Touch Pos: {touchPos}");
+            Ray rayStart = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
 
-            Collider2D hitCollider = Physics2D.OverlapPoint(touchPos, touchLayer);
-
-            if (hitCollider == null) return;
-
-            Debug.Log("Hit: " + hitCollider.gameObject.name);
-
-
-            if (hitCollider.gameObject == areaOfStartDrag) //touched touchColl
+            if (Physics.Raycast(rayStart, out hit, Mathf.Infinity, touchLayer)) // compare if the touch hit on the object
             {
-                //Start Dragging
-                SetCanCancelDrag(false);
-                trajectory.SetSimulation(true);
-                startZoomPos = cameraManager.CameraObjectToFollow;
+                if (hit.collider.gameObject == areaOfStartDrag)
+                {
+                    //Start Dragging
+                    SetCanCancelDrag(false);
+                    trajectory.SetSimulation(true);
+                    startZoomPos = cameraManager.CameraObjectToFollow;
 
-                //plane = new Plane(Vector3.forward, Input.mousePosition); // we create the plane to calculate the Z, because a click is a 2D position
+                    plane = new Plane(Vector3.forward, Input.mousePosition); // we create the plane to calculate the Z, because a click is a 2D position
 
-                SetIsDragging(true);
-                OnDragStart?.Invoke();
+                    SetIsDragging(true);
+                    OnDragStart?.Invoke();
+                }
             }
         }
 
@@ -164,7 +161,8 @@ public class DragAndShoot : NetworkBehaviour
                 player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleMyTurnState);
                 OnDragCancelable?.Invoke(false);
                 return;
-            } else
+            }
+            else
             {
                 //shoot
                 SetIsDragging(false);
@@ -178,20 +176,15 @@ public class DragAndShoot : NetworkBehaviour
 
     protected void InputReader_OnPrimaryFingerPositionEvent(InputAction.CallbackContext context)
     {
+
         if (!canDrag || !isDragging || selectedRb == null) return;
 
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //CHANGE TO CONTEXT
 
-        Vector2 screenPosition = context.ReadValue<Vector2>();
 
-
-        Vector3 touchPos = Camera.main.ScreenToWorldPoint(new Vector3(screenPosition.x, screenPosition.y, Camera.main.nearClipPlane));
-
-        Debug.Log("Touch: " + touchPos);
-
-        if (Input.touchCount == 1) // this input touch count is a check for avoid the player bug if accidentally touch the screen with two fingers
+        if (plane.Raycast(ray, out outDistancePlane) && Input.touchCount == 1) // this input touch count is a check for avoid the player bug if accidentally touch the screen with two fingers
         {
-
-            endPosDrag = touchPos; // get the position of the click instantaneously
+            endPosDrag = ray.GetPoint(outDistancePlane); // get the position of the click instantaneously
             directionOfDrag = (startTrajectoryPos.position - endPosDrag).normalized; // calculate the direction of the drag on Vector3
             dragDistance = Vector3.Distance(startTrajectoryPos.position, endPosDrag); // calculate the distance of the drag on float
 

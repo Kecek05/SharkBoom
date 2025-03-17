@@ -89,7 +89,6 @@ public class CameraMovement : MonoBehaviour
     private void MoveCamera(Vector2 movementDelta)
     {
         Vector3 moveDir = new Vector3(-movementDelta.x, -movementDelta.y, 0) * dragMoveSpeed * Time.deltaTime; // we put a negative value to invert the movement, making the sensation of dragging the camera
-
         cameraManager.CameraObjectToFollow.position = new Vector3(
             Mathf.Clamp(cameraManager.CameraObjectToFollow.position.x + moveDir.x, minMovX, maxMovX), 
             Mathf.Clamp(cameraManager.CameraObjectToFollow.position.y + moveDir.y, minMovY, maxMovY),  
