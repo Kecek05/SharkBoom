@@ -103,7 +103,14 @@ public class Player : NetworkBehaviour
         // Cant be OnnetworkSpawn because it needs to be called by NetworkServer
         thisPlayableState.Value = playableState;
 
+        InitializeGFXRotationRpc(GFXRotation);
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void InitializeGFXRotationRpc(Quaternion GFXRotation)
+    {
         playerGFX.transform.rotation = GFXRotation;
+        Debug.Log($"Rotating: {playerGFX.transform.parent.name} to {GFXRotation}");
     }
 
     private void GameFlowManager_OnMyTurnJumped()

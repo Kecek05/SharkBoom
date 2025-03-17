@@ -1,3 +1,4 @@
+using QFSW.QC;
 using System;
 using UnityEngine;
 
@@ -55,6 +56,7 @@ public class PlayerHealth : Health
 
     }
 
+    [Command("playerHealth-Die", MonoTargetType.All)]
     protected override void Die()
     {
         base.Die(); // make the function on base class "Health"
