@@ -84,7 +84,7 @@ public static class AuthenticationWrapper
             {
                 Debug.Log("Login with Google was successful");
 
-                PlayGamesPlatform.Instance.RequestServerSideAccess(true, code =>
+                PlayGamesPlatform.Instance.RequestServerSideAccess(false, code =>
                 {
                     Debug.Log($"{code} <-Auth code");
                     GooglePlayToken = code;
@@ -108,28 +108,27 @@ public static class AuthenticationWrapper
 
     private static async Task AuthAndroidWithUnity()
     {
-        try
-        {
-            await AuthenticationService.Instance.SignInWithGoogleAsync(GooglePlayToken);
+        //try
+        //{
+        //    await AuthenticationService.Instance.SignInWithGoogleAsync(GooglePlayToken);
 
-            Debug.Log("AUTHENTICATED WITH GOOGLE UNITY");
-            return;
-        }
-        catch (AuthenticationException ex)
-        {
-            Debug.LogException(ex);
-        }
-        catch (RequestFailedException ex)
-        {
-            Debug.LogException(ex);
-        }
+        //    Debug.Log("AUTHENTICATED WITH GOOGLE UNITY");
+        //    return;
+        //}
+        //catch (AuthenticationException ex)
+        //{
+        //    Debug.LogException(ex);
+        //}
+        //catch (RequestFailedException ex)
+        //{
+        //    Debug.LogException(ex);
+        //}
 
         try
         {
             await AuthenticationService.Instance.SignInWithGooglePlayGamesAsync(GooglePlayToken);
 
             Debug.Log("AUTHENTICATED WITH GOOGLE PLAY GAMES UNITY");
-            return;
         }
         catch (AuthenticationException ex)
         {
