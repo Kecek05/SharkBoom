@@ -55,7 +55,7 @@ public class GameOverUI : NetworkBehaviour
             playerResultText.text = "You Lose!";
             playerResultText.color = Color.red;
 
-            pearlsResultText.text = calculatePearlsManager.GetPearls(false).ToString();
+            pearlsResultText.text = "+" + calculatePearlsManager.GetPearls(false).ToString();
         } else
         {
             playerResultText.text = "You Win!";
