@@ -8,7 +8,8 @@ using UnityEngine.InputSystem;
 public class CameraZoom : MonoBehaviour
 {
 
-    [SerializeField] private InputReader inputReader; 
+    [SerializeField] private InputReader inputReader;
+    [SerializeField] private CameraManager cameraManager;
 
     private Coroutine zoomCoroutine;
 
@@ -39,14 +40,14 @@ public class CameraZoom : MonoBehaviour
     {
         if (context.started && this.enabled)
         {
-            CameraManager.Instance.CameraMovement.enabled = false;
+            cameraManager.CameraMovement.enabled = false;
             ZoomStarted(); // when we have two fingers on the screen
         }
 
         if (context.canceled) 
         {
             ZoomEnded();
-            CameraManager.Instance.CameraMovement.enabled = true;
+            cameraManager.CameraMovement.enabled = true;
         }
     }
 
@@ -106,10 +107,10 @@ public class CameraZoom : MonoBehaviour
     /// <param name="zoomSpeed">Speed of the zoom transition</param>
     public void ChangeZoom(float value, float zoomSpeed = 100f)
     {
-        cameraObjectFollowPos = CameraManager.Instance.CameraObjectToFollow.position; // get the current position of the camera
+        cameraObjectFollowPos = cameraManager.CameraObjectToFollow.position; // get the current position of the camera
         cameraObjectFollowPos.z += value; // add the values for move the camera
         cameraObjectFollowPos.z = Mathf.Clamp(cameraObjectFollowPos.z, minZoom, maxZoom);
-        CameraManager.Instance.CameraObjectToFollow.position = Vector3.MoveTowards(CameraManager.Instance.CameraObjectToFollow.position, cameraObjectFollowPos, zoomSpeed * Time.deltaTime); // Move towards is better for movimentation
+        cameraManager.CameraObjectToFollow.position = Vector3.MoveTowards(cameraManager.CameraObjectToFollow.position, cameraObjectFollowPos, zoomSpeed * Time.deltaTime); // Move towards is better for movimentation
         Debug.Log($"Object to follow Z pos: {cameraObjectFollowPos.z}");
     }
 

@@ -571,6 +571,7 @@ MonoBehaviour:
   touchLayer:
     serializedVersion: 2
     m_Bits: 128
+  cameraManager: {fileID: 3009684404041675309}
   maxForce: 26
   minForce: 1
   forceAddMultiplier: 4.6
@@ -843,6 +844,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f802b013fd1955043ac78bce19ab8d6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraManager: {fileID: 3009684404041675309}
 --- !u!114 &8450544055641021374
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -855,6 +857,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee20daabf706ed944b3266a70d973d81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraManager: {fileID: 3009684404041675309}
   inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
   dragMoveSpeed: 1
   minMovX: -15
@@ -874,6 +877,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
+  cameraManager: {fileID: 3009684404041675309}
   minZoom: -15
   maxZoom: 1
 --- !u!1 &1731536595254416242

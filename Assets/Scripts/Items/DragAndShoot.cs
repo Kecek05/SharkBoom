@@ -36,7 +36,7 @@ public class DragAndShoot : NetworkBehaviour
     [Tooltip("Center position of the drag")]
     [SerializeField] private Transform startTrajectoryPos;
     [SerializeField] private LayerMask touchLayer;
-
+    [SerializeField] private CameraManager cameraManager;
 
 
     [BetterHeader("Force Settings")]
@@ -139,7 +139,7 @@ public class DragAndShoot : NetworkBehaviour
                     //Start Dragging
                     SetCanCancelDrag(false);
                     trajectory.SetSimulation(true);
-                    startZoomPos = CameraManager.Instance.CameraObjectToFollow;
+                    startZoomPos = cameraManager.CameraObjectToFollow;
 
                     plane = new Plane(Vector3.forward, Input.mousePosition); // we create the plane to calculate the Z, because a click is a 2D position
 
@@ -212,14 +212,14 @@ public class DragAndShoot : NetworkBehaviour
                 if (roundedDragDistance > roundedLastDragDistance)
                 {
                     //Force is increasing
-                    CameraManager.Instance.CameraZoom.ChangeZoom(-zoomAmountToChange, zoomDragSpeed);
+                    cameraManager.CameraZoom.ChangeZoom(-zoomAmountToChange, zoomDragSpeed);
                     Debug.Log("Force is increasing");
                 }
                 else if (roundedDragDistance < roundedLastDragDistance)
                 {
                     //Force is decreasing
 
-                    CameraManager.Instance.CameraZoom.ChangeZoom(zoomAmountToChange, zoomDragSpeed);
+                    cameraManager.CameraZoom.ChangeZoom(zoomAmountToChange, zoomDragSpeed);
 
                     Debug.Log("Force is decreasing");
                 }

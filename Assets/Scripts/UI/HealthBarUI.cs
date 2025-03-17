@@ -1,5 +1,5 @@
+using DG.Tweening;
 using Sortify;
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +11,7 @@ public class HealthBarUI : MonoBehaviour
     [SerializeField] private Image player2Image;
     [SerializeField] private Slider player1HealthSlider;
     [SerializeField] private Slider player2HealthSlider;
-
+    [SerializeField] private float tweenDuration = 0.3f;
 
     private void Start()
     {
@@ -22,11 +22,11 @@ public class HealthBarUI : MonoBehaviour
     {
         if(e.playableState == PlayableState.Player1Playing)
         {
-            player1HealthSlider.value = CalculateHealthPercentage(e.playerCurrentHealth, e.playerMaxHealth);
+            DOTween.To(() => player1HealthSlider.value, x => player1HealthSlider.value = x, CalculateHealthPercentage(e.playerCurrentHealth, e.playerMaxHealth), tweenDuration);
         }
         else if (e.playableState == PlayableState.Player2Playing)
         {
-            player2HealthSlider.value = CalculateHealthPercentage(e.playerCurrentHealth, e.playerMaxHealth);
+            DOTween.To(() => player2HealthSlider.value, x => player2HealthSlider.value = x, CalculateHealthPercentage(e.playerCurrentHealth, e.playerMaxHealth), tweenDuration);
         }
 
 

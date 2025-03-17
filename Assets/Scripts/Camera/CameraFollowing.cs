@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CameraFollowing : MonoBehaviour
 {
-
+    [SerializeField] private CameraManager cameraManager;
     private CinemachineFollow cinemachineFollowCamera;
     private Coroutine followingCourotine;
 
@@ -28,7 +28,7 @@ public class CameraFollowing : MonoBehaviour
     {
         while (cinemachineFollowCamera != null)
         {
-            cinemachineFollowCamera.FollowOffset.z = CameraManager.Instance.CameraObjectToFollow.position.z;
+            cinemachineFollowCamera.FollowOffset.z = cameraManager.CameraObjectToFollow.position.z;
             yield return null;
         }
         FollowingEnded();

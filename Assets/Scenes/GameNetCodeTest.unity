@@ -3747,7 +3747,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4845276930943762971, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.00012207031
+      value: -0.000045776367
       objectReference: {fileID: 0}
     - target: {fileID: 4845637959249703711, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchorMax.y
@@ -4217,6 +4217,7 @@ MonoBehaviour:
   player2Image: {fileID: 2123789594}
   player1HealthSlider: {fileID: 1210409197}
   player2HealthSlider: {fileID: 806868748}
+  tweenDuration: 0.3
 --- !u!1 &1489485622
 GameObject:
   m_ObjectHideFlags: 0

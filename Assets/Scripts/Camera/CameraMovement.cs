@@ -8,7 +8,7 @@ using UnityEngine.InputSystem;
 
 public class CameraMovement : MonoBehaviour
 {
-
+    [SerializeField] private CameraManager cameraManager;
     [SerializeField] private InputReader inputReader;
 
     [BetterHeader("Settings")]
@@ -89,11 +89,11 @@ public class CameraMovement : MonoBehaviour
     private void MoveCamera(Vector2 movementDelta)
     {
         Vector3 moveDir = new Vector3(-movementDelta.x, -movementDelta.y, 0) * dragMoveSpeed * Time.deltaTime; // we put a negative value to invert the movement, making the sensation of dragging the camera
-        
-        CameraManager.Instance.CameraObjectToFollow.position = new Vector3(
-            Mathf.Clamp(CameraManager.Instance.CameraObjectToFollow.position.x + moveDir.x, minMovX, maxMovX), 
-            Mathf.Clamp(CameraManager.Instance.CameraObjectToFollow.position.y + moveDir.y, minMovY, maxMovY),  
-            CameraManager.Instance.CameraObjectToFollow.position.z 
+
+        cameraManager.CameraObjectToFollow.position = new Vector3(
+            Mathf.Clamp(cameraManager.CameraObjectToFollow.position.x + moveDir.x, minMovX, maxMovX), 
+            Mathf.Clamp(cameraManager.CameraObjectToFollow.position.y + moveDir.y, minMovY, maxMovY),  
+            cameraManager.CameraObjectToFollow.position.z 
         );  // Basically we get the pos of camera and add the movement direction of the camera, and clamp the values to the min and max values
     }
 }

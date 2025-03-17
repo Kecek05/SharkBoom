@@ -13,27 +13,12 @@ public class CameraManager : NetworkBehaviour
 
     private CinemachineCamera cinemachineCamera;
     private Transform cameraObjectToFollow;
-
-    public static CameraManager Instance { get; private set; }
     public Transform CameraObjectToFollow => cameraObjectToFollow;
     public CameraZoom CameraZoom => cameraZoom;
     public CameraFollowing CameraFollowing => cameraFollowing;
     public CameraMovement CameraMovement => cameraMovement;
 
     [SerializeField] private CameraState cameraState;
-
-
-    private void Awake() // Singleton
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(this);
-        }
-    }
 
     public override void OnNetworkSpawn()
     {
@@ -105,6 +90,9 @@ public class CameraManager : NetworkBehaviour
 
     public override void OnNetworkDespawn()
     {
-        player.PlayerStateMachine.OnStateChanged -= PlayerStateMachine_OnStateChanged;
+        if(IsOwner)
+        {
+            player.PlayerStateMachine.OnStateChanged -= PlayerStateMachine_OnStateChanged;
+        }
     }
 }
