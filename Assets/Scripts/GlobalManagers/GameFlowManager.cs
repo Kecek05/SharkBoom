@@ -29,8 +29,8 @@ public class GameFlowManager : NetworkBehaviour
     [SerializeField] private List<Transform> spawnPointsPos;
 
     [BetterHeader("Settings")]
-    [Unit("ms")][SerializeField] private int delayBetweenTurns = 3000;
-    [Unit("ms")][SerializeField] private int delayClosePlayersInfo = 3000;
+    [Tooltip("in ms")][SerializeField] private int delayBetweenTurns = 3000;
+    [Tooltip("in ms")][SerializeField] private int delayClosePlayersInfo = 3000;
 
     private PlayableState localPlayableState = new();
     private PlayableState localPlayedState = new();
@@ -38,7 +38,13 @@ public class GameFlowManager : NetworkBehaviour
     private NetworkVariable<PlayableState> currentPlayableState = new(PlayableState.None);
 
     private NetworkVariable<GameState> gameState = new(GameState.WaitingForPlayers);
+    private NetworkVariable<PlayableState> losePlayableState = new(PlayableState.None);
+
     private static bool gameOver = false;
+
+    //Publics
+
+    public NetworkVariable<PlayableState> LosePlayableState => losePlayableState;
 
     public static bool GameOver => gameOver;
     public NetworkVariable<GameState> CurrentGameState => gameState;
@@ -217,6 +223,14 @@ public class GameFlowManager : NetworkBehaviour
         SetGameStateServerRpc(gameState);
     }
 
+    /// <summary>
+    /// The lose player call this to know ho loses and ho wins. Server only
+    /// </summary>
+    /// <param name="playerLosedPlayableState"> Playing State</param>
+    public void LoseGame(PlayableState playerLosedPlayableState)
+    {
+        losePlayableState.Value = playerLosedPlayableState;
+    }
 
     /// <summary>
     /// Call this to randomize and give items to players
