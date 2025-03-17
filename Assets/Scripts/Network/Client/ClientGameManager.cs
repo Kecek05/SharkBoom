@@ -117,6 +117,13 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
 
     }
 
+    /// <summary>
+    /// Call this to disconnect from the server
+    /// </summary>
+    public void Disconnect()
+    {
+        networkClient.Disconnect();
+    }
 
     public void Dispose()
     {

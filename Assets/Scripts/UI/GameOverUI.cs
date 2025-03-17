@@ -19,6 +19,14 @@ public class GameOverUI : NetworkBehaviour
         returnButton.onClick.AddListener(() =>
         {
             //Return to main menu
+            if(NetworkManager.Singleton.IsHost) //Server cant click buttons
+            {
+                HostSingleton.Instance.GameManager.ShutdownAsync();
+            }
+
+            ClientSingleton.Instance.GameManager.Disconnect();
+
+            NetworkManager.Singleton.Shutdown();
             Loader.Load(Loader.Scene.MainMenu);
         });
     }
@@ -49,13 +57,13 @@ public class GameOverUI : NetworkBehaviour
         {
             playerResultText.text = "You Lose!";
 
-            pearlsResultText.text = calculatePearlsManager.GetCalculatePearls(false).ToString();
+            pearlsResultText.text = calculatePearlsManager.GetPearls(false).ToString();
         } else
         {
             playerResultText.text = "You Win!";
 
 
-            pearlsResultText.text = calculatePearlsManager.GetCalculatePearls(true).ToString();
+            pearlsResultText.text = calculatePearlsManager.GetPearls(true).ToString();
         }
 
 

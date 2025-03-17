@@ -131,6 +131,9 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
         }
     }
 
+    /// <summary>
+    /// Call this to shutdown the server. Doesn't go to main menu
+    /// </summary>
     public async void ShutdownAsync()
     {
         HostSingleton.Instance.StopCoroutine(nameof(HeartbeatLobby));

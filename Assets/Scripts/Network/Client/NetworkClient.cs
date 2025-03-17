@@ -1,6 +1,7 @@
 using System;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class NetworkClient : IDisposable //Actual Client Game Logic
 {
@@ -19,9 +20,22 @@ public class NetworkClient : IDisposable //Actual Client Game Logic
         Debug.Log("Disconnected");
     }
 
+    public void Disconnect()
+    {
+        if(SceneManager.GetActiveScene().name != Loader.Scene.MainMenu.ToString())
+        {
+
+        }
+
+        if(networkManager.IsConnectedClient)
+            networkManager.Shutdown();
+    }
+
     public void Dispose()
     {
         if (networkManager != null)
             networkManager.OnClientDisconnectCallback -= NetworkManager_OnClientDisconnectCallback;
     }
+
+
 }
