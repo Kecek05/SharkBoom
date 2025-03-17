@@ -45,14 +45,14 @@ public class AuthenticateUI : MonoBehaviour
 
 
 
-        //if (Application.platform == RuntimePlatform.Android)
-        //{
-        //    //Loggin with Google Play
-        //    HideButtons();
-        //    ShowTxt();
-        //    await ClientSingleton.Instance.AuthAndroid();
-        //    authAndroidTxt.text = $"Token: {AuthenticationWrapper.GooglePlayToken} name: {PlayGamesPlatform.Instance.GetUserDisplayName()} ID: {PlayGamesPlatform.Instance.GetUserId()}";
-        //}
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            //Loggin with Google Play
+            //HideButtons();
+            ShowTxt();
+            await ClientSingleton.Instance.AuthAndroid();
+            authAndroidTxt.text = $"Token: {AuthenticationWrapper.GooglePlayToken} name: {PlayGamesPlatform.Instance.GetUserDisplayName()} ID: {PlayGamesPlatform.Instance.GetUserId()}";
+        }
     }
 
     private void Update()

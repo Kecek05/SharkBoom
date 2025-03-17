@@ -10,7 +10,6 @@ using Unity.Services.Lobbies.Models;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class ClientGameManager : IDisposable //Actual Logic to interact with UGS (Relay, Lobby, etc)
 {
@@ -38,6 +37,10 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
 
         if(authState == AuthState.Authenticated)
         {
+            AuthenticationWrapper.SetPlayerName(await AuthenticationService.Instance.GetPlayerNameAsync());
+
+            Debug.Log(AuthenticationWrapper.PlayerName + authState);
+
             userData = new UserData
             {
                 userName = AuthenticationWrapper.PlayerName,
@@ -45,7 +48,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
                 userPearls = UnityEngine.Random.Range(0, 1001), // random for debug
             };
 
-            Loader.Load(Loader.Scene.MainMenu);
+             Loader.Load(Loader.Scene.MainMenu);
 
             return true;
         }
