@@ -129,23 +129,25 @@ public class DragAndShoot : NetworkBehaviour
 
         if (context.started) // capture the first frame when the touch is pressed
         {
-            Ray rayStart = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
+            Vector2 touchPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            RaycastHit2D hit2D = Physics2D.Raycast(touchPos, Vector2.zero, 0f, touchLayer);
 
-            if (Physics.Raycast(rayStart, out hit, Mathf.Infinity, touchLayer)) // compare if the touch hit on the object
+            if (hit2D.collider == null) return;
+
+            Debug.Log("Hit: " + hit2D.collider.gameObject.name);
+
+
+            if (hit2D.collider.gameObject == areaOfStartDrag) //touched touchColl
             {
-                if (hit.collider.gameObject == areaOfStartDrag)
-                {
-                    //Start Dragging
-                    SetCanCancelDrag(false);
-                    trajectory.SetSimulation(true);
-                    startZoomPos = cameraManager.CameraObjectToFollow;
+                //Start Dragging
+                SetCanCancelDrag(false);
+                trajectory.SetSimulation(true);
+                startZoomPos = cameraManager.CameraObjectToFollow;
 
-                    plane = new Plane(Vector3.forward, Input.mousePosition); // we create the plane to calculate the Z, because a click is a 2D position
+                plane = new Plane(Vector3.forward, Input.mousePosition); // we create the plane to calculate the Z, because a click is a 2D position
 
-                    SetIsDragging(true);
-                    OnDragStart?.Invoke();
-                }
+                SetIsDragging(true);
+                OnDragStart?.Invoke();
             }
         }
 
