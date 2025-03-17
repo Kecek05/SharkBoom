@@ -22,6 +22,7 @@ public class GameFlowManager : NetworkBehaviour
     public static event Action OnMyTurnEnded;
     public static event Action OnMyTurnJumped;
     public static event Action OnLocalPlayableStateChanged;
+    public static event Action OnGameOver;
 
     [BetterHeader("References")]
     [SerializeField] private ItemsListSO itemsListSO;
@@ -82,7 +83,7 @@ public class GameFlowManager : NetworkBehaviour
 
 
     /// <summary>
-    /// Called to change the player's turn.
+    /// Call this when player played an item. It will change the turn.
     /// </summary>
     /// <param name="playerPlayingState"> Playing State</param>
     [Rpc(SendTo.Server)]
@@ -172,6 +173,10 @@ public class GameFlowManager : NetworkBehaviour
                 }
                 break;
             case GameState.GameEnded:
+
+                Debug.Log("Game Over!");
+                OnGameOver?.Invoke();
+
                 break;
         }
     }

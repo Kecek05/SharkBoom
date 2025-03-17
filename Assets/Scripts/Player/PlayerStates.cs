@@ -319,11 +319,10 @@ public class PlayerWatchingState : IState
 }
 
 
-public class DeadState : IState
+public class PlayerGameOverState : IState
 {
-    //Player is dead
     //Cant do anything
-    public DeadState()
+    public PlayerGameOverState()
     {
         //our builder
     }

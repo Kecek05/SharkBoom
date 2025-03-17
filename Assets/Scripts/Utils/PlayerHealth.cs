@@ -1,4 +1,3 @@
-using QFSW.QC;
 using System;
 using UnityEngine;
 
@@ -15,6 +14,7 @@ public class PlayerHealth : Health
 
     private float selectedMultiplier; //cache
     [SerializeField] private Player player;
+    [SerializeField] private Rigidbody2D playerRb2D; //DEBUG
 
     public override void OnNetworkSpawn()
     {
@@ -57,7 +57,14 @@ public class PlayerHealth : Health
 
     protected override void Die()
     {
-       base.Die(); // make the function on base class "Health"
+        base.Die(); // make the function on base class "Health"
+        if(IsOwner)
+            playerRb2D.AddForceY(100f, ForceMode2D.Impulse); //debug
+
+        if (!IsServer) return;
+
+
+        GameFlowManager.Instance.ChangeGameState(GameState.GameEnded);
     }
 
     public override void OnNetworkDespawn()

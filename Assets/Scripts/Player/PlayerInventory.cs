@@ -96,6 +96,10 @@ public class PlayerInventory : NetworkBehaviour
             UseItemByInventoryIndexRpc(selectedItemInventoryIndex);
 
             SetPlayerCanJumpRpc(true); //can jump, set before next round to be able to select
+        } else if (state == player.PlayerStateMachine.playerGameOverState)
+        {
+            SetCanInteractWithInventory(false);
+
         }
 
     }

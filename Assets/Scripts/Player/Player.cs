@@ -64,12 +64,12 @@ public class Player : NetworkBehaviour
         }
 
 
-        gameObject.name = "Player " + playerName.Value;
+        gameObject.name = "Player " + playerName.Value; //Debug
 
-        thisPlayableState.OnValueChanged += PlayableStateChanged;
+        thisPlayableState.OnValueChanged += PlayableStateInitialize;
 
         if(!IsHost) // host will add itself twice
-            PlayableStateChanged(thisPlayableState.Value, thisPlayableState.Value);
+            PlayableStateInitialize(thisPlayableState.Value, thisPlayableState.Value);
 
         if (IsOwner)
         {
@@ -79,6 +79,8 @@ public class Player : NetworkBehaviour
             GameFlowManager.OnMyTurnEnded += GameFlowManager_OnMyTurnEnded;
 
             GameFlowManager.OnMyTurnJumped += GameFlowManager_OnMyTurnJumped;
+
+            GameFlowManager.OnGameOver += GameFlowManager_OnGameOver;
 
             playerStateMachine = new PlayerStateMachine(this);
 
@@ -93,6 +95,8 @@ public class Player : NetworkBehaviour
 
     }
 
+
+
     [Rpc(SendTo.Server)]
     public void InitializePlayerRpc(PlayableState playableState, Quaternion GFXRotation)
     {
@@ -104,14 +108,6 @@ public class Player : NetworkBehaviour
 
     private void GameFlowManager_OnMyTurnJumped()
     {
-        //DelayToChangeMyTurnJumped();
-        playerStateMachine.TransitionTo(playerStateMachine.idleMyTurnState);
-    }
-
-    private async void DelayToChangeMyTurnJumped()
-    {
-        //this player jumped
-        await Task.Delay(3000);
         playerStateMachine.TransitionTo(playerStateMachine.idleMyTurnState);
     }
 
@@ -126,6 +122,11 @@ public class Player : NetworkBehaviour
         playerStateMachine.TransitionTo(playerStateMachine.myTurnStartedState);
         Debug.Log("I can play!");
 
+    }
+
+    private void GameFlowManager_OnGameOver()
+    {
+        playerStateMachine.TransitionTo(playerStateMachine.playerGameOverState);
     }
 
     //DEBUG
@@ -144,7 +145,7 @@ public class Player : NetworkBehaviour
 
     
 
-    private void PlayableStateChanged(PlayableState previousValue, PlayableState newValue)
+    private void PlayableStateInitialize(PlayableState previousValue, PlayableState newValue)
     {
         if (IsOwner)
         {
@@ -172,7 +173,7 @@ public class Player : NetworkBehaviour
 
     public override void OnNetworkDespawn()
     {
-        thisPlayableState.OnValueChanged -= PlayableStateChanged;
+        thisPlayableState.OnValueChanged -= PlayableStateInitialize;
 
         if (IsOwner)
         {
@@ -181,6 +182,8 @@ public class Player : NetworkBehaviour
             GameFlowManager.OnMyTurnEnded -= GameFlowManager_OnMyTurnEnded;
 
             GameFlowManager.OnMyTurnJumped -= GameFlowManager_OnMyTurnJumped;
+
+            GameFlowManager.OnGameOver -= GameFlowManager_OnGameOver;
         }
     }
 

@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class Health : NetworkBehaviour
 {
+    private event Action OnDie;
 
     [BetterHeader("Settings")]
     [SerializeField] protected float maxHealth;
@@ -18,6 +19,7 @@ public class Health : NetworkBehaviour
         if (!IsServer) return; // Only the server should be able to change the health
 
         currentHealth.Value = maxHealth;
+
     }
 
 
@@ -62,14 +64,16 @@ public class Health : NetworkBehaviour
     [Command("health-die")]
      protected virtual void Die()
      {
-          if(!IsServer) return;
+        if(!IsServer) return;
 
-          //Temp, after will only invoke the event 
+        //Temp, after will only invoke the event 
 
-          if(gameObject.TryGetComponent(out NetworkObject networkObject))
-          {
-              networkObject.Despawn(true);
-          }
+        OnDie?.Invoke();
+
+          //if (gameObject.TryGetComponent(out NetworkObject networkObject))
+          //{
+          //    networkObject.Despawn(true);
+          //}
      } 
 
 }

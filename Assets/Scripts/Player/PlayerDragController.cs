@@ -25,6 +25,9 @@ public class PlayerDragController : DragAndShoot
         {
             TurnOffDrag();
             ResetDrag();
+        } else if (state == player.PlayerStateMachine.playerGameOverState)
+        {
+            TurnOffDrag();
         }
     }
 
