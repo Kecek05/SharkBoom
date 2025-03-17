@@ -12,8 +12,7 @@ public class TimerManager : NetworkBehaviour
     private NetworkVariable<int> timerTurn = new(0);
 
     private Coroutine timerCoroutine;
-    private WaitForSeconds timerDelay = new WaitForSeconds(1);
-
+    private WaitForSeconds timerDelay = new WaitForSeconds(1); //cache
 
     public NetworkVariable<int> TimerTurn => timerTurn;
     public override void OnNetworkSpawn()
@@ -21,10 +20,16 @@ public class TimerManager : NetworkBehaviour
         if (!IsServer) return;
 
         GameFlowManager.Instance.CurrentPlayableState.OnValueChanged += CurrentPlayableState_OnValueChanged;
+
+        GameFlowManager.OnGameOver += GameFlowManager_OnGameOver;
     }
+
+
 
     private void CurrentPlayableState_OnValueChanged(PlayableState previousValue, PlayableState newValue)
     {
+        if (GameFlowManager.GameOver) return;
+
         if (newValue == PlayableState.Player1Playing || newValue == PlayableState.Player2Playing)
         {
             timerTurn.Value = turnTime;
@@ -44,6 +49,25 @@ public class TimerManager : NetworkBehaviour
                 timerCoroutine = null;
             }
         }
+    }
+
+    private void GameFlowManager_OnGameOver()
+    {
+
+        if (timerCoroutine != null)
+        {
+            StopCoroutine(timerCoroutine);
+            timerCoroutine = null;
+        }
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        if (!IsServer) return;
+
+        GameFlowManager.Instance.CurrentPlayableState.OnValueChanged -= CurrentPlayableState_OnValueChanged;
+
+        GameFlowManager.OnGameOver -= GameFlowManager_OnGameOver;
     }
 
     private IEnumerator Timer()

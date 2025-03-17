@@ -149,7 +149,7 @@ public class Player : NetworkBehaviour
     {
         if (IsOwner)
         {
-            GameFlowManager.Instance.SetLocalStates(thisPlayableState.Value); //pass to GameFlow to know when its local turn
+            GameFlowManager.Instance.InitializeLocalStates(thisPlayableState.Value); //pass to GameFlow to know when its local turn
         }
 
         if (thisPlayableState.Value == PlayableState.Player1Playing)

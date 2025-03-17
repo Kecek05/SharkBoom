@@ -2895,7 +2895,6 @@ GameObject:
   - component: {fileID: 2630504228789789074}
   - component: {fileID: 5182517899106838082}
   - component: {fileID: 5874533860640660207}
-  - component: {fileID: 6911037336741954597}
   m_Layer: 0
   m_Name: GFX
   m_TagString: Untagged
@@ -3069,42 +3068,6 @@ MonoBehaviour:
   player: {fileID: 2871544100916734757}
   playerGfxTransform: {fileID: 2927350467601940059}
   angleOffset: 0.5
---- !u!114 &6911037336741954597
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8363574200510345622}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  NetworkTransformExpanded: 0
-  AuthorityMode: 1
-  TickSyncChildren: 0
-  UseUnreliableDeltas: 0
-  SyncPositionX: 0
-  SyncPositionY: 0
-  SyncPositionZ: 0
-  SyncRotAngleX: 0
-  SyncRotAngleY: 0
-  SyncRotAngleZ: 1
-  SyncScaleX: 0
-  SyncScaleY: 0
-  SyncScaleZ: 0
-  PositionThreshold: 0.001
-  RotAngleThreshold: 0.01
-  ScaleThreshold: 0.01
-  UseQuaternionSynchronization: 0
-  UseQuaternionCompression: 0
-  UseHalfFloatPrecision: 0
-  InLocalSpace: 0
-  SwitchTransformSpaceWhenParented: 0
-  Interpolate: 1
-  SlerpPosition: 0
 --- !u!1 &9159321432021852501
 GameObject:
   m_ObjectHideFlags: 0

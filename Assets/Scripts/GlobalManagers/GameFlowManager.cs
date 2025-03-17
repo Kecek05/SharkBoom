@@ -38,7 +38,9 @@ public class GameFlowManager : NetworkBehaviour
     private NetworkVariable<PlayableState> currentPlayableState = new(PlayableState.None);
 
     private NetworkVariable<GameState> gameState = new(GameState.WaitingForPlayers);
+    private static bool gameOver = false;
 
+    public static bool GameOver => gameOver;
     public NetworkVariable<GameState> CurrentGameState => gameState;
     public NetworkVariable<PlayableState> CurrentPlayableState => currentPlayableState;
     public PlayableState LocalplayableState => localPlayableState;
@@ -64,7 +66,7 @@ public class GameFlowManager : NetworkBehaviour
     /// Set the localPlayable and localPlayed states to the GameFlowManager, Only Owner.
     /// </summary>
     /// <param name="playingState"> Playing State</param>
-    public void SetLocalStates(PlayableState playingState)
+    public void InitializeLocalStates(PlayableState playingState)
     {
         switch(playingState)
         {
@@ -89,6 +91,8 @@ public class GameFlowManager : NetworkBehaviour
     [Rpc(SendTo.Server)]
     public void PlayerPlayedServerRpc(PlayableState playerPlayingState)
     {
+        if (gameOver) return;
+
         if (playerPlayingState == PlayableState.Player1Playing)
         {
             //recived item callback from player 1
@@ -113,6 +117,8 @@ public class GameFlowManager : NetworkBehaviour
     [Rpc(SendTo.Server)]
     public void PlayerJumpedServerRpc(PlayableState playableState)
     {
+        if (gameOver) return;
+
         PlayerJumpedClientRpc(playableState);
     }
 
@@ -123,6 +129,8 @@ public class GameFlowManager : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost)]
     private void PlayerJumpedClientRpc(PlayableState playableState)
     {
+        if (gameOver) return;
+
         if (localPlayableState == playableState)
         {
             //if the jump item is the same as the player playing, owner jumped
@@ -135,6 +143,8 @@ public class GameFlowManager : NetworkBehaviour
     /// </summary>
     private void CurrentPlayableState_OnValueChanged(PlayableState previousValue, PlayableState newValue)
     {
+        if (gameOver) return;
+
         if (newValue == localPlayableState)
         {
             //Local Player can play
@@ -173,7 +183,7 @@ public class GameFlowManager : NetworkBehaviour
                 }
                 break;
             case GameState.GameEnded:
-
+                gameOver = true;
                 Debug.Log("Game Over!");
                 OnGameOver?.Invoke();
 
@@ -188,6 +198,8 @@ public class GameFlowManager : NetworkBehaviour
     /// <param name="playableState"> Playing State</param>
     private async void DelayChangeTurns(PlayableState playableState)
     {
+        if (gameOver) return;
+
         await Task.Delay(delayBetweenTurns);
         SetPlayableStateServerRpc(playableState);
     }
@@ -199,6 +211,8 @@ public class GameFlowManager : NetworkBehaviour
     /// <param name="delayToChange"> Delay in ms</param>
     public async void ChangeGameState(GameState gameState, int delayToChange = 0) //0ms default
     {
+        if (gameOver) return;
+
         await Task.Delay(delayToChange);
         SetGameStateServerRpc(gameState);
     }
