@@ -44,7 +44,7 @@ public class Trajectory : MonoBehaviour
         }
     }
 
-    public void UpdateDots(Vector3 objectPos, Vector3 forceApplied, Rigidbody rb) 
+    public void UpdateDots(Vector2 objectPos, Vector2 forceApplied, Rigidbody2D rb) 
     {
         trajectoryPoints.Add(objectPos);
         SimulateTrajectory(objectPos, forceApplied, rb);
@@ -55,22 +55,22 @@ public class Trajectory : MonoBehaviour
         }
     }
 
-    private void SimulateTrajectory(Vector3 objectPos, Vector3 forceApplied, Rigidbody rb)
+    private void SimulateTrajectory(Vector2 objectPos, Vector2 forceApplied, Rigidbody2D rb)
     {
         if (!isSimulating) return;
 
-        Physics.simulationMode = SimulationMode.Script;
+        Physics2D.simulationMode = SimulationMode2D.Script;
 
         GameObject ghostObj = new GameObject("Ghost");
-        Rigidbody ghost = ghostObj.AddComponent<Rigidbody>();
+        Rigidbody2D ghost = ghostObj.AddComponent<Rigidbody2D>();
 
         ghost.mass = rb.mass;
         ghost.linearDamping = rb.linearDamping;
         ghost.angularDamping = rb.angularDamping;
-        ghost.useGravity = rb.useGravity;
+        ghost.gravityScale = rb.gravityScale;
         ghost.position = objectPos;
         ghost.linearVelocity = forceApplied / ghost.mass;
-        ghost.isKinematic = false;
+        ghost.bodyType = RigidbodyType2D.Dynamic;
 
         trajectoryPoints.Clear();
         
@@ -79,10 +79,10 @@ public class Trajectory : MonoBehaviour
         {
             float timeStep = Time.fixedDeltaTime;
             trajectoryPoints.Add(ghost.position);
-            Physics.Simulate(timeStep);
+            Physics2D.Simulate(timeStep);
         }
 
-        Physics.simulationMode = SimulationMode.FixedUpdate;
+        Physics2D.simulationMode = SimulationMode2D.FixedUpdate;
         Destroy(ghostObj);
 
     }

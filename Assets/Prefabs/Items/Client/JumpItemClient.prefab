@@ -98,11 +98,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b617507da6d07e749b7efdb34e1173e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!54 &4018474481521727816 stripped
-Rigidbody:
-  m_CorrespondingSourceObject: {fileID: 6717943621661333620, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
-  m_PrefabInstance: {fileID: 7709761659009139004}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &4139059953487484834 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
@@ -122,8 +117,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isServerObject: 0
   itemSO: {fileID: 11400000, guid: c4047f17a9430314ab9b65ede680009f, type: 2}
-  rb: {fileID: 4018474481521727816}
+  rb: {fileID: 5689049572469319462}
   cinemachineFollow: {fileID: 2061251337206000038}
   collidersToChangeLayer:
   - {fileID: 4139059953487484834}
   followingTime: 1.5
+--- !u!50 &5689049572469319462 stripped
+Rigidbody2D:
+  m_CorrespondingSourceObject: {fileID: 2597735930550134298, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+  m_PrefabInstance: {fileID: 7709761659009139004}
+  m_PrefabAsset: {fileID: 0}

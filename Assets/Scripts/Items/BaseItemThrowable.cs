@@ -11,7 +11,7 @@ public class BaseItemThrowable : MonoBehaviour
     [BetterHeader("Base Item References")]
     [SerializeField] protected bool isServerObject;
     [SerializeField] protected ItemSO itemSO;
-    [SerializeField] protected Rigidbody rb;
+    [SerializeField] protected Rigidbody2D rb;
     [SerializeField] protected CinemachineFollow cinemachineFollow;
     [SerializeField] protected GameObject[] collidersToChangeLayer;
     protected ItemLauncherData thisItemLaucherData;
@@ -40,11 +40,11 @@ public class BaseItemThrowable : MonoBehaviour
     }
 
 
-    protected virtual void ItemReleased(float force, Vector3 direction)
+    protected virtual void ItemReleased(float force, Vector2 direction)
     {
         //CameraManager.Instance.CameraFollowing.SetTheValuesOfCinemachine(cinemachineFollow);
 
-        rb.AddForce(direction * force, ForceMode.Impulse);
+        rb.AddForce(direction * force, ForceMode2D.Impulse);
 
     }
 

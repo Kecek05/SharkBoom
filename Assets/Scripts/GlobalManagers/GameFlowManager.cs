@@ -16,6 +16,8 @@ public class GameFlowManager : NetworkBehaviour
 
 
 
+
+
     public static event Action OnMyTurnStarted; //local player can play
     public static event Action OnMyTurnEnded;
     public static event Action OnMyTurnJumped;

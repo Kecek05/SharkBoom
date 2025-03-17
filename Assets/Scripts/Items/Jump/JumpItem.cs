@@ -9,7 +9,7 @@ public class JumpItem : BaseItemThrowable
     private Transform objectToFollowTransform;
 
 
-    protected override void ItemReleased(float force, Vector3 direction)
+    protected override void ItemReleased(float force, Vector2 direction)
     {
         base.ItemReleased(force, direction);
 

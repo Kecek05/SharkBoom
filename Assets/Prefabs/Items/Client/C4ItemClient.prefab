@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6105446276748142445}
   - component: {fileID: 2077036861374062006}
   - component: {fileID: 5771048983315583385}
-  - component: {fileID: 1877322530213583577}
+  - component: {fileID: 8980002738292523028}
   m_Layer: 6
   m_Name: Explosion
   m_TagString: Untagged
@@ -87,13 +87,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &1877322530213583577
-SphereCollider:
+--- !u!58 &8980002738292523028
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1971986129952758754}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -102,12 +105,24 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
   m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &7709761659009139004
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -187,11 +202,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b617507da6d07e749b7efdb34e1173e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!54 &4018474481521727816 stripped
-Rigidbody:
-  m_CorrespondingSourceObject: {fileID: 6717943621661333620, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
-  m_PrefabInstance: {fileID: 7709761659009139004}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &4139059953487484834 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
@@ -211,13 +221,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isServerObject: 0
   itemSO: {fileID: 11400000, guid: d920d99b67057b34eb71bc10d40ec3c8, type: 2}
-  rb: {fileID: 4018474481521727816}
+  rb: {fileID: 5689049572469319462}
   cinemachineFollow: {fileID: 2061251337206000038}
   collidersToChangeLayer:
   - {fileID: 4139059953487484834}
   - {fileID: 1971986129952758754}
   inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
   explosionObj: {fileID: 1971986129952758754}
+--- !u!50 &5689049572469319462 stripped
+Rigidbody2D:
+  m_CorrespondingSourceObject: {fileID: 2597735930550134298, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+  m_PrefabInstance: {fileID: 7709761659009139004}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8464876032891664105 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2272018210298738645, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}

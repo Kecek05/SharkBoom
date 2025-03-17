@@ -13,6 +13,8 @@ public class PlayersPublicInfoManager : MonoBehaviour
     private Dictionary<PlayableState, GameObject> playerStateToGameObject = new Dictionary<PlayableState, GameObject>();
 
 
+
+
     private void Awake()
     {
         instance = this;

@@ -60,7 +60,7 @@ public struct ItemLauncherData : INetworkSerializable, IEquatable<ItemLauncherDa
     /// <summary>
     /// Direction of the drag
     /// </summary>
-    public Vector3 dragDirection;
+    public Vector2 dragDirection;
 
 
     /// <summary>
