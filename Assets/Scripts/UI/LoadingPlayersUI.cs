@@ -54,9 +54,8 @@ public class LoadingPlayersUI : NetworkBehaviour
 
     private void Player_OnPlayerSpawned(Player player)
     {
-        if(player.OwnerClientId == 1) //Only update if the second player is spawned
+        if(NetworkManager.Singleton.ConnectedClients.Count == 2) //Only update if the second player is spawned
             PlayerSpawnedServerRpc();
-
     }
 
     [Rpc(SendTo.Server)]

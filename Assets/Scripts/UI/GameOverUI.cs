@@ -1,3 +1,4 @@
+using QFSW.QC;
 using Sortify;
 using System;
 using TMPro;
@@ -55,13 +56,13 @@ public class GameOverUI : NetworkBehaviour
             playerResultText.text = "You Lose!";
             playerResultText.color = Color.red;
 
-            pearlsResultText.text = "+" + calculatePearlsManager.GetPearls(false).ToString();
+            pearlsResultText.text = calculatePearlsManager.GetPearls(false).ToString();
         } else
         {
             playerResultText.text = "You Win!";
             playerResultText.color = Color.green;
 
-            pearlsResultText.text = calculatePearlsManager.GetPearls(true).ToString();
+            pearlsResultText.text = "+" + calculatePearlsManager.GetPearls(true).ToString();
         }
     }
 
@@ -70,6 +71,7 @@ public class GameOverUI : NetworkBehaviour
         gameOverBackground.SetActive(false);
     }
 
+    [Command("gameOverUI-show")]
     private void Show()
     {
         gameOverBackground.SetActive(true);

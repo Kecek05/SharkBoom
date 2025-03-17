@@ -36,7 +36,7 @@ public class PlayerInventoryUI : NetworkBehaviour
     {
         if (!IsOwner)
         {
-            Hide();
+            HideInventory();
             openInventoryBackground.SetActive(false);
             return;
         }
@@ -55,7 +55,11 @@ public class PlayerInventoryUI : NetworkBehaviour
     {
         if (state == player.PlayerStateMachine.draggingItem || state == player.PlayerStateMachine.draggingJump)
         {
-            Hide();
+            HideInventory();
+            HideInventoryButton();
+        } else
+        {
+            ShowInventoryButton();
         }
     }
 
@@ -103,36 +107,48 @@ public class PlayerInventoryUI : NetworkBehaviour
     public void SelecItem(int itemInventoryIndex)
     {
         player.PlayerInventory.SelectItemDataByItemInventoryIndex(itemInventoryIndex);
+
+        UpdateOpenInventoryButton();
+        HideInventory(); //hide only when selecting an item
     }
 
     private void UpdateOpenInventoryButton()
     {
         openInventoryButton.image.sprite = player.PlayerInventory.GetSelectedItemSO().itemIcon; //Show Icon of selected item
-
-        Hide();
     }
 
     private void ToggleInventory()
     {
         if (playerInventoryUIBackground.activeSelf)
         {
-            Hide();
+            HideInventory();
         }
         else
         {
-            Show();
+            ShoInventory();
         }
     }
 
-    private void Hide()
+    private void HideInventory()
     {
         playerInventoryUIBackground.SetActive(false);
     }
 
-    private void Show()
+    private void ShoInventory()
     {
         playerInventoryUIBackground.SetActive(true);
     }
+
+    private void HideInventoryButton()
+    {
+        openInventoryBackground.SetActive(false);
+    }
+
+    private void ShowInventoryButton()
+    {
+        openInventoryBackground.SetActive(true);
+    }
+
     public override void OnNetworkDespawn()
     {
         if (!IsOwner) return;
