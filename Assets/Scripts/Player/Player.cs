@@ -138,7 +138,7 @@ public class Player : NetworkBehaviour
         }
 
         playerStateMachine.TransitionTo(playerStateMachine.idleEnemyTurnState);
-        GameFlowManager.Instance.PlayerPlayedRpc(GameFlowManager.Instance.LocalplayableState);
+        GameFlowManager.Instance.PlayerPlayedServerRpc(GameFlowManager.Instance.LocalplayableState);
 
     }
 

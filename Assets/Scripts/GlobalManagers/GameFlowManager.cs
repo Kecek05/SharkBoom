@@ -27,6 +27,9 @@ public class GameFlowManager : NetworkBehaviour
     [SerializeField] private ItemsListSO itemsListSO;
     [SerializeField] private List<Transform> spawnPointsPos;
 
+    [BetterHeader("Settings")]
+    [Unit("ms")][SerializeField] private int delayBetweenTurns = 3000;
+    [Unit("ms")][SerializeField] private int delayClosePlayersInfo = 3000;
 
     private PlayableState localPlayableState = new();
     private PlayableState localPlayedState = new();
@@ -55,6 +58,11 @@ public class GameFlowManager : NetworkBehaviour
         }
     }
 
+
+    /// <summary>
+    /// Set the localPlayable and localPlayed states to the GameFlowManager, Only Owner.
+    /// </summary>
+    /// <param name="playingState"> Playing State</param>
     public void SetLocalStates(PlayableState playingState)
     {
         switch(playingState)
@@ -72,31 +80,45 @@ public class GameFlowManager : NetworkBehaviour
         OnLocalPlayableStateChanged?.Invoke();
     }
 
+
+    /// <summary>
+    /// Called to change the player's turn.
+    /// </summary>
+    /// <param name="playerPlayingState"> Playing State</param>
     [Rpc(SendTo.Server)]
-    public void PlayerPlayedRpc(PlayableState playerPlayingState)
+    public void PlayerPlayedServerRpc(PlayableState playerPlayingState)
     {
         if (playerPlayingState == PlayableState.Player1Playing)
         {
             //recived item callback from player 1
             currentPlayableState.Value = PlayableState.Player1Played;
 
-            DelayChangePlayableState(PlayableState.Player2Playing);
+            DelayChangeTurns(PlayableState.Player2Playing);
         }
         else if (playerPlayingState == PlayableState.Player2Playing)
         {
             //recived item callback from player 2
             currentPlayableState.Value = PlayableState.Player2Played;
 
-            DelayChangePlayableState(PlayableState.Player1Playing);
+            DelayChangeTurns(PlayableState.Player1Playing);
         }
     }
 
+
+    /// <summary>
+    /// Called when the player jumped.
+    /// </summary>
+    /// <param name="playableState"> Playing State</param>
     [Rpc(SendTo.Server)]
     public void PlayerJumpedServerRpc(PlayableState playableState)
     {
         PlayerJumpedClientRpc(playableState);
     }
 
+    /// <summary>
+    /// Tell the owner that the player jumped.
+    /// </summary>
+    /// <param name="playableState"> Owner Playing State</param>
     [Rpc(SendTo.ClientsAndHost)]
     private void PlayerJumpedClientRpc(PlayableState playableState)
     {
@@ -107,6 +129,9 @@ public class GameFlowManager : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Used to trigger local events when the player can play or not.
+    /// </summary>
     private void CurrentPlayableState_OnValueChanged(PlayableState previousValue, PlayableState newValue)
     {
         if (newValue == localPlayableState)
@@ -133,7 +158,7 @@ public class GameFlowManager : NetworkBehaviour
                 if(IsServer)
                 {
                     RandomizePlayerItems();
-                    DelayChangeGameState(GameState.GameStarted); //Show delay
+                    ChangeGameState(GameState.GameStarted, delayClosePlayersInfo); //Show Players Info delay
                 }
                 break;
             case GameState.GameStarted:
@@ -141,30 +166,42 @@ public class GameFlowManager : NetworkBehaviour
                 {
 
                     CurrentPlayableState.Value = PlayableState.Player1Playing; //DEBUG
-                    int randomStartPlayer = UnityEngine.Random.Range(0, 2);
+
+                    //int randomStartPlayer = UnityEngine.Random.Range(0, 2);
                     //currentPlayableState.Value = randomStartPlayer == 0 ? PlayableState.Player1Playing : PlayableState.Player2Playing;
                 }
                 break;
             case GameState.GameEnded:
                 break;
         }
-
-        Debug.Log($"Game State Changed to: {newValue.ToString()}");
     }
 
-    private async void DelayChangePlayableState(PlayableState playableState)
+
+    /// <summary>
+    /// Call this to change the player's turn after a delay.
+    /// </summary>
+    /// <param name="playableState"> Playing State</param>
+    private async void DelayChangeTurns(PlayableState playableState)
     {
-        await Task.Delay(3000);
-        SetPlayableStateRpc(playableState);
+        await Task.Delay(delayBetweenTurns);
+        SetPlayableStateServerRpc(playableState);
     }
 
-    private async void DelayChangeGameState(GameState gameState)
+    /// <summary>
+    /// Call this to change the Game State, delay its optional.
+    /// </summary>
+    /// <param name="gameState"> Game State</param>
+    /// <param name="delayToChange"> Delay in ms</param>
+    public async void ChangeGameState(GameState gameState, int delayToChange = 0) //0ms default
     {
-        await Task.Delay(3000);
-        SetGameStateRpc(gameState);
+        await Task.Delay(delayToChange);
+        SetGameStateServerRpc(gameState);
     }
 
-    [Command("gameFlowManager-randomizePlayersItems")]
+
+    /// <summary>
+    /// Call this to randomize and give items to players
+    /// </summary>
     public void RandomizePlayerItems()
     {
         //int itemsInInventory = UnityEngine.Random.Range(2, itemsListSO.allItemsSOList.Count); //Random qtd of items for now
@@ -182,12 +219,29 @@ public class GameFlowManager : NetworkBehaviour
 
             foreach (PlayerInventory playerInventory in FindObjectsByType<PlayerInventory>(FindObjectsSortMode.None))
             {
-
                 playerInventory.SetPlayerItems(randomItemSOIndex);
             }
         }
     }
 
+
+    [Rpc(SendTo.Server)]
+    private void SetGameStateServerRpc(GameState newState)
+    {
+        gameState.Value = newState;
+    }
+
+
+    [Rpc(SendTo.Server)]
+    private void SetPlayableStateServerRpc(PlayableState newState)
+    {
+        currentPlayableState.Value = newState;
+    }
+
+    /// <summary>
+    /// Get a random Spawnpoint from the list and remove it from the list.
+    /// </summary>
+    /// <returns></returns>
     public Transform GetRandomSpawnPoint()
     {
         Transform selectedSpawnPoint = spawnPointsPos[UnityEngine.Random.Range(0, spawnPointsPos.Count)];
@@ -195,20 +249,22 @@ public class GameFlowManager : NetworkBehaviour
         return selectedSpawnPoint;
     }
 
-    [Rpc(SendTo.Server)]
-    public void SetGameStateRpc(GameState newState)
+
+    public override void OnNetworkDespawn()
     {
-        gameState.Value = newState;
+        gameState.OnValueChanged -= GameState_OnValueChanged;
+
+        if (IsClient)
+        {
+            currentPlayableState.OnValueChanged -= CurrentPlayableState_OnValueChanged;
+        }
     }
 
-
-    [Rpc(SendTo.Server)]
-    public void SetPlayableStateRpc(PlayableState newState)
-    {
-        currentPlayableState.Value = newState;
-    }
 }
 
+/// <summary>
+/// Related to game flow, use PlayableState to player relayed states.
+/// </summary>
 public enum GameState
 {
     None,

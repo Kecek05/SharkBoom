@@ -52,7 +52,7 @@ public class BaseItemThrowable : MonoBehaviour
     {
         if(!isServerObject) return; // Only the server should call the callback action
 
-        GameFlowManager.Instance.PlayerPlayedRpc(thisItemLaucherData.ownerPlayableState);
+        GameFlowManager.Instance.PlayerPlayedServerRpc(thisItemLaucherData.ownerPlayableState);
     }
 
     protected void OnDestroy()

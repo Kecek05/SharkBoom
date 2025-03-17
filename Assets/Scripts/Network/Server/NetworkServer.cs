@@ -77,7 +77,7 @@ public class NetworkServer : IDisposable
             playerInstance.GetComponent<Player>().InitializePlayerRpc(PlayableState.Player2Playing, randomSpawnPointSelected.rotation);
 
             //Both players are connected and spawned
-            GameFlowManager.Instance.SetGameStateRpc(GameState.WaitingToStart);
+            GameFlowManager.Instance.ChangeGameState(GameState.WaitingToStart);
         }
 
     }

@@ -57,7 +57,7 @@ public class TimerManager : NetworkBehaviour
         OnTimesUp?.Invoke();
 
         //time's up
-        GameFlowManager.Instance.PlayerPlayedRpc(GameFlowManager.Instance.CurrentPlayableState.Value); //change turn
+        GameFlowManager.Instance.PlayerPlayedServerRpc(GameFlowManager.Instance.CurrentPlayableState.Value); //change turn
 
         timerCoroutine = null;
     }
