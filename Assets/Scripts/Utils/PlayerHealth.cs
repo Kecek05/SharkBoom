@@ -14,7 +14,7 @@ public class PlayerHealth : Health
     }
 
     private float selectedMultiplier; //cache
-    [SerializeField] private Player player;
+    [SerializeField] private PlayerThrower player;
     [SerializeField] private Rigidbody2D playerRb2D; //DEBUG
 
     public override void OnNetworkSpawn()

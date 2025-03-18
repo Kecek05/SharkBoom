@@ -6,9 +6,9 @@ using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
-public class Player : NetworkBehaviour
+public class PlayerThrower : NetworkBehaviour
 {
-    public static event Action<Player> OnPlayerSpawned;
+    public static event Action<PlayerThrower> OnPlayerSpawned;
 
 
     [BetterHeader("References")]

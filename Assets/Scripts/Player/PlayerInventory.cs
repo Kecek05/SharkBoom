@@ -8,7 +8,7 @@ public class PlayerInventory : NetworkBehaviour
     public event Action<ItemInventoryData> OnItemChanged;
     public event Action<int> OnItemSelected;
 
-    [SerializeField] private Player player;
+    [SerializeField] private PlayerThrower player;
 
     [SerializeField] private ItemsListSO itemsListSO;
 

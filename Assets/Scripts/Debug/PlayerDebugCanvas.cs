@@ -8,7 +8,7 @@ public class PlayerDebugCanvas : NetworkBehaviour
 {
 
     [BetterHeader("References")]
-    public Player player;
+    public PlayerThrower player;
     public TextMeshProUGUI selectedItemIndexText;
     public TextMeshProUGUI selectedRbText;
     public TextMeshProUGUI playerStateText;

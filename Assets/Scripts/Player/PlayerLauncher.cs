@@ -16,7 +16,7 @@ public class PlayerLauncher : NetworkBehaviour
     [BetterHeader("References")]
     [SerializeField] private InputReader inputReader;
     [SerializeField] private Transform spawnItemPos;
-    [SerializeField] private Player player;
+    [SerializeField] private PlayerThrower player;
 
     //private BaseItemThrowableActivable itemThrowableActivableClient;
     //private BaseItemThrowableActivable itemThrowableActivableServer;

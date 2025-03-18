@@ -11,7 +11,7 @@ public class PlayerInventoryUI : NetworkBehaviour
 
     [BetterHeader("References")]
     [SerializeField] private GameObject playerInventoryUIBackground;
-    [SerializeField] private Player player;
+    [SerializeField] private PlayerThrower player;
     [SerializeField] private Transform inventoryItemHolder;
     [SerializeField] private GameObject playerItemSingleUIPrefab;
     [SerializeField] private Button jumpButton;

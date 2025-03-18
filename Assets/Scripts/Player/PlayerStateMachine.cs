@@ -23,7 +23,7 @@ public class PlayerStateMachine
     public event Action<IState> OnStateChanged;
 
 
-    public PlayerStateMachine(Player player)
+    public PlayerStateMachine(PlayerThrower player)
     {
         //our builder
         this.myTurnStartedState = new MyTurnStartedState(player);

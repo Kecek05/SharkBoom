@@ -9,9 +9,9 @@ public class MyTurnStartedState : IState
 {
 
     //My Turn started, set up only
-    private Player player;
+    private PlayerThrower player;
 
-    public MyTurnStartedState(Player player)
+    public MyTurnStartedState(PlayerThrower player)
     {
         //our builder
         this.player = player;
@@ -49,9 +49,9 @@ public class IdleMyTurnState : IState
     // Can Move Camera, Choose items and drag
     //Change to Dragging if start dragging
 
-    private Player player;
+    private PlayerThrower player;
 
-    public IdleMyTurnState(Player player)
+    public IdleMyTurnState(PlayerThrower player)
     {
         //our builder
         this.player = player;
@@ -96,10 +96,10 @@ public class DraggingJump : IState
     //Cant Move Camera, Cant Choose items, Only Drag
     //Change to Release Jump if release the jump
 
-    private Player player;
+    private PlayerThrower player;
 
 
-    public DraggingJump(Player player) {
+    public DraggingJump(PlayerThrower player) {
         //our builder
         this.player = player;
     }
@@ -135,9 +135,9 @@ public class DraggingItem : IState
     //Cant Move Camera, Cant Choose items, Only Drag
     //Change to Release Item if release the item
 
-    private Player player;
+    private PlayerThrower player;
 
-    public DraggingItem(Player player)
+    public DraggingItem(PlayerThrower player)
     {
         //our builder
         this.player = player;
@@ -176,9 +176,9 @@ public class DragReleaseJump : IState
     //Cant Move Camera, Cant Choose items, Cant Drag, Camera following the action
     //Change to the IdleMyTurn after the item Callback
 
-    private Player player;
+    private PlayerThrower player;
 
-    public DragReleaseJump(Player player)
+    public DragReleaseJump(PlayerThrower player)
     {
         //our builder
         this.player = player;
@@ -209,9 +209,9 @@ public class DragReleaseItem : IState
     //Cant Move Camera, Cant Choose items, Cant Drag, Camera following the action
     //Change to the MyTurnEnded after the item Callback
 
-    private Player player;
+    private PlayerThrower player;
 
-    public DragReleaseItem(Player player)
+    public DragReleaseItem(PlayerThrower player)
     {
         //our builder
         this.player = player;
@@ -238,9 +238,9 @@ public class MyTurnEndedState : IState
 {
     //My Turn ended, next is enemy turn
 
-    private Player player;
+    private PlayerThrower player;
 
-    public MyTurnEndedState(Player player)
+    public MyTurnEndedState(PlayerThrower player)
     {
         //our builder
         this.player = player;

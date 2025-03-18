@@ -31,7 +31,7 @@ public class LoadingPlayersUI : NetworkBehaviour
 
         if(IsServer)
         {
-            Player.OnPlayerSpawned += Player_OnPlayerSpawned;
+            PlayerThrower.OnPlayerSpawned += Player_OnPlayerSpawned;
         }
     }
 
@@ -52,7 +52,7 @@ public class LoadingPlayersUI : NetworkBehaviour
     }
 
 
-    private void Player_OnPlayerSpawned(Player player)
+    private void Player_OnPlayerSpawned(PlayerThrower player)
     {
         if(NetworkManager.Singleton.ConnectedClients.Count == 2) //Only update if the second player is spawned
             PlayerSpawnedServerRpc();
@@ -129,7 +129,7 @@ public class LoadingPlayersUI : NetworkBehaviour
 
         if (IsServer)
         {
-            Player.OnPlayerSpawned -= Player_OnPlayerSpawned;
+            PlayerThrower.OnPlayerSpawned -= Player_OnPlayerSpawned;
         }
     }
 

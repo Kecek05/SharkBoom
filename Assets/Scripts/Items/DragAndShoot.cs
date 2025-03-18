@@ -29,7 +29,7 @@ public class DragAndShoot : NetworkBehaviour
     public event Action<bool> OnDragCancelable;
 
     [BetterHeader("References")]
-    [SerializeField] protected Player player;
+    [SerializeField] protected PlayerThrower player;
     [SerializeField] private Trajectory trajectory;
     [SerializeField] private InputReader inputReader;
     [SerializeField] private GameObject areaOfStartDrag;
