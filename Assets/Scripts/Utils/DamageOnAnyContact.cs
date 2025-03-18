@@ -18,4 +18,17 @@ public class DamageOnAnyContact : MonoBehaviour
             }
         }
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.TryGetComponent(out IDamageable damageable))
+        {
+            if (NetworkManager.Singleton.IsServer && !damaged)
+            {
+                damaged = true;
+                damageable.TakeDamage(damageableSO);
+                Debug.Log("Dealt " + damageableSO.damage + " damage to " + collision.gameObject.name);
+            }
+        }
+    }
 }
