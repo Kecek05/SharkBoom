@@ -21,7 +21,6 @@ public class PlayerFlipGfx : DragListener
     protected override void DoOnDragChange()
     {
 
-        ChangeToClientAuthoritative();
 
         if (player.PlayerDragController.GetOpositeFingerPos().x > playerGfxTransform.position.x + angleOffset)
             transform.eulerAngles = new Vector3(transform.eulerAngles.x, -90f , transform.eulerAngles.z);
@@ -35,6 +34,8 @@ public class PlayerFlipGfx : DragListener
         foreach (NetworkTransform networkTransform in networkTransforms)
         {
             networkTransform.AuthorityMode = NetworkTransform.AuthorityModes.Server;
+
+
         }
     }
 
@@ -50,7 +51,7 @@ public class PlayerFlipGfx : DragListener
     {
         //playerGfxTransform.eulerAngles = startEulerAngles;
 
-        ChangeToServerAuthoritative();
+
     }
 
 }
