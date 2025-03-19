@@ -36,11 +36,11 @@ public class ServerSingleton : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public async Task CreateServer()
+    public async Task CreateServer(NetworkObject playerPrefab)
     {
         await UnityServices.InitializeAsync();
 
-        gameManager = new ServerGameManager();
+        gameManager = new ServerGameManager(ApplicationData.IP(), ApplicationData.Port(), ApplicationData.QPort(), NetworkManager.Singleton, playerPrefab);
     }
 
     private void OnDestroy()

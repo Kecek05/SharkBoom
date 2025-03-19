@@ -28,7 +28,7 @@ public class ApplicationController : MonoBehaviour //Responsable of launching th
             //Dedicated Server Code
             ServerSingleton serverSingleton = Instantiate(serverPrefab);
 
-            await serverSingleton.CreateServer();
+            await serverSingleton.CreateServer(playerPrefab);
 
             serverSingleton.GameManager.StartGameServerAsync();
 
