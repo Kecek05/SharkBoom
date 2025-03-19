@@ -36,7 +36,6 @@ public class HostSingleton : MonoBehaviour
     public void CreateHost(NetworkObject playerPrefab)
     {
         gameManager = new HostGameManager(playerPrefab);
-
     }
 
     private void OnDestroy()

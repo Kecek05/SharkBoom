@@ -9,8 +9,9 @@ public class ApplicationController : MonoBehaviour //Responsable of launching th
     [BetterHeader("Singletons")]
     [SerializeField] private ClientSingleton clientPrefab;
     [SerializeField] private HostSingleton hostPrefab;
-    //[SerializeField] private ServerSingleton serverPrefab;
+    [SerializeField] private ServerSingleton serverPrefab;
 
+    [BetterHeader("Settings", 12)]
     [SerializeField] private NetworkObject playerPrefab;
 
     private async void Start()
@@ -25,6 +26,12 @@ public class ApplicationController : MonoBehaviour //Responsable of launching th
         if(isDedicatedServer)
         {
             //Dedicated Server Code
+            ServerSingleton serverSingleton = Instantiate(serverPrefab);
+
+            await serverSingleton.CreateServer();
+
+            serverSingleton.GameManager.StartGameServerAsync();
+
         } else
         {
             //Host and Client Code
