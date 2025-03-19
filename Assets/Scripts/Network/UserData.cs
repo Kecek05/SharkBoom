@@ -37,4 +37,9 @@ public class GameInfo
     public Map map;
     public GameMode gameMode;
     public GameQueue gameQueue;
+
+    public string ToMultiplayQueue()
+    {
+        return "";
+    }
 }
