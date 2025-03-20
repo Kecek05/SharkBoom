@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -13,7 +14,9 @@ public class NetworkClient : IDisposable //Actual Client Game Logic
         this.networkManager = networkManager;
 
         networkManager.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
+
     }
+    
 
     private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
     {

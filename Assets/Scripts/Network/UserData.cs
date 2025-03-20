@@ -48,3 +48,9 @@ public class GameInfo
         };
     }
 }
+
+[Serializable]
+public class MatchmakingPlayerData
+{
+    public int pearls;
+}

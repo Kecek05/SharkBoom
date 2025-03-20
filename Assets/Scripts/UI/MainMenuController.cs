@@ -30,12 +30,12 @@ public class MainMenuController : MonoBehaviour
             Application.Quit();
         });
 
-        clientButton.onClick.AddListener(async() =>
-        {
-            clientButton.interactable = false;
-            await ClientSingleton.Instance.GameManager.StartRelayClientAsync(lobbyCodeInputField.text);
-            clientButton.interactable = true;
-        });
+        //clientButton.onClick.AddListener(async() =>
+        //{
+        //    clientButton.interactable = false;
+        //    await ClientSingleton.Instance.GameManager.StartRelayClientAsync(lobbyCodeInputField.text);
+        //    clientButton.interactable = true;
+        //});
 
         quickJoinButton.onClick.AddListener(async () =>
         {
@@ -45,7 +45,7 @@ public class MainMenuController : MonoBehaviour
         });
 
         //CHANGE TO MACHMAKE LATER
-        lobbiesButton.onClick.AddListener(async () =>
+        clientButton.onClick.AddListener(async () =>
         {
             if (isCanceling) return;
 
@@ -59,8 +59,8 @@ public class MainMenuController : MonoBehaviour
                 return;
             }
 
-            ClientSingleton.Instance.GameManager.MatchmakeAsync(OnMatchMade); //We will pass and event to be trigger when the result is ready.
             Debug.Log("Searching...");
+            ClientSingleton.Instance.GameManager.MatchmakeAsync(OnMatchMade); //We will pass and event to be trigger when the result is ready.
             isMatchMaking = true;
 
         });

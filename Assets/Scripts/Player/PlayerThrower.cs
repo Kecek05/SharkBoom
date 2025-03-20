@@ -53,7 +53,7 @@ public class PlayerThrower : NetworkBehaviour
             } else
             {
                 //Server Singleton
-                //userData = ServerSingleton.Instance.GameManager.NetworkServer.GetUserDataByClientId(OwnerClientId);
+                userData = ServerSingleton.Instance.GameManager.NetworkServer.GetUserDataByClientId(OwnerClientId);
             }
 
             playerName.Value = userData.userName;

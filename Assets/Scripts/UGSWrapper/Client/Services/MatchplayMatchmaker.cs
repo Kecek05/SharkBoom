@@ -36,13 +36,19 @@ public class MatchplayMatchmaker : IDisposable
     {
         cancelToken = new CancellationTokenSource();
 
-        string queueName = data.userGamePreferences.ToMultiplayQueue();
+        //string queueName = data.userGamePreferences.ToMultiplayQueue();
+        string queueName = "solo-ranked-queue";
         CreateTicketOptions createTicketOptions = new CreateTicketOptions(queueName);
         Debug.Log(createTicketOptions.QueueName);
 
+        MatchmakingPlayerData machmakingPlayerData = new MatchmakingPlayerData
+        {
+            pearls = data.userPearls
+        };
+
         List<Player> players = new List<Player>
         {
-            new Player(data.userAuthId, data.userPearls)
+            new Player(data.userAuthId, machmakingPlayerData)
         };
 
         try

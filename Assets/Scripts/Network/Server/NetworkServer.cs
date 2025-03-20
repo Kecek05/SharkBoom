@@ -1,8 +1,10 @@
+using QFSW.QC.Suggestors.Tags;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -38,15 +40,6 @@ public class NetworkServer : IDisposable
     {
         networkManager.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
 
-        networkManager.SceneManager.OnLoadComplete += SceneManager_OnLoadComplete;
-
-    }
-
-    private void SceneManager_OnLoadComplete(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
-    {
-        //Called when any client loads a scene
-        Debug.Log(sceneName + " Load Complete");
-        SpawnPlayer(clientId);
     }
 
     private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
@@ -67,10 +60,13 @@ public class NetworkServer : IDisposable
 
         response.Approved = true; //Connection is approved
         response.CreatePlayerObject = false;
+
+        _ = SpawnPlayer(request.ClientNetworkId);
     }
 
-    private void SpawnPlayer(ulong clientId)
+    private async Task SpawnPlayer(ulong clientId)
     {
+        await Task.Delay(2000); //delay to wait the client load the scene. Improve this!
 
         Transform randomSpawnPointSelected = GameFlowManager.Instance.GetRandomSpawnPoint();
 
@@ -78,7 +74,9 @@ public class NetworkServer : IDisposable
 
         playerInstance.SpawnAsPlayerObject(clientId);
 
-        if(networkManager.ConnectedClientsList.Count == 1)
+        Debug.Log($"Connected Clients: {networkManager.ConnectedClientsList.Count}");
+
+        if(networkManager.ConnectedClientsList.Count == 1) // PROB NOT WORKING FOR DEDICATED SERVER
         {
             playerInstance.GetComponent<PlayerThrower>().InitializePlayerRpc(PlayableState.Player1Playing, randomSpawnPointSelected.rotation);
 
@@ -114,7 +112,6 @@ public class NetworkServer : IDisposable
             networkManager.OnServerStarted -= NetworkManager_OnServerStarted;
             networkManager.OnClientDisconnectCallback -= NetworkManager_OnClientDisconnectCallback;
 
-            networkManager.SceneManager.OnLoadComplete -= SceneManager_OnLoadComplete;
         }
 
         if (networkManager.IsListening)

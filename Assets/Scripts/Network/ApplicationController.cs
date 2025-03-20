@@ -14,9 +14,17 @@ public class ApplicationController : MonoBehaviour //Responsable of launching th
     [BetterHeader("Settings", 12)]
     [SerializeField] private NetworkObject playerPrefab;
 
+    [SerializeField] private bool isServerDebug = false;
+
     private async void Start()
     {
         DontDestroyOnLoad(gameObject);
+
+        if(isServerDebug)
+        {
+            await LaunchInMode(true);
+            return;
+        }
 
         await LaunchInMode(SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Null);
     }
