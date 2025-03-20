@@ -2,6 +2,9 @@ using Sortify;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+#if UNITY_ANDROID
+    using GooglePlayGames;
+#endif
 
 public class AuthenticateUI : MonoBehaviour
 {
@@ -21,14 +24,17 @@ public class AuthenticateUI : MonoBehaviour
         ShowButtons();
         HideTxt();
 
+#if UNITY_ANDROID
         authBtn.onClick.AddListener(async () =>
         {
             //Loggin with Google Play
             HideButtons();
             ShowTxt();
             await ClientSingleton.Instance.AuthAndroid();
-            //authAndroidTxt.text = $"Token: {AuthenticationWrapper.GooglePlayToken} name: {PlayGamesPlatform.Instance.GetUserDisplayName()} ID: {PlayGamesPlatform.Instance.GetUserId()}";
+            authAndroidTxt.text = $"Token: {AuthenticationWrapper.GooglePlayToken} name: {PlayGamesPlatform.Instance.GetUserDisplayName()} ID: {PlayGamesPlatform.Instance.GetUserId()}";
         });
+#endif
+
         authAnonymouslyBtn.onClick.AddListener(async () =>
         {
             HideButtons();
@@ -43,15 +49,16 @@ public class AuthenticateUI : MonoBehaviour
         AuthenticationWrapper.OnSignInFail += AuthenticationWrapper_OnSignInFail;
 
 
-
+#if UNITY_ANDROID
         if (Application.platform == RuntimePlatform.Android)
         {
             //Loggin with Google Play
             //HideButtons();
             ShowTxt();
             await ClientSingleton.Instance.AuthAndroid();
-          //  authAndroidTxt.text = $"Token: {AuthenticationWrapper.GooglePlayToken} name: {PlayGamesPlatform.Instance.GetUserDisplayName()} ID: {PlayGamesPlatform.Instance.GetUserId()}";
+            authAndroidTxt.text = $"Token: {AuthenticationWrapper.GooglePlayToken} name: {PlayGamesPlatform.Instance.GetUserDisplayName()} ID: {PlayGamesPlatform.Instance.GetUserId()}";
         }
+#endif
     }
 
     private void Update()
