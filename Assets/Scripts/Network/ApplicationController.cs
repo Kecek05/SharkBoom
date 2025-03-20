@@ -16,6 +16,8 @@ public class ApplicationController : MonoBehaviour //Responsable of launching th
 
     [SerializeField] private bool isServerDebug = false;
 
+    private ApplicationData appData;
+
     private async void Start()
     {
         DontDestroyOnLoad(gameObject);
@@ -34,6 +36,8 @@ public class ApplicationController : MonoBehaviour //Responsable of launching th
         if(isDedicatedServer)
         {
             //Dedicated Server Code
+            appData = new();
+
             ServerSingleton serverSingleton = Instantiate(serverPrefab);
 
             await serverSingleton.CreateServer(playerPrefab);

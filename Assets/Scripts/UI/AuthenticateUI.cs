@@ -63,6 +63,7 @@ public class AuthenticateUI : MonoBehaviour
 
     private void Update()
     {
+        //Change later
         authStateTxt.text = AuthenticationWrapper.AuthState.ToString();
     }
 

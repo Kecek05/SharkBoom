@@ -132,24 +132,25 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
     }
 
     /// <summary>
-    /// Call this to shutdown the server. Doesn't go to Main Menu
+    /// Call this to shutdown the host. Doesn't go to Main Menu
     /// </summary>
     public async void ShutdownAsync()
     {
+        if (string.IsNullOrEmpty(lobbyId)) return;
+
+
         HostSingleton.Instance.StopCoroutine(nameof(HeartbeatLobby));
 
-        if (!string.IsNullOrEmpty(lobbyId))
+        try
         {
-            try
-            {
-                await LobbyService.Instance.DeleteLobbyAsync(lobbyId);
-            }
-            catch (LobbyServiceException lobbyEx)
-            {
-                Debug.LogException(lobbyEx);
-            }
-            lobbyId = string.Empty;
+            await LobbyService.Instance.DeleteLobbyAsync(lobbyId);
         }
+        catch (LobbyServiceException lobbyEx)
+        {
+            Debug.LogException(lobbyEx);
+        }
+        lobbyId = string.Empty;
+
 
         networkServer.OnClientLeft -= HandleClientLeft;
 

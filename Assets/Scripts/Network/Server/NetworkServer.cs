@@ -1,12 +1,9 @@
-using QFSW.QC.Suggestors.Tags;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
-using UnityEditor.PackageManager;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class NetworkServer : IDisposable
 {
@@ -14,6 +11,8 @@ public class NetworkServer : IDisposable
     private NetworkObject playerPrefab;
 
     public Action<string> OnClientLeft;
+    public Action<UserData> OnUserLeft;
+    public Action<UserData> OnUserJoined;
 
     private Dictionary<ulong, string> clientIdToAuth = new Dictionary<ulong, string>(); // save client IDs to their authentication IDs
     private Dictionary<string, UserData> authIdToUserData = new Dictionary<string, UserData>(); // save authentication IDs to user data
@@ -46,7 +45,14 @@ public class NetworkServer : IDisposable
     {
         Debug.Log($"Client {clientId} disconnected");
 
-        OnClientLeft?.Invoke(clientId.ToString());
+        if (clientIdToAuth.TryGetValue(clientId, out string authId)) //Handle disconnections
+        {
+            clientIdToAuth.Remove(clientId);
+            OnUserLeft?.Invoke(authIdToUserData[authId]);
+            authIdToUserData.Remove(authId);
+
+            OnClientLeft?.Invoke(authId);
+        }
     }
 
     private void ApprovalCheck(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
@@ -57,6 +63,8 @@ public class NetworkServer : IDisposable
 
         clientIdToAuth[request.ClientNetworkId] = userData.userAuthId; //if dont exist, add to dictionary
         authIdToUserData[userData.userAuthId] = userData;
+
+        OnUserJoined?.Invoke(userData);
 
         response.Approved = true; //Connection is approved
         response.CreatePlayerObject = false;

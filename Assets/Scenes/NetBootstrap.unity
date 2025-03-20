@@ -676,7 +676,7 @@ MonoBehaviour:
   NetworkConfig:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 1620598477}
-    PlayerPrefab: {fileID: 1244250245066138330, guid: b0860533b3f34094e84f38ba033a6c4e, type: 3}
+    PlayerPrefab: {fileID: 0}
     Prefabs:
       NetworkPrefabsLists:
       - {fileID: 11400000, guid: 653e800f7c5da5448bb744f11e219df8, type: 2}
@@ -717,7 +717,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_PresetAsset: {fileID: 0}
   m_PresetReference:
-    rid: 7347402254399045736
+    rid: 7347402254399045779
   m_Scenario:
     rid: -2
   m_IsScenarioSettingsFolded: 0
@@ -727,7 +727,7 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 7347402254399045736
+    - rid: 7347402254399045779
       type: {class: NetworkSimulatorPreset, ns: Unity.Multiplayer.Tools.NetworkSimulator.Runtime, asm: Unity.Multiplayer.Tools.NetworkSimulator.Runtime}
       data:
         <Name>k__BackingField: None
