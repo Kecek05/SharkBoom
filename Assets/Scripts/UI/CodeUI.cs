@@ -7,7 +7,7 @@ public class CodeUI : MonoBehaviour
 
     void Update()
     {
-        if(HostSingleton.Instance.GameManager != null)
+        if(HostSingleton.Instance != null)
             codeTextUI.text = HostSingleton.Instance.GameManager.JoinCode;
     }
 }

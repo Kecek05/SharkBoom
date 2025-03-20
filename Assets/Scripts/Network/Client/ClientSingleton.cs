@@ -15,13 +15,14 @@ public class ClientSingleton : MonoBehaviour //Responsable for the client logic
 
             if (instance == null)
             {
-                Debug.LogError("No ClientSingleton found in the scene.");
+                //Debug.LogError("No ClientSingleton found in the scene.");
                 return null;
             }
 
             return instance;
         }
     }
+
 
 
     private ClientGameManager gameManager;

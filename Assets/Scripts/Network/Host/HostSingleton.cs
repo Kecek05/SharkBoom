@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -16,7 +15,7 @@ public class HostSingleton : MonoBehaviour
 
             if (instance == null)
             {
-                Debug.LogError("No HostSingleton found in the scene.");
+                //Debug.LogWarning("No HostSingleton found in the scene.");
                 return null;
             }
 

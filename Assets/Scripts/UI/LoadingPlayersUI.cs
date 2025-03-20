@@ -74,9 +74,9 @@ public class LoadingPlayersUI : NetworkBehaviour
             } else
             {
                 //Server Singleton
-                //UserData playerUserData = ServerSingleton.Instance.GameManager.NetworkServer.GetUserDataByClientId(connectedClientId);
+                UserData playerUserData = ServerSingleton.Instance.GameManager.NetworkServer.GetUserDataByClientId(connectedClientId);
 
-                //PlayerSpawnedClientRpc(playerUserData.userName, playerUserData.userPearls, connectedClientId);
+                PlayerSpawnedClientRpc(playerUserData.userName, playerUserData.userPearls, connectedClientId);
             }
         }
     }

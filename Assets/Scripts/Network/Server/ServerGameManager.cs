@@ -11,8 +11,10 @@ public class ServerGameManager : IDisposable
     private int serverQPort;
 
     private NetworkServer networkServer;
+
     private MultiplayAllocationService multiplayAllocationService;
 
+    public NetworkServer NetworkServer => networkServer;
 
     public ServerGameManager(string serverIP, int serverPort, int queryPort, NetworkManager networkManager, NetworkObject playerPrefab)
     {
