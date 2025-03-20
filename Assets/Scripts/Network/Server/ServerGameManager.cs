@@ -13,8 +13,9 @@ public class ServerGameManager : IDisposable
 
     private NetworkServer networkServer;
 
+#if UNITY_SERVER
     private MultiplayAllocationService multiplayAllocationService;
-
+#endif
     public NetworkServer NetworkServer => networkServer;
 
     public ServerGameManager(string serverIP, int serverPort, int queryPort, NetworkManager networkManager, NetworkObject playerPrefab)
@@ -24,13 +25,16 @@ public class ServerGameManager : IDisposable
         this.serverQPort = queryPort;
 
         networkServer = new NetworkServer(networkManager, playerPrefab);
-
+#if UNITY_SERVER
         multiplayAllocationService = new MultiplayAllocationService();
+#endif
     }
 
     public async Task StartGameServerAsync()
     {
+#if UNITY_SERVER
         await multiplayAllocationService.BeginServerCheck(); //health check
+
 
         try
         {
@@ -51,7 +55,7 @@ public class ServerGameManager : IDisposable
             Debug.LogException(e);
             return;
         }
-
+#endif
         if (!networkServer.OpenConnection(serverIP, serverPort))
         {
             Debug.LogError("NetworkServer did not start as expected.");
@@ -61,17 +65,20 @@ public class ServerGameManager : IDisposable
         Loader.LoadNetwork(Loader.Scene.GameNetCodeTest);
     }
 
+#if UNITY_SERVER
+
     private async Task<MatchmakingResults> GetMatchmakerPayload()
     {
         Task<MatchmakingResults> matchmakerPayloadTask = multiplayAllocationService.SubscribeAndAwaitMatchmakerAllocation();
 
-        if(await Task.WhenAny(matchmakerPayloadTask, Task.Delay(20000)) == matchmakerPayloadTask) //pass tasks, when any completes, do the code
+        if (await Task.WhenAny(matchmakerPayloadTask, Task.Delay(20000)) == matchmakerPayloadTask) //pass tasks, when any completes, do the code
         {
             //true if our task finishes before the delay
             return matchmakerPayloadTask.Result;
         }
         return null;
     }
+
 
     private void UserJoined(UserData user)
     {
@@ -86,7 +93,7 @@ public class ServerGameManager : IDisposable
         Debug.Log("SHUTING DOWN SERVER");
         ShutdownServer();
     }
-
+#endif
 
     /// <summary>
     /// Call this to close the server. Match ended or all players quit.
@@ -99,7 +106,7 @@ public class ServerGameManager : IDisposable
 
     public void Dispose()
     {
-        multiplayAllocationService?.Dispose();
+        //multiplayAllocationService?.Dispose();
         networkServer?.Dispose();
     }
 

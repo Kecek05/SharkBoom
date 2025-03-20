@@ -1,4 +1,4 @@
-
+#if UNITY_SERVER
 
 using Newtonsoft.Json;
 using System;
@@ -168,3 +168,5 @@ public class MultiplayAllocationService : IDisposable
         serverEvents?.UnsubscribeAsync();
     }
 }
+
+#endif
