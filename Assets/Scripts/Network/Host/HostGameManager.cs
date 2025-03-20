@@ -56,7 +56,7 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
 
         UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
 
-        RelayServerData relayServerData = AllocationUtils.ToRelayServerData(allocation, "dtls");
+        RelayServerData relayServerData = new(allocation, "dtls");
 
         transport.SetRelayServerData(relayServerData);
 
