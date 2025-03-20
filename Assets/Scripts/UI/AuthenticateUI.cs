@@ -1,4 +1,3 @@
-using GooglePlayGames;
 using Sortify;
 using TMPro;
 using UnityEngine;
@@ -28,7 +27,7 @@ public class AuthenticateUI : MonoBehaviour
             HideButtons();
             ShowTxt();
             await ClientSingleton.Instance.AuthAndroid();
-            authAndroidTxt.text = $"Token: {AuthenticationWrapper.GooglePlayToken} name: {PlayGamesPlatform.Instance.GetUserDisplayName()} ID: {PlayGamesPlatform.Instance.GetUserId()}";
+            //authAndroidTxt.text = $"Token: {AuthenticationWrapper.GooglePlayToken} name: {PlayGamesPlatform.Instance.GetUserDisplayName()} ID: {PlayGamesPlatform.Instance.GetUserId()}";
         });
         authAnonymouslyBtn.onClick.AddListener(async () =>
         {
@@ -51,7 +50,7 @@ public class AuthenticateUI : MonoBehaviour
             //HideButtons();
             ShowTxt();
             await ClientSingleton.Instance.AuthAndroid();
-            authAndroidTxt.text = $"Token: {AuthenticationWrapper.GooglePlayToken} name: {PlayGamesPlatform.Instance.GetUserDisplayName()} ID: {PlayGamesPlatform.Instance.GetUserId()}";
+          //  authAndroidTxt.text = $"Token: {AuthenticationWrapper.GooglePlayToken} name: {PlayGamesPlatform.Instance.GetUserDisplayName()} ID: {PlayGamesPlatform.Instance.GetUserId()}";
         }
     }
 

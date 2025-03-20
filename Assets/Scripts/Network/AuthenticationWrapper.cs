@@ -4,8 +4,6 @@ using Unity.Services.Authentication;
 using Unity.Services.Authentication.PlayerAccounts;
 using Unity.Services.Core;
 using UnityEngine;
-using GooglePlayGames;
-using GooglePlayGames.BasicApi;
 
 public static class AuthenticationWrapper
 {
@@ -68,42 +66,41 @@ public static class AuthenticationWrapper
             return AuthState;
         }
 
-        await SignInAndroidAsync();
+        //await SignInAndroidAsync();
 
         return AuthState;
     }
+    //private static async Task SignInAndroidAsync()
+    //{
+    //    AuthState = AuthState.Authenticating;
+    //    PlayGamesPlatform.Activate();
 
-    private static async Task SignInAndroidAsync()
-    {
-        AuthState = AuthState.Authenticating;
-        PlayGamesPlatform.Activate();
+    //    PlayGamesPlatform.Instance.Authenticate((status) =>
+    //    {
+    //        if (status == SignInStatus.Success)
+    //        {
+    //            Debug.Log("Login with Google was successful");
 
-        PlayGamesPlatform.Instance.Authenticate((status) =>
-        {
-            if (status == SignInStatus.Success)
-            {
-                Debug.Log("Login with Google was successful");
+    //            PlayGamesPlatform.Instance.RequestServerSideAccess(false, code =>
+    //            {
+    //                Debug.Log($"{code} <-Auth code");
+    //                GooglePlayToken = code;
+    //            });
+    //        }
+    //        else
+    //        {
+    //            AuthState = AuthState.Error;
+    //            OnSignInFail?.Invoke();
+    //            GooglePlayError = "Failed to retrive GPG auth code";
+    //            Debug.LogWarning("SignIn failed.");
+    //        }
 
-                PlayGamesPlatform.Instance.RequestServerSideAccess(false, code =>
-                {
-                    Debug.Log($"{code} <-Auth code");
-                    GooglePlayToken = code;
-                });
-            }
-            else
-            {
-                AuthState = AuthState.Error;
-                OnSignInFail?.Invoke();
-                GooglePlayError = "Failed to retrive GPG auth code";
-                Debug.LogWarning("SignIn failed.");
-            }
+    //    });
 
-        });
+    //    if (AuthState == AuthState.Error) return;
 
-        if (AuthState == AuthState.Error) return;
-
-        await CallAndroidWithUnity();
-    }
+    //    await CallAndroidWithUnity();
+    //}
 
     private static async Task CallAndroidWithUnity()
     {
