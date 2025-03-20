@@ -26,7 +26,7 @@ public class UserData
 
     public int userPearls;
 
-    public GameInfo userGamePreferences;
+    public GameInfo userGamePreferences = new();
 }
 
 
@@ -40,6 +40,11 @@ public class GameInfo
 
     public string ToMultiplayQueue()
     {
-        return "";
+        return gameQueue switch
+        {
+            GameQueue.Ranked => "solo-ranked-queue",
+            GameQueue.UnRanked => "solo-unranked-queue",
+            _ => "solo-ranked-queue",
+        };
     }
 }

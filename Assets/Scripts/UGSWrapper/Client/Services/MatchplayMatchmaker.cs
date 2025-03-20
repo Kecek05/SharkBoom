@@ -42,7 +42,7 @@ public class MatchplayMatchmaker : IDisposable
 
         List<Player> players = new List<Player>
         {
-            new Player(data.userAuthId, data.userGamePreferences)
+            new Player(data.userAuthId, data.userPearls)
         };
 
         try

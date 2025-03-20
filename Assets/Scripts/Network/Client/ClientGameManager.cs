@@ -14,6 +14,8 @@ using UnityEngine;
 public class ClientGameManager : IDisposable //Actual Logic to interact with UGS (Relay, Lobby, etc)
 {
     private NetworkClient networkClient;
+    private MatchplayMatchmaker matchmaker;
+
 
     private JoinAllocation joinAllocation;
 
@@ -31,6 +33,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         await UnityServices.InitializeAsync();
 
         networkClient = new NetworkClient(NetworkManager.Singleton);
+        matchmaker = new();
 
         AuthState authState = authTypes == AuthTypes.Anonymous ? await AuthenticationWrapper.DoAuthAnonymously() : authTypes == AuthTypes.Unity ? await AuthenticationWrapper.DoAuthUnity() : authTypes == AuthTypes.Android ? await AuthenticationWrapper.DoAuthAndroid() : AuthState.NotAuthenticated;
 
@@ -55,6 +58,14 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
 
         return false;
     }
+
+    public void StartMatchmakingClient(string ip, int port)
+    {
+        UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+        transport.SetConnectionData(ip, (ushort)port);
+        ConnectClient();
+    }
+
 
     public async Task StartRelayClientAsync(string joinCode)
     {
@@ -118,6 +129,45 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
     }
 
     /// <summary>
+    /// Call in UI to matchmake
+    /// </summary>
+    public async void MatchmakeAsync(Action<MatchmakerPollingResult> onMatchmakeResponse)
+    {
+        // Its void because we dont want to wait for the result to continue the execution of the code.
+        // Pass and event to call it when the result is ready. Who call this will know the response when the match responds.
+
+        if (matchmaker.IsMatchmaking) return;
+
+        MatchmakerPollingResult matchResult = await GetMatchAsync();
+
+        onMatchmakeResponse?.Invoke(matchResult);
+
+    }
+
+    /// <summary>
+    /// Call this to start the matchmake process, return the result.
+    /// </summary>
+    /// <returns></returns>
+    private async Task<MatchmakerPollingResult> GetMatchAsync()
+    {
+        MatchmakingResult matchmakingResult = await matchmaker.Matchmake(userData);
+
+        if(matchmakingResult.result == MatchmakerPollingResult.Success)
+        {
+            Debug.Log("Match Found!");
+            StartMatchmakingClient(matchmakingResult.ip, matchmakingResult.port);
+        }
+
+        return matchmakingResult.result;
+    }
+
+    public async Task CancelMatchmakingAsync()
+    {
+        await matchmaker.CancelMatchmaking();
+    }
+
+
+    /// <summary>
     /// Call this to disconnect from the server and go to Main Menu
     /// </summary>
     public void Disconnect()
@@ -129,7 +179,6 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
     {
         networkClient?.Dispose();
     }
-
 }
 
 
