@@ -82,7 +82,9 @@ public class ServerGameManager : IDisposable
     {
         multiplayAllocationService.RemovePlayer();
 
-        //ShutdownServer
+        //CHANGE THIS LATER, WHEN 1 CLIENT LEAVES, SHUTDOWN THE SERVER
+        Debug.Log("SHUTING DOWN SERVER");
+        ShutdownServer();
     }
 
 
