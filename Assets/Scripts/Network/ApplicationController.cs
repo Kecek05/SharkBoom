@@ -10,6 +10,7 @@ public class ApplicationController : MonoBehaviour //Responsable of launching th
     [SerializeField] private ClientSingleton clientPrefab;
     [SerializeField] private HostSingleton hostPrefab;
     [SerializeField] private ServerSingleton serverPrefab;
+    [SerializeField] private NetworkServerProvider networkServerProvider;
 
     [BetterHeader("Settings", 12)]
     [SerializeField] private NetworkObject playerPrefab;
@@ -42,6 +43,8 @@ public class ApplicationController : MonoBehaviour //Responsable of launching th
 
             await serverSingleton.CreateServer(playerPrefab);
 
+            Instantiate(networkServerProvider);
+
             serverSingleton.GameManager.StartGameServerAsync();
 
         } else
@@ -54,6 +57,7 @@ public class ApplicationController : MonoBehaviour //Responsable of launching th
             ClientSingleton clientSingleton = Instantiate(clientPrefab);
             clientSingleton.CreateClient();
 
+            Instantiate(networkServerProvider);
 
             //Go to main menu
             Loader.Load(Loader.Scene.AuthBootstrap);

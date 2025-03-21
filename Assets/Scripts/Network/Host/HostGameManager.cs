@@ -17,7 +17,6 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
     private const int MAX_CONNECTIONS = 2;
 
     private NetworkServer networkServer;
-    public NetworkServer NetworkServer => networkServer;
     private NetworkObject playerPrefab;
 
     private Allocation allocation;
@@ -155,6 +154,11 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
         networkServer.OnClientLeft -= HandleClientLeft;
 
         networkServer?.Dispose();
+    }
+
+    public NetworkServer GetNetworkServer()
+    {
+        return networkServer;
     }
 
     public void Dispose()

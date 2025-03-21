@@ -1,7 +1,6 @@
 using QFSW.QC;
 using Sortify;
 using System;
-using System.Threading.Tasks;
 using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
@@ -43,18 +42,8 @@ public class PlayerThrower : NetworkBehaviour
     {
         if(IsServer)
         {
-            UserData userData = null;
 
-            if(IsHost)
-            {
-                //Host Singleton
-                userData = HostSingleton.Instance.GameManager.NetworkServer.GetUserDataByClientId(OwnerClientId);
-
-            } else
-            {
-                //Server Singleton
-                userData = ServerSingleton.Instance.GameManager.NetworkServer.GetUserDataByClientId(OwnerClientId);
-            }
+            UserData userData = NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.GetUserDataByClientId(OwnerClientId);
 
             playerName.Value = userData.userName;
             playerPearls.Value = userData.userPearls;

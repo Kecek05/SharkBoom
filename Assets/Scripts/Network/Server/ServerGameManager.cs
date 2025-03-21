@@ -16,7 +16,6 @@ public class ServerGameManager : IDisposable
 #if UNITY_SERVER
     private MultiplayAllocationService multiplayAllocationService;
 #endif
-    public NetworkServer NetworkServer => networkServer;
 
     public ServerGameManager(string serverIP, int serverPort, int queryPort, NetworkManager networkManager, NetworkObject playerPrefab)
     {
@@ -102,6 +101,11 @@ public class ServerGameManager : IDisposable
     {
         Dispose();
         Application.Quit();
+    }
+
+    public NetworkServer GetNetworkServer()
+    {
+        return networkServer;
     }
 
     public void Dispose()

@@ -7,24 +7,24 @@ using UnityEngine;
 
 public class NetworkServer : IDisposable
 {
-    private NetworkManager networkManager;
-    private NetworkObject playerPrefab;
 
     public Action<string> OnClientLeft;
     public Action<UserData> OnUserLeft;
     public Action<UserData> OnUserJoined;
 
-    private Dictionary<string, ulong> authToClientId = new Dictionary<string, ulong>(); // save authentication IDs to their client IDs
-    private Dictionary<ulong, string> clientIdToAuth = new Dictionary<ulong, string>(); // save client IDs to their authentication IDs
-    private Dictionary<string, UserData> authIdToUserData = new Dictionary<string, UserData>(); // save authentication IDs to user data
+    private NetworkManager networkManager;
+    private PlayerSpawner playerSpawner;
+    private ServerAuthenticationService serverAuthenticationService;
 
-    public Dictionary<ulong, string> ClientIdToAuth => clientIdToAuth;
-    public Dictionary<string, ulong> AuthToClientId => authToClientId;
 
-    public NetworkServer(NetworkManager _networkManager, NetworkObject _playerPrefab) // our constructor
+    public PlayerSpawner PlayerSpawner => playerSpawner;
+    public ServerAuthenticationService ServerAuthenticationService => serverAuthenticationService;
+
+    public NetworkServer(NetworkManager _networkManager,NetworkObject _playerPrefab) // our constructor
     {
         networkManager = _networkManager;
-        playerPrefab = _playerPrefab;
+        playerSpawner = new(_playerPrefab);
+        serverAuthenticationService = new();
         networkManager.ConnectionApprovalCallback += ApprovalCheck;
 
         networkManager.OnServerStarted += NetworkManager_OnServerStarted;
@@ -49,15 +49,10 @@ public class NetworkServer : IDisposable
     {
         Debug.Log($"Client {clientId} disconnected");
 
-        if (clientIdToAuth.TryGetValue(clientId, out string authId)) //Handle disconnections
-        {
-            authToClientId.Remove(authId);
-            clientIdToAuth.Remove(clientId);
-            OnUserLeft?.Invoke(authIdToUserData[authId]);
-            authIdToUserData.Remove(authId);
+        OnUserLeft?.Invoke(serverAuthenticationService.GetUserDataByClientId(clientId));
+        OnClientLeft?.Invoke(serverAuthenticationService.GetAuthIdByClientId(clientId));
+        serverAuthenticationService.UnregisterClient(clientId);
 
-            OnClientLeft?.Invoke(authId);
-        }
     }
 
     private void ApprovalCheck(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
@@ -66,10 +61,7 @@ public class NetworkServer : IDisposable
 
         UserData userData = JsonUtility.FromJson<UserData>(payload); //Deserialize the payload to UserData
 
-        clientIdToAuth[request.ClientNetworkId] = userData.userAuthId; //if dont exist, add to dictionary
-        authToClientId[userData.userAuthId] = request.ClientNetworkId; //if dont exist, add to dictionary
-        authIdToUserData[userData.userAuthId] = userData;
-
+        serverAuthenticationService.RegisterClient(request.ClientNetworkId, userData);
 
         OnUserJoined?.Invoke(userData);
 
@@ -78,41 +70,9 @@ public class NetworkServer : IDisposable
 
         Debug.Log($"Connected Clients: {networkManager.ConnectedClientsList.Count}");
 
-        if(clientIdToAuth.Count == 2) //two clients in game
+        if(serverAuthenticationService.RegisteredClientCount == 2) //two clients in game
             GameFlowManager.Instance.ChangeGameState(GameState.SpawningPlayers);
         
-    }
-
-    /// <summary>
-    /// Call this to spawn a player.
-    /// </summary>
-    /// <param name="clientId"> Id of the player</param>
-    /// <param name="playerNumber"> player playing state</param>
-    public void SpawnPlayer(ulong clientId, PlayableState playerPlayingState)
-    {
-
-        Transform randomSpawnPointSelected = GameFlowManager.Instance.GetRandomSpawnPoint();
-
-        NetworkObject playerInstance = GameObject.Instantiate(playerPrefab, randomSpawnPointSelected.position, Quaternion.identity);
-
-        playerInstance.SpawnAsPlayerObject(clientId);
-
-        playerInstance.GetComponent<PlayerThrower>().InitializePlayerRpc(playerPlayingState, randomSpawnPointSelected.rotation);
-
-        Debug.Log($"Spawning Player, Client Id: {clientId} PlayableState: {playerPlayingState} Selected Random SpawnPoint: {randomSpawnPointSelected.name}");
-    }
-
-    public UserData GetUserDataByClientId(ulong clientId)
-    {
-        if(clientIdToAuth.TryGetValue(clientId, out string authId))
-        {
-            //Get Auth by client ID
-            if (authIdToUserData.TryGetValue(authId, out UserData userData))
-            {
-                return userData;
-            }
-        }
-        return null;
     }
 
 

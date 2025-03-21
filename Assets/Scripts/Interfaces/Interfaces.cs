@@ -32,3 +32,19 @@ public interface IFollowable
 {
     public void Follow(Transform target);
 }
+
+
+public interface IServerAuthenticationServices //Decopling of the Authentication Services
+{
+
+    void RegisterClient(ulong clientId, UserData userData);
+    void UnregisterClient(ulong clientId);
+    UserData GetUserDataByClientId(ulong clientId);
+
+    int RegisteredClientCount { get; }
+}
+
+public interface IPlayerSpawner //Decopling of the Authentication Services
+{
+    void SpawnPlayer(ulong clientId, PlayableState playerState);
+}
