@@ -36,7 +36,7 @@ public class NetworkServerProvider : MonoBehaviour
                 Debug.LogError("No NetworkServer found in the scene.");
                 return null;
             }
-
+            Debug.Log($"Defined Current Network Server: {currentNetworkServer}");
             return currentNetworkServer;
         }
     }
@@ -51,8 +51,6 @@ public class NetworkServerProvider : MonoBehaviour
         {
             return ServerSingleton.Instance.GameManager.GetNetworkServer();
         }
-
-        Debug.Log($"Current Network Server: {currentNetworkServer}");
         return null;
     }
 
