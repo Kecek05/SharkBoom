@@ -3,6 +3,7 @@ using TMPro;
 using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 
 public class LoadingPlayersUI : NetworkBehaviour
 {
@@ -54,8 +55,12 @@ public class LoadingPlayersUI : NetworkBehaviour
 
     private void Player_OnPlayerSpawned(PlayerThrower player)
     {
-        if(NetworkManager.Singleton.ConnectedClients.Count == 2) //Only update if the second player is spawned
-            PlayerSpawnedServerRpc();
+        if(HostSingleton.Instance != null)
+            if (HostSingleton.Instance.GameManager.NetworkServer.AuthToClientId.Count == 2) //Only update if the second player is spawned
+                PlayerSpawnedServerRpc();
+        else
+            if (ServerSingleton.Instance.GameManager.NetworkServer.AuthToClientId.Count == 2) //Only update if the second player is spawned
+                PlayerSpawnedServerRpc();
     }
 
     [Rpc(SendTo.Server)]
@@ -63,17 +68,19 @@ public class LoadingPlayersUI : NetworkBehaviour
     {
         //Send to server to send to all clients
 
-        foreach(ulong connectedClientId in NetworkManager.Singleton.ConnectedClientsIds)
+        if(HostSingleton.Instance != null)
         {
-            if(IsHost)
+            foreach(ulong connectedClientId in HostSingleton.Instance.GameManager.NetworkServer.AuthToClientId.Values)
             {
-                //Host Singleton
                 UserData playerUserData = HostSingleton.Instance.GameManager.NetworkServer.GetUserDataByClientId(connectedClientId);
 
                 PlayerSpawnedClientRpc(playerUserData.userName, playerUserData.userPearls, connectedClientId);
-            } else
+            }
+
+        } else
+        {
+            foreach (ulong connectedClientId in ServerSingleton.Instance.GameManager.NetworkServer.AuthToClientId.Values)
             {
-                //Server Singleton
                 UserData playerUserData = ServerSingleton.Instance.GameManager.NetworkServer.GetUserDataByClientId(connectedClientId);
 
                 PlayerSpawnedClientRpc(playerUserData.userName, playerUserData.userPearls, connectedClientId);

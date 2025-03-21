@@ -3285,7 +3285,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   NetworkTransformExpanded: 0
   AuthorityMode: 1
-  TickSyncChildren: 1
+  TickSyncChildren: 0
   UseUnreliableDeltas: 0
   SyncPositionX: 0
   SyncPositionY: 0
@@ -3302,8 +3302,8 @@ MonoBehaviour:
   UseQuaternionSynchronization: 0
   UseQuaternionCompression: 0
   UseHalfFloatPrecision: 0
-  InLocalSpace: 0
-  SwitchTransformSpaceWhenParented: 1
+  InLocalSpace: 1
+  SwitchTransformSpaceWhenParented: 0
   Interpolate: 0
   SlerpPosition: 0
 --- !u!4 &1227888895261705807 stripped
