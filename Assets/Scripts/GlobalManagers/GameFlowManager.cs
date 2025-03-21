@@ -211,10 +211,14 @@ public class GameFlowManager : NetworkBehaviour
     {
         await Task.Delay(3000); //Wait clients load the scene FIX LATER
 
+        int playerCount = 1;
+
         foreach (ulong clientId in NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.AuthToClientId.Values)
         {
-            PlayableState playableState = playableState = NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.RegisteredClientCount == 1 ? PlayableState.Player1Playing : PlayableState.Player2Playing;
+            PlayableState playableState = playableState = playerCount == 1 ? PlayableState.Player1Playing : PlayableState.Player2Playing;
             NetworkServerProvider.Instance.CurrentNetworkServer.PlayerSpawner.SpawnPlayer(clientId, playableState);
+
+            playerCount++;
         }
 
         ChangeGameState(GameState.WaitingToStart, 5000); //Change to waiting, do delay FIX LATER

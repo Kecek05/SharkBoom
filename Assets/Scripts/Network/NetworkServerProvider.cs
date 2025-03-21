@@ -23,28 +23,43 @@ public class NetworkServerProvider : MonoBehaviour
 
     private NetworkServer currentNetworkServer;
 
-    public NetworkServer CurrentNetworkServer => currentNetworkServer;
+    public NetworkServer CurrentNetworkServer
+    {
+        get
+        {
+            if(currentNetworkServer != null) return currentNetworkServer;
 
-    private void FindCurrentNetworkServer()
+            currentNetworkServer = FindCurrentNetworkServer();
+
+            if (currentNetworkServer == null)
+            {
+                Debug.LogError("No NetworkServer found in the scene.");
+                return null;
+            }
+
+            return currentNetworkServer;
+        }
+    }
+
+    private NetworkServer FindCurrentNetworkServer()
     {
         if (HostSingleton.Instance != null)
         {
-            currentNetworkServer =  HostSingleton.Instance.GameManager.GetNetworkServer();
+            return HostSingleton.Instance.GameManager.GetNetworkServer();
         }
         else if (ServerSingleton.Instance != null)
         {
-            currentNetworkServer =  ServerSingleton.Instance.GameManager.GetNetworkServer();
+            return ServerSingleton.Instance.GameManager.GetNetworkServer();
         }
 
         Debug.Log($"Current Network Server: {currentNetworkServer}");
+        return null;
     }
 
 
     private void Start()
     {
         DontDestroyOnLoad(gameObject);
-
-        FindCurrentNetworkServer();
     }
 
 }
