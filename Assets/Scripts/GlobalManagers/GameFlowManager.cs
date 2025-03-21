@@ -170,6 +170,14 @@ public class GameFlowManager : NetworkBehaviour
         {
             case GameState.WaitingForPlayers:
                 break;
+            case GameState.SpawningPlayers:
+                if(IsServer)
+                {
+                    Debug.Log("Start Spawning Players");
+                    //All players connected
+                    SpawnPlayersAsync(); //Spawn Players with delay, FIX LATER
+                }
+                break;
             case GameState.WaitingToStart: //All connected, showing Players Info
 
                 if(IsServer)
@@ -195,8 +203,42 @@ public class GameFlowManager : NetworkBehaviour
 
                 break;
         }
+
+        Debug.Log($"Game State Changed to: {newValue}");
     }
 
+    private async void SpawnPlayersAsync()
+    {
+        await Task.Delay(3000); //Wait clients load the scene FIX LATER
+
+        int playerCount = 1; // FIX LATER
+
+        if(ServerSingleton.Instance != null) //FIX NETWORK SERVER LATER
+        {
+            foreach (ulong clientId in ServerSingleton.Instance.GameManager.NetworkServer.AuthToClientId.Values)
+            {
+                PlayableState playableState = playableState = playerCount == 1 ? PlayableState.Player1Playing : PlayableState.Player2Playing;
+
+                ServerSingleton.Instance.GameManager.NetworkServer.SpawnPlayer(clientId, playableState);
+
+                playerCount++;
+            }
+        } else
+        {
+            foreach (ulong clientId in HostSingleton.Instance.GameManager.NetworkServer.AuthToClientId.Values)
+            {
+                PlayableState playableState = playableState = playerCount == 1 ? PlayableState.Player1Playing : PlayableState.Player2Playing;
+
+                HostSingleton.Instance.GameManager.NetworkServer.SpawnPlayer(clientId, playableState);
+
+                playerCount++;
+            }
+        }
+
+
+
+        ChangeGameState(GameState.WaitingToStart, 5000); //Change to waiting, do delay FIX LATER
+    }
 
     /// <summary>
     /// Call this to change the player's turn after a delay.
@@ -302,6 +344,7 @@ public enum GameState
 {
     None,
     WaitingForPlayers, //Waiting for players to connect
+    SpawningPlayers, //Spawning Players
     WaitingToStart, // All players connected, and Spawned
     GameStarted, //Game Started
     GameEnded, //Game Over

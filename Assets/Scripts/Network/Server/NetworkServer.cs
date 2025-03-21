@@ -14,8 +14,12 @@ public class NetworkServer : IDisposable
     public Action<UserData> OnUserLeft;
     public Action<UserData> OnUserJoined;
 
+    private Dictionary<string, ulong> authToClientId = new Dictionary<string, ulong>(); // save authentication IDs to their client IDs
     private Dictionary<ulong, string> clientIdToAuth = new Dictionary<ulong, string>(); // save client IDs to their authentication IDs
     private Dictionary<string, UserData> authIdToUserData = new Dictionary<string, UserData>(); // save authentication IDs to user data
+
+    public Dictionary<ulong, string> ClientIdToAuth => clientIdToAuth;
+    public Dictionary<string, ulong> AuthToClientId => authToClientId;
 
     public NetworkServer(NetworkManager _networkManager, NetworkObject _playerPrefab) // our constructor
     {
@@ -47,6 +51,7 @@ public class NetworkServer : IDisposable
 
         if (clientIdToAuth.TryGetValue(clientId, out string authId)) //Handle disconnections
         {
+            authToClientId.Remove(authId);
             clientIdToAuth.Remove(clientId);
             OnUserLeft?.Invoke(authIdToUserData[authId]);
             authIdToUserData.Remove(authId);
@@ -62,19 +67,29 @@ public class NetworkServer : IDisposable
         UserData userData = JsonUtility.FromJson<UserData>(payload); //Deserialize the payload to UserData
 
         clientIdToAuth[request.ClientNetworkId] = userData.userAuthId; //if dont exist, add to dictionary
+        authToClientId[userData.userAuthId] = request.ClientNetworkId; //if dont exist, add to dictionary
         authIdToUserData[userData.userAuthId] = userData;
+
 
         OnUserJoined?.Invoke(userData);
 
         response.Approved = true; //Connection is approved
         response.CreatePlayerObject = false;
 
-        _ = SpawnPlayer(request.ClientNetworkId);
+        Debug.Log($"Connected Clients: {networkManager.ConnectedClientsList.Count}");
+
+        if(clientIdToAuth.Count == 2) //two clients in game
+            GameFlowManager.Instance.ChangeGameState(GameState.SpawningPlayers);
+        
     }
 
-    private async Task SpawnPlayer(ulong clientId)
+    /// <summary>
+    /// Call this to spawn a player.
+    /// </summary>
+    /// <param name="clientId"> Id of the player</param>
+    /// <param name="playerNumber"> player playing state</param>
+    public void SpawnPlayer(ulong clientId, PlayableState playerPlayingState)
     {
-        await Task.Delay(2000); //delay to wait the client load the scene. Improve this!
 
         Transform randomSpawnPointSelected = GameFlowManager.Instance.GetRandomSpawnPoint();
 
@@ -82,20 +97,9 @@ public class NetworkServer : IDisposable
 
         playerInstance.SpawnAsPlayerObject(clientId);
 
-        Debug.Log($"Connected Clients: {networkManager.ConnectedClientsList.Count}");
+        playerInstance.GetComponent<PlayerThrower>().InitializePlayerRpc(playerPlayingState, randomSpawnPointSelected.rotation);
 
-        if(networkManager.ConnectedClientsList.Count == 1) // PROB NOT WORKING FOR DEDICATED SERVER
-        {
-            playerInstance.GetComponent<PlayerThrower>().InitializePlayerRpc(PlayableState.Player1Playing, randomSpawnPointSelected.rotation);
-
-        } else if (networkManager.ConnectedClientsList.Count == 2)
-        {
-            playerInstance.GetComponent<PlayerThrower>().InitializePlayerRpc(PlayableState.Player2Playing, randomSpawnPointSelected.rotation);
-
-            //Both players are connected and spawned
-            GameFlowManager.Instance.ChangeGameState(GameState.WaitingToStart);
-        }
-
+        Debug.Log($"Spawning Player, Client Id: {clientId} PlayableState: {playerPlayingState} Selected Random SpawnPoint: {randomSpawnPointSelected.name}");
     }
 
     public UserData GetUserDataByClientId(ulong clientId)
