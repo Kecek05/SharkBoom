@@ -91,6 +91,8 @@ public class LoadingPlayersUI : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost)]
     private void PlayerSpawnedClientRpc(FixedString32Bytes playerName, int playerPearls, ulong clientId)
     {
+        Debug.Log($"Name: {playerName} Pearls: {playerPearls} ClientId: {clientId}");
+
         //All clients listen to this
         if (clientId == 0)
         {

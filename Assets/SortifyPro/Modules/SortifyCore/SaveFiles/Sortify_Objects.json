@@ -43,6 +43,47 @@
             "sceneName": "Demo"
         },
         {
+            "icons": [],
+            "colors": [],
+            "styles": [],
+            "showComponents": [],
+            "sceneName": "AuthBootstrap"
+        },
+        {
+            "icons": [
+                {
+                    "objID": "PlayerScene_SpawnPoints_17",
+                    "iconName": "d_Folder Icon"
+                },
+                {
+                    "objID": "PlayerScene_GameFlowManager_9",
+                    "iconName": "d_console.warnicon"
+                }
+            ],
+            "colors": [
+                {
+                    "objID": "PlayerScene_SCENE_10",
+                    "colorValue": "8000FFFF"
+                },
+                {
+                    "objID": "PlayerScene_MANAGERS_0",
+                    "colorValue": "4CB5FFFF"
+                }
+            ],
+            "styles": [
+                {
+                    "objID": "PlayerScene_SCENE_10",
+                    "styleType": 1
+                },
+                {
+                    "objID": "PlayerScene_MANAGERS_0",
+                    "styleType": 1
+                }
+            ],
+            "showComponents": [],
+            "sceneName": "PlayerScene"
+        },
+        {
             "icons": [
                 {
                     "objID": "TestDragAndShoot_Main Camera_0",
@@ -91,41 +132,7 @@
             "colors": [],
             "styles": [],
             "showComponents": [],
-            "sceneName": "AuthBootstrap"
-        },
-        {
-            "icons": [
-                {
-                    "objID": "PlayerScene_SpawnPoints_17",
-                    "iconName": "d_Folder Icon"
-                },
-                {
-                    "objID": "PlayerScene_GameFlowManager_9",
-                    "iconName": "d_console.warnicon"
-                }
-            ],
-            "colors": [
-                {
-                    "objID": "PlayerScene_SCENE_10",
-                    "colorValue": "8000FFFF"
-                },
-                {
-                    "objID": "PlayerScene_MANAGERS_0",
-                    "colorValue": "4CB5FFFF"
-                }
-            ],
-            "styles": [
-                {
-                    "objID": "PlayerScene_SCENE_10",
-                    "styleType": 1
-                },
-                {
-                    "objID": "PlayerScene_MANAGERS_0",
-                    "styleType": 1
-                }
-            ],
-            "showComponents": [],
-            "sceneName": "PlayerScene"
+            "sceneName": "NetBootstrap"
         },
         {
             "icons": [],
@@ -133,13 +140,6 @@
             "styles": [],
             "showComponents": [],
             "sceneName": "GameNetCodeTest"
-        },
-        {
-            "icons": [],
-            "colors": [],
-            "styles": [],
-            "showComponents": [],
-            "sceneName": "NetBootstrap"
         }
     ]
 }
