@@ -33,8 +33,10 @@ public class NetworkServer : IDisposable
 
     private void SceneManager_OnLoadComplete(ulong clientId, string sceneName, UnityEngine.SceneManagement.LoadSceneMode loadSceneMode)
     {
-        Debug.Log($"Client {clientId} / AuthId {serverAuthenticationService.GetAuthIdByClientId(clientId)} loaded scene {sceneName} with mode {loadSceneMode}");
         //Code to spawn players
+        Debug.Log($"Client {clientId} / AuthId {serverAuthenticationService.GetAuthIdByClientId(clientId)} loaded scene {sceneName}");
+
+        playerSpawner.SpawnPlayer(clientId);
     }
 
     public bool OpenConnection(string ip, int port)
@@ -77,7 +79,7 @@ public class NetworkServer : IDisposable
         response.CreatePlayerObject = false;
 
         if(serverAuthenticationService.RegisteredClientCount == 2) //two clients in game
-            GameFlowManager.Instance.ChangeGameState(GameState.SpawningPlayers);
+            GameFlowManager.Instance.GameStateManager.ChangeGameState(GameState.SpawningPlayers);
         
     }
 
@@ -90,7 +92,8 @@ public class NetworkServer : IDisposable
             networkManager.OnServerStarted -= NetworkManager_OnServerStarted;
             networkManager.OnClientDisconnectCallback -= NetworkManager_OnClientDisconnectCallback;
 
-            networkManager.SceneManager.OnLoadComplete -= SceneManager_OnLoadComplete;
+            if(networkManager.SceneManager != null)
+                networkManager.SceneManager.OnLoadComplete -= SceneManager_OnLoadComplete;
         }
 
         if (networkManager.IsListening)

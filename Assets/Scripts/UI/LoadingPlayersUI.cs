@@ -27,7 +27,7 @@ public class LoadingPlayersUI : NetworkBehaviour
 
         if(IsClient)
         {
-            GameFlowManager.Instance.CurrentGameState.OnValueChanged += GameState_OnValueChanged;
+            GameFlowManager.Instance.GameStateManager.CurrentGameState.OnValueChanged += GameState_OnValueChanged;
         }
 
         if(IsServer)
@@ -39,7 +39,7 @@ public class LoadingPlayersUI : NetworkBehaviour
     private void GameState_OnValueChanged(GameState previousValue, GameState newValue)
     {
 
-        if(newValue == GameState.WaitingToStart)
+        if(newValue == GameState.ShowingPlayersInfo)
         {
             //All Connected and Spawned
 
@@ -120,7 +120,7 @@ public class LoadingPlayersUI : NetworkBehaviour
     {
         if (!IsServer)
         {
-            GameFlowManager.Instance.CurrentGameState.OnValueChanged -= GameState_OnValueChanged;
+            GameFlowManager.Instance.GameStateManager.CurrentGameState.OnValueChanged -= GameState_OnValueChanged;
         }
 
         if (IsServer)

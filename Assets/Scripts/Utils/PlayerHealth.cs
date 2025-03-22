@@ -66,8 +66,8 @@ public class PlayerHealth : Health
         if (!IsServer) return;
 
 
-        GameFlowManager.Instance.ChangeGameState(GameState.GameEnded);
-        GameFlowManager.Instance.LoseGame(player.ThisPlayableState.Value);
+        GameFlowManager.Instance.GameStateManager.ChangeGameState(GameState.GameEnded);
+        GameFlowManager.Instance.GameStateManager.LoseGame(player.ThisPlayableState.Value);
     }
 
     public override void OnNetworkDespawn()

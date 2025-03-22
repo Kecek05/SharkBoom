@@ -36,7 +36,7 @@ public class GameOverUI : NetworkBehaviour
 
         if (IsClient)
         {
-            GameFlowManager.Instance.LosePlayableState.OnValueChanged += LosePlayableStateLosePlay_OnValueChanged;
+            GameFlowManager.Instance.GameStateManager.LosePlayableState.OnValueChanged += LosePlayableStateLosePlay_OnValueChanged;
         }
     }
 
@@ -52,7 +52,7 @@ public class GameOverUI : NetworkBehaviour
 
     private void SetupGameOver()
     {
-        if(GameFlowManager.Instance.LocalplayableState == GameFlowManager.Instance.LosePlayableState.Value)
+        if(GameFlowManager.Instance.TurnManager.LocalPlayableState == GameFlowManager.Instance.GameStateManager.LosePlayableState.Value)
         {
             playerResultText.text = "You Lose!";
             playerResultText.color = Color.red;

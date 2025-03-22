@@ -62,8 +62,8 @@ public class DebuggingTools : NetworkBehaviour
 
     private void Update()
     {
-        debugGameStateText.text = GameFlowManager.Instance.CurrentGameState.Value.ToString();
-        debugPlayableStateText.text = GameFlowManager.Instance.CurrentPlayableState.Value.ToString();
+        debugGameStateText.text = GameFlowManager.Instance.GameStateManager.CurrentGameState.Value.ToString();
+        debugPlayableStateText.text = GameFlowManager.Instance.TurnManager.CurrentPlayableState.Value.ToString();
     }
 
 }

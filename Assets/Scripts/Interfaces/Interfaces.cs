@@ -37,9 +37,9 @@ public interface IFollowable
 
 public interface IServerAuthenticationService //Decopling of the Authentication Services
 {
+    int RegisteredClientCount { get; }
     void RegisterClient(ulong clientId, UserData userData);
     void UnregisterClient(ulong clientId);
-    int RegisteredClientCount { get; }
     public Dictionary<string, ulong>.ValueCollection AuthToClientIdValues { get; }
     UserData GetUserDataByClientId(ulong clientId);
     public string GetAuthIdByClientId(ulong clientId);
@@ -48,5 +48,9 @@ public interface IServerAuthenticationService //Decopling of the Authentication 
 
 public interface IPlayerSpawner //Decopling of the Authentication Services
 {
-    void SpawnPlayer(ulong clientId, PlayableState playerState);
+    int PlayerCount { get; }
+
+    void SpawnPlayer(ulong clientId);
+
+    PlayableState GetPlayableStateByCount();
 }

@@ -249,7 +249,7 @@ public class MyTurnEndedState : IState
     {
         Debug.Log("Entering My Turn End State");
 
-        GameFlowManager.Instance.PlayerPlayedServerRpc(GameFlowManager.Instance.LocalplayableState);
+        GameFlowManager.Instance.TurnManager.PlayerPlayedServerRpc(GameFlowManager.Instance.TurnManager.LocalPlayableState);
 
         MyTurnEndedCallback();
 
