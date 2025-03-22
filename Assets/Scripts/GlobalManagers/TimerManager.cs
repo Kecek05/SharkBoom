@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class TimerManager : NetworkBehaviour
 {
-    public event Action OnTimesUp;
+    public static event Action OnTimesUp;
 
     [Unit(" s")][SerializeField] private int turnTime = 30;
     private NetworkVariable<int> timerTurn = new(0);

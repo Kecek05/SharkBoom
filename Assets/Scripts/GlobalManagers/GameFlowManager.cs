@@ -56,10 +56,6 @@ public class GameFlowManager : NetworkBehaviour
         }
     }
 
-
-
-
-
     /// <summary>
     /// Get a random Spawnpoint from the list and remove it.
     /// </summary>

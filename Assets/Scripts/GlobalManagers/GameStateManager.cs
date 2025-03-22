@@ -54,7 +54,7 @@ public class GameStateManager : NetworkBehaviour
 
                 break;
             case GameState.ShowingPlayersInfo:
-                //RandomizePlayerItems();
+                GameFlowManager.Instance.RandomizePlayerItems();
                 ChangeGameState(GameState.GameStarted, delayClosePlayersInfo); //Show Players Info delay
                 break;
             case GameState.GameStarted:

@@ -4153,11 +4153,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  gameStateManager: {fileID: 1229163764}
+  turnManager: {fileID: 1229163765}
   itemsListSO: {fileID: 11400000, guid: 0512cb21a29af2e4b88962e2cb6a1605, type: 2}
   spawnPointsPos:
   - {fileID: 1671551940}
   - {fileID: 1658826650}
-  delayClosePlayersInfo: 3000
 --- !u!4 &1229163762
 Transform:
   m_ObjectHideFlags: 0
@@ -4210,6 +4211,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3556e7c96944e1749af20be3704249a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  delayClosePlayersInfo: 3000
 --- !u!114 &1229163765
 MonoBehaviour:
   m_ObjectHideFlags: 0
