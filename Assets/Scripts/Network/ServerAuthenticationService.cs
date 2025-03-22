@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ServerAuthenticationService : IServerAuthenticationServices
+public class ServerAuthenticationService : IServerAuthenticationService
 {
 
     private Dictionary<string, ulong> authToClientId = new Dictionary<string, ulong>(); // save authentication IDs to their client IDs
@@ -10,9 +10,7 @@ public class ServerAuthenticationService : IServerAuthenticationServices
 
     public int RegisteredClientCount => clientIdToAuth.Count;
 
-    public Dictionary<string, ulong> AuthToClientId => authToClientId;
-    public Dictionary<ulong, string> ClientIdToAuth => clientIdToAuth;
-    public Dictionary<string, UserData> AuthIdToUserData => authIdToUserData;
+    public Dictionary<string, ulong>.ValueCollection AuthToClientIdValues => authToClientId.Values;
 
     public void RegisterClient(ulong clientId, UserData userData)
     {

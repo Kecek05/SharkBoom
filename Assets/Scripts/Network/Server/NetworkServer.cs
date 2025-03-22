@@ -13,21 +13,27 @@ public class NetworkServer : IDisposable
     public Action<UserData> OnUserJoined;
 
     private NetworkManager networkManager;
-    private PlayerSpawner playerSpawner;
-    private ServerAuthenticationService serverAuthenticationService;
+    private IPlayerSpawner playerSpawner;
+    private IServerAuthenticationService serverAuthenticationService;
 
 
-    public PlayerSpawner PlayerSpawner => playerSpawner;
-    public ServerAuthenticationService ServerAuthenticationService => serverAuthenticationService;
+    public IPlayerSpawner PlayerSpawner => playerSpawner;
+    public IServerAuthenticationService ServerAuthenticationService => serverAuthenticationService;
 
     public NetworkServer(NetworkManager _networkManager,NetworkObject _playerPrefab) // our constructor
     {
         networkManager = _networkManager;
-        playerSpawner = new(_playerPrefab);
-        serverAuthenticationService = new();
+        playerSpawner = new PlayerSpawner(_playerPrefab);
+        serverAuthenticationService = new ServerAuthenticationService();
         networkManager.ConnectionApprovalCallback += ApprovalCheck;
 
         networkManager.OnServerStarted += NetworkManager_OnServerStarted;
+
+    }
+
+    private void SceneManager_OnLoadComplete(ulong clientId, string sceneName, UnityEngine.SceneManagement.LoadSceneMode loadSceneMode)
+    {
+        Debug.Log($"Client {clientId} / AuthId {serverAuthenticationService.GetAuthIdByClientId(clientId)} loaded scene {sceneName} with mode {loadSceneMode}");
     }
 
     public bool OpenConnection(string ip, int port)
@@ -43,6 +49,7 @@ public class NetworkServer : IDisposable
     {
         networkManager.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
 
+        networkManager.SceneManager.OnLoadComplete += SceneManager_OnLoadComplete;
     }
 
     private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
@@ -68,8 +75,6 @@ public class NetworkServer : IDisposable
         response.Approved = true; //Connection is approved
         response.CreatePlayerObject = false;
 
-        Debug.Log($"Connected Clients: {networkManager.ConnectedClientsList.Count}");
-
         if(serverAuthenticationService.RegisteredClientCount == 2) //two clients in game
             GameFlowManager.Instance.ChangeGameState(GameState.SpawningPlayers);
         
@@ -84,6 +89,7 @@ public class NetworkServer : IDisposable
             networkManager.OnServerStarted -= NetworkManager_OnServerStarted;
             networkManager.OnClientDisconnectCallback -= NetworkManager_OnClientDisconnectCallback;
 
+            networkManager.SceneManager.OnLoadComplete -= SceneManager_OnLoadComplete;
         }
 
         if (networkManager.IsListening)

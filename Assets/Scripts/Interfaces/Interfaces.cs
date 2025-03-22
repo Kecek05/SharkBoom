@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public interface IDamageable
@@ -34,14 +35,15 @@ public interface IFollowable
 }
 
 
-public interface IServerAuthenticationServices //Decopling of the Authentication Services
+public interface IServerAuthenticationService //Decopling of the Authentication Services
 {
-
     void RegisterClient(ulong clientId, UserData userData);
     void UnregisterClient(ulong clientId);
-    UserData GetUserDataByClientId(ulong clientId);
-
     int RegisteredClientCount { get; }
+    public Dictionary<string, ulong>.ValueCollection AuthToClientIdValues { get; }
+    UserData GetUserDataByClientId(ulong clientId);
+    public string GetAuthIdByClientId(ulong clientId);
+    public ulong GetClientIdByAuthId(string authId);
 }
 
 public interface IPlayerSpawner //Decopling of the Authentication Services

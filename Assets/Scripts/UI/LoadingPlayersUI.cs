@@ -65,7 +65,7 @@ public class LoadingPlayersUI : NetworkBehaviour
         //Send to server to send to all clients
         int playerCount = 0; //IMPROVE THIS
 
-        foreach (ulong connectedClientId in NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.AuthToClientId.Values)
+        foreach (ulong connectedClientId in NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.AuthToClientIdValues)
         {
             UserData playerUserData = NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.GetUserDataByClientId(connectedClientId);
 
