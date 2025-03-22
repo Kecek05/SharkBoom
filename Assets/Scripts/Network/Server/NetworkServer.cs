@@ -34,6 +34,7 @@ public class NetworkServer : IDisposable
     private void SceneManager_OnLoadComplete(ulong clientId, string sceneName, UnityEngine.SceneManagement.LoadSceneMode loadSceneMode)
     {
         Debug.Log($"Client {clientId} / AuthId {serverAuthenticationService.GetAuthIdByClientId(clientId)} loaded scene {sceneName} with mode {loadSceneMode}");
+        //Code to spawn players
     }
 
     public bool OpenConnection(string ip, int port)
