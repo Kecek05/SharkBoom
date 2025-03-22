@@ -108,7 +108,6 @@ public class GameStateManager : NetworkBehaviour
     }
 
     [Rpc(SendTo.Server)]
-    [Command("gameFlowManager-ChangeGameState")]
     private void SetGameStateServerRpc(GameState newState)
     {
         gameState.Value = newState;

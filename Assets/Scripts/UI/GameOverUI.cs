@@ -36,18 +36,14 @@ public class GameOverUI : NetworkBehaviour
 
         if (IsClient)
         {
-            GameFlowManager.Instance.GameStateManager.LosePlayableState.OnValueChanged += LosePlayableStateLosePlay_OnValueChanged;
+            GameFlowManager.Instance.GameStateManager.OnGameOver += GameStateManager_OnGameOver;
         }
     }
 
-    private void LosePlayableStateLosePlay_OnValueChanged(PlayableState previousValue, PlayableState newValue)
+    private void GameStateManager_OnGameOver()
     {
-        if(newValue != PlayableState.None)
-        {
-            //Game Over
-            SetupGameOver();
-            Show();
-        }
+        SetupGameOver();
+        Show();
     }
 
     private void SetupGameOver()
@@ -80,6 +76,9 @@ public class GameOverUI : NetworkBehaviour
 
     public override void OnNetworkDespawn()
     {
-        
+        if(IsClient)
+        {
+            GameFlowManager.Instance.GameStateManager.OnGameOver -= GameStateManager_OnGameOver;
+        }
     }
 }
