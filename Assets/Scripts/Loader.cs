@@ -18,6 +18,11 @@ public static class Loader
         SceneManager.LoadScene(scene.ToString());
     }
 
+    public static AsyncOperation LoadAsync(Scene scene)
+    {
+        return SceneManager.LoadSceneAsync(scene.ToString());
+    }
+
     public static void LoadNetwork(Scene scene)
     {
         NetworkManager.Singleton.SceneManager.LoadScene(scene.ToString(), LoadSceneMode.Single);

@@ -60,8 +60,6 @@ public class ServerGameManager : IDisposable
             Debug.LogError("NetworkServer did not start as expected.");
             return;
         }
-
-        Loader.LoadNetwork(Loader.Scene.GameNetCodeTest);
     }
 
 #if UNITY_SERVER

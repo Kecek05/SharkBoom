@@ -1,4 +1,5 @@
 using Sortify;
+using System.Collections;
 using System.Threading.Tasks;
 using Unity.Netcode;
 using UnityEngine;
@@ -34,18 +35,18 @@ public class ApplicationController : MonoBehaviour //Responsable of launching th
 
     private async Task LaunchInMode(bool isDedicatedServer)
     {
-        if(isDedicatedServer)
+        Instantiate(networkServerProvider);
+
+        if (isDedicatedServer)
         {
             //Dedicated Server Code
+            Application.targetFrameRate = 60; //Fixed fps
+
             appData = new();
 
             ServerSingleton serverSingleton = Instantiate(serverPrefab);
 
-            await serverSingleton.CreateServer(playerPrefab);
-
-            Instantiate(networkServerProvider);
-
-            serverSingleton.GameManager.StartGameServerAsync();
+            StartCoroutine(LoadGameSceneAsync(serverSingleton));
 
         } else
         {
@@ -57,12 +58,29 @@ public class ApplicationController : MonoBehaviour //Responsable of launching th
             ClientSingleton clientSingleton = Instantiate(clientPrefab);
             clientSingleton.CreateClient();
 
-            Instantiate(networkServerProvider);
-
             //Go to main menu
             Loader.Load(Loader.Scene.AuthBootstrap);
 
         }
     }
 
+    private IEnumerator LoadGameSceneAsync(ServerSingleton serverSingleton)
+    {
+        //Refactor change scene. Need to be this way because we were trying to change the scene and the Client load it before the server was ready.
+
+        AsyncOperation asyncOperation = Loader.LoadAsync(Loader.Scene.GameNetCodeTest);
+
+        while(!asyncOperation.isDone)
+        {
+            //Not finished to load the scene
+            yield return null;
+        }
+        //Finished loading the scene
+
+        Task createServerTask = serverSingleton.CreateServer(playerPrefab);
+        yield return new WaitUntil(() => createServerTask.IsCompleted);
+
+        Task startServerTask = serverSingleton.GameManager.StartGameServerAsync();
+        yield return new WaitUntil(() => startServerTask.IsCompleted);  
+    }
 }
