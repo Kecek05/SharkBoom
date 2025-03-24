@@ -50,12 +50,19 @@ public class GameStateManager : NetworkBehaviour
     private void CalculatePearlsManager_OnFinishedCalculateResults()
     {
         //Called when any client calculated the results
+        CalculatedResultServerRpc();
+    }
+
+    [Rpc(SendTo.Server)]
+    private void CalculatedResultServerRpc()
+    {
         calculatedResults++;
 
-        if(calculatedResults == 2)
+        Debug.Log($"Calculated Results: {calculatedResults}");
+        if (calculatedResults == 2)
         {
             //both clients calculated the results, change state
-            SetGameStateServerRpc(GameState.ShowingPlayersInfo);
+            ChangeGameState(GameState.ShowingPlayersInfo);
         }
     }
 
@@ -168,6 +175,7 @@ public class GameStateManager : NetworkBehaviour
     /// </summary>
     /// <param name="gameState"> Game State</param>
     /// <param name="delayToChange"> Delay in ms</param>
+    [Command("gameStateManager-ChangeGameState")]
     public async void ChangeGameState(GameState gameState, int delayToChange = 0) //0ms default
     {
         if (gameOver) return;

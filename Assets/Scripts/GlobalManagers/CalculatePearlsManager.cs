@@ -21,10 +21,11 @@ public static class CalculatePearlsManager
     public static async void CalculatePossibleResults()
     {
         //Not calculate in relay
-        if (!ClientSingleton.Instance.GameManager.IsDedicatedServerGame) return;
-
-        await CalculateWinPearls();
-        await CalculateLosePearls();
+        if (ClientSingleton.Instance.GameManager.IsDedicatedServerGame)
+        {
+            await CalculateWinPearls();
+            await CalculateLosePearls();
+        }
 
         OnFinishedCalculateResults?.Invoke();
     }
@@ -33,18 +34,21 @@ public static class CalculatePearlsManager
     {
         if (alreadyChanged) return;
 
-        //Not calculate in relay
-        if (!ClientSingleton.Instance.GameManager.IsDedicatedServerGame) return;
-
         if (GameFlowManager.Instance.GameStateManager.LocalWin)
         {
             OnPearlsDeltaChanged?.Invoke(pearlsToWinDelta);
-            await ChangePearls(pearlsIfWin);
+
+            //Not calculate in relay
+            if (ClientSingleton.Instance.GameManager.IsDedicatedServerGame)
+                await ChangePearls(pearlsIfWin);
         }
         else
         {
             OnPearlsDeltaChanged?.Invoke(pearlsIfLose);
-            await ChangePearls(pearlsIfLose);
+
+            //Not calculate in relay
+            if (ClientSingleton.Instance.GameManager.IsDedicatedServerGame)
+                await ChangePearls(pearlsIfLose);
         }
     }
 

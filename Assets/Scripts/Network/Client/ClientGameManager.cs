@@ -203,12 +203,6 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
     /// </summary>
     public void Disconnect()
     {
-        //Check if is host first
-        if (NetworkManager.Singleton != null && HostSingleton.Instance != null && NetworkManager.Singleton.IsHost) //Server cant click buttons
-        {
-            HostSingleton.Instance.GameManager.ShutdownAsync();
-        }
-
         networkClient.Disconnect();
     }
 

@@ -19,10 +19,6 @@ public class GameOverUI : NetworkBehaviour
         returnButton.onClick.AddListener(() =>
         {
             //Return to main menu
-            if(NetworkManager.Singleton != null && HostSingleton.Instance != null && NetworkManager.Singleton.IsHost) //Server cant click buttons
-            {
-                HostSingleton.Instance.GameManager.ShutdownAsync();
-            }
 
             if(ClientSingleton.Instance != null)
                 ClientSingleton.Instance.GameManager.Disconnect();
@@ -44,6 +40,7 @@ public class GameOverUI : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+
         Hide();
 
         if (IsClient)

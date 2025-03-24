@@ -62,7 +62,15 @@ public class NetworkClient : IDisposable //Actual Client Game Logic
             {
                 //Game Started
                 //Show Game Over Screen, I win
-                GameFlowManager.Instance.GameStateManager.IwinGameOverAsync();
+
+                if(ClientSingleton.Instance.GameManager.IsDedicatedServerGame)
+                {
+                    GameFlowManager.Instance.GameStateManager.IwinGameOverAsync();
+                }
+                else
+                {
+                    Debug.Log("Not Dedicated Server Game, Show Disconnect UI");
+                }
             }
         }
     }
@@ -90,17 +98,28 @@ public class NetworkClient : IDisposable //Actual Client Game Logic
             {
                 //Game Started
                 //Show Game Over Screen, I lose
-                GameFlowManager.Instance.GameStateManager.GameOverAsync();
+                if(ClientSingleton.Instance.GameManager.IsDedicatedServerGame)
+                {
+                    GameFlowManager.Instance.GameStateManager.GameOverAsync();
+                } else
+                {
+                    Debug.Log("Not Dedicated Server Game, Show Disconnect UI");
+                }
+
             }
             else if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.GameEnded)
             {
                 //Game Ended
                 //Go to menu
                 //Trigger Change Pearls, guarantee the change on pearls
-
-                await CalculatePearlsManager.TriggerChangePearls();
-
-                GameFlowManager.Instance.GameStateManager.GameOverAsync(); //force show game over UI, if Host exit before client, It will not show.
+                if (ClientSingleton.Instance.GameManager.IsDedicatedServerGame)
+                {
+                    await CalculatePearlsManager.TriggerChangePearls();
+                }
+                else
+                {
+                    Debug.Log("Not Dedicated Server Game, Show Disconnect UI");
+                }
             }
         }
 
