@@ -69,7 +69,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
     {
         UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
         transport.SetConnectionData(ip, (ushort)port);
-        ConnectClient();
+        Loader.LoadClient();
     }
 
 
@@ -95,10 +95,10 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         this.joinCode = joinCode;
         Debug.Log("Code Relay:" + this.joinCode);
 
-        ConnectClient();
+        Loader.LoadClient();
     }
 
-    private void ConnectClient()
+    public void ConnectClient()
     {
         string payload = JsonUtility.ToJson(userData); //serialize the payload to json
         byte[] payloadBytes = System.Text.Encoding.UTF8.GetBytes(payload); //serialize the payload to bytes

@@ -103,7 +103,7 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
 
         networkServer.OnClientLeft += HandleClientLeft;
 
-        Loader.LoadNetwork(Loader.Scene.GameNetCodeTest);
+        Loader.LoadHostNetwork(Loader.Scene.GameNetCodeTest);
 
     }
 

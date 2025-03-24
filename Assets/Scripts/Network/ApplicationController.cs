@@ -67,10 +67,18 @@ public class ApplicationController : MonoBehaviour //Responsable of launching th
     private IEnumerator LoadGameSceneAsync(ServerSingleton serverSingleton)
     {
         //Refactor change scene. Need to be this way because we were trying to change the scene and the Client load it before the server was ready.
+        AsyncOperation asyncLoadLoadingScene = Loader.LoadDSAsync(Loader.Scene.Loading);
 
-        AsyncOperation asyncOperation = Loader.LoadAsync(Loader.Scene.GameNetCodeTest);
+        while(!asyncLoadLoadingScene.isDone)
+        {
+            //Not finished to load the loading scene
+            yield return null;
+        }
 
-        while(!asyncOperation.isDone)
+
+        AsyncOperation asyncLoadGameScene = Loader.LoadDSAsync(Loader.Scene.GameNetCodeTest);
+
+        while(!asyncLoadGameScene.isDone)
         {
             //Not finished to load the scene
             yield return null;
