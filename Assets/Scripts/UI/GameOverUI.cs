@@ -13,7 +13,6 @@ public class GameOverUI : NetworkBehaviour
     [SerializeField] private TextMeshProUGUI playerResultText;
     [SerializeField] private TextMeshProUGUI pearlsResultText;
     [SerializeField] private Button returnButton;
-    [SerializeField] private CalculatePearlsManager calculatePearlsManager;
 
     private void Awake()
     {
@@ -36,31 +35,43 @@ public class GameOverUI : NetworkBehaviour
 
         if (IsClient)
         {
-            GameFlowManager.Instance.GameStateManager.OnGameOver += GameStateManager_OnGameOver;
+            GameFlowManager.Instance.GameStateManager.OnWin += GameStateManager_OnWin;
+            GameFlowManager.Instance.GameStateManager.OnLose += GameStateManager_OnLose;
+
+            CalculatePearlsManager.OnPearlsDeltaChanged += CalculatePearlsManager_OnPearlsDeltaChanged;
         }
     }
 
-    private void GameStateManager_OnGameOver()
+    private void CalculatePearlsManager_OnPearlsDeltaChanged(int pearlsDelta)
     {
-        SetupGameOver();
+        //Pearls value to show changed, show UI.
+        SetupPearlsResult(pearlsDelta);
         Show();
     }
 
-    private void SetupGameOver()
+    private void SetupPearlsResult(int pearlsDelta)
     {
-        if(GameFlowManager.Instance.TurnManager.LocalPlayableState == GameFlowManager.Instance.GameStateManager.LosePlayableState.Value)
+        if(pearlsDelta > 0)
         {
-            playerResultText.text = "You Lose!";
-            playerResultText.color = Color.red;
-
-            pearlsResultText.text = calculatePearlsManager.GetPearls(false).ToString();
+            //Win
+            pearlsResultText.text = "+" + pearlsDelta.ToString();
         } else
         {
-            playerResultText.text = "You Win!";
-            playerResultText.color = Color.green;
-
-            pearlsResultText.text = "+" + calculatePearlsManager.GetPearls(true).ToString();
+            //Lose
+            pearlsResultText.text = pearlsDelta.ToString();
         }
+    }
+
+    private void GameStateManager_OnWin()
+    {
+        playerResultText.text = "You Win!";
+        playerResultText.color = Color.green;
+    }
+
+    private void GameStateManager_OnLose()
+    {
+        playerResultText.text = "You Lose!";
+        playerResultText.color = Color.red;
     }
 
     private void Hide()
@@ -78,7 +89,10 @@ public class GameOverUI : NetworkBehaviour
     {
         if(IsClient)
         {
-            GameFlowManager.Instance.GameStateManager.OnGameOver -= GameStateManager_OnGameOver;
+            GameFlowManager.Instance.GameStateManager.OnWin -= GameStateManager_OnWin;
+            GameFlowManager.Instance.GameStateManager.OnLose -= GameStateManager_OnLose;
+
+            CalculatePearlsManager.OnPearlsDeltaChanged -= CalculatePearlsManager_OnPearlsDeltaChanged;
         }
     }
 }

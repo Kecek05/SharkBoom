@@ -27,6 +27,11 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
     private string joinCode;
     public string JoinCode => joinCode;
 
+    public ClientGameManager()
+    {
+        Save.OnPlayerPearlsChanged += Save_OnPlayerPearlsChanged;
+    }
+
     public async Task<bool> InitAsync(AuthTypes authTypes)
     {
         //Authenticate player
@@ -38,15 +43,22 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         //
         //await UnityServices.InitializeAsync();
 
+
         networkClient = new NetworkClient(NetworkManager.Singleton);
         matchmaker = new();
 
         AuthState authState = authTypes == AuthTypes.Anonymous ? await AuthenticationWrapper.DoAuthAnonymously() : authTypes == AuthTypes.Unity ? await AuthenticationWrapper.DoAuthUnity() : authTypes == AuthTypes.Android ? await AuthenticationWrapper.DoAuthAndroid() : AuthState.NotAuthenticated;
 
+        //DEBUG SAVE
+        //await AuthenticationService.Instance.SignInWithUsernamePasswordAsync("kecekTest", "Passw0rd!");
+        //AuthState authState = AuthState.Authenticated;
+        //
 
-        if(authState == AuthState.Authenticated)
+        if (authState == AuthState.Authenticated)
         {
             AuthenticationWrapper.SetPlayerName(await AuthenticationService.Instance.GetPlayerNameAsync());
+
+            int playerPearls = await Save.LoadPlayerPearls();
 
             Debug.Log(AuthenticationWrapper.PlayerName + authState);
 
@@ -54,7 +66,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
             {
                 userName = AuthenticationWrapper.PlayerName,
                 userAuthId = AuthenticationService.Instance.PlayerId,
-                userPearls = UnityEngine.Random.Range(0, 1001), // random for debug
+                userPearls = playerPearls, // random for debug
             };
 
              Loader.Load(Loader.Scene.MainMenu);
@@ -172,6 +184,12 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         await matchmaker.CancelMatchmaking();
     }
 
+    private void Save_OnPlayerPearlsChanged(int newValue)
+    {
+        UserData.userPearls = newValue;
+
+        Debug.Log($"Player Pearls Changed to: {newValue}");
+    }
 
     /// <summary>
     /// Call this to disconnect from the server and go to Main Menu
@@ -183,6 +201,8 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
 
     public void Dispose()
     {
+        Save.OnPlayerPearlsChanged -= Save_OnPlayerPearlsChanged;
+
         networkClient?.Dispose();
     }
 }

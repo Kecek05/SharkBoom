@@ -1,26 +1,81 @@
+using System;
+using System.Threading.Tasks;
 using UnityEngine;
 
-public class CalculatePearlsManager : MonoBehaviour
+public static class CalculatePearlsManager
 {
-    //Prob could be a static, not MonoBehaviour
+    public static event Action<int> OnPearlsDeltaChanged;
+
+    //Value that will be changed, count the pearls that the player will win or lose.
+    private static int pearlsToWinDelta = 0;
+    private static int pearlsToLoseDelta = 0;
+
+    //Value that will be saved, count the pearls that the player already have.
+    private static int pearlsIfWin = 0;
+    private static int pearlsIfLose = 0;
 
 
+    private static bool alreadyChanged = false;
 
-
-    public int GetPearls(bool win)
+    public static async void CalculatePossibleResults()
     {
-        //Calculate pearls, change latter to calculate when game ended in other method, this one will just return the value calculated
-
-        if (win)
-            return Random.Range(10, 100); //DEBUG
-        else
-            return Random.Range(-10, -100); //DEBUG
+        await CalculateWinPearls();
+        await CalculateLosePearls();
     }
 
-    private void CalculatePearls()
+    public static async Task TriggerChangePearls(bool win)
     {
-        //Calculate pearls
+        if (win)
+        {
+            OnPearlsDeltaChanged?.Invoke(pearlsToWinDelta);
+            await ChangePearls(pearlsIfWin);
+        }
+        else
+        {
+            OnPearlsDeltaChanged?.Invoke(pearlsIfLose);
+            await ChangePearls(pearlsIfLose);
+        }
+    }
 
-        //Save to cloud
+
+    private static async Task CalculateWinPearls()
+    {
+        //Calculate win pearls
+
+        pearlsToWinDelta = UnityEngine.Random.Range(10, 100); //Math of value to win
+
+        int result = await Save.LoadPlayerPearls() + pearlsToWinDelta;
+
+        pearlsIfWin = result;
+    }
+
+
+    private static async Task CalculateLosePearls()
+    {
+        //Calculate lose pearls
+
+        pearlsToLoseDelta = UnityEngine.Random.Range(10, 100); //Math of value to lose  
+
+        int result = await Save.LoadPlayerPearls() - pearlsToLoseDelta;
+
+        pearlsIfLose = result;
+    }
+
+    private static async Task ChangePearls(int pearls)
+    {
+        if (alreadyChanged) return;
+
+        await Save.SavePlayerPearls(pearls);
+
+        alreadyChanged = true;
+    }
+
+    public static void Reset()
+    {
+        pearlsToWinDelta = 0;
+        pearlsToLoseDelta = 0;
+        pearlsIfWin = 0;
+        pearlsIfLose = 0;
+        alreadyChanged = false;
     }
 }

@@ -1,8 +1,6 @@
 using Unity.Netcode;
-using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static Loader;
 
 public static class Loader
 {

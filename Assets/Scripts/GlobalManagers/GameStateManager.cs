@@ -8,26 +8,33 @@ using UnityEngine;
 public class GameStateManager : NetworkBehaviour
 {
     public event Action OnGameOver;
+    public event Action OnWin;
+    public event Action OnLose;
 
     [BetterHeader("Settings")]
     [Tooltip("in ms")][SerializeField] private int delayClosePlayersInfo = 3000;
 
 
     private NetworkVariable<GameState> gameState = new(GameState.WaitingForPlayers);
-    private NetworkVariable<PlayableState> losePlayableState = new(PlayableState.None);
+    private NetworkVariable<PlayableState> losedPlayer = new(PlayableState.None);
 
     private bool gameOver = false;
 
     //Publics
-    public NetworkVariable<PlayableState> LosePlayableState => losePlayableState;
+    public NetworkVariable<PlayableState> LosedPlayer => losedPlayer;
     public bool GameOver => gameOver;
     public NetworkVariable<GameState> CurrentGameState => gameState;
 
+
+
     public override void OnNetworkSpawn()
     {
+        losedPlayer.OnValueChanged += LosedPlayer_OnvalueChanged;
+        gameState.OnValueChanged += GameState_OnValueChanged;
+
         if (IsServer)
         {
-            gameState.OnValueChanged += GameState_OnValueChanged;
+            PlayerHealth.OnPlayerDie += LoseGame;
             PlayerSpawner.OnPlayerSpawned += PlayerSpawner_OnPlayerSpawned;
         }
     }
@@ -54,45 +61,72 @@ public class GameStateManager : NetworkBehaviour
 
                 break;
             case GameState.ShowingPlayersInfo:
-                GameFlowManager.Instance.RandomizePlayerItems();
-                ChangeGameState(GameState.GameStarted, delayClosePlayersInfo); //Show Players Info delay
+
+                if(IsClient)
+                    CalculatePearlsManager.CalculatePossibleResults();
+
+                if(IsServer)
+                {
+                    GameFlowManager.Instance.RandomizePlayerItems();
+                    ChangeGameState(GameState.GameStarted, delayClosePlayersInfo); //Show Players Info delay
+                }
                 break;
             case GameState.GameStarted:
-                GameFlowManager.Instance.TurnManager.StartGame();
+                if(IsServer)
+                    GameFlowManager.Instance.TurnManager.StartGame();
                 break;
             case GameState.GameEnded:
-                gameOver = true;
-                Debug.Log("Game Over!");
-                OnGameOver?.Invoke();
-
-                GameOverClientRpc();
+                if(IsClient)
+                {
+                    GameOverAsync();
+                }
                 break;
         }
 
         Debug.Log($"Game State Changed to: {newValue}");
     }
 
-
-    [Rpc(SendTo.NotServer)]
-    private void GameOverClientRpc()
+    private void LosedPlayer_OnvalueChanged(PlayableState previousValue, PlayableState newValue)
     {
-        //Dont send to Host, already did on GameState_OnValueChanged
-
         gameOver = true;
-        Debug.Log("Game Over!");
         OnGameOver?.Invoke();
+
+        if(IsServer)
+            ChangeGameState(GameState.GameEnded);
+        
+    }
+
+    private async void GameOverAsync()
+    {
+        if (losedPlayer.Value == GameFlowManager.Instance.TurnManager.LocalPlayableState)
+        {
+            //Change pearls, than lose
+            await CalculatePearlsManager.TriggerChangePearls(false);
+            OnLose?.Invoke();
+        }
+        else if (losedPlayer.Value == PlayableState.None)
+        {
+            //Tie, lose
+            //Change pearls, than lose
+            await CalculatePearlsManager.TriggerChangePearls(false);
+            OnLose?.Invoke();
+        }
+        else
+        {
+            //Change pearls, than win
+            await CalculatePearlsManager.TriggerChangePearls(true);
+            OnWin?.Invoke();
+        }
     }
 
     /// <summary>
-    /// The lose player call this to know ho loses and ho wins. Server only
+    /// Call this to know who loses and who wins. Server only.
     /// </summary>
-    /// <param name="playerLosedPlayableState"> Playing State</param>
+    /// <param name="playerLosedPlayableState"> Playing State of the player who loses</param>
     public void LoseGame(PlayableState playerLosedPlayableState)
     {
-        losePlayableState.Value = playerLosedPlayableState;
+        losedPlayer.Value = playerLosedPlayableState;
     }
-
-
 
     /// <summary>
     /// Call this to change the Game State, delay its optional.
@@ -115,9 +149,12 @@ public class GameStateManager : NetworkBehaviour
 
     public override void OnNetworkDespawn()
     {
+        losedPlayer.OnValueChanged -= LosedPlayer_OnvalueChanged;
+        gameState.OnValueChanged -= GameState_OnValueChanged;
+
         if (IsServer)
         {
-            gameState.OnValueChanged -= GameState_OnValueChanged;
+            PlayerHealth.OnPlayerDie -= LoseGame;
             PlayerSpawner.OnPlayerSpawned -= PlayerSpawner_OnPlayerSpawned;
         }
     }
