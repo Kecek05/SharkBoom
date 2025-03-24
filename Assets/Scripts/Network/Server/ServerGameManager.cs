@@ -62,7 +62,7 @@ public class ServerGameManager : IDisposable
         }
     }
 
-#if UNITY_SERVER
+ #if UNITY_SERVER
 
     private async Task<MatchmakingResults> GetMatchmakerPayload()
     {
@@ -126,7 +126,8 @@ public class ServerGameManager : IDisposable
                 }
             }
         }
-#endif
+    }
+ #endif
 
     /// <summary>
     /// Call this to close the server. Match ended or all players quit.
