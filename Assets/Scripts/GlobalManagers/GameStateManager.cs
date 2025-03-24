@@ -10,6 +10,7 @@ public class GameStateManager : NetworkBehaviour
     public event Action OnGameOver;
     public event Action OnWin;
     public event Action OnLose;
+    public event Action OnConnectionLost; //Only for host and client
 
     [BetterHeader("Settings")]
     [Tooltip("in ms")][SerializeField] private int delayClosePlayersInfo = 3000;
@@ -112,6 +113,11 @@ public class GameStateManager : NetworkBehaviour
         }
 
         Debug.Log($"Game State Changed to: {newValue}");
+    }
+
+    public void ConnectionLostHostAndClinet()
+    {
+        OnConnectionLost?.Invoke();
     }
 
     private void LosedPlayer_OnvalueChanged(PlayableState previousValue, PlayableState newValue)

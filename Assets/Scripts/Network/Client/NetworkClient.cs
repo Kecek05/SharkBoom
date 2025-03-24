@@ -61,15 +61,17 @@ public class NetworkClient : IDisposable //Actual Client Game Logic
             else if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.ShowingPlayersInfo || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.GameStarted)
             {
                 //Game Started
-                //Show Game Over Screen, I win
 
                 if(ClientSingleton.Instance.GameManager.IsDedicatedServerGame)
                 {
+                    //Dedicated, I Win
                     GameFlowManager.Instance.GameStateManager.IwinGameOverAsync();
                 }
                 else
                 {
+                    //Host, stop game
                     Debug.Log("Not Dedicated Server Game, Show Disconnect UI");
+                    GameFlowManager.Instance.GameStateManager.ConnectionLostHostAndClinet();
                 }
             }
         }
@@ -97,28 +99,30 @@ public class NetworkClient : IDisposable //Actual Client Game Logic
             else if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.ShowingPlayersInfo || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.GameStarted)
             {
                 //Game Started
-                //Show Game Over Screen, I lose
                 if(ClientSingleton.Instance.GameManager.IsDedicatedServerGame)
                 {
+                    //Dedicated, I lose
                     GameFlowManager.Instance.GameStateManager.GameOverAsync();
                 } else
                 {
+                    //Host, stop game
                     Debug.Log("Not Dedicated Server Game, Show Disconnect UI");
+                    GameFlowManager.Instance.GameStateManager.ConnectionLostHostAndClinet();
                 }
 
             }
             else if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.GameEnded)
             {
                 //Game Ended
-                //Go to menu
-                //Trigger Change Pearls, guarantee the change on pearls
+
                 if (ClientSingleton.Instance.GameManager.IsDedicatedServerGame)
                 {
+                    //Dedicated, Trigger Change Pearls, guarantee the change on pearls
                     await CalculatePearlsManager.TriggerChangePearls();
                 }
                 else
                 {
-                    Debug.Log("Not Dedicated Server Game, Show Disconnect UI");
+                    //Host. Do nothing
                 }
             }
         }
