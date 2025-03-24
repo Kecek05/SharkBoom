@@ -86,20 +86,55 @@ public class ServerGameManager : IDisposable
     {
         multiplayAllocationService.RemovePlayer();
 
-        if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.None || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.WaitingForPlayers || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.SpawningPlayers || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.CalculatingResults)
-        {
-            //Game not started yet, cancel match
-            ServerSingleton.Instance.GameManager.ShutdownServer();
+        //ServerSingleton.Instance.GameManager.ShutdownServerDelayed();
 
+
+        if (GameFlowManager.Instance != null)
+        {
+            if (GameFlowManager.Instance.GameStateManager == null)
+            {
+                ServerSingleton.Instance.GameManager.ShutdownServerDelayed();
+                return;
+            }
+
+            //In Game Scene
+
+            if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.None || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.WaitingForPlayers || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.SpawningPlayers || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.CalculatingResults)
+            {
+                //Game not started yet, Shutdown Server
+                ServerSingleton.Instance.GameManager.ShutdownServerDelayed();
+            }
+            else if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.ShowingPlayersInfo || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.GameStarted)
+            {
+                //Game Started
+                GameFlowManager.Instance.GameStateManager.LoseGame(PlayableState.PlayerQuited);
+
+                ServerSingleton.Instance.GameManager.ShutdownServerDelayed();
+            }
+            else if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.GameEnded)
+            {
+                //Game Ended
+
+                if (ClientSingleton.Instance.GameManager.IsDedicatedServerGame)
+                {
+                    //Dedicated, Trigger Change Pearls, guarantee the change on pearls
+                    //await CalculatePearlsManager.TriggerChangePearls();
+                }
+                else
+                {
+                    //Host. Do nothing
+                }
+            }
         }
-    }
 #endif
 
     /// <summary>
     /// Call this to close the server. Match ended or all players quit.
     /// </summary>
-    private async void ShutdownServer()
+    private async void ShutdownServerDelayed(int delay = 3000) //default 3 seconds
     {
+        await Task.Delay(delay);
+    
         Debug.Log("SHUTING DOWN SERVER");
         Dispose();
         Application.Quit();

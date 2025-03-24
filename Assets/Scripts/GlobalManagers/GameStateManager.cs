@@ -157,6 +157,13 @@ public class GameStateManager : NetworkBehaviour
             await CalculatePearlsManager.TriggerChangePearls();
             OnLose?.Invoke();
         }
+        else if (losedPlayer.Value == PlayableState.PlayerQuited)
+        {
+            //Player Quited, win
+            localWin = true;
+            await CalculatePearlsManager.TriggerChangePearls();
+            OnWin?.Invoke();
+        }
         else
         {
             //Change pearls, then win
