@@ -19,8 +19,11 @@ public class GameStateManager : NetworkBehaviour
     private NetworkVariable<PlayableState> losedPlayer = new(PlayableState.None);
 
     private bool gameOver = false;
-
+    private bool localWin = false;
+    private int calculatedResults = 0;
     //Publics
+
+    public bool LocalWin => localWin;
     public NetworkVariable<PlayableState> LosedPlayer => losedPlayer;
     public bool GameOver => gameOver;
     public NetworkVariable<GameState> CurrentGameState => gameState;
@@ -32,6 +35,11 @@ public class GameStateManager : NetworkBehaviour
         losedPlayer.OnValueChanged += LosedPlayer_OnvalueChanged;
         gameState.OnValueChanged += GameState_OnValueChanged;
 
+        if(IsClient)
+        {
+            CalculatePearlsManager.OnFinishedCalculateResults += CalculatePearlsManager_OnFinishedCalculateResults;
+        }
+
         if (IsServer)
         {
             PlayerHealth.OnPlayerDie += LoseGame;
@@ -39,11 +47,23 @@ public class GameStateManager : NetworkBehaviour
         }
     }
 
+    private void CalculatePearlsManager_OnFinishedCalculateResults()
+    {
+        //Called when any client calculated the results
+        calculatedResults++;
+
+        if(calculatedResults == 2)
+        {
+            //both clients calculated the results, change state
+            SetGameStateServerRpc(GameState.ShowingPlayersInfo);
+        }
+    }
+
     private void PlayerSpawner_OnPlayerSpawned(int playerCount)
     {
         if (playerCount == 2)
         {
-            ChangeGameState(GameState.ShowingPlayersInfo); // All players Spawned, waiting to start
+            ChangeGameState(GameState.CalculatingResults); // All players Spawned, calculating Results
         }
     }
 
@@ -60,10 +80,11 @@ public class GameStateManager : NetworkBehaviour
                 Debug.Log("Start Spawning Players");
 
                 break;
-            case GameState.ShowingPlayersInfo:
-
-                if(IsClient)
+            case GameState.CalculatingResults:
+                if (IsClient)
                     CalculatePearlsManager.CalculatePossibleResults();
+                break;
+            case GameState.ShowingPlayersInfo:
 
                 if(IsServer)
                 {
@@ -96,25 +117,39 @@ public class GameStateManager : NetworkBehaviour
         gameOver = true;
     }
 
-    private async void GameOverAsync()
+    public async void IwinGameOverAsync()
+    {
+        //Change pearls, then win
+        localWin = true;
+        await CalculatePearlsManager.TriggerChangePearls();
+        OnWin?.Invoke();
+    }
+
+    public async void GameOverAsync()
     {
         if (losedPlayer.Value == GameFlowManager.Instance.TurnManager.LocalPlayableState)
         {
-            //Change pearls, than lose
-            await CalculatePearlsManager.TriggerChangePearls(false);
+            //Change pearls, then lose
+            localWin = false;
+
+            await CalculatePearlsManager.TriggerChangePearls();
             OnLose?.Invoke();
         }
         else if (losedPlayer.Value == PlayableState.None)
         {
             //Tie, lose
-            //Change pearls, than lose
-            await CalculatePearlsManager.TriggerChangePearls(false);
+            //Change pearls, then lose
+            localWin = false;
+
+            await CalculatePearlsManager.TriggerChangePearls();
             OnLose?.Invoke();
         }
         else
         {
-            //Change pearls, than win
-            await CalculatePearlsManager.TriggerChangePearls(true);
+            //Change pearls, then win
+            localWin = true;
+
+            await CalculatePearlsManager.TriggerChangePearls();
             OnWin?.Invoke();
         }
     }
@@ -171,6 +206,7 @@ public enum GameState
     None,
     WaitingForPlayers, //Waiting for players to connect
     SpawningPlayers, //Spawning Players
+    CalculatingResults, //Calculating Results
     ShowingPlayersInfo, // All players connected, and Spawned, Showing Players Info
     GameStarted, //Game Started
     GameEnded, //Game Over

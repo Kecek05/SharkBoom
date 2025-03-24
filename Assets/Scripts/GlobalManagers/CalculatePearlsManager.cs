@@ -5,6 +5,7 @@ using UnityEngine;
 public static class CalculatePearlsManager
 {
     public static event Action<int> OnPearlsDeltaChanged;
+    public static event Action OnFinishedCalculateResults;
 
     //Value that will be changed, count the pearls that the player will win or lose.
     private static int pearlsToWinDelta = 0;
@@ -19,13 +20,23 @@ public static class CalculatePearlsManager
 
     public static async void CalculatePossibleResults()
     {
+        //Not calculate in relay
+        if (!ClientSingleton.Instance.GameManager.IsDedicatedServerGame) return;
+
         await CalculateWinPearls();
         await CalculateLosePearls();
+
+        OnFinishedCalculateResults?.Invoke();
     }
 
-    public static async Task TriggerChangePearls(bool win)
+    public static async Task TriggerChangePearls()
     {
-        if (win)
+        if (alreadyChanged) return;
+
+        //Not calculate in relay
+        if (!ClientSingleton.Instance.GameManager.IsDedicatedServerGame) return;
+
+        if (GameFlowManager.Instance.GameStateManager.LocalWin)
         {
             OnPearlsDeltaChanged?.Invoke(pearlsToWinDelta);
             await ChangePearls(pearlsIfWin);
@@ -67,8 +78,6 @@ public static class CalculatePearlsManager
 
     private static async Task ChangePearls(int pearls)
     {
-        if (alreadyChanged) return;
-
         await Save.SavePlayerPearls(pearls);
 
         alreadyChanged = true;

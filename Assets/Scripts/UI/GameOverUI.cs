@@ -63,7 +63,13 @@ public class GameOverUI : NetworkBehaviour
 
     private void SetupPearlsResult(int pearlsDelta)
     {
-        if(pearlsDelta > 0)
+        if(pearlsDelta == 0)
+        {
+            //Relay game, no pearls to show
+            pearlsResultText.gameObject.SetActive(false);
+        }
+
+        if (pearlsDelta > 0)
         {
             //Win
             pearlsResultText.text = "+" + pearlsDelta.ToString();

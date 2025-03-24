@@ -111,7 +111,7 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
     {
         try
         {
-            await LobbyService.Instance.RemovePlayerAsync(lobbyId, authId); //Owner of the lobby is allowed to kick players
+           await LobbyService.Instance.RemovePlayerAsync(lobbyId, authId); //Owner of the lobby is allowed to kick players
         } catch (LobbyServiceException lobbyEx)
         {
             Debug.LogException(lobbyEx);

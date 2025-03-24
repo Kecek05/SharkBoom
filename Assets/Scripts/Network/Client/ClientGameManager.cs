@@ -22,9 +22,13 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
     private bool isJoining = false;
 
     private UserData userData;
-    public UserData UserData => userData;
 
     private string joinCode;
+
+    private bool isDedicatedServerGame = false;
+
+    public bool IsDedicatedServerGame => isDedicatedServerGame;
+    public UserData UserData => userData;
     public string JoinCode => joinCode;
 
     public ClientGameManager()
@@ -79,6 +83,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
 
     public void StartMatchmakingClient(string ip, int port)
     {
+        isDedicatedServerGame = true;
         UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
         transport.SetConnectionData(ip, (ushort)port);
         Loader.LoadClient();
@@ -88,6 +93,8 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
     public async Task StartRelayClientAsync(string joinCode)
     {
         if (joinCode == null || joinCode == string.Empty) return;
+
+        isDedicatedServerGame = false;
 
         try
         {
@@ -196,6 +203,12 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
     /// </summary>
     public void Disconnect()
     {
+        //Check if is host first
+        if (NetworkManager.Singleton != null && HostSingleton.Instance != null && NetworkManager.Singleton.IsHost) //Server cant click buttons
+        {
+            HostSingleton.Instance.GameManager.ShutdownAsync();
+        }
+
         networkClient.Disconnect();
     }
 

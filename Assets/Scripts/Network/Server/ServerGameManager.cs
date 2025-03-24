@@ -86,9 +86,12 @@ public class ServerGameManager : IDisposable
     {
         multiplayAllocationService.RemovePlayer();
 
-        //CHANGE THIS LATER, WHEN 1 CLIENT LEAVES, SHUTDOWN THE SERVER
-        Debug.Log("SHUTING DOWN SERVER");
-        ShutdownServer();
+        if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.None || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.WaitingForPlayers || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.SpawningPlayers || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.CalculatingResults)
+        {
+            //Game not started yet, cancel match
+            ServerSingleton.Instance.GameManager.ShutdownServer();
+
+        }
     }
 #endif
 
@@ -97,6 +100,7 @@ public class ServerGameManager : IDisposable
     /// </summary>
     private async void ShutdownServer()
     {
+        Debug.Log("SHUTING DOWN SERVER");
         Dispose();
         Application.Quit();
     }
