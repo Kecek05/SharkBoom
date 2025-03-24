@@ -29,6 +29,19 @@ public class GameOverUI : NetworkBehaviour
         });
     }
 
+    [Command("quitGame")]
+    private void QuitGameDEBUG()
+    {
+        //Return to main menu
+        if (NetworkManager.Singleton != null && HostSingleton.Instance != null && NetworkManager.Singleton.IsHost) //Server cant click buttons
+        {
+            HostSingleton.Instance.GameManager.ShutdownAsync();
+        }
+
+        if (ClientSingleton.Instance != null)
+            ClientSingleton.Instance.GameManager.Disconnect();
+    }
+
     public override void OnNetworkSpawn()
     {
         Hide();
@@ -46,7 +59,6 @@ public class GameOverUI : NetworkBehaviour
     {
         //Pearls value to show changed, show UI.
         SetupPearlsResult(pearlsDelta);
-        Show();
     }
 
     private void SetupPearlsResult(int pearlsDelta)
@@ -66,12 +78,16 @@ public class GameOverUI : NetworkBehaviour
     {
         playerResultText.text = "You Win!";
         playerResultText.color = Color.green;
+
+        Show();
     }
 
     private void GameStateManager_OnLose()
     {
         playerResultText.text = "You Lose!";
         playerResultText.color = Color.red;
+
+        Show();
     }
 
     private void Hide()

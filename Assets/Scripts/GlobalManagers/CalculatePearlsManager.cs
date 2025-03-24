@@ -47,6 +47,8 @@ public static class CalculatePearlsManager
         int result = await Save.LoadPlayerPearls() + pearlsToWinDelta;
 
         pearlsIfWin = result;
+
+        Debug.Log($"Win: {pearlsToWinDelta} - {pearlsIfWin}");
     }
 
 
@@ -59,6 +61,8 @@ public static class CalculatePearlsManager
         int result = await Save.LoadPlayerPearls() - pearlsToLoseDelta;
 
         pearlsIfLose = result;
+
+        Debug.Log($"Lose: {pearlsToLoseDelta} - {pearlsIfLose}");
     }
 
     private static async Task ChangePearls(int pearls)
@@ -68,6 +72,8 @@ public static class CalculatePearlsManager
         await Save.SavePlayerPearls(pearls);
 
         alreadyChanged = true;
+
+        Debug.Log($"Changed Pearls to: {pearls}");
     }
 
     public static void Reset()

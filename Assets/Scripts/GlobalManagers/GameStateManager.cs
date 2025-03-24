@@ -88,12 +88,12 @@ public class GameStateManager : NetworkBehaviour
 
     private void LosedPlayer_OnvalueChanged(PlayableState previousValue, PlayableState newValue)
     {
-        gameOver = true;
         OnGameOver?.Invoke();
 
         if(IsServer)
             ChangeGameState(GameState.GameEnded);
         
+        gameOver = true;
     }
 
     private async void GameOverAsync()
@@ -149,6 +149,7 @@ public class GameStateManager : NetworkBehaviour
 
     public override void OnNetworkDespawn()
     {
+
         losedPlayer.OnValueChanged -= LosedPlayer_OnvalueChanged;
         gameState.OnValueChanged -= GameState_OnValueChanged;
 
