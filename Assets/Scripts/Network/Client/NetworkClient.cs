@@ -30,54 +30,33 @@ public class NetworkClient : IDisposable //Actual Client Game Logic
 
     private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
     {
-        if (clientId != networkManager.LocalClientId)
+        if(!ClientSingleton.Instance.GameManager.IsDedicatedServerGame)
         {
-            OtherDisconnected();
-        } else
-        {
-            IDisconnected();
-        }
-       
-    }
-
-
-    private void OtherDisconnected()
-    {
-        Debug.Log("Other Client Disconnected");
-
-        if (GameFlowManager.Instance != null)
-        {
-            if (GameFlowManager.Instance.GameStateManager == null)
+            //Host
+            if(GameFlowManager.Instance != null)
             {
-                Disconnect();
-                return;
-            }
-
-            if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.None || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.WaitingForPlayers || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.SpawningPlayers || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.CalculatingResults)
+                if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value != GameState.GameEnded)
+                {
+                    //Game not ended yet
+                    GameFlowManager.Instance.GameStateManager.ConnectionLostHostAndClient();
+                }
+            } 
+            else
             {
-                //Game not started yet, go to menu
+                //Not in game scene
                 Disconnect();
             }
-            else if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.ShowingPlayersInfo || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.GameStarted)
+        }  else
+        {
+            //Is Dedicated Server
+            if (clientId == networkManager.LocalClientId)
             {
-                //Game Started
-
-                if(ClientSingleton.Instance.GameManager.IsDedicatedServerGame)
-                {
-                    //Dedicated, I Win
-                    //GameFlowManager.Instance.GameStateManager.IwinGameOverAsync();
-                }
-                else
-                {
-                    //Host, stop game
-                    Debug.Log("Not Dedicated Server Game, Show Disconnect UI");
-                    GameFlowManager.Instance.GameStateManager.ConnectionLostHostAndClinet();
-                }
+                IDisconnectedFromDS();
             }
         }
     }
 
-    private async void IDisconnected()
+    private async void IDisconnectedFromDS()
     {
         Debug.Log("I Disconnected");
 
@@ -99,35 +78,19 @@ public class NetworkClient : IDisposable //Actual Client Game Logic
             else if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.ShowingPlayersInfo || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.GameStarted)
             {
                 //Game Started
-                if(ClientSingleton.Instance.GameManager.IsDedicatedServerGame)
-                {
-                    //Dedicated, I lose
-                    GameFlowManager.Instance.GameStateManager.GameOverAsync();
-                } else
-                {
-                    //Host, stop game
-                    Debug.Log("Not Dedicated Server Game, Show Disconnect UI");
-                    GameFlowManager.Instance.GameStateManager.ConnectionLostHostAndClinet();
-                }
-
+                GameFlowManager.Instance.GameStateManager.GameOverAsync();
             }
             else if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.GameEnded)
             {
                 //Game Ended
+                //Trigger Change Pearls, guarantee the change on pearls
+                await CalculatePearlsManager.TriggerChangePearls();
 
-                if (ClientSingleton.Instance.GameManager.IsDedicatedServerGame)
-                {
-                    //Dedicated, Trigger Change Pearls, guarantee the change on pearls
-                    await CalculatePearlsManager.TriggerChangePearls();
-                }
-                else
-                {
-                    //Host. Do nothing
-                }
             }
+        } else
+        {
+            Disconnect();
         }
-
-
     }
 
     public void Disconnect()

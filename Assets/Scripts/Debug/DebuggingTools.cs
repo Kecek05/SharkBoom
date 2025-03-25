@@ -66,4 +66,12 @@ public class DebuggingTools : NetworkBehaviour
         debugPlayableStateText.text = GameFlowManager.Instance.TurnManager.CurrentPlayableState.Value.ToString();
     }
 
+
+
+    [Command("shutDownDebug")]
+    private void ShutdownDebug() //DEBUG
+    {
+        if (NetworkManager.Singleton.IsConnectedClient)
+            NetworkManager.Singleton.Shutdown();
+    }
 }

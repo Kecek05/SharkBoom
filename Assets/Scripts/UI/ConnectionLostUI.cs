@@ -27,11 +27,11 @@ public class ConnectionLostUI : NetworkBehaviour
 
         if(IsClient)
         {
-            GameFlowManager.Instance.GameStateManager.OnConnectionLost += GameStateManager_OnConnectionLost;
+            GameStateManager.OnCanCloseServer += GameStateManager_OnCanCloseServer;
         }
     }
 
-    private void GameStateManager_OnConnectionLost()
+    private void GameStateManager_OnCanCloseServer()
     {
         Show();
     }
@@ -50,7 +50,7 @@ public class ConnectionLostUI : NetworkBehaviour
     {
         if (IsClient)
         {
-            GameFlowManager.Instance.GameStateManager.OnConnectionLost -= GameStateManager_OnConnectionLost;
+            GameStateManager.OnCanCloseServer -= GameStateManager_OnCanCloseServer;
         }
     }
 }

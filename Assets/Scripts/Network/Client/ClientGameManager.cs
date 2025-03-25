@@ -83,7 +83,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
 
     public void StartMatchmakingClient(string ip, int port)
     {
-        isDedicatedServerGame = true;
+        SetIsDedicatedServerGame(true);
         UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
         transport.SetConnectionData(ip, (ushort)port);
         Loader.LoadClient();
@@ -94,7 +94,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
     {
         if (joinCode == null || joinCode == string.Empty) return;
 
-        isDedicatedServerGame = false;
+        SetIsDedicatedServerGame(false);
 
         try
         {
@@ -189,6 +189,11 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
     public async Task CancelMatchmakingAsync()
     {
         await matchmaker.CancelMatchmaking();
+    }
+
+    public void SetIsDedicatedServerGame(bool isDedicatedServer)
+    {
+        isDedicatedServerGame = isDedicatedServer;
     }
 
     private void Save_OnPlayerPearlsChanged(int newValue)

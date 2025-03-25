@@ -10,7 +10,10 @@ public class GameStateManager : NetworkBehaviour
     public event Action OnGameOver;
     public event Action OnWin;
     public event Action OnLose;
-    public event Action OnConnectionLost; //Only for host and client
+
+    /// <summary>
+    /// Called when the server should be closed.
+    /// </summary>
     public static event Action OnCanCloseServer;
 
     [BetterHeader("Settings")]
@@ -112,9 +115,9 @@ public class GameStateManager : NetworkBehaviour
 
         Debug.Log($"Game State Changed to: {newValue}");
     }
-    public void ConnectionLostHostAndClinet()
+    public void ConnectionLostHostAndClient()
     {
-        OnConnectionLost?.Invoke();
+        OnCanCloseServer?.Invoke();
     }
 
     private void LosedPlayer_OnvalueChanged(PlayableState previousValue, PlayableState newValue)

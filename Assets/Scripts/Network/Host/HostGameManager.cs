@@ -29,8 +29,6 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
     public HostGameManager(NetworkObject _playerPrefab)
     {
         playerPrefab = _playerPrefab;
-
-        GameStateManager.OnCanCloseServer += GameStateManager_OnCanCloseServer;
     }
 
     public async Task StartHostAsync()
@@ -100,7 +98,17 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
 
         NetworkManager.Singleton.NetworkConfig.ConnectionData = payloadBytes;
 
+        if(ClientSingleton.Instance != null)
+        {
+            ClientSingleton.Instance.GameManager.SetIsDedicatedServerGame(false);
+        } else
+        {
+            Debug.LogError("ClientSingleton is null, couldn't set IsDedicatedServerGame to false");
+        }
+
         NetworkManager.Singleton.StartHost();
+
+        GameStateManager.OnCanCloseServer += GameStateManager_OnCanCloseServer;
 
         networkServer.OnClientLeft += HandleClientLeft;
 
@@ -110,6 +118,17 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
 
     private async void HandleClientLeft(string authId)
     {
+        if (GameFlowManager.Instance != null)
+        {
+            //Client Left, Cancel Game
+            GameFlowManager.Instance.GameStateManager.ConnectionLostHostAndClient();
+        }
+        else
+        {
+            //Not in game, shutdown
+            ShutdownAsync();
+        }
+
         try
         {
            await LobbyService.Instance.RemovePlayerAsync(lobbyId, authId); //Owner of the lobby is allowed to kick players
@@ -154,6 +173,8 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
 
         networkServer.OnClientLeft -= HandleClientLeft;
 
+        GameStateManager.OnCanCloseServer -= GameStateManager_OnCanCloseServer;
+
         networkServer?.Dispose();
     }
 
@@ -168,8 +189,6 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
 
     public void Dispose()
     {
-        GameStateManager.OnCanCloseServer -= GameStateManager_OnCanCloseServer;
-
         ShutdownAsync();
     }
 }
