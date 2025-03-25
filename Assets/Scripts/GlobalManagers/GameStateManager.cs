@@ -12,6 +12,11 @@ public class GameStateManager : NetworkBehaviour
     public event Action OnLose;
 
     /// <summary>
+    /// Called when any player lost connection in Host.
+    /// </summary>
+    public static event Action OnLostConnectionInHost;
+
+    /// <summary>
     /// Called when the server should be closed.
     /// </summary>
     public static event Action OnCanCloseServer;
@@ -117,7 +122,7 @@ public class GameStateManager : NetworkBehaviour
     }
     public void ConnectionLostHostAndClient()
     {
-        OnCanCloseServer?.Invoke();
+        OnLostConnectionInHost?.Invoke();
     }
 
     private void LosedPlayer_OnvalueChanged(PlayableState previousValue, PlayableState newValue)

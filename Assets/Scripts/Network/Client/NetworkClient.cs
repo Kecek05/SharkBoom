@@ -58,7 +58,7 @@ public class NetworkClient : IDisposable //Actual Client Game Logic
 
     private async void IDisconnectedFromDS()
     {
-        Debug.Log("I Disconnected");
+        Debug.Log("I Disconnected from DS");
 
         if (GameFlowManager.Instance != null)
         {
@@ -85,7 +85,6 @@ public class NetworkClient : IDisposable //Actual Client Game Logic
                 //Game Ended
                 //Trigger Change Pearls, guarantee the change on pearls
                 await CalculatePearlsManager.TriggerChangePearls();
-
             }
         } else
         {
