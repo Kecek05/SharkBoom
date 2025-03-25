@@ -14,7 +14,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &6932234482931318273
 Transform:
@@ -46,7 +46,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &4060814657990152159
 Transform:
@@ -120,14 +120,30 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: ee00dd31a3d7f0a4b8a337515f439022, type: 2}
+    - target: {fileID: -525359278767787296, guid: da4c9b373a43ea04ba81e604acde8f4a, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: -217631516940741145, guid: da4c9b373a43ea04ba81e604acde8f4a, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: da4c9b373a43ea04ba81e604acde8f4a, type: 3}
       propertyPath: m_Name
       value: GO_Bottle_LOD0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: da4c9b373a43ea04ba81e604acde8f4a, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 6296150544057254341, guid: da4c9b373a43ea04ba81e604acde8f4a, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: ee00dd31a3d7f0a4b8a337515f439022, type: 2}
+    - target: {fileID: 8632695786480994531, guid: da4c9b373a43ea04ba81e604acde8f4a, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
