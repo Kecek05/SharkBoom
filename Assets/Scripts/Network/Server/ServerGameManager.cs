@@ -106,8 +106,8 @@ public class ServerGameManager : IDisposable
             else if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.ShowingPlayersInfo || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.GameStarted)
             {
                 //Game Started
-                GameFlowManager.Instance.GameStateManager.ClientRemaningWin(() => ServerSingleton.Instance.GameManager.ShutdownServer());
-                Debug.Log("Shutting down after client remaining win");
+                Debug.Log("Client remaining win");
+                GameFlowManager.Instance.GameStateManager.ClientRemaningWin();
             }
         } else
         {

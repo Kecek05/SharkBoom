@@ -150,8 +150,14 @@ public class GameStateManager : NetworkBehaviour
         {
             //Both clients changed the results
             //Close Server
-            OnCanCloseServer?.Invoke();
+            TriggerCanCloseServerRpc();
         }
+    }
+
+    [Rpc(SendTo.Server)]
+    private void TriggerCanCloseServerRpc()
+    {
+        OnCanCloseServer?.Invoke();
     }
 
     [Rpc(SendTo.ClientsAndHost)]
@@ -160,9 +166,14 @@ public class GameStateManager : NetworkBehaviour
         IwinGameOverAsync();
     }
 
-    public void ClientRemaningWin(Action onIwinGameOverAsyncFinished)
+    public void ClientRemaningWin()
     {
-        OnWin += onIwinGameOverAsyncFinished;
+        OnWin += () =>
+        {
+            Debug.Log("IwinGameOverAsync Finished");
+
+            TriggerCanCloseServerRpc();
+        };
         ClientRemaningWinRpc();
     }
 
@@ -172,7 +183,6 @@ public class GameStateManager : NetworkBehaviour
         localWin = true;
         await CalculatePearlsManager.TriggerChangePearls();
 
-        Debug.Log("IwinGameOverAsync Finished");
         OnWin?.Invoke();
     }
 
