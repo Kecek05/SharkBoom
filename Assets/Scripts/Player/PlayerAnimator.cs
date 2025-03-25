@@ -6,7 +6,7 @@ public class PlayerAnimator : NetworkBehaviour
 {
     [BetterHeader("References")]
     [SerializeField] private Animator animator;
-    [SerializeField] private Player player;
+    [SerializeField] private PlayerThrower player;
 
     private readonly static int[] animations =
     {

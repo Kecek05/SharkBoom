@@ -3,6 +3,7 @@ using TMPro;
 using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 
 public class LoadingPlayersUI : NetworkBehaviour
 {
@@ -26,19 +27,19 @@ public class LoadingPlayersUI : NetworkBehaviour
 
         if(IsClient)
         {
-            GameFlowManager.Instance.CurrentGameState.OnValueChanged += GameState_OnValueChanged;
+            GameFlowManager.Instance.GameStateManager.CurrentGameState.OnValueChanged += GameState_OnValueChanged;
         }
 
         if(IsServer)
         {
-            Player.OnPlayerSpawned += Player_OnPlayerSpawned;
+            PlayerThrower.OnPlayerSpawned += Player_OnPlayerSpawned;
         }
     }
 
     private void GameState_OnValueChanged(GameState previousValue, GameState newValue)
     {
 
-        if(newValue == GameState.WaitingToStart)
+        if(newValue == GameState.ShowingPlayersInfo)
         {
             //All Connected and Spawned
 
@@ -52,41 +53,35 @@ public class LoadingPlayersUI : NetworkBehaviour
     }
 
 
-    private void Player_OnPlayerSpawned(Player player)
+    private void Player_OnPlayerSpawned(PlayerThrower player)
     {
-        if(player.OwnerClientId == 1) //Only update if the second player is spawned
+        if(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.RegisteredClientCount == 2) //Only call if the second player is spawned
             PlayerSpawnedServerRpc();
-
     }
 
     [Rpc(SendTo.Server)]
     private void PlayerSpawnedServerRpc()
     {
         //Send to server to send to all clients
+        int playerCount = 0; //IMPROVE THIS
 
-        foreach(ulong connectedClientId in NetworkManager.Singleton.ConnectedClientsIds)
+        foreach (ulong connectedClientId in NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.AuthToClientIdValues)
         {
-            if(IsHost)
-            {
-                //Host Singleton
-                UserData playerUserData = HostSingleton.Instance.GameManager.NetworkServer.GetUserDataByClientId(connectedClientId);
+            UserData playerUserData = NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.GetUserDataByClientId(connectedClientId);
 
-                PlayerSpawnedClientRpc(playerUserData.userName, playerUserData.userPearls, connectedClientId);
-            } else
-            {
-                //Server Singleton
-                //UserData playerUserData = ServerSingleton.Instance.GameManager.NetworkServer.GetUserDataByClientId(connectedClientId);
+            PlayerSpawnedClientRpc(playerUserData.userName, playerUserData.userPearls, playerCount);
 
-                //PlayerSpawnedClientRpc(playerUserData.userName, playerUserData.userPearls, connectedClientId);
-            }
+            playerCount++;
         }
     }
 
     [Rpc(SendTo.ClientsAndHost)]
-    private void PlayerSpawnedClientRpc(FixedString32Bytes playerName, int playerPearls, ulong clientId)
+    private void PlayerSpawnedClientRpc(FixedString32Bytes playerName, int playerPearls, int playerCount)
     {
+        Debug.Log($"Name: {playerName} Pearls: {playerPearls} Player Count: {playerCount}");
+
         //All clients listen to this
-        if (clientId == 0)
+        if (playerCount == 0)
         {
             //Player 1
             player1NameText.text = playerName.Value.ToString();
@@ -125,12 +120,12 @@ public class LoadingPlayersUI : NetworkBehaviour
     {
         if (!IsServer)
         {
-            GameFlowManager.Instance.CurrentGameState.OnValueChanged -= GameState_OnValueChanged;
+            GameFlowManager.Instance.GameStateManager.CurrentGameState.OnValueChanged -= GameState_OnValueChanged;
         }
 
         if (IsServer)
         {
-            Player.OnPlayerSpawned -= Player_OnPlayerSpawned;
+            PlayerThrower.OnPlayerSpawned -= Player_OnPlayerSpawned;
         }
     }
 

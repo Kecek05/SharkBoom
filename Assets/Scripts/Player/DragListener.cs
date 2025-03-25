@@ -5,7 +5,7 @@ using UnityEngine;
 public abstract class DragListener : NetworkBehaviour
 {
     [BetterHeader("DragListener References")]
-    [SerializeField] protected Player player;
+    [SerializeField] protected PlayerThrower player;
 
     public override void OnNetworkSpawn()
     {

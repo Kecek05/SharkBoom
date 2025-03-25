@@ -8,7 +8,7 @@ public class PlayerInventory : NetworkBehaviour
     public event Action<ItemInventoryData> OnItemChanged;
     public event Action<int> OnItemSelected;
 
-    [SerializeField] private Player player;
+    [SerializeField] private PlayerThrower player;
 
     [SerializeField] private ItemsListSO itemsListSO;
 
@@ -96,6 +96,10 @@ public class PlayerInventory : NetworkBehaviour
             UseItemByInventoryIndexRpc(selectedItemInventoryIndex);
 
             SetPlayerCanJumpRpc(true); //can jump, set before next round to be able to select
+        } else if (state == player.PlayerStateMachine.playerGameOverState)
+        {
+            SetCanInteractWithInventory(false);
+
         }
 
     }

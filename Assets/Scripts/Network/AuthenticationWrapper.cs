@@ -4,8 +4,11 @@ using Unity.Services.Authentication;
 using Unity.Services.Authentication.PlayerAccounts;
 using Unity.Services.Core;
 using UnityEngine;
-using GooglePlayGames;
-using GooglePlayGames.BasicApi;
+
+#if UNITY_ANDROID
+    using GooglePlayGames;
+    using GooglePlayGames.BasicApi;
+#endif
 
 public static class AuthenticationWrapper
 {
@@ -59,6 +62,7 @@ public static class AuthenticationWrapper
 
     public static async Task<AuthState> DoAuthAndroid()
     {
+#if UNITY_ANDROID
         if (AuthState == AuthState.Authenticated) return AuthState;
 
         if (AuthState == AuthState.Authenticating)
@@ -71,8 +75,12 @@ public static class AuthenticationWrapper
         await SignInAndroidAsync();
 
         return AuthState;
+#endif
+        Debug.LogWarning("Trying to authenticate with Android on a non-Android platform.");
+        return AuthState.Error; // Not Android and trying to authenticate with Android
     }
 
+#if UNITY_ANDROID
     private static async Task SignInAndroidAsync()
     {
         AuthState = AuthState.Authenticating;
@@ -89,8 +97,6 @@ public static class AuthenticationWrapper
                     Debug.Log($"{code} <-Auth code");
                     GooglePlayToken = code;
                 });
-
-                AuthState = AuthState.Authenticated;
             }
             else
             {
@@ -102,33 +108,31 @@ public static class AuthenticationWrapper
 
         });
 
+        if (AuthState == AuthState.Error) return;
+
+        await CallAndroidWithUnity();
+    }
+
+
+    private static async Task CallAndroidWithUnity()
+    {
+        while(GooglePlayToken == null)
+        {
+            await Task.Delay(100);
+        }
+
         await AuthAndroidWithUnity();
     }
 
 
     private static async Task AuthAndroidWithUnity()
     {
-        //try
-        //{
-        //    await AuthenticationService.Instance.SignInWithGoogleAsync(GooglePlayToken);
-
-        //    Debug.Log("AUTHENTICATED WITH GOOGLE UNITY");
-        //    return;
-        //}
-        //catch (AuthenticationException ex)
-        //{
-        //    Debug.LogException(ex);
-        //}
-        //catch (RequestFailedException ex)
-        //{
-        //    Debug.LogException(ex);
-        //}
 
         try
         {
             await AuthenticationService.Instance.SignInWithGooglePlayGamesAsync(GooglePlayToken);
-
-            Debug.Log("AUTHENTICATED WITH GOOGLE PLAY GAMES UNITY");
+            AuthState = AuthState.Authenticated;
+            Debug.Log($"AUTHENTICATED WITH GOOGLE PLAY GAMES UNITY, CODE: {GooglePlayToken}");
         }
         catch (AuthenticationException ex)
         {
@@ -140,6 +144,7 @@ public static class AuthenticationWrapper
         }
     }
 
+#endif
 
     private static async Task SignInUnityAsync()
     {
@@ -227,10 +232,6 @@ public static class AuthenticationWrapper
             AuthState = AuthState.Authenticated;
 
 
-            playerName = await AuthenticationService.Instance.GetPlayerNameAsync();
-
-            Debug.Log(playerName + AuthState);
-
         }
         catch (AuthenticationException ex)
         {
@@ -260,10 +261,6 @@ public static class AuthenticationWrapper
                 {
                     AuthState = AuthState.Authenticated;
 
-                    playerName = await AuthenticationService.Instance.GetPlayerNameAsync();
-
-                    Debug.Log(playerName + AuthState);
-
                     break;
                 }
 
@@ -290,6 +287,11 @@ public static class AuthenticationWrapper
             Debug.LogWarning($"Player could not authenticate after {tries} tries.");
             AuthState = AuthState.TimeOut;
         }
+    }
+
+    public static void SetPlayerName(string newPlayerName)
+    {
+        playerName = newPlayerName;
     }
 
 

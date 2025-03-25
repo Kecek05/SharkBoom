@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public interface IDamageable
@@ -31,4 +32,25 @@ public interface IActivable
 public interface IFollowable
 {
     public void Follow(Transform target);
+}
+
+
+public interface IServerAuthenticationService //Decopling of the Authentication Services
+{
+    int RegisteredClientCount { get; }
+    void RegisterClient(ulong clientId, UserData userData);
+    void UnregisterClient(ulong clientId);
+    public Dictionary<string, ulong>.ValueCollection AuthToClientIdValues { get; }
+    UserData GetUserDataByClientId(ulong clientId);
+    public string GetAuthIdByClientId(ulong clientId);
+    public ulong GetClientIdByAuthId(string authId);
+}
+
+public interface IPlayerSpawner //Decopling of the Authentication Services
+{
+    int PlayerCount { get; }
+
+    void SpawnPlayer(ulong clientId);
+
+    PlayableState GetPlayableStateByCount();
 }

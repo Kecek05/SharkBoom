@@ -10,42 +10,70 @@ using Unity.Services.Lobbies.Models;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class ClientGameManager : IDisposable //Actual Logic to interact with UGS (Relay, Lobby, etc)
 {
     private NetworkClient networkClient;
+    private MatchplayMatchmaker matchmaker;
+
 
     private JoinAllocation joinAllocation;
 
     private bool isJoining = false;
 
     private UserData userData;
-    public UserData UserData => userData;
 
     private string joinCode;
+
+    private bool isDedicatedServerGame = false;
+
+    public bool IsDedicatedServerGame => isDedicatedServerGame;
+    public UserData UserData => userData;
     public string JoinCode => joinCode;
+
+    public ClientGameManager()
+    {
+        Save.OnPlayerPearlsChanged += Save_OnPlayerPearlsChanged;
+    }
 
     public async Task<bool> InitAsync(AuthTypes authTypes)
     {
-        //Authenticate Player
-        await UnityServices.InitializeAsync();
+        //Authenticate player
+
+        //Debugging code FOR DEDICATED SERVER
+        InitializationOptions initializationOptions = new InitializationOptions();
+        initializationOptions.SetProfile(UnityEngine.Random.Range(0, 10000).ToString());
+        await UnityServices.InitializeAsync(initializationOptions);
+        //
+        //await UnityServices.InitializeAsync();
+
 
         networkClient = new NetworkClient(NetworkManager.Singleton);
+        matchmaker = new();
 
         AuthState authState = authTypes == AuthTypes.Anonymous ? await AuthenticationWrapper.DoAuthAnonymously() : authTypes == AuthTypes.Unity ? await AuthenticationWrapper.DoAuthUnity() : authTypes == AuthTypes.Android ? await AuthenticationWrapper.DoAuthAndroid() : AuthState.NotAuthenticated;
 
+        //DEBUG SAVE
+        //await AuthenticationService.Instance.SignInWithUsernamePasswordAsync("kecekTest", "Passw0rd!");
+        //AuthState authState = AuthState.Authenticated;
+        //
 
-        if(authState == AuthState.Authenticated)
+        if (authState == AuthState.Authenticated)
         {
+            AuthenticationWrapper.SetPlayerName(await AuthenticationService.Instance.GetPlayerNameAsync());
+
+            int playerPearls = await Save.LoadPlayerPearls();
+
+            Debug.Log(AuthenticationWrapper.PlayerName + authState);
+
             userData = new UserData
             {
                 userName = AuthenticationWrapper.PlayerName,
                 userAuthId = AuthenticationService.Instance.PlayerId,
-                userPearls = UnityEngine.Random.Range(0, 1001), // random for debug
+                userPearls = playerPearls, // random for debug
             };
 
-            Loader.Load(Loader.Scene.MainMenu);
+             Loader.Load(Loader.Scene.MainMenu);
 
             return true;
         }
@@ -53,9 +81,20 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         return false;
     }
 
+    public void StartMatchmakingClient(string ip, int port)
+    {
+        isDedicatedServerGame = true;
+        UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+        transport.SetConnectionData(ip, (ushort)port);
+        Loader.LoadClient();
+    }
+
+
     public async Task StartRelayClientAsync(string joinCode)
     {
         if (joinCode == null || joinCode == string.Empty) return;
+
+        isDedicatedServerGame = false;
 
         try
         {
@@ -68,17 +107,17 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
 
         UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
 
-        RelayServerData relayServerData = AllocationUtils.ToRelayServerData(joinAllocation, "dtls");
+        RelayServerData relayServerData = new RelayServerData(joinAllocation, "dtls");
 
         transport.SetRelayServerData(relayServerData);
 
         this.joinCode = joinCode;
         Debug.Log("Code Relay:" + this.joinCode);
 
-        ConnectClient();
+        Loader.LoadClient();
     }
 
-    private void ConnectClient()
+    public void ConnectClient()
     {
         string payload = JsonUtility.ToJson(userData); //serialize the payload to json
         byte[] payloadBytes = System.Text.Encoding.UTF8.GetBytes(payload); //serialize the payload to bytes
@@ -114,12 +153,65 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
 
     }
 
+    /// <summary>
+    /// Call in UI to matchmake
+    /// </summary>
+    public async void MatchmakeAsync(Action<MatchmakerPollingResult> onMatchmakeResponse)
+    {
+        // Its void because we dont want to wait for the result to continue the execution of the code.
+        // Pass and event to call it when the result is ready. Who call this will know the response when the match responds.
+
+        if (matchmaker.IsMatchmaking) return;
+
+        MatchmakerPollingResult matchResult = await GetMatchAsync();
+
+        onMatchmakeResponse?.Invoke(matchResult);
+
+    }
+
+    /// <summary>
+    /// Call this to start the matchmake process, return the result.
+    /// </summary>
+    /// <returns></returns>
+    private async Task<MatchmakerPollingResult> GetMatchAsync()
+    {
+        MatchmakingResult matchmakingResult = await matchmaker.Matchmake(userData);
+
+        if(matchmakingResult.result == MatchmakerPollingResult.Success)
+        {
+            Debug.Log("Match Found!");
+            StartMatchmakingClient(matchmakingResult.ip, matchmakingResult.port);
+        }
+
+        return matchmakingResult.result;
+    }
+
+    public async Task CancelMatchmakingAsync()
+    {
+        await matchmaker.CancelMatchmaking();
+    }
+
+    private void Save_OnPlayerPearlsChanged(int newValue)
+    {
+        UserData.userPearls = newValue;
+
+        Debug.Log($"Player Pearls Changed to: {newValue}");
+    }
+
+    /// <summary>
+    /// Call this to disconnect from the server and go to Main Menu
+    /// </summary>
+    public void Disconnect()
+    {
+        networkClient.Disconnect();
+    }
 
     public void Dispose()
     {
+        Save.OnPlayerPearlsChanged -= Save_OnPlayerPearlsChanged;
+
         networkClient?.Dispose();
     }
-
 }
 
 

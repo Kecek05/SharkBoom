@@ -9,8 +9,8 @@ public class ItemSO : ScriptableObject
     public GameObject itemClientPrefab;
     public GameObject itemServerPrefab;
     public string itemName;
-    public Image itemIcon;
-    public Rigidbody rb;
+    public Sprite itemIcon;
+    public Rigidbody2D rb;
     [Space(5)]
 
     [BetterHeader("Item Settings", 12)]

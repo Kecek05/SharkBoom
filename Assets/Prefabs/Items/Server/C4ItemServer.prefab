@@ -125,6 +125,10 @@ PrefabInstance:
       propertyPath: isServerObject
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5150134811526336966, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_Name
       value: C4ItemServer
@@ -156,11 +160,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b617507da6d07e749b7efdb34e1173e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!54 &3604553637772792886 stripped
-Rigidbody:
-  m_CorrespondingSourceObject: {fileID: 6717943621661333620, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
-  m_PrefabInstance: {fileID: 8016156986958908482}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &4373393495679015644 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
@@ -180,7 +179,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isServerObject: 1
   itemSO: {fileID: 11400000, guid: d920d99b67057b34eb71bc10d40ec3c8, type: 2}
-  rb: {fileID: 3604553637772792886}
+  rb: {fileID: 5418427790934813272}
   cinemachineFollow: {fileID: 1826919950752638168}
   collidersToChangeLayer:
   - {fileID: 4373393495679015644}
@@ -200,6 +199,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damageableSO: {fileID: 11400000, guid: ad6af67c49e36b840a4e427c5ce5c651, type: 2}
+--- !u!50 &5418427790934813272 stripped
+Rigidbody2D:
+  m_CorrespondingSourceObject: {fileID: 2597735930550134298, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+  m_PrefabInstance: {fileID: 8016156986958908482}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8122462692156947351 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2272018210298738645, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}

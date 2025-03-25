@@ -2,26 +2,53 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class NetworkServer : IDisposable
 {
-    private NetworkManager networkManager;
-    private NetworkObject playerPrefab;
 
     public Action<string> OnClientLeft;
+    public Action<UserData> OnUserLeft;
+    public Action<UserData> OnUserJoined;
 
-    private Dictionary<ulong, string> clientIdToAuth = new Dictionary<ulong, string>(); // save client IDs to their authentication IDs
-    private Dictionary<string, UserData> authIdToUserData = new Dictionary<string, UserData>(); // save authentication IDs to user data
+    private NetworkManager networkManager;
+    private IPlayerSpawner playerSpawner;
+    private IServerAuthenticationService serverAuthenticationService;
 
-    public NetworkServer(NetworkManager _networkManager, NetworkObject _playerPrefab) // our constructor
+
+    public IPlayerSpawner PlayerSpawner => playerSpawner;
+    public IServerAuthenticationService ServerAuthenticationService => serverAuthenticationService;
+
+    public NetworkServer(NetworkManager _networkManager,NetworkObject _playerPrefab) // our constructor
     {
         networkManager = _networkManager;
-        playerPrefab = _playerPrefab;
+        playerSpawner = new PlayerSpawner(_playerPrefab);
+        serverAuthenticationService = new ServerAuthenticationService();
         networkManager.ConnectionApprovalCallback += ApprovalCheck;
 
         networkManager.OnServerStarted += NetworkManager_OnServerStarted;
+    }
+
+    private void SceneManager_OnLoadComplete(ulong clientId, string sceneName, UnityEngine.SceneManagement.LoadSceneMode loadSceneMode)
+    {
+        //Code to spawn players
+
+        if(sceneName != Loader.Scene.GameNetCodeTest.ToString()) return; //Only Spawn players in Game Scene
+
+
+        Debug.Log($"Client {clientId} / AuthId {serverAuthenticationService.GetAuthIdByClientId(clientId)} loaded scene {sceneName}");
+
+        playerSpawner.SpawnPlayer(clientId);
+    }
+
+    public bool OpenConnection(string ip, int port)
+    {
+        UnityTransport transport = networkManager.gameObject.GetComponent<UnityTransport>();
+
+        transport.SetConnectionData(ip, (ushort)port);
+
+        return networkManager.StartServer(); //returns a bool if successful
     }
 
     private void NetworkManager_OnServerStarted()
@@ -29,21 +56,16 @@ public class NetworkServer : IDisposable
         networkManager.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
 
         networkManager.SceneManager.OnLoadComplete += SceneManager_OnLoadComplete;
-
-    }
-
-    private void SceneManager_OnLoadComplete(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
-    {
-        //Called when any client loads a scene
-        Debug.Log(sceneName + " Load Complete");
-        SpawnPlayer(clientId);
     }
 
     private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
     {
         Debug.Log($"Client {clientId} disconnected");
 
-        OnClientLeft?.Invoke(clientId.ToString());
+        OnUserLeft?.Invoke(serverAuthenticationService.GetUserDataByClientId(clientId));
+        OnClientLeft?.Invoke(serverAuthenticationService.GetAuthIdByClientId(clientId));
+        serverAuthenticationService.UnregisterClient(clientId);
+
     }
 
     private void ApprovalCheck(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
@@ -52,48 +74,16 @@ public class NetworkServer : IDisposable
 
         UserData userData = JsonUtility.FromJson<UserData>(payload); //Deserialize the payload to UserData
 
-        clientIdToAuth[request.ClientNetworkId] = userData.userAuthId; //if dont exist, add to dictionary
-        authIdToUserData[userData.userAuthId] = userData;
+        serverAuthenticationService.RegisterClient(request.ClientNetworkId, userData);
+
+        OnUserJoined?.Invoke(userData);
 
         response.Approved = true; //Connection is approved
         response.CreatePlayerObject = false;
-    }
 
-    private void SpawnPlayer(ulong clientId)
-    {
-        //await Task.Delay(1000);
-
-        Transform randomSpawnPointSelected = GameFlowManager.Instance.GetRandomSpawnPoint();
-
-        NetworkObject playerInstance = GameObject.Instantiate(playerPrefab, randomSpawnPointSelected.position, randomSpawnPointSelected.rotation);
-
-        playerInstance.SpawnAsPlayerObject(clientId);
-
-        if(networkManager.ConnectedClientsList.Count == 1)
-        {
-            playerInstance.GetComponent<Player>().SetThisPlayableStateRpc(PlayableState.Player1Playing);
-
-        } else if (networkManager.ConnectedClientsList.Count == 2)
-        {
-            playerInstance.GetComponent<Player>().SetThisPlayableStateRpc(PlayableState.Player2Playing);
-
-            //Both players are connected and spawned
-            GameFlowManager.Instance.SetGameStateRpc(GameState.WaitingToStart);
-        }
-
-    }
-
-    public UserData GetUserDataByClientId(ulong clientId)
-    {
-        if(clientIdToAuth.TryGetValue(clientId, out string authId))
-        {
-            //Get Auth by client ID
-            if (authIdToUserData.TryGetValue(authId, out UserData userData))
-            {
-                return userData;
-            }
-        }
-        return null;
+        if(serverAuthenticationService.RegisteredClientCount == 2) //two clients in game
+            GameFlowManager.Instance.GameStateManager.ChangeGameState(GameState.SpawningPlayers);
+        
     }
 
 
@@ -105,7 +95,8 @@ public class NetworkServer : IDisposable
             networkManager.OnServerStarted -= NetworkManager_OnServerStarted;
             networkManager.OnClientDisconnectCallback -= NetworkManager_OnClientDisconnectCallback;
 
-            networkManager.SceneManager.OnLoadComplete -= SceneManager_OnLoadComplete;
+            if(networkManager.SceneManager != null)
+                networkManager.SceneManager.OnLoadComplete -= SceneManager_OnLoadComplete;
         }
 
         if (networkManager.IsListening)

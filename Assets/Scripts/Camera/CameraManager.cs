@@ -9,7 +9,7 @@ public class CameraManager : NetworkBehaviour
     [SerializeField] private CameraMovement cameraMovement;
     [SerializeField] private CameraZoom cameraZoom;
     [SerializeField] private CameraFollowing cameraFollowing;
-    [SerializeField] private Player player;
+    [SerializeField] private PlayerThrower player;
 
     private CinemachineCamera cinemachineCamera;
     private Transform cameraObjectToFollow;
@@ -54,13 +54,17 @@ public class CameraManager : NetworkBehaviour
         {
             Following();
         }
-        else if (playerState == player.PlayerStateMachine.deadState)
+        else if (playerState == player.PlayerStateMachine.playerGameOverState)
         {
             CameraReset();
         }
         else if (playerState == player.PlayerStateMachine.playerWatchingState)
         {
             // when enemy realase the item
+        } else if (playerState == player.PlayerStateMachine.playerGameOverState)
+        {
+            //turn off camera and focus on the dead player
+            CameraTurnOff();
         }
     }
 
@@ -81,6 +85,13 @@ public class CameraManager : NetworkBehaviour
         cameraMovement.enabled = true;
         cameraZoom.enabled = true;
         cameraFollowing.enabled = true;
+    }
+
+    private void CameraTurnOff()
+    {
+        cameraMovement.enabled = false;
+        cameraZoom.enabled = false;
+        cameraFollowing.enabled = false;
     }
 
     private void Following()

@@ -9,9 +9,11 @@ public class JumpItem : BaseItemThrowable
     private Transform objectToFollowTransform;
 
 
-    protected override void ItemReleased(float force, Vector3 direction)
+    protected override void ItemReleased(float force, Vector2 direction)
     {
         base.ItemReleased(force, direction);
+
+        if (isServerObject) return; // Jump is Client Sided. The server should not follow the player
 
         objectToFollowTransform = PlayersPublicInfoManager.Instance.GetPlayerObjectByPlayableState(thisItemLaucherData.ownerPlayableState).transform;
 
@@ -21,9 +23,9 @@ public class JumpItem : BaseItemThrowable
 
     protected override void ItemCallbackAction()
     {
-        if (!isServerObject) return; // Only the server should call the callback action
+        if (!isServerObject) return;
 
-        GameFlowManager.Instance.PlayerJumpedServerRpc(thisItemLaucherData.ownerPlayableState);
+        GameFlowManager.Instance.TurnManager.PlayerJumpedServerRpc(thisItemLaucherData.ownerPlayableState);
 
     }
 

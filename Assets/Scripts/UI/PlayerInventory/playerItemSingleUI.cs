@@ -34,10 +34,10 @@ public class PlayerItemSingleUI : MonoBehaviour
         });
     }
 
-    public void Setup(string itemName, Image itemIcon, string itemCooldown, bool itemCanBeUsed, int indexItemInventory, PlayerInventoryUI _playerInventoryUI)
+    public void Setup(string itemName, Sprite itemIcon, string itemCooldown, bool itemCanBeUsed, int indexItemInventory, PlayerInventoryUI _playerInventoryUI)
     {
         itemNameText.text = itemName;
-        //itemImageIcon.sprite = itemIcon.sprite;
+        itemImageIcon.sprite = itemIcon;
         itemCooldownText.text = itemCooldown;
 
         itemCanBeUsedText.text = itemCanBeUsed.ToString();

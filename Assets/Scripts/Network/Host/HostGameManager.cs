@@ -17,7 +17,6 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
     private const int MAX_CONNECTIONS = 2;
 
     private NetworkServer networkServer;
-    public NetworkServer NetworkServer => networkServer;
     private NetworkObject playerPrefab;
 
     private Allocation allocation;
@@ -56,7 +55,7 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
 
         UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
 
-        RelayServerData relayServerData = AllocationUtils.ToRelayServerData(allocation, "dtls");
+        RelayServerData relayServerData = new(allocation, "dtls");
 
         transport.SetRelayServerData(relayServerData);
 
@@ -104,7 +103,7 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
 
         networkServer.OnClientLeft += HandleClientLeft;
 
-        Loader.LoadNetwork(Loader.Scene.GameNetCodeTest);
+        Loader.LoadHostNetwork(Loader.Scene.GameNetCodeTest);
 
     }
 
@@ -112,7 +111,7 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
     {
         try
         {
-            await LobbyService.Instance.RemovePlayerAsync(lobbyId, authId); //Owner of the lobby is allowed to kick players
+           await LobbyService.Instance.RemovePlayerAsync(lobbyId, authId); //Owner of the lobby is allowed to kick players
         } catch (LobbyServiceException lobbyEx)
         {
             Debug.LogException(lobbyEx);
@@ -131,26 +130,35 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
         }
     }
 
+    /// <summary>
+    /// Call this to shutdown the host. Doesn't go to Main Menu
+    /// </summary>
     public async void ShutdownAsync()
     {
+        if (string.IsNullOrEmpty(lobbyId)) return;
+
+
         HostSingleton.Instance.StopCoroutine(nameof(HeartbeatLobby));
 
-        if (!string.IsNullOrEmpty(lobbyId))
+        try
         {
-            try
-            {
-                await LobbyService.Instance.DeleteLobbyAsync(lobbyId);
-            }
-            catch (LobbyServiceException lobbyEx)
-            {
-                Debug.LogException(lobbyEx);
-            }
-            lobbyId = string.Empty;
+            await LobbyService.Instance.DeleteLobbyAsync(lobbyId);
         }
+        catch (LobbyServiceException lobbyEx)
+        {
+            Debug.LogException(lobbyEx);
+        }
+        lobbyId = string.Empty;
+
 
         networkServer.OnClientLeft -= HandleClientLeft;
 
         networkServer?.Dispose();
+    }
+
+    public NetworkServer GetNetworkServer()
+    {
+        return networkServer;
     }
 
     public void Dispose()

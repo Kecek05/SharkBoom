@@ -18,12 +18,12 @@ public class PlayerStateMachine
     public MyTurnEndedState myTurnEndedState;
     public IdleEnemyTurnState idleEnemyTurnState;
     public PlayerWatchingState playerWatchingState;
-    public DeadState deadState;
+    public PlayerGameOverState playerGameOverState;
 
     public event Action<IState> OnStateChanged;
 
 
-    public PlayerStateMachine(Player player)
+    public PlayerStateMachine(PlayerThrower player)
     {
         //our builder
         this.myTurnStartedState = new MyTurnStartedState(player);
@@ -35,7 +35,7 @@ public class PlayerStateMachine
         this.myTurnEndedState = new MyTurnEndedState(player);
         this.idleEnemyTurnState = new IdleEnemyTurnState();
         this.playerWatchingState = new PlayerWatchingState();
-        this.deadState = new DeadState();
+        this.playerGameOverState = new PlayerGameOverState();
     }
 
     public void Initialize(IState startingState)

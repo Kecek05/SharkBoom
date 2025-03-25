@@ -676,7 +676,7 @@ MonoBehaviour:
   NetworkConfig:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 1620598477}
-    PlayerPrefab: {fileID: 1244250245066138330, guid: b0860533b3f34094e84f38ba033a6c4e, type: 3}
+    PlayerPrefab: {fileID: 0}
     Prefabs:
       NetworkPrefabsLists:
       - {fileID: 11400000, guid: 653e800f7c5da5448bb744f11e219df8, type: 2}
@@ -717,7 +717,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_PresetAsset: {fileID: 0}
   m_PresetReference:
-    rid: 2793302987184275589
+    rid: 7347402349440926059
   m_Scenario:
     rid: -2
   m_IsScenarioSettingsFolded: 0
@@ -727,7 +727,7 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 2793302987184275589
+    - rid: 7347402349440926059
       type: {class: NetworkSimulatorPreset, ns: Unity.Multiplayer.Tools.NetworkSimulator.Runtime, asm: Unity.Multiplayer.Tools.NetworkSimulator.Runtime}
       data:
         <Name>k__BackingField: None
@@ -861,7 +861,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   clientPrefab: {fileID: 4745276276676152565, guid: 504f8bb991fe64b4bbe1a22ade2036f8, type: 3}
   hostPrefab: {fileID: 9098282584030391062, guid: a1a9a1528db25444daa699835443bade, type: 3}
+  serverPrefab: {fileID: 4020011943602186181, guid: 41e8c28a3e906034e96210512fda82b1, type: 3}
+  networkServerProvider: {fileID: 1063465107228501867, guid: 6e10cb67116128e4cb6e3106fd35d58d, type: 3}
   playerPrefab: {fileID: 6789602644162241133, guid: b0860533b3f34094e84f38ba033a6c4e, type: 3}
+  isServerDebug: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

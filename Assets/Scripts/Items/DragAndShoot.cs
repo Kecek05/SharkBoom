@@ -29,7 +29,7 @@ public class DragAndShoot : NetworkBehaviour
     public event Action<bool> OnDragCancelable;
 
     [BetterHeader("References")]
-    [SerializeField] protected Player player;
+    [SerializeField] protected PlayerThrower player;
     [SerializeField] private Trajectory trajectory;
     [SerializeField] private InputReader inputReader;
     [SerializeField] private GameObject areaOfStartDrag;
@@ -81,7 +81,7 @@ public class DragAndShoot : NetworkBehaviour
     private float outDistancePlane; // store the distance of the plane and screen
     private bool canCancelDrag = false;
 
-    protected Rigidbody selectedRb;
+    protected Rigidbody2D selectedRb;
 
     //Publics
 
@@ -96,7 +96,7 @@ public class DragAndShoot : NetworkBehaviour
     public float MaxForceMultiplier => maxForce;
 
 
-    public Rigidbody SelectedRb => selectedRb; //DEBUG
+    public Rigidbody2D SelectedRb => selectedRb; //DEBUG
 
 
 
@@ -118,10 +118,11 @@ public class DragAndShoot : NetworkBehaviour
         trajectory.Initialize(startTrajectoryPos);
     }
 
-    public void SetDragRb(Rigidbody rb)
+    public void SetDragRb(Rigidbody2D rb)
     {
         selectedRb = rb;
     }
+
 
     protected void InputReader_OnTouchPressEvent(InputAction.CallbackContext context)
     {
@@ -160,7 +161,8 @@ public class DragAndShoot : NetworkBehaviour
                 player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleMyTurnState);
                 OnDragCancelable?.Invoke(false);
                 return;
-            } else
+            }
+            else
             {
                 //shoot
                 SetIsDragging(false);
@@ -263,6 +265,7 @@ public class DragAndShoot : NetworkBehaviour
     {
         SetCanDrag(false);
         SetIsDragging(false);
+        SetCanCancelDrag(false);
     }
 
     protected void TurnOnDrag()

@@ -13,8 +13,11 @@ public class PlayerHealth : Health
         public float playerMaxHealth;
     }
 
+    public static event Action<PlayableState> OnPlayerDie;
+
     private float selectedMultiplier; //cache
-    [SerializeField] private Player player;
+    [SerializeField] private PlayerThrower player;
+    [SerializeField] private Rigidbody2D playerRb2D; //DEBUG
 
     public override void OnNetworkSpawn()
     {
@@ -55,9 +58,14 @@ public class PlayerHealth : Health
 
     }
 
+    [Command("playerHealth-Die", MonoTargetType.All)]
     protected override void Die()
     {
-       base.Die(); // make the function on base class "Health"
+        base.Die(); // call the function on base class "Health"
+
+        if (!IsServer) return;
+
+        OnPlayerDie?.Invoke(player.ThisPlayableState.Value);
     }
 
     public override void OnNetworkDespawn()

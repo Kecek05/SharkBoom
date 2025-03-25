@@ -16,7 +16,7 @@ public class PlayerLauncher : NetworkBehaviour
     [BetterHeader("References")]
     [SerializeField] private InputReader inputReader;
     [SerializeField] private Transform spawnItemPos;
-    [SerializeField] private Player player;
+    [SerializeField] private PlayerThrower player;
 
     //private BaseItemThrowableActivable itemThrowableActivableClient;
     //private BaseItemThrowableActivable itemThrowableActivableServer;
@@ -60,7 +60,7 @@ public class PlayerLauncher : NetworkBehaviour
             dragForce = player.PlayerDragController.DragForce, 
             dragDirection = player.PlayerDragController.DirectionOfDrag,
             selectedItemSOIndex = player.PlayerInventory.GetSelectedItemSOIndex(), 
-            ownerPlayableState = GameFlowManager.Instance.LocalplayableState,
+            ownerPlayableState = GameFlowManager.Instance.TurnManager.LocalPlayableState,
         };
 
         SpawnProjectileServerRpc(itemLauncherData); //Spawn real projectile on server need to send the speed and force values through the network

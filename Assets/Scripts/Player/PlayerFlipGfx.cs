@@ -1,5 +1,4 @@
 using Sortify;
-using Unity.Netcode;
 using UnityEngine;
 
 public class PlayerFlipGfx : DragListener
@@ -18,7 +17,7 @@ public class PlayerFlipGfx : DragListener
 
     protected override void DoOnDragChange()
     {
-        if(player.PlayerDragController.GetOpositeFingerPos().x > playerGfxTransform.position.x + angleOffset)
+        if (player.PlayerDragController.GetOpositeFingerPos().x > playerGfxTransform.position.x + angleOffset)
             transform.eulerAngles = new Vector3(transform.eulerAngles.x, -90f , transform.eulerAngles.z);
         else if (player.PlayerDragController.GetOpositeFingerPos().x < playerGfxTransform.position.x - angleOffset)
             transform.eulerAngles = new Vector3(transform.eulerAngles.x, 90f, transform.eulerAngles.z);
