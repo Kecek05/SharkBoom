@@ -14,8 +14,12 @@ public class GameOverUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI pearlsResultText;
     [SerializeField] private Button returnButton;
 
+    private bool alreadyChanged = false; //Prevent double change when losting connection
+
     private void Awake()
     {
+        alreadyChanged = false;
+
         returnButton.onClick.AddListener(() =>
         {
             //Return to main menu
@@ -45,17 +49,17 @@ public class GameOverUI : MonoBehaviour
 
     private void SetupPearlsResult(int pearlsDelta)
     {
-        if(pearlsDelta == 0)
+        if (pearlsDelta == 0)
         {
             //Relay game, no pearls to show
             pearlsResultText.gameObject.SetActive(false);
         }
-
-        if (pearlsDelta > 0)
+        else if (pearlsDelta > 0)
         {
             //Win
             pearlsResultText.text = "+" + pearlsDelta.ToString();
-        } else
+        }
+        else
         {
             //Lose
             pearlsResultText.text = pearlsDelta.ToString();
@@ -64,17 +68,31 @@ public class GameOverUI : MonoBehaviour
 
     private void GameStateManager_OnWin()
     {
+        if(alreadyChanged) return;
+
+        alreadyChanged = true;
+
+        //Win UI Code
+
         playerResultText.text = "You Win!";
         playerResultText.color = Color.green;
 
+        Debug.Log("Change GameOverUI to WIN");
         Show();
     }
 
     private void GameStateManager_OnLose()
     {
+        if (alreadyChanged) return;
+
+        alreadyChanged = true;
+
+        //Lose UI Code
+
         playerResultText.text = "You Lose!";
         playerResultText.color = Color.red;
 
+        Debug.Log("Change GameOverUI to Lose");
         Show();
     }
 

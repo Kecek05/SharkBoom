@@ -107,7 +107,7 @@ public class ServerGameManager : IDisposable
             {
                 //Game Started
                 Debug.Log("Client remaining win");
-                GameFlowManager.Instance.GameStateManager.ClientRemaningWin();
+                GameFlowManager.Instance.GameStateManager.ClientRemaningWinRpc();
             }
         } else
         {

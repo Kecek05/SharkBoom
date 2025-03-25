@@ -161,20 +161,9 @@ public class GameStateManager : NetworkBehaviour
     }
 
     [Rpc(SendTo.ClientsAndHost)]
-    private void ClientRemaningWinRpc()
+    public void ClientRemaningWinRpc()
     {
         IwinGameOverAsync();
-    }
-
-    public void ClientRemaningWin()
-    {
-        OnWin += () =>
-        {
-            Debug.Log("IwinGameOverAsync Finished");
-
-            TriggerCanCloseServerRpc();
-        };
-        ClientRemaningWinRpc();
     }
 
     private async void IwinGameOverAsync()
@@ -183,7 +172,11 @@ public class GameStateManager : NetworkBehaviour
         localWin = true;
         await CalculatePearlsManager.TriggerChangePearls();
 
+        Debug.Log("IwinGameOverAsync Finished");
+        TriggerCanCloseServerRpc();
+
         OnWin?.Invoke();
+
     }
 
     public async void GameOverAsync()

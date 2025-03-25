@@ -44,7 +44,7 @@ public static class CalculatePearlsManager
         }
         else
         {
-            OnPearlsDeltaChanged?.Invoke(pearlsIfLose);
+            OnPearlsDeltaChanged?.Invoke(-pearlsToLoseDelta); //pass a negative value
 
             //Not calculate in relay
             if (ClientSingleton.Instance.GameManager.IsDedicatedServerGame)
@@ -76,6 +76,11 @@ public static class CalculatePearlsManager
         int result = await Save.LoadPlayerPearls() - pearlsToLoseDelta;
 
         pearlsIfLose = result;
+
+        if(pearlsIfLose < 0)
+        {
+            pearlsIfLose = 0;
+        }
 
         Debug.Log($"Lose: {pearlsToLoseDelta} - {pearlsIfLose}");
     }
