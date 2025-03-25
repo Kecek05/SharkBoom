@@ -107,7 +107,6 @@ public class NetworkClient : IDisposable //Actual Client Game Logic
         {
             Loader.Load(Loader.Scene.MainMenu);
         }
-
     }
 
     public void Dispose()

@@ -45,7 +45,9 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         initializationOptions.SetProfile(UnityEngine.Random.Range(0, 10000).ToString());
         await UnityServices.InitializeAsync(initializationOptions);
         //
+
         //await UnityServices.InitializeAsync();
+
 
 
         networkClient = new NetworkClient(NetworkManager.Singleton);

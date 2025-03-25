@@ -87,4 +87,21 @@ public class DebuggingTools : NetworkBehaviour
         if (ClientSingleton.Instance != null)
             ClientSingleton.Instance.GameManager.Disconnect();
     }
+
+
+    [Rpc(SendTo.Server)]
+    private void DebugOnServerRpc(string debugText)
+    {
+        Debug.Log(debugText);
+    }
+
+    private void OnDestroy()
+    {
+        DebugOnServerRpc("On Destroy Client");
+    }
+
+    private void OnApplicationQuit()
+    {
+        DebugOnServerRpc("On Application Quit Client");
+    }
 }
