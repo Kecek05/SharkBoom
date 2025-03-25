@@ -108,8 +108,6 @@ public class ServerGameManager : IDisposable
                 //Game Started
 
                 GameFlowManager.Instance.GameStateManager.ClientRemaningWinRpc();
-
-                ServerSingleton.Instance.GameManager.ShutdownServer();
             }
         } else
         {
@@ -128,7 +126,7 @@ public class ServerGameManager : IDisposable
     /// <summary>
     /// Call this to close the server. Match ended or all players quit.
     /// </summary>
-    private void ShutdownServer()
+    public void ShutdownServer()
     {
         Debug.Log("SHUTING DOWN SERVER");
         Dispose();

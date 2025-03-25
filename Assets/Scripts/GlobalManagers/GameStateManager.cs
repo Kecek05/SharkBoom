@@ -158,6 +158,14 @@ public class GameStateManager : NetworkBehaviour
     public void ClientRemaningWinRpc()
     {
         IwinGameOverAsync();
+        CallShutdownServerAfterWinRpc();
+    }
+
+    [Rpc(SendTo.Server)]
+    private void CallShutdownServerAfterWinRpc()
+    {
+        //REFACTOR
+        ServerSingleton.Instance.GameManager.ShutdownServer();
     }
 
     private async void IwinGameOverAsync()

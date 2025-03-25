@@ -38,6 +38,13 @@ public class GameOverUI : NetworkBehaviour
             ClientSingleton.Instance.GameManager.Disconnect();
     }
 
+    private void Start()
+    {
+        Hide();
+        
+        //DONT USE ONNETWORKSPAWN ANYMORE
+    }
+
     public override void OnNetworkSpawn()
     {
 
