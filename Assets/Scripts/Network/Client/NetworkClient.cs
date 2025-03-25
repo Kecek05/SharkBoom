@@ -100,19 +100,22 @@ public class NetworkClient : IDisposable //Actual Client Game Logic
             HostSingleton.Instance.GameManager.ShutdownAsync();
         }
 
+        if(networkManager.IsConnectedClient)
+            networkManager.Shutdown();
+
         if (SceneManager.GetActiveScene().name != Loader.Scene.MainMenu.ToString())
         {
             Loader.Load(Loader.Scene.MainMenu);
         }
 
-        if(networkManager.IsConnectedClient)
-            networkManager.Shutdown();
     }
 
     public void Dispose()
     {
         if (networkManager != null)
         {
+            Disconnect();
+
             networkManager.OnClientDisconnectCallback -= NetworkManager_OnClientDisconnectCallback;
 
             networkManager.OnClientStarted -= NetworkManager_OnClientStarted;

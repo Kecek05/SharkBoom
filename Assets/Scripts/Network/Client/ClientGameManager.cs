@@ -200,7 +200,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
     {
         UserData.userPearls = newValue;
 
-        Debug.Log($"Player Pearls Changed to: {newValue}");
+        Debug.Log($"Save Player Pearls Changed to: {newValue}");
     }
 
     /// <summary>
