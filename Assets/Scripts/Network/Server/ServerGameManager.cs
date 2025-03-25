@@ -107,7 +107,8 @@ public class ServerGameManager : IDisposable
             else if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.ShowingPlayersInfo || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.GameStarted)
             {
                 //Game Started
-                GameFlowManager.Instance.GameStateManager.LoseGame(PlayableState.PlayerQuited);
+
+                GameFlowManager.Instance.GameStateManager.ClientRemaningWinRpc();
 
                 ServerSingleton.Instance.GameManager.ShutdownServerDelayed();
             }
@@ -125,9 +126,15 @@ public class ServerGameManager : IDisposable
                     //Host. Do nothing
                 }
             }
+        } else
+        {
+            //Not in Game Scene
+            ServerSingleton.Instance.GameManager.ShutdownServerDelayed();
         }
     }
- #endif
+
+
+#endif
 
     /// <summary>
     /// Call this to close the server. Match ended or all players quit.

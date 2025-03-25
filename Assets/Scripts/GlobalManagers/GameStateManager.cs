@@ -115,6 +115,11 @@ public class GameStateManager : NetworkBehaviour
         Debug.Log($"Game State Changed to: {newValue}");
     }
 
+    private void Update()
+    {
+        Debug.Log($"Lose: {losedPlayer.Value}");
+    }
+
     public void ConnectionLostHostAndClinet()
     {
         OnConnectionLost?.Invoke();
@@ -130,7 +135,13 @@ public class GameStateManager : NetworkBehaviour
         gameOver = true;
     }
 
-    public async void IwinGameOverAsync()
+    [Rpc(SendTo.ClientsAndHost)]
+    public void ClientRemaningWinRpc()
+    {
+        IwinGameOverAsync();
+    }
+
+    private async void IwinGameOverAsync()
     {
         //Change pearls, then win
         localWin = true;
@@ -156,13 +167,6 @@ public class GameStateManager : NetworkBehaviour
 
             await CalculatePearlsManager.TriggerChangePearls();
             OnLose?.Invoke();
-        }
-        else if (losedPlayer.Value == PlayableState.PlayerQuited)
-        {
-            //Player Quited, win
-            localWin = true;
-            await CalculatePearlsManager.TriggerChangePearls();
-            OnWin?.Invoke();
         }
         else
         {
