@@ -29,8 +29,9 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
     public HostGameManager(NetworkObject _playerPrefab)
     {
         playerPrefab = _playerPrefab;
-    }
 
+        GameStateManager.OnCanCloseServer += GameStateManager_OnCanCloseServer;
+    }
 
     public async Task StartHostAsync()
     {
@@ -156,6 +157,10 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
         networkServer?.Dispose();
     }
 
+    private void GameStateManager_OnCanCloseServer()
+    {
+        ShutdownAsync();
+    }
     public NetworkServer GetNetworkServer()
     {
         return networkServer;
@@ -163,6 +168,8 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
 
     public void Dispose()
     {
+        GameStateManager.OnCanCloseServer -= GameStateManager_OnCanCloseServer;
+
         ShutdownAsync();
     }
 }

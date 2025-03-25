@@ -58,7 +58,7 @@ public class PlayerHealth : Health
 
     }
 
-    [Command("playerHealth-Die", MonoTargetType.All)]
+    [Command("playerHealth-Die", MonoTargetType.Single)]
     protected override void Die()
     {
         base.Die(); // call the function on base class "Health"

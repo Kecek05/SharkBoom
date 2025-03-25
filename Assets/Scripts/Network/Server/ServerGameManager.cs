@@ -27,6 +27,8 @@ public class ServerGameManager : IDisposable
 #if UNITY_SERVER
         multiplayAllocationService = new MultiplayAllocationService();
 #endif
+
+        GameStateManager.OnCanCloseServer += GameStateManager_OnCanCloseServer;
     }
 
     public async Task StartGameServerAsync()
@@ -86,14 +88,11 @@ public class ServerGameManager : IDisposable
     {
         multiplayAllocationService.RemovePlayer();
 
-        //ServerSingleton.Instance.GameManager.ShutdownServerDelayed();
-
-
         if (GameFlowManager.Instance != null)
         {
             if (GameFlowManager.Instance.GameStateManager == null)
             {
-                ServerSingleton.Instance.GameManager.ShutdownServerDelayed();
+                ServerSingleton.Instance.GameManager.ShutdownServer();
                 return;
             }
 
@@ -102,7 +101,7 @@ public class ServerGameManager : IDisposable
             if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.None || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.WaitingForPlayers || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.SpawningPlayers || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.CalculatingResults)
             {
                 //Game not started yet, Shutdown Server
-                ServerSingleton.Instance.GameManager.ShutdownServerDelayed();
+                ServerSingleton.Instance.GameManager.ShutdownServer();
             }
             else if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.ShowingPlayersInfo || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.GameStarted)
             {
@@ -110,39 +109,27 @@ public class ServerGameManager : IDisposable
 
                 GameFlowManager.Instance.GameStateManager.ClientRemaningWinRpc();
 
-                ServerSingleton.Instance.GameManager.ShutdownServerDelayed();
-            }
-            else if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.GameEnded)
-            {
-                //Game Ended
-
-                if (ClientSingleton.Instance.GameManager.IsDedicatedServerGame)
-                {
-                    //Dedicated, Trigger Change Pearls, guarantee the change on pearls
-                    //await CalculatePearlsManager.TriggerChangePearls();
-                }
-                else
-                {
-                    //Host. Do nothing
-                }
+                ServerSingleton.Instance.GameManager.ShutdownServer();
             }
         } else
         {
             //Not in Game Scene
-            ServerSingleton.Instance.GameManager.ShutdownServerDelayed();
+            ServerSingleton.Instance.GameManager.ShutdownServer();
         }
     }
 
-
 #endif
+
+    private void GameStateManager_OnCanCloseServer()
+    {
+        ShutdownServer();
+    }
 
     /// <summary>
     /// Call this to close the server. Match ended or all players quit.
     /// </summary>
-    private async void ShutdownServerDelayed(int delay = 3000) //default 3 seconds
+    private void ShutdownServer()
     {
-        await Task.Delay(delay);
-    
         Debug.Log("SHUTING DOWN SERVER");
         Dispose();
         Application.Quit();
@@ -155,7 +142,10 @@ public class ServerGameManager : IDisposable
 
     public void Dispose()
     {
-        //multiplayAllocationService?.Dispose();
+#if UNITY_SERVER
+        multiplayAllocationService?.Dispose();
+#endif
+        GameStateManager.OnCanCloseServer -= GameStateManager_OnCanCloseServer;
         networkServer?.Dispose();
     }
 

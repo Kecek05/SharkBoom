@@ -11,6 +11,7 @@ public class GameStateManager : NetworkBehaviour
     public event Action OnWin;
     public event Action OnLose;
     public event Action OnConnectionLost; //Only for host and client
+    public static event Action OnCanCloseServer;
 
     [BetterHeader("Settings")]
     [Tooltip("in ms")][SerializeField] private int delayClosePlayersInfo = 3000;
@@ -21,7 +22,8 @@ public class GameStateManager : NetworkBehaviour
 
     private bool gameOver = false;
     private bool localWin = false;
-    private int calculatedResults = 0;
+    private int calculatedResults = 0; //Count the results pré calculated by clients
+    private int changedResults = 0; // Count the results changed by clients
     //Publics
 
     public bool LocalWin => localWin;
@@ -105,21 +107,11 @@ public class GameStateManager : NetworkBehaviour
                     GameFlowManager.Instance.TurnManager.StartGame();
                 break;
             case GameState.GameEnded:
-                if(IsClient)
-                {
-                    GameOverAsync();
-                }
                 break;
         }
 
         Debug.Log($"Game State Changed to: {newValue}");
     }
-
-    private void Update()
-    {
-        Debug.Log($"Lose: {losedPlayer.Value}");
-    }
-
     public void ConnectionLostHostAndClinet()
     {
         OnConnectionLost?.Invoke();
@@ -132,7 +124,26 @@ public class GameStateManager : NetworkBehaviour
         if(IsServer)
             ChangeGameState(GameState.GameEnded);
         
+        if(IsClient)
+        {
+            ClientChangedResultsRpc();
+            GameOverAsync();
+        }
+
         gameOver = true;
+    }
+
+    [Rpc(SendTo.Server)]
+    private void ClientChangedResultsRpc()
+    {
+        changedResults++;
+
+        if(changedResults == 2)
+        {
+            //Both clients changed the results
+            //Close Server
+            OnCanCloseServer?.Invoke();
+        }
     }
 
     [Rpc(SendTo.ClientsAndHost)]
