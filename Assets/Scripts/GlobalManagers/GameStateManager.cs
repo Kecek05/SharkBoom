@@ -155,17 +155,15 @@ public class GameStateManager : NetworkBehaviour
     }
 
     [Rpc(SendTo.ClientsAndHost)]
-    public void ClientRemaningWinRpc()
+    private void ClientRemaningWinRpc()
     {
         IwinGameOverAsync();
-        CallShutdownServerAfterWinRpc();
     }
 
-    [Rpc(SendTo.Server)]
-    private void CallShutdownServerAfterWinRpc()
+    public void ClientRemaningWin(Action onIwinGameOverAsyncFinished)
     {
-        //REFACTOR
-        ServerSingleton.Instance.GameManager.ShutdownServer();
+        OnWin += onIwinGameOverAsyncFinished;
+        ClientRemaningWinRpc();
     }
 
     private async void IwinGameOverAsync()
@@ -173,6 +171,8 @@ public class GameStateManager : NetworkBehaviour
         //Change pearls, then win
         localWin = true;
         await CalculatePearlsManager.TriggerChangePearls();
+
+        Debug.Log("IwinGameOverAsync Finished");
         OnWin?.Invoke();
     }
 

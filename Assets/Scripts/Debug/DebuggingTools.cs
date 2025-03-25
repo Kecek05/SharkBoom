@@ -74,4 +74,17 @@ public class DebuggingTools : NetworkBehaviour
         if (NetworkManager.Singleton.IsConnectedClient)
             NetworkManager.Singleton.Shutdown();
     }
+
+    [Command("quitGame")]
+    private void QuitGameDEBUG()
+    {
+        //Return to main menu
+        if (NetworkManager.Singleton != null && HostSingleton.Instance != null && NetworkManager.Singleton.IsHost) //Server cant click buttons
+        {
+            HostSingleton.Instance.GameManager.ShutdownAsync();
+        }
+
+        if (ClientSingleton.Instance != null)
+            ClientSingleton.Instance.GameManager.Disconnect();
+    }
 }

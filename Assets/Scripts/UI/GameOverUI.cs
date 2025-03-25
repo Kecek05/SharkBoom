@@ -6,7 +6,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameOverUI : NetworkBehaviour
+public class GameOverUI : MonoBehaviour
 {
     [BetterHeader("References")]
     [SerializeField] private GameObject gameOverBackground;
@@ -25,38 +25,16 @@ public class GameOverUI : NetworkBehaviour
         });
     }
 
-    [Command("quitGame")]
-    private void QuitGameDEBUG()
-    {
-        //Return to main menu
-        if (NetworkManager.Singleton != null && HostSingleton.Instance != null && NetworkManager.Singleton.IsHost) //Server cant click buttons
-        {
-            HostSingleton.Instance.GameManager.ShutdownAsync();
-        }
-
-        if (ClientSingleton.Instance != null)
-            ClientSingleton.Instance.GameManager.Disconnect();
-    }
-
     private void Start()
     {
         Hide();
-        
+
         //DONT USE ONNETWORKSPAWN ANYMORE
-    }
+        GameFlowManager.Instance.GameStateManager.OnWin += GameStateManager_OnWin;
+        GameFlowManager.Instance.GameStateManager.OnLose += GameStateManager_OnLose;
 
-    public override void OnNetworkSpawn()
-    {
+        CalculatePearlsManager.OnPearlsDeltaChanged += CalculatePearlsManager_OnPearlsDeltaChanged;
 
-        Hide();
-
-        if (IsClient)
-        {
-            GameFlowManager.Instance.GameStateManager.OnWin += GameStateManager_OnWin;
-            GameFlowManager.Instance.GameStateManager.OnLose += GameStateManager_OnLose;
-
-            CalculatePearlsManager.OnPearlsDeltaChanged += CalculatePearlsManager_OnPearlsDeltaChanged;
-        }
     }
 
     private void CalculatePearlsManager_OnPearlsDeltaChanged(int pearlsDelta)
@@ -111,14 +89,11 @@ public class GameOverUI : NetworkBehaviour
         gameOverBackground.SetActive(true);
     }
 
-    public override void OnNetworkDespawn()
+    private void OnDestroy()
     {
-        if(IsClient)
-        {
-            GameFlowManager.Instance.GameStateManager.OnWin -= GameStateManager_OnWin;
-            GameFlowManager.Instance.GameStateManager.OnLose -= GameStateManager_OnLose;
+        GameFlowManager.Instance.GameStateManager.OnWin -= GameStateManager_OnWin;
+        GameFlowManager.Instance.GameStateManager.OnLose -= GameStateManager_OnLose;
 
-            CalculatePearlsManager.OnPearlsDeltaChanged -= CalculatePearlsManager_OnPearlsDeltaChanged;
-        }
+        CalculatePearlsManager.OnPearlsDeltaChanged -= CalculatePearlsManager_OnPearlsDeltaChanged;
     }
 }
