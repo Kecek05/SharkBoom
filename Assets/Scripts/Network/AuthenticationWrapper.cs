@@ -17,11 +17,10 @@ public static class AuthenticationWrapper
 
     public static AuthState AuthState { get; private set; } = AuthState.NotAuthenticated;
 
-    private static string playerName;
+    private static string playerName = "NoName";
     public static string PlayerName => playerName;
 
     public static string GooglePlayToken;
-    public static string GooglePlayError;
 
     public static async Task<AuthState> DoAuthUnity()
     {
@@ -102,7 +101,7 @@ public static class AuthenticationWrapper
             {
                 AuthState = AuthState.Error;
                 OnSignInFail?.Invoke();
-                GooglePlayError = "Failed to retrive GPG auth code";
+                GooglePlayToken = "Failed to retrive GPG auth code";
                 Debug.LogWarning("SignIn failed.");
             }
 
@@ -131,6 +130,9 @@ public static class AuthenticationWrapper
         try
         {
             await AuthenticationService.Instance.SignInWithGooglePlayGamesAsync(GooglePlayToken);
+
+            await SetPlayerName(PlayGamesPlatform.Instance.GetUserDisplayName());
+
             AuthState = AuthState.Authenticated;
             Debug.Log($"AUTHENTICATED WITH GOOGLE PLAY GAMES UNITY, CODE: {GooglePlayToken}");
         }
@@ -229,6 +231,8 @@ public static class AuthenticationWrapper
 
             PlayerPrefs.SetString("AccessToken", accessToken);
 
+            await SetPlayerName(await AuthenticationService.Instance.GetPlayerNameAsync());
+
             AuthState = AuthState.Authenticated;
 
 
@@ -253,9 +257,9 @@ public static class AuthenticationWrapper
         {
             try
             {
-
-
                 await AuthenticationService.Instance.SignInAnonymouslyAsync();
+
+                await SetPlayerName(await AuthenticationService.Instance.GetPlayerNameAsync());
 
                 if (AuthenticationService.Instance.IsSignedIn && AuthenticationService.Instance.IsAuthorized)
                 {
@@ -289,9 +293,11 @@ public static class AuthenticationWrapper
         }
     }
 
-    public static void SetPlayerName(string newPlayerName)
+    public static async Task SetPlayerName(string newPlayerName)
     {
         playerName = newPlayerName;
+
+        await AuthenticationService.Instance.UpdatePlayerNameAsync(playerName);
     }
 
 

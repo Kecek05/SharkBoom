@@ -60,7 +60,6 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
 
         if (authState == AuthState.Authenticated)
         {
-            AuthenticationWrapper.SetPlayerName(await AuthenticationService.Instance.GetPlayerNameAsync());
 
             int playerPearls = await Save.LoadPlayerPearls();
 
