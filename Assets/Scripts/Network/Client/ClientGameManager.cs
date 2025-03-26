@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
 using Unity.Services.Authentication;
+using Unity.Services.CloudCode;
 using Unity.Services.Core;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
@@ -36,6 +38,18 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         Save.OnPlayerPearlsChanged += Save_OnPlayerPearlsChanged;
     }
 
+    class CloudCodeResponse
+    {
+        public string welcomeMessage;
+    }
+
+    private const string HELLO_WORLD_ENDPOINT = "HelloWorld";
+    private const string HELLO_WORLD_ARGUMENT = "name";
+
+    private const string ADD_PEARLS_ENDPOINT = "AddSavePlayerPearls";
+    private const string ADD_PEARLS_ARGUMENT_PLAYERID = "playerId";
+    private const string ADD_PEARLS_ARGUMENT_PEARLS = "pearls";
+
     public async Task<bool> InitAsync(AuthTypes authTypes)
     {
         //Authenticate player
@@ -59,6 +73,16 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         //await AuthenticationService.Instance.SignInWithUsernamePasswordAsync("kecekTest", "Passw0rd!");
         //AuthState authState = AuthState.Authenticated;
         //
+        //Debug.Log($"Player ID: {AuthenticationService.Instance.PlayerId}");
+
+        //var arguments = new Dictionary<string, object> 
+        //{ 
+        //    { ADD_PEARLS_ARGUMENT_PLAYERID, AuthenticationService.Instance.PlayerId },
+        //    { ADD_PEARLS_ARGUMENT_PEARLS, 100 }
+        //};
+        //await CloudCodeService.Instance.CallEndpointAsync(ADD_PEARLS_ENDPOINT, arguments);
+
+
 
         if (authState == AuthState.Authenticated)
         {
