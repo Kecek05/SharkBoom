@@ -7,6 +7,7 @@ using UnityEngine;
 
 public class GameStateManager : NetworkBehaviour
 {
+    public static event Action<GameState> OnGameStateChange;
     public event Action<int> OnCanShowPearls;
     public event Action OnGameOver;
     public event Action OnWin;
@@ -114,6 +115,7 @@ public class GameStateManager : NetworkBehaviour
                 break;
         }
 
+        OnGameStateChange?.Invoke(newValue);
         Debug.Log($"Game State Changed to: {newValue}");
     }
 

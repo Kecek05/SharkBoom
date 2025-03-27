@@ -1,8 +1,9 @@
 using System;
 using System.Collections;
+using Unity.Netcode;
 using UnityEngine;
 
-public class GameTimerManager : MonoBehaviour
+public class GameTimerManager : NetworkBehaviour
 {
     
     public static event Action OnGameTimerEnd;
@@ -10,32 +11,60 @@ public class GameTimerManager : MonoBehaviour
     /// <summary>
     /// Current time remaining in the Match in seconds
     /// </summary>
-    private int gameTimer;
+    private NetworkVariable<int> gameTimer;
 
+    public NetworkVariable<int> GameTimer => gameTimer;
     /// <summary>
     /// Duration of the Match in seconds
     /// </summary>
     private const int startGameTimer = 300;
 
+    private Coroutine gameTimerCoroutine;
 
     private WaitForSeconds timerDelay = new WaitForSeconds(1); //cache
 
-
-    public void StartGameTimerManager()
+    public override void OnNetworkSpawn()
     {
-        gameTimer = startGameTimer;
-        StartCoroutine(GameTimer());
+        if (!IsServer) return;
+        GameStateManager.OnGameStateChange += GameStateManager_OnGameStateChange;
     }
 
-    private IEnumerator GameTimer()
+    private void GameStateManager_OnGameStateChange(GameState gameState)
     {
-        while (gameTimer > 0)
+        if(gameState == GameState.GameStarted)
+        {
+            if (gameTimerCoroutine == null)
+            {
+                gameTimerCoroutine = StartCoroutine(GameTimerTicks());
+            }
+
+        } else if (gameState == GameState.GameEnded)
+        {
+            if (gameTimerCoroutine != null)
+            {
+                StopCoroutine(gameTimerCoroutine);
+                gameTimerCoroutine = null;
+            }
+        }
+    }
+    private IEnumerator GameTimerTicks()
+    {
+        gameTimer.Value = startGameTimer;
+
+        while (gameTimer.Value > 0)
         {
             yield return timerDelay;
-            gameTimer--;
+            gameTimer.Value--;
         }
 
+        gameTimerCoroutine = null;
         OnGameTimerEnd?.Invoke();
 
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        if (!IsServer) return;
+        GameStateManager.OnGameStateChange -= GameStateManager_OnGameStateChange;
     }
 }
