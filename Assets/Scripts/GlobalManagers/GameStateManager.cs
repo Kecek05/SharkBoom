@@ -101,7 +101,10 @@ public class GameStateManager : NetworkBehaviour
                 break;
             case GameState.GameStarted:
                 if(IsServer)
+                {
+                    //START GAME TIMER 
                     GameFlowManager.Instance.TurnManager.StartGame();
+                }
                 break;
             case GameState.GameEnded:
                 //If is DS, change players save

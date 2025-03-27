@@ -20,7 +20,8 @@ public class GameTimerManager : MonoBehaviour
 
     private WaitForSeconds timerDelay = new WaitForSeconds(1); //cache
 
-    private void Start()
+
+    public void StartGameTimerManager()
     {
         gameTimer = startGameTimer;
         StartCoroutine(GameTimer());
