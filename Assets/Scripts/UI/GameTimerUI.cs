@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 public class GameTimerUI : MonoBehaviour
@@ -14,7 +15,6 @@ public class GameTimerUI : MonoBehaviour
     {
         string formattedTime = $"{newValue / 60}:{newValue % 60:D2}";
 
-        Debug.Log(formattedTime);
         timerText.text = formattedTime;
     }
 }

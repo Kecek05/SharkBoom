@@ -11,7 +11,7 @@ public class GameTimerManager : NetworkBehaviour
     /// <summary>
     /// Current time remaining in the Match in seconds
     /// </summary>
-    private NetworkVariable<int> gameTimer;
+    private NetworkVariable<int> gameTimer = new(0);
 
     public NetworkVariable<int> GameTimer => gameTimer;
     /// <summary>
