@@ -87,7 +87,7 @@ public class GameStateManager : NetworkBehaviour
                     //REFACTOR
                     CalculatePearlsManager.CalculatePossibleResults(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0], NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1]);
                     ChangeGameState(GameState.ShowingPlayersInfo);
-                } else if ( IsHost)
+                } else if (IsHost)
                 {
                     ChangeGameState(GameState.ShowingPlayersInfo);
                 }
@@ -120,9 +120,6 @@ public class GameStateManager : NetworkBehaviour
     private async void CheckForTheWinner()
     {
         //Code to check if both players have the same health, if so, tie, otherwise check who has the most health and declare the winner.
-
-
-
 
         if (LosedPlayer.Value == PlayableState.None)
         {
