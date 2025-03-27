@@ -99,6 +99,18 @@ public class DebuggingTools : NetworkBehaviour
     }
 
 
+    [Command("setGameOver")]
+    private void SetGameOver(PlayableState playableState)
+    {
+        SetGameOverRpc(playableState);
+    }
+
+    [Rpc(SendTo.Server)]
+    private void SetGameOverRpc(PlayableState playableState)
+    {
+        GameFlowManager.Instance.GameStateManager.LoseGame(playableState);
+    }
+
     [Rpc(SendTo.Server)]
     private void DebugOnServerRpc(string debugText)
     {
