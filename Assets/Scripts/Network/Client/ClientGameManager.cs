@@ -38,17 +38,12 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         Save.OnPlayerPearlsChanged += Save_OnPlayerPearlsChanged;
     }
 
-    class CloudCodeResponse
-    {
-        public string welcomeMessage;
-    }
-
-    private const string HELLO_WORLD_ENDPOINT = "HelloWorld";
-    private const string HELLO_WORLD_ARGUMENT = "name";
 
     private const string ADD_PEARLS_ENDPOINT = "AddSavePlayerPearls";
     private const string ADD_PEARLS_ARGUMENT_PLAYERID = "playerId";
     private const string ADD_PEARLS_ARGUMENT_PEARLS = "pearls";
+    private const string ARGUMENT_PROJECT_ID = "gameProjectId";
+    private const string PROJECT_ID = "01563be5-25e2-47ed-b519-012967e3d8e3";
 
     public async Task<bool> InitAsync(AuthTypes authTypes)
     {
@@ -62,32 +57,29 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
 
         //await UnityServices.InitializeAsync();
 
-
-
         networkClient = new NetworkClient(NetworkManager.Singleton);
         matchmaker = new();
 
-        AuthState authState = authTypes == AuthTypes.Anonymous ? await AuthenticationWrapper.DoAuthAnonymously() : authTypes == AuthTypes.Unity ? await AuthenticationWrapper.DoAuthUnity() : authTypes == AuthTypes.Android ? await AuthenticationWrapper.DoAuthAndroid() : AuthState.NotAuthenticated;
+        //AuthState authState = authTypes == AuthTypes.Anonymous ? await AuthenticationWrapper.DoAuthAnonymously() : authTypes == AuthTypes.Unity ? await AuthenticationWrapper.DoAuthUnity() : authTypes == AuthTypes.Android ? await AuthenticationWrapper.DoAuthAndroid() : AuthState.NotAuthenticated;
 
         //DEBUG SAVE
-        //await AuthenticationService.Instance.SignInWithUsernamePasswordAsync("kecekTest", "Passw0rd!");
-        //AuthState authState = AuthState.Authenticated;
+        await AuthenticationService.Instance.SignInWithUsernamePasswordAsync("kecekTest", "Passw0rd!");
+        AuthState authState = AuthState.Authenticated;
         //
         //Debug.Log($"Player ID: {AuthenticationService.Instance.PlayerId}");
 
-        //var arguments = new Dictionary<string, object> 
-        //{ 
-        //    { ADD_PEARLS_ARGUMENT_PLAYERID, AuthenticationService.Instance.PlayerId },
-        //    { ADD_PEARLS_ARGUMENT_PEARLS, 100 }
+        //var arguments = new Dictionary<string, object>
+        //{
+        //    { ARGUMENT_PROJECT_ID, PROJECT_ID },
+        //    { ADD_PEARLS_ARGUMENT_PEARLS, 100 },
+        //    { ADD_PEARLS_ARGUMENT_PLAYERID, AuthenticationService.Instance.PlayerId }
         //};
         //await CloudCodeService.Instance.CallEndpointAsync(ADD_PEARLS_ENDPOINT, arguments);
-
-
 
         if (authState == AuthState.Authenticated)
         {
 
-            int playerPearls = await Save.LoadPlayerPearls();
+            int playerPearls = await Save.LoadPlayerPearls(AuthenticationService.Instance.PlayerId);
 
             Debug.Log(AuthenticationWrapper.PlayerName + authState);
 

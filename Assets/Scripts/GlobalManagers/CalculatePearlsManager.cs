@@ -7,25 +7,48 @@ public static class CalculatePearlsManager
     public static event Action<int> OnPearlsDeltaChanged;
     public static event Action OnFinishedCalculateResults;
 
-    //Value that will be changed, count the pearls that the player will win or lose.
-    private static int pearlsToWinDelta = 0;
-    private static int pearlsToLoseDelta = 0;
 
-    //Value that will be saved, count the pearls that the player already have.
-    private static int pearlsIfWin = 0;
-    private static int pearlsIfLose = 0;
-
+    private static PlayerCalculatedPearls player1CalculatedPearls;
+    private static PlayerCalculatedPearls player2CalculatedPearls;
 
     private static bool alreadyChanged = false;
 
-    public static async void CalculatePossibleResults()
+    public static async void CalculatePossibleResults(string player1AuthId, string player2AuthId)
     {
         //Not calculate in relay
-        if (ClientSingleton.Instance.GameManager.IsDedicatedServerGame)
+
+        (int player1CalculatedPearlsToWin, int player2CalculatedPearlsToLose) = CalculateDelta(await Save.LoadPlayerPearls(player1AuthId), await Save.LoadPlayerPearls(player2AuthId));
+
+        (int player2CalculatedPearlsToWin, int player1CalculatedPearlsToLose) = CalculateDelta(await Save.LoadPlayerPearls(player2AuthId), await Save.LoadPlayerPearls(player1AuthId));
+
+        (int player1PearlsIfWin, int player1PearlsIfLose) = await CalculateTotal(player1AuthId, player1CalculatedPearlsToWin, player1CalculatedPearlsToLose);
+
+        (int player2PearlsIfWin, int player2PearlsIfLose) = await CalculateTotal(player2AuthId, player2CalculatedPearlsToWin, player2CalculatedPearlsToLose);
+
+        player1CalculatedPearls = new PlayerCalculatedPearls
         {
-            await CalculateWinPearls();
-            await CalculateLosePearls();
-        }
+            PlayerAuthId = player1AuthId,
+            PearlsToWin = player1CalculatedPearlsToWin,
+            PearlsToLose = player1CalculatedPearlsToLose,
+            PearlsIfWin = player1PearlsIfWin,
+            PearlsIfLose = player1PearlsIfLose,
+        };
+
+        player2CalculatedPearls = new PlayerCalculatedPearls
+        {
+            PlayerAuthId = player2AuthId,
+            PearlsToWin = player2CalculatedPearlsToWin,
+            PearlsToLose = player2CalculatedPearlsToLose,
+            PearlsIfWin = player2PearlsIfWin,
+            PearlsIfLose = player2PearlsIfLose,
+        };
+
+
+        //if (ClientSingleton.Instance.GameManager.IsDedicatedServerGame)
+        //{
+        //    await CalculateWinPearls();
+        //    await CalculateLosePearls();
+        //}
 
         OnFinishedCalculateResults?.Invoke();
     }
@@ -53,27 +76,67 @@ public static class CalculatePearlsManager
     }
 
 
-    private static async Task CalculateWinPearls()
+    private static async Task<int> CalculatePearlsToWin(string userAuthId)
     {
         //Calculate win pearls
 
-        pearlsToWinDelta = UnityEngine.Random.Range(10, 100); //Math of value to win
+        return UnityEngine.Random.Range(10, 100); //Math of value to win
 
-        int result = await Save.LoadPlayerPearls() + pearlsToWinDelta;
 
-        pearlsIfWin = result;
+    }
 
-        Debug.Log($"Win: {pearlsToWinDelta} - {pearlsIfWin}");
+    private static (int pearlsToWin, int pearlsToLose) CalculateDelta(int winnerPearls, int loserPearls)
+    {
+        //int winnerPearls = await Save.LoadPlayerPearls(winnerAuthId);
+
+        //int loserPearls = await Save.LoadPlayerPearls(loserAuthId);
+
+        int basePearlsToWin = 100;
+        float diffPercentage = (float)(winnerPearls - loserPearls) / loserPearls;
+
+
+        float winMultiplier = 1.0f;
+        float loseMultiplier = 1.0f;
+
+        if (diffPercentage <= -0.6f) { winMultiplier = 1.4f; loseMultiplier = 1.8f; }
+        else if (diffPercentage <= -0.4f) { winMultiplier = 1.2f; loseMultiplier = 1.6f; }
+        else if (diffPercentage <= -0.2f) { winMultiplier = 1.1f; loseMultiplier = 1.3f; }
+        else if (diffPercentage >= 0.6f) { winMultiplier = 0.6f; loseMultiplier = 0.4f; }
+        else if (diffPercentage >= 0.4f) { winMultiplier = 0.8f; loseMultiplier = 0.6f; }
+        else if (diffPercentage >= 0.2f) { winMultiplier = 0.9f; loseMultiplier = 0.8f; }
+
+        int pearlsToWin = Mathf.RoundToInt(basePearlsToWin * winMultiplier);
+        int pearlsToLose = Mathf.RoundToInt(basePearlsToWin * loseMultiplier) * -1;
+
+        Debug.Log($"Win: {pearlsToWin} - Lose: {pearlsToLose}");
+
+        return (pearlsToWin, pearlsToLose);
+
+    }
+
+    private static async Task<(int pearlsIfWin, int pearlsIfLose)> CalculateTotal(string playerAuthId, int playerCalculatedPearlsToWin, int playerCalculatedPearlsToLose)
+    {
+        int currentPearls = await Save.LoadPlayerPearls(playerAuthId);
+
+        return (currentPearls + playerCalculatedPearlsToWin, currentPearls + playerCalculatedPearlsToLose);
+    }
+
+    private static async Task<int> CalculatePearlsIfWin(string userAuthId)
+    {
+        //Pearls that the player will have if win
+
+        return await Save.LoadPlayerPearls(userAuthId) + pearlsToWinDelta;
+
     }
 
 
-    private static async Task CalculateLosePearls()
+    private static async Task CalculateLosePearls(string userAuthId)
     {
         //Calculate lose pearls
 
         pearlsToLoseDelta = UnityEngine.Random.Range(10, 100); //Math of value to lose  
 
-        int result = await Save.LoadPlayerPearls() - pearlsToLoseDelta;
+        int result = await Save.LoadPlayerPearls(userAuthId) - pearlsToLoseDelta;
 
         pearlsIfLose = result;
 
@@ -87,7 +150,7 @@ public static class CalculatePearlsManager
 
     private static async Task ChangePearls(int pearls)
     {
-        await Save.SavePlayerPearls(pearls);
+        //await Save.SavePlayerPearls(pearls);
 
         alreadyChanged = true;
 
@@ -102,4 +165,29 @@ public static class CalculatePearlsManager
         pearlsIfLose = 0;
         alreadyChanged = false;
     }
+}
+
+public struct PlayerCalculatedPearls
+{
+
+    public string PlayerAuthId;
+    /// <summary>
+    /// Value of pearls that the player will win.
+    /// </summary>
+    public int PearlsToWin;
+
+    /// <summary>
+    /// Value of pearls that the player will lose.
+    /// </summary>
+    public int PearlsToLose;
+
+    /// <summary>
+    /// Total of pearls that the player will have if win.
+    /// </summary>
+    public int PearlsIfWin;
+
+    /// <summary>
+    /// Total of pearls that the player will have if lose.
+    /// </summary>
+    public int PearlsIfLose;
 }

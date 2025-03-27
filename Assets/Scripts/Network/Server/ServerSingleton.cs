@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Unity.Netcode;
+using Unity.Services.Authentication;
 using Unity.Services.Core;
 using UnityEngine;
 
@@ -39,6 +40,8 @@ public class ServerSingleton : MonoBehaviour
     public async Task CreateServer(NetworkObject playerPrefab)
     {
         await UnityServices.InitializeAsync();
+
+        await AuthenticationService.Instance.SignInAnonymouslyAsync();
 
         gameManager = new ServerGameManager(ApplicationData.IP(), ApplicationData.Port(), ApplicationData.QPort(), NetworkManager.Singleton, playerPrefab);
     }

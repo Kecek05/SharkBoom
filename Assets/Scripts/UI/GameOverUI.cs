@@ -33,7 +33,6 @@ public class GameOverUI : MonoBehaviour
     {
         Hide();
 
-        //DONT USE ONNETWORKSPAWN ANYMORE
         GameFlowManager.Instance.GameStateManager.OnWin += GameStateManager_OnWin;
         GameFlowManager.Instance.GameStateManager.OnLose += GameStateManager_OnLose;
 
