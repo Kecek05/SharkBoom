@@ -15,7 +15,7 @@ public class GameTimerManager : MonoBehaviour
     /// <summary>
     /// Duration of the Match in seconds
     /// </summary>
-    private const int startGameTimer = 15;
+    private const int startGameTimer = 300;
 
 
     private WaitForSeconds timerDelay = new WaitForSeconds(1); //cache

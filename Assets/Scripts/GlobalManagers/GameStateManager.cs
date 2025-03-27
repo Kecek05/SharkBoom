@@ -30,12 +30,11 @@ public class GameStateManager : NetworkBehaviour
     private NetworkVariable<PlayableState> losedPlayer = new(PlayableState.None);
 
     private bool gameOver = false;
-    private bool localWin = false;
-    private int calculatedResults = 0; //Count the results pré calculated by clients
-    private int changedResults = 0; // Count the results changed by clients
+
+
     //Publics
 
-    public bool LocalWin => localWin;
+
     public NetworkVariable<PlayableState> LosedPlayer => losedPlayer;
     public bool GameOver => gameOver;
     public NetworkVariable<GameState> CurrentGameState => gameState;
@@ -116,7 +115,9 @@ public class GameStateManager : NetworkBehaviour
 
     private async void CheckForTheWinner()
     {
-        if(IsServer && !IsHost) //DS
+        //Code to check if both players have the same health, if so, tie, otherwise check who has the most health and declare the winner.
+
+        if (IsServer && !IsHost) //DS
         {
             if (LosedPlayer.Value == PlayableState.None)
             {
@@ -167,25 +168,24 @@ public class GameStateManager : NetworkBehaviour
         
         if(IsClient)
         {
-            ClientChangedResultsRpc();
-            GameOverAsync();
+            GameOverClient();
         }
 
         gameOver = true;
     }
 
-    [Rpc(SendTo.Server)]
-    private void ClientChangedResultsRpc()
-    {
-        changedResults++;
+    //[Rpc(SendTo.Server)]
+    //private void ClientChangedResultsRpc()
+    //{
+    //    changedResults++;
 
-        if(changedResults == 2)
-        {
-            //Both clients changed the results
-            //Close Server
-            TriggerCanCloseServerRpc();
-        }
-    }
+    //    if(changedResults == 2)
+    //    {
+    //        //Both clients changed the results
+    //        //Close Server
+    //        TriggerCanCloseServerRpc();
+    //    }
+    //}
 
     [Rpc(SendTo.Server)]
     private void TriggerCanCloseServerRpc()
@@ -193,31 +193,26 @@ public class GameStateManager : NetworkBehaviour
         OnCanCloseServer?.Invoke();
     }
 
-    [Rpc(SendTo.ClientsAndHost)]
-    public void ClientRemaningWinRpc()
-    {
-        IwinGameOverAsync();
-    }
 
-    private async void IwinGameOverAsync()
-    {
-        //Change pearls, then win
-        localWin = true;
-        //await CalculatePearlsManager.TriggerChangePearls();
+    //private async void IwinGameOverAsync()
+    //{
+    //    //Change pearls, then win
+    //    localWin = true;
+    //    //await CalculatePearlsManager.TriggerChangePearls();
 
-        Debug.Log("IwinGameOverAsync Finished");
-        TriggerCanCloseServerRpc();
+    //    Debug.Log("IwinGameOverAsync Finished");
+    //    TriggerCanCloseServerRpc();
 
-        OnWin?.Invoke();
+    //    OnWin?.Invoke();
 
-    }
+    //}
 
-    public async void GameOverAsync()
+    public async void GameOverClient()
     {
         if (losedPlayer.Value == GameFlowManager.Instance.TurnManager.LocalPlayableState)
         {
             //Change pearls, then lose
-            localWin = false;
+
 
             //await CalculatePearlsManager.TriggerChangePearls();
             OnLose?.Invoke();
@@ -225,8 +220,7 @@ public class GameStateManager : NetworkBehaviour
         else if (losedPlayer.Value == PlayableState.None)
         {
             //Tie, lose
-            //Change pearls, then lose
-            localWin = false;
+
 
             //await CalculatePearlsManager.TriggerChangePearls();
             OnLose?.Invoke();
@@ -234,7 +228,6 @@ public class GameStateManager : NetworkBehaviour
         else
         {
             //Change pearls, then win
-            localWin = true;
 
             //await CalculatePearlsManager.TriggerChangePearls();
             OnWin?.Invoke();
@@ -282,6 +275,8 @@ public class GameStateManager : NetworkBehaviour
         {
             PlayerHealth.OnPlayerDie -= LoseGame;
             PlayerSpawner.OnPlayerSpawned -= PlayerSpawner_OnPlayerSpawned;
+
+            GameTimerManager.OnGameTimerEnd -= GameTimerManager_OnGameTimerEnd;
         }
     }
 

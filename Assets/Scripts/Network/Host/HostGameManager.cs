@@ -175,6 +175,7 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
 
     private void GameStateManager_OnCanCloseServer()
     {
+        Debug.Log("OnCanCloseServer on Host");
         ShutdownAsync();
     }
     public NetworkServer GetNetworkServer()

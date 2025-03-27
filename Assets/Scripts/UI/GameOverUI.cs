@@ -37,7 +37,13 @@ public class GameOverUI : MonoBehaviour
         GameFlowManager.Instance.GameStateManager.OnLose += GameStateManager_OnLose;
 
         //CalculatePearlsManager.OnPearlsDeltaChanged += CalculatePearlsManager_OnPearlsDeltaChanged;
+        GameFlowManager.Instance.GameStateManager.OnGameOver += GameStateManager_OnGameOver;
+    }
 
+    private void GameStateManager_OnGameOver()
+    {
+        Debug.Log("GameOverUI: GameStateManager_OnGameOver");
+        Show();
     }
 
     private void CalculatePearlsManager_OnPearlsDeltaChanged(int pearlsDelta)

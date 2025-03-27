@@ -97,6 +97,7 @@ public class NetworkClient : IDisposable //Actual Client Game Logic
 
     public void Disconnect()
     {
+        Debug.Log("Client Disconnect");
         //Check if is host first
         if (networkManager != null && HostSingleton.Instance != null && networkManager.IsHost) //Server cant click buttons
         {

@@ -33,6 +33,7 @@ public class ConnectionLostUI : NetworkBehaviour
 
     private void GameStateManager_OnLostConnectionInHost()
     {
+        Debug.Log("OnLostConnectionInHost in ConnectionLostUI");
         Show();
     }
 
