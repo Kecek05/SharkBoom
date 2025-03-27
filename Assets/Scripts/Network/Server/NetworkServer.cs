@@ -28,7 +28,9 @@ public class NetworkServer : IDisposable
         networkManager.ConnectionApprovalCallback += ApprovalCheck;
 
         networkManager.OnServerStarted += NetworkManager_OnServerStarted;
+
     }
+
 
     private void SceneManager_OnLoadComplete(ulong clientId, string sceneName, UnityEngine.SceneManagement.LoadSceneMode loadSceneMode)
     {

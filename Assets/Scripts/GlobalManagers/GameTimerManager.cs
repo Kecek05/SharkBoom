@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class GameTimerManager
+public class GameTimerManager : MonoBehaviour
 {
     
     public static event Action OnGameTimerEnd;
@@ -15,15 +15,15 @@ public class GameTimerManager
     /// <summary>
     /// Duration of the Match in seconds
     /// </summary>
-    private const int startGameTimer = 300;
+    private const int startGameTimer = 15;
 
 
     private WaitForSeconds timerDelay = new WaitForSeconds(1); //cache
 
-    public void StartGameTimer()
+    private void Start()
     {
         gameTimer = startGameTimer;
-        GameFlowManager.Instance.StartCoroutine(GameTimer());
+        StartCoroutine(GameTimer());
     }
 
     private IEnumerator GameTimer()

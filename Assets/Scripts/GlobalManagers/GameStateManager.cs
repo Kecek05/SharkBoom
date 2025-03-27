@@ -51,10 +51,16 @@ public class GameStateManager : NetworkBehaviour
         {
             PlayerHealth.OnPlayerDie += LoseGame;
             PlayerSpawner.OnPlayerSpawned += PlayerSpawner_OnPlayerSpawned;
+
+            GameTimerManager.OnGameTimerEnd += GameTimerManager_OnGameTimerEnd;
         }
     }
 
-
+    private void GameTimerManager_OnGameTimerEnd()
+    {
+        Debug.Log("Game Timer Ended");
+        ChangeGameState(GameState.GameEnded);
+    }
 
     private void PlayerSpawner_OnPlayerSpawned(int playerCount)
     {

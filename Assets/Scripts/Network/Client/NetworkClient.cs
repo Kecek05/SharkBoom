@@ -58,38 +58,41 @@ public class NetworkClient : IDisposable //Actual Client Game Logic
 
     private async void IDisconnectedFromDS()
     {
-        Debug.Log("I Disconnected from DS");
+        Debug.Log("I Disconnected from DS, quiting game");
+        Disconnect();
+        Application.Quit();
+        //If the client disconects from DS, make a way to be possible to reconnect.
 
-        if (GameFlowManager.Instance != null)
-        {
-            if (GameFlowManager.Instance.GameStateManager == null)
-            {
-                Disconnect();
-                return;
-            }
+        //if (GameFlowManager.Instance != null)
+        //{
+        //    if (GameFlowManager.Instance.GameStateManager == null)
+        //    {
+        //        Disconnect();
+        //        return;
+        //    }
 
-            //In Game Scene
+        //    //In Game Scene
 
-            if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.None || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.WaitingForPlayers || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.SpawningPlayers || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.CalculatingResults)
-            {
-                //Game not started yet, go to menu
-                Disconnect();
-            }
-            else if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.ShowingPlayersInfo || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.GameStarted)
-            {
-                //Game Started
-                GameFlowManager.Instance.GameStateManager.GameOverAsync();
-            }
-            else if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.GameEnded)
-            {
-                //Game Ended
-                //Trigger Change Pearls, guarantee the change on pearls
-                //await CalculatePearlsManager.TriggerChangePearls();
-            }
-        } else
-        {
-            Disconnect();
-        }
+        //    if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.None || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.WaitingForPlayers || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.SpawningPlayers || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.CalculatingResults)
+        //    {
+        //        //Game not started yet, go to menu
+        //        Disconnect();
+        //    }
+        //    else if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.ShowingPlayersInfo || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.GameStarted)
+        //    {
+        //        //Game Started
+        //        GameFlowManager.Instance.GameStateManager.GameOverAsync();
+        //    }
+        //    else if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.GameEnded)
+        //    {
+        //        //Game Ended
+        //        //Trigger Change Pearls, guarantee the change on pearls
+        //        //await CalculatePearlsManager.TriggerChangePearls();
+        //    }
+        //} else
+        //{
+        //    Disconnect();
+        //}
     }
 
     public void Disconnect()

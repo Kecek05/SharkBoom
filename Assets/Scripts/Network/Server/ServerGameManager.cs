@@ -88,32 +88,34 @@ public class ServerGameManager : IDisposable
     {
         multiplayAllocationService.RemovePlayer();
 
-        if (GameFlowManager.Instance != null)
-        {
-            if (GameFlowManager.Instance.GameStateManager == null)
-            {
-                ServerSingleton.Instance.GameManager.ShutdownServer();
-                return;
-            }
+        Debug.Log($"User Left: {user.userName}");
 
-            //In Game Scene
+        //if (GameFlowManager.Instance != null)
+        //{
+        //    if (GameFlowManager.Instance.GameStateManager == null)
+        //    {
+        //        ServerSingleton.Instance.GameManager.ShutdownServer();
+        //        return;
+        //    }
 
-            if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.None || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.WaitingForPlayers || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.SpawningPlayers || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.CalculatingResults)
-            {
-                //Game not started yet, Shutdown Server
-                ServerSingleton.Instance.GameManager.ShutdownServer();
-            }
-            else if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.ShowingPlayersInfo || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.GameStarted)
-            {
-                //Game Started
-                Debug.Log("Client remaining win");
-                GameFlowManager.Instance.GameStateManager.ClientRemaningWinRpc();
-            }
-        } else
-        {
-            //Not in Game Scene
-            ServerSingleton.Instance.GameManager.ShutdownServer();
-        }
+        //    //In Game Scene
+
+        //    if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.None || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.WaitingForPlayers || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.SpawningPlayers || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.CalculatingResults)
+        //    {
+        //        //Game not started yet, Shutdown Server
+        //        ServerSingleton.Instance.GameManager.ShutdownServer();
+        //    }
+        //    else if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.ShowingPlayersInfo || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.GameStarted)
+        //    {
+        //        //Game Started
+        //        Debug.Log("Client remaining win");
+        //        GameFlowManager.Instance.GameStateManager.ClientRemaningWinRpc();
+        //    }
+        //} else
+        //{
+        //    //Not in Game Scene
+        //    ServerSingleton.Instance.GameManager.ShutdownServer();
+        //}
     }
 
 #endif

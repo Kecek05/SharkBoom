@@ -1503,6 +1503,7 @@ GameObject:
   - component: {fileID: 404177169}
   - component: {fileID: 404177171}
   - component: {fileID: 404177170}
+  - component: {fileID: 404177172}
   m_Layer: 0
   m_Name: TimerManager
   m_TagString: Untagged
@@ -1564,6 +1565,18 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
+--- !u!114 &404177172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 404177168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4b31709da502014d9fe62cbd6724046, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &417808136
 GameObject:
   m_ObjectHideFlags: 0
@@ -5229,7 +5242,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4845276930943762971, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.000030517578
+      value: -0.000030517578
       objectReference: {fileID: 0}
     - target: {fileID: 4845637959249703711, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchorMax.y

@@ -112,6 +112,15 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
 
     private async void HandleClientLeft(string authId)
     {
+        try
+        {
+            await LobbyService.Instance.RemovePlayerAsync(lobbyId, authId); //Owner of the lobby is allowed to kick players
+        }
+        catch (LobbyServiceException lobbyEx)
+        {
+            Debug.LogException(lobbyEx);
+        }
+
         if (GameFlowManager.Instance != null)
         {
             //Client Left, Cancel Game
@@ -121,14 +130,6 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
         {
             //Not in game, shutdown
             ShutdownAsync();
-        }
-
-        try
-        {
-           await LobbyService.Instance.RemovePlayerAsync(lobbyId, authId); //Owner of the lobby is allowed to kick players
-        } catch (LobbyServiceException lobbyEx)
-        {
-            Debug.LogException(lobbyEx);
         }
     }
 

@@ -19,7 +19,6 @@ public class GameFlowManager : NetworkBehaviour
     [SerializeField] private ItemsListSO itemsListSO;
     [SerializeField] private List<Transform> spawnPointsPos;
 
-
     //Publics
     public TurnManager TurnManager => turnManager;
     public GameStateManager GameStateManager => gameStateManager;
