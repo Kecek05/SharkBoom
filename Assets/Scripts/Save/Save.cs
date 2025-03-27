@@ -19,7 +19,7 @@ public static class Save
     private const string ARGUMENT_PROJECT_ID = "gameProjectId";
     private const string PROJECT_ID = "01563be5-25e2-47ed-b519-012967e3d8e3";
 
-    //public static event Action<int> OnPlayerPearlsChanged;
+    public static event Action OnPlayerPearlsChanged;
 
     [Command("save-addSavePlayerPearls")]
     public static async Task AddSavePlayerPearls(string userAuthId, int PlayerPearlsToAdd)
@@ -34,7 +34,7 @@ public static class Save
         };
         await CloudCodeService.Instance.CallEndpointAsync(ADD_PEARLS_ENDPOINT, arguments);
         Debug.Log($"AddSavePlayerPearls");
-
+        OnPlayerPearlsChanged?.Invoke();
     }
 
     public static async Task<int> LoadPlayerPearls(string userAuthId)

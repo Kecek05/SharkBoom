@@ -35,15 +35,16 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
 
     public ClientGameManager()
     {
-        //Save.OnPlayerPearlsChanged += Save_OnPlayerPearlsChanged;
+        Save.OnPlayerPearlsChanged += Save_OnPlayerPearlsChanged;
+
+        MainMenuController.OnLoadMainMenu += MainMenuController_OnLoadMainMenu;
     }
 
-
-    private const string ADD_PEARLS_ENDPOINT = "AddSavePlayerPearls";
-    private const string ADD_PEARLS_ARGUMENT_PLAYERID = "playerId";
-    private const string ADD_PEARLS_ARGUMENT_PEARLS = "pearls";
-    private const string ARGUMENT_PROJECT_ID = "gameProjectId";
-    private const string PROJECT_ID = "01563be5-25e2-47ed-b519-012967e3d8e3";
+    private async void MainMenuController_OnLoadMainMenu()
+    {
+        //Every time that loads the menu, update the pearls
+        userData.SetUserPearls(await Save.LoadPlayerPearls(UserData.userAuthId));
+    }
 
     public async Task<bool> InitAsync(AuthTypes authTypes)
     {
@@ -66,15 +67,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         //await AuthenticationService.Instance.SignInWithUsernamePasswordAsync("kecekTest", "Passw0rd!");
         //AuthState authState = AuthState.Authenticated;
         //
-        //Debug.Log($"Player ID: {AuthenticationService.Instance.PlayerId}");
-
-        //var arguments = new Dictionary<string, object>
-        //{
-        //    { ARGUMENT_PROJECT_ID, PROJECT_ID },
-        //    { ADD_PEARLS_ARGUMENT_PEARLS, 100 },
-        //    { ADD_PEARLS_ARGUMENT_PLAYERID, AuthenticationService.Instance.PlayerId }
-        //};
-        //await CloudCodeService.Instance.CallEndpointAsync(ADD_PEARLS_ENDPOINT, arguments);
+        Debug.Log($"PlayerId: {AuthenticationService.Instance.PlayerId}");
 
         if (authState == AuthState.Authenticated)
         {
@@ -191,6 +184,8 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
     /// <returns></returns>
     private async Task<MatchmakerPollingResult> GetMatchAsync()
     {
+        userData.SetUserPearls(await Save.LoadPlayerPearls(UserData.userAuthId)); //Update before try to matchmake
+
         MatchmakingResult matchmakingResult = await matchmaker.Matchmake(userData);
 
         if(matchmakingResult.result == MatchmakerPollingResult.Success)
@@ -212,11 +207,10 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         isDedicatedServerGame = isDedicatedServer;
     }
 
-    private void Save_OnPlayerPearlsChanged(int newValue)
+    private async void Save_OnPlayerPearlsChanged()
     {
-        UserData.SetUserPearls(newValue);
-
-        Debug.Log($"Save Player Pearls Changed to: {newValue}");
+        UserData.SetUserPearls(await Save.LoadPlayerPearls(UserData.userAuthId));
+        Debug.Log($"Save Player Pearls Changed to: {UserData.UserPearls}");
     }
 
     /// <summary>
@@ -229,7 +223,9 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
 
     public void Dispose()
     {
-       // Save.OnPlayerPearlsChanged -= Save_OnPlayerPearlsChanged;
+        MainMenuController.OnLoadMainMenu -= MainMenuController_OnLoadMainMenu;
+
+        Save.OnPlayerPearlsChanged -= Save_OnPlayerPearlsChanged;
 
         networkClient?.Dispose();
     }

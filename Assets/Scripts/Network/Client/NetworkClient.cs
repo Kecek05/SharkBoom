@@ -58,9 +58,17 @@ public class NetworkClient : IDisposable //Actual Client Game Logic
 
     private async void IDisconnectedFromDS()
     {
-        Debug.Log("I Disconnected from DS, quiting game");
-        Disconnect();
-        Application.Quit();
+        Debug.Log("I Disconnected from DS");
+        if(SceneManager.GetActiveScene().name == Loader.Scene.Loading.ToString())
+        {
+            Debug.LogWarning("Disconnected in LoadingScene, closing the game");
+            Disconnect();
+            Application.Quit();
+            return;
+        }
+
+        //Disconnect();
+        //Application.Quit();
         //If the client disconects from DS, make a way to be possible to reconnect.
 
         //if (GameFlowManager.Instance != null)
