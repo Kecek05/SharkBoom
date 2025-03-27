@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class GameStateManager : NetworkBehaviour
 {
-
+    public event Action<int> OnCanShowPearls;
     public event Action OnGameOver;
     public event Action OnWin;
     public event Action OnLose;
@@ -108,7 +108,8 @@ public class GameStateManager : NetworkBehaviour
                 break;
             case GameState.GameEnded:
                 //If is DS, change players save
-                CheckForTheWinner();
+                if(IsServer)
+                    CheckForTheWinner();
                 //Show UI for clients
                 break;
         }
@@ -120,40 +121,80 @@ public class GameStateManager : NetworkBehaviour
     {
         //Code to check if both players have the same health, if so, tie, otherwise check who has the most health and declare the winner.
 
-        if (IsServer && !IsHost) //DS
-        {
-            if (LosedPlayer.Value == PlayableState.None)
-            {
-                //Tie, both lose
 
+
+
+        if (LosedPlayer.Value == PlayableState.None)
+        {
+            //Tie, both lose
+
+            if (!IsHost)
+            {
+                //DS
                 await CalculatePearlsManager.ChangePearlsLoser(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0]);
 
                 await CalculatePearlsManager.ChangePearlsLoser(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1]);
 
-                TriggerCanCloseServerRpc();
-
-                return;
             }
 
-            if (LosedPlayer.Value == NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].playableState)
-            {
-                //Player 2 Winner
+            SendGameResultsToClientRpc(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId, NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].calculatedPearls.PearlsToLose);
 
+            SendGameResultsToClientRpc(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId, NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].calculatedPearls.PearlsToLose);
+
+            TriggerCanCloseServerRpc();
+
+            return;
+        }
+
+        if (LosedPlayer.Value == NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].playableState)
+        {
+            //Player 2 Winner
+
+            if (!IsHost)
+            {
+                //DS
                 await CalculatePearlsManager.ChangePearlsWinner(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1]);
 
                 await CalculatePearlsManager.ChangePearlsLoser(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0]);
 
+
             }
-            else
+            SendGameResultsToClientRpc(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId, NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].calculatedPearls.PearlsToLose);
+
+            SendGameResultsToClientRpc(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId, NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].calculatedPearls.PearlsToWin);
+
+        }
+        else
+        {
+            //Player 1 Winner
+
+            if (!IsHost)
             {
-                //Player 1 Winner
+                //DS
                 await CalculatePearlsManager.ChangePearlsWinner(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0]);
 
                 await CalculatePearlsManager.ChangePearlsLoser(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1]);
+
             }
+            SendGameResultsToClientRpc(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId, NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].calculatedPearls.PearlsToWin);
+
+            SendGameResultsToClientRpc(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId, NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].calculatedPearls.PearlsToLose);
+
         }
 
         TriggerCanCloseServerRpc();
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void SendGameResultsToClientRpc(string authId, int valueToShow)
+    {
+        if(ClientSingleton.Instance == null) return;
+
+        if (ClientSingleton.Instance.GameManager.UserData.userAuthId != authId) return;
+
+        //Owner
+        OnCanShowPearls?.Invoke(valueToShow);
+
     }
 
 

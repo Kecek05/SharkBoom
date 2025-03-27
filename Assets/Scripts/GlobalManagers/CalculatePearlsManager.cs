@@ -18,9 +18,6 @@ public static class CalculatePearlsManager
     /// </summary>
     public static event Action OnFinishedChangingPearls;
 
-    private static CalculatedPearls player1CalculatedPearls;
-    private static CalculatedPearls player2CalculatedPearls;
-
     public static void CalculatePossibleResults(PlayerData player1Data, PlayerData player2Data)
     {
         //Not calculate in relay

@@ -37,20 +37,27 @@ public class GameOverUI : MonoBehaviour
         GameFlowManager.Instance.GameStateManager.OnLose += GameStateManager_OnLose;
 
         //CalculatePearlsManager.OnPearlsDeltaChanged += CalculatePearlsManager_OnPearlsDeltaChanged;
-        GameFlowManager.Instance.GameStateManager.OnGameOver += GameStateManager_OnGameOver;
+        GameFlowManager.Instance.GameStateManager.OnCanShowPearls += GameStateManager_OnCanShowPearls;
+        //GameFlowManager.Instance.GameStateManager.OnGameOver += GameStateManager_OnGameOver;
     }
 
-    private void GameStateManager_OnGameOver()
+    private void GameStateManager_OnCanShowPearls(int pearlsToShow)
     {
-        Debug.Log("GameOverUI: GameStateManager_OnGameOver");
+        SetupPearlsResult(pearlsToShow);
         Show();
     }
 
-    private void CalculatePearlsManager_OnPearlsDeltaChanged(int pearlsDelta)
-    {
-        //Pearls value to show changed, show UI.
-        SetupPearlsResult(pearlsDelta);
-    }
+    //private void GameStateManager_OnGameOver()
+    //{
+    //    Debug.Log("GameOverUI: GameStateManager_OnGameOver");
+    //    Show();
+    //}
+
+    //private void CalculatePearlsManager_OnPearlsDeltaChanged(int pearlsDelta)
+    //{
+    //    //Pearls value to show changed, show UI.
+    //    SetupPearlsResult(pearlsDelta);
+    //}
 
     private void SetupPearlsResult(int pearlsDelta)
     {
@@ -83,7 +90,6 @@ public class GameOverUI : MonoBehaviour
         playerResultText.color = Color.green;
 
         Debug.Log("Change GameOverUI to WIN");
-        Show();
     }
 
     private void GameStateManager_OnLose()
@@ -98,7 +104,6 @@ public class GameOverUI : MonoBehaviour
         playerResultText.color = Color.red;
 
         Debug.Log("Change GameOverUI to Lose");
-        Show();
     }
 
     private void Hide()
@@ -117,6 +122,7 @@ public class GameOverUI : MonoBehaviour
         GameFlowManager.Instance.GameStateManager.OnWin -= GameStateManager_OnWin;
         GameFlowManager.Instance.GameStateManager.OnLose -= GameStateManager_OnLose;
 
+        GameFlowManager.Instance.GameStateManager.OnCanShowPearls -= GameStateManager_OnCanShowPearls;
         //CalculatePearlsManager.OnPearlsDeltaChanged -= CalculatePearlsManager_OnPearlsDeltaChanged;
     }
 }
