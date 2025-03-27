@@ -29,7 +29,7 @@ public class GameFlowManager : NetworkBehaviour
     {
         instance = this;
 
-        CalculatePearlsManager.Reset();
+        //CalculatePearlsManager.Reset();
     }
 
     /// <summary>

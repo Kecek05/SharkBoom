@@ -88,6 +88,16 @@ public class DebuggingTools : NetworkBehaviour
             ClientSingleton.Instance.GameManager.Disconnect();
     }
 
+    [Command("listAllPlayerData")]
+    private void ListAllPlayerData()
+    {
+        foreach (PlayerData playerData in NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.ClientIdToPlayerData.Values)
+        {
+            Debug.Log($"PlayerUserData Name: {playerData.userData.userName} - Client Id: {playerData.clientId} - PlayableState: {playerData.playableState} - CalculatedPearls: {playerData.calculatedPearls} - GameObject: {playerData.gameObject}");
+            Debug.Log($"Pearls To Win: {playerData.calculatedPearls.PearlsToWin} - Pearls To Lose: - {playerData.calculatedPearls.PearlsToLose}");
+        }
+    }
+
 
     [Rpc(SendTo.Server)]
     private void DebugOnServerRpc(string debugText)
@@ -104,4 +114,6 @@ public class DebuggingTools : NetworkBehaviour
     {
         DebugOnServerRpc("On Application Quit Client");
     }
+
+
 }

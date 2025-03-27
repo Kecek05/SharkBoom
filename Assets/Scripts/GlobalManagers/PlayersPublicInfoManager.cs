@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayersPublicInfoManager : MonoBehaviour
 {
+    //REFACTOR THIS BASED ON PLAYERDATA
     public static int PLAYER_1_LAYER = 8;
     public static int PLAYER_2_LAYER = 9;
 
@@ -11,9 +12,6 @@ public class PlayersPublicInfoManager : MonoBehaviour
     public static PlayersPublicInfoManager Instance => instance;
 
     private Dictionary<PlayableState, GameObject> playerStateToGameObject = new Dictionary<PlayableState, GameObject>();
-
-
-
 
     private void Awake()
     {
@@ -39,12 +37,6 @@ public class PlayersPublicInfoManager : MonoBehaviour
             Debug.LogError("Player not found in dictionary");
             return null;
         }
-    }
-
-    [Command("playersPublicInfoManager-debugGetPlayer")] //DEBUG
-    private void DebugGetPlayer(PlayableState playableState)
-    {
-        Debug.Log("Getting Player: " + playerStateToGameObject[playableState].name);
     }
 }
 

@@ -74,7 +74,18 @@ public class NetworkServer : IDisposable
 
         UserData userData = JsonUtility.FromJson<UserData>(payload); //Deserialize the payload to UserData
 
-        serverAuthenticationService.RegisterClient(request.ClientNetworkId, userData);
+        PlayerData newPlayerData = new PlayerData()
+        {
+            userData = userData,
+            clientId = request.ClientNetworkId,
+            playableState = PlayableState.None, //None for now
+            calculatedPearls = new CalculatedPearls(),
+            gameObject = null
+        };
+
+        serverAuthenticationService.RegisterClient(newPlayerData);
+
+
 
         OnUserJoined?.Invoke(userData);
 

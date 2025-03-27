@@ -38,6 +38,11 @@ public class PlayerSpawner : IPlayerSpawner
 
         playerInstance.GetComponent<PlayerThrower>().InitializePlayerRpc(GetPlayableStateByCount(), randomSpawnPointSelected.rotation);
 
+        PlayerData playerData = NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.ClientIdToPlayerData[clientId];
+
+        playerData.gameObject = playerInstance.gameObject;
+        playerData.playableState = GetPlayableStateByCount();
+
         OnPlayerSpawned?.Invoke(playerSpawned);
 
         Debug.Log($"Spawning Player, Client Id: {clientId} PlayableState: {GetPlayableStateByCount()} Selected Random SpawnPoint: {randomSpawnPointSelected.name}");

@@ -35,7 +35,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
 
     public ClientGameManager()
     {
-        Save.OnPlayerPearlsChanged += Save_OnPlayerPearlsChanged;
+        //Save.OnPlayerPearlsChanged += Save_OnPlayerPearlsChanged;
     }
 
 
@@ -60,11 +60,11 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         networkClient = new NetworkClient(NetworkManager.Singleton);
         matchmaker = new();
 
-        //AuthState authState = authTypes == AuthTypes.Anonymous ? await AuthenticationWrapper.DoAuthAnonymously() : authTypes == AuthTypes.Unity ? await AuthenticationWrapper.DoAuthUnity() : authTypes == AuthTypes.Android ? await AuthenticationWrapper.DoAuthAndroid() : AuthState.NotAuthenticated;
+        AuthState authState = authTypes == AuthTypes.Anonymous ? await AuthenticationWrapper.DoAuthAnonymously() : authTypes == AuthTypes.Unity ? await AuthenticationWrapper.DoAuthUnity() : authTypes == AuthTypes.Android ? await AuthenticationWrapper.DoAuthAndroid() : AuthState.NotAuthenticated;
 
         //DEBUG SAVE
-        await AuthenticationService.Instance.SignInWithUsernamePasswordAsync("kecekTest", "Passw0rd!");
-        AuthState authState = AuthState.Authenticated;
+        //await AuthenticationService.Instance.SignInWithUsernamePasswordAsync("kecekTest", "Passw0rd!");
+        //AuthState authState = AuthState.Authenticated;
         //
         //Debug.Log($"Player ID: {AuthenticationService.Instance.PlayerId}");
 
@@ -230,7 +230,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
 
     public void Dispose()
     {
-        Save.OnPlayerPearlsChanged -= Save_OnPlayerPearlsChanged;
+       // Save.OnPlayerPearlsChanged -= Save_OnPlayerPearlsChanged;
 
         networkClient?.Dispose();
     }

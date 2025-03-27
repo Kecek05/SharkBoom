@@ -36,7 +36,7 @@ public class GameOverUI : MonoBehaviour
         GameFlowManager.Instance.GameStateManager.OnWin += GameStateManager_OnWin;
         GameFlowManager.Instance.GameStateManager.OnLose += GameStateManager_OnLose;
 
-        CalculatePearlsManager.OnPearlsDeltaChanged += CalculatePearlsManager_OnPearlsDeltaChanged;
+        //CalculatePearlsManager.OnPearlsDeltaChanged += CalculatePearlsManager_OnPearlsDeltaChanged;
 
     }
 
@@ -111,6 +111,6 @@ public class GameOverUI : MonoBehaviour
         GameFlowManager.Instance.GameStateManager.OnWin -= GameStateManager_OnWin;
         GameFlowManager.Instance.GameStateManager.OnLose -= GameStateManager_OnLose;
 
-        CalculatePearlsManager.OnPearlsDeltaChanged -= CalculatePearlsManager_OnPearlsDeltaChanged;
+        //CalculatePearlsManager.OnPearlsDeltaChanged -= CalculatePearlsManager_OnPearlsDeltaChanged;
     }
 }

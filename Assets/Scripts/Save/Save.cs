@@ -19,23 +19,21 @@ public static class Save
     private const string ARGUMENT_PROJECT_ID = "gameProjectId";
     private const string PROJECT_ID = "01563be5-25e2-47ed-b519-012967e3d8e3";
 
-    public static event Action<int> OnPlayerPearlsChanged;
+    //public static event Action<int> OnPlayerPearlsChanged;
 
-    [Command("save-savePlayerPeals")]
-    public static async Task SavePlayerPearls(string userAuthId, int PlayerPearls)
+    [Command("save-addSavePlayerPearls")]
+    public static async Task AddSavePlayerPearls(string userAuthId, int PlayerPearlsToAdd)
     {
         //Save to cloud
 
         var arguments = new Dictionary<string, object>
         {
             { ARGUMENT_PROJECT_ID, PROJECT_ID },
-            { ADD_PEARLS_ARGUMENT_PEARLS, PlayerPearls },
+            { ADD_PEARLS_ARGUMENT_PEARLS, PlayerPearlsToAdd },
             { ADD_PEARLS_ARGUMENT_PLAYERID, userAuthId }
         };
         await CloudCodeService.Instance.CallEndpointAsync(ADD_PEARLS_ENDPOINT, arguments);
-        Debug.Log($"Saved Pearls");
-
-        OnPlayerPearlsChanged?.Invoke(PlayerPearls);
+        Debug.Log($"AddSavePlayerPearls");
 
     }
 

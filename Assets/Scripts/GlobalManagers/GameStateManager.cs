@@ -7,6 +7,7 @@ using UnityEngine;
 
 public class GameStateManager : NetworkBehaviour
 {
+    public static event Action OnGameEndedServer;
     public event Action OnGameOver;
     public event Action OnWin;
     public event Action OnLose;
@@ -48,7 +49,7 @@ public class GameStateManager : NetworkBehaviour
 
         if(IsClient)
         {
-            CalculatePearlsManager.OnFinishedCalculateResults += CalculatePearlsManager_OnFinishedCalculateResults;
+            //CalculatePearlsManager.OnFinishedCalculateResults += CalculatePearlsManager_OnFinishedCalculateResults;
         }
 
         if (IsServer)
@@ -87,7 +88,6 @@ public class GameStateManager : NetworkBehaviour
 
     private void GameState_OnValueChanged(GameState previousValue, GameState newValue)
     {
-        //Only Server
 
         switch (newValue)
         {
@@ -99,9 +99,25 @@ public class GameStateManager : NetworkBehaviour
 
                 break;
             case GameState.CalculatingResults:
-                if (IsClient)
-                    CalculatePearlsManager.CalculatePossibleResults();
-                break;
+                //if (IsServer && !IsHost) //DS
+                //    CalculatePearlsManager.CalculatePossibleResults();
+
+                //If is DS, Calculate both results
+
+                //DEBUG
+                CalculatePearlsManager.CalculatePossibleResults(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0], NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1]);
+
+                if (IsServer && !IsHost) //DS
+                {
+                    //REFACTOR
+                    CalculatePearlsManager.CalculatePossibleResults(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0], NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1]);
+                    ChangeGameState(GameState.ShowingPlayersInfo);
+                } else if ( IsHost)
+                {
+                    ChangeGameState(GameState.ShowingPlayersInfo);
+                }
+                    //If is Host, dont calculate, change to ShowingPlayersInfo
+                    break;
             case GameState.ShowingPlayersInfo:
 
                 if(IsServer)
@@ -115,6 +131,10 @@ public class GameStateManager : NetworkBehaviour
                     GameFlowManager.Instance.TurnManager.StartGame();
                 break;
             case GameState.GameEnded:
+                //If is DS, change players save
+                if(IsServer)
+                    OnGameEndedServer?.Invoke();
+                //Show UI for clients
                 break;
         }
 
@@ -170,7 +190,7 @@ public class GameStateManager : NetworkBehaviour
     {
         //Change pearls, then win
         localWin = true;
-        await CalculatePearlsManager.TriggerChangePearls();
+        //await CalculatePearlsManager.TriggerChangePearls();
 
         Debug.Log("IwinGameOverAsync Finished");
         TriggerCanCloseServerRpc();
@@ -186,7 +206,7 @@ public class GameStateManager : NetworkBehaviour
             //Change pearls, then lose
             localWin = false;
 
-            await CalculatePearlsManager.TriggerChangePearls();
+            //await CalculatePearlsManager.TriggerChangePearls();
             OnLose?.Invoke();
         }
         else if (losedPlayer.Value == PlayableState.None)
@@ -195,7 +215,7 @@ public class GameStateManager : NetworkBehaviour
             //Change pearls, then lose
             localWin = false;
 
-            await CalculatePearlsManager.TriggerChangePearls();
+            //await CalculatePearlsManager.TriggerChangePearls();
             OnLose?.Invoke();
         }
         else
@@ -203,7 +223,7 @@ public class GameStateManager : NetworkBehaviour
             //Change pearls, then win
             localWin = true;
 
-            await CalculatePearlsManager.TriggerChangePearls();
+            //await CalculatePearlsManager.TriggerChangePearls();
             OnWin?.Invoke();
         }
     }
