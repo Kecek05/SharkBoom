@@ -69,7 +69,7 @@ public class LoadingPlayersUI : NetworkBehaviour
         {
             UserData playerUserData = NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.GetUserDataByClientId(connectedClientId);
 
-            PlayerSpawnedClientRpc(playerUserData.userName, playerUserData.userPearls, playerCount);
+            PlayerSpawnedClientRpc(playerUserData.userName, playerUserData.UserPearls, playerCount);
 
             playerCount++;
         }

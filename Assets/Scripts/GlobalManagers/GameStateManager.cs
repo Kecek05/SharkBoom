@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class GameStateManager : NetworkBehaviour
 {
-    public static event Action OnGameEndedServer;
+
     public event Action OnGameOver;
     public event Action OnWin;
     public event Action OnLose;
@@ -47,11 +47,6 @@ public class GameStateManager : NetworkBehaviour
         losedPlayer.OnValueChanged += LosedPlayer_OnvalueChanged;
         gameState.OnValueChanged += GameState_OnValueChanged;
 
-        if(IsClient)
-        {
-            //CalculatePearlsManager.OnFinishedCalculateResults += CalculatePearlsManager_OnFinishedCalculateResults;
-        }
-
         if (IsServer)
         {
             PlayerHealth.OnPlayerDie += LoseGame;
@@ -59,24 +54,7 @@ public class GameStateManager : NetworkBehaviour
         }
     }
 
-    private void CalculatePearlsManager_OnFinishedCalculateResults()
-    {
-        //Called when any client calculated the results
-        CalculatedResultServerRpc();
-    }
 
-    [Rpc(SendTo.Server)]
-    private void CalculatedResultServerRpc()
-    {
-        calculatedResults++;
-
-        Debug.Log($"Calculated Results: {calculatedResults}");
-        if (calculatedResults == 2)
-        {
-            //both clients calculated the results, change state
-            ChangeGameState(GameState.ShowingPlayersInfo);
-        }
-    }
 
     private void PlayerSpawner_OnPlayerSpawned(int playerCount)
     {
@@ -99,14 +77,6 @@ public class GameStateManager : NetworkBehaviour
 
                 break;
             case GameState.CalculatingResults:
-                //if (IsServer && !IsHost) //DS
-                //    CalculatePearlsManager.CalculatePossibleResults();
-
-                //If is DS, Calculate both results
-
-                //DEBUG
-                CalculatePearlsManager.CalculatePossibleResults(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0], NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1]);
-
                 if (IsServer && !IsHost) //DS
                 {
                     //REFACTOR
@@ -116,10 +86,8 @@ public class GameStateManager : NetworkBehaviour
                 {
                     ChangeGameState(GameState.ShowingPlayersInfo);
                 }
-                    //If is Host, dont calculate, change to ShowingPlayersInfo
-                    break;
+                break;
             case GameState.ShowingPlayersInfo:
-
                 if(IsServer)
                 {
                     GameFlowManager.Instance.RandomizePlayerItems();
@@ -132,14 +100,53 @@ public class GameStateManager : NetworkBehaviour
                 break;
             case GameState.GameEnded:
                 //If is DS, change players save
-                if(IsServer)
-                    OnGameEndedServer?.Invoke();
+                CheckForTheWinner();
                 //Show UI for clients
                 break;
         }
 
         Debug.Log($"Game State Changed to: {newValue}");
     }
+
+    private async void CheckForTheWinner()
+    {
+        if(IsServer && !IsHost) //DS
+        {
+            if (LosedPlayer.Value == PlayableState.None)
+            {
+                //Tie, both lose
+
+                await CalculatePearlsManager.ChangePearlsLoser(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0]);
+
+                await CalculatePearlsManager.ChangePearlsLoser(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1]);
+
+                TriggerCanCloseServerRpc();
+
+                return;
+            }
+
+            if (LosedPlayer.Value == NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].playableState)
+            {
+                //Player 2 Winner
+
+                await CalculatePearlsManager.ChangePearlsWinner(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1]);
+
+                await CalculatePearlsManager.ChangePearlsLoser(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0]);
+
+            }
+            else
+            {
+                //Player 1 Winner
+                await CalculatePearlsManager.ChangePearlsWinner(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0]);
+
+                await CalculatePearlsManager.ChangePearlsLoser(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1]);
+            }
+        }
+
+        TriggerCanCloseServerRpc();
+    }
+
+
     public void ConnectionLostHostAndClient()
     {
         OnLostConnectionInHost?.Invoke();
@@ -227,6 +234,8 @@ public class GameStateManager : NetworkBehaviour
             OnWin?.Invoke();
         }
     }
+
+
 
     /// <summary>
     /// Call this to know who loses and who wins. Server only.

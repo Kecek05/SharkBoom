@@ -79,16 +79,15 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         if (authState == AuthState.Authenticated)
         {
 
-            int playerPearls = await Save.LoadPlayerPearls(AuthenticationService.Instance.PlayerId);
-
             Debug.Log(AuthenticationWrapper.PlayerName + authState);
 
             userData = new UserData
             {
                 userName = AuthenticationWrapper.PlayerName,
                 userAuthId = AuthenticationService.Instance.PlayerId,
-                userPearls = playerPearls, // random for debug
             };
+
+            userData.SetUserPearls(await Save.LoadPlayerPearls(AuthenticationService.Instance.PlayerId));
 
              Loader.Load(Loader.Scene.MainMenu);
 
@@ -215,7 +214,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
 
     private void Save_OnPlayerPearlsChanged(int newValue)
     {
-        UserData.userPearls = newValue;
+        UserData.SetUserPearls(newValue);
 
         Debug.Log($"Save Player Pearls Changed to: {newValue}");
     }

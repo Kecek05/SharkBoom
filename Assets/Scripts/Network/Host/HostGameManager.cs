@@ -86,14 +86,8 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
 
         networkServer = new NetworkServer(NetworkManager.Singleton, playerPrefab);
 
-        UserData userData = new UserData
-        {
-            userName = AuthenticationWrapper.PlayerName,
-            userAuthId = AuthenticationService.Instance.PlayerId,
-            userPearls = UnityEngine.Random.Range(0, 1001), // random for debug
-        };
 
-        string payload = JsonUtility.ToJson(userData); //serialize the payload to json
+        string payload = JsonUtility.ToJson(ClientSingleton.Instance.GameManager.UserData); //serialize the payload to json
         byte[] payloadBytes = System.Text.Encoding.UTF8.GetBytes(payload); // serialize the payload to bytes
 
         NetworkManager.Singleton.NetworkConfig.ConnectionData = payloadBytes;

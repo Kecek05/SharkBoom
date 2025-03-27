@@ -93,7 +93,7 @@ public class DebuggingTools : NetworkBehaviour
     {
         foreach (PlayerData playerData in NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.ClientIdToPlayerData.Values)
         {
-            Debug.Log($"PlayerUserData Name: {playerData.userData.userName} - Client Id: {playerData.clientId} - PlayableState: {playerData.playableState} - CalculatedPearls: {playerData.calculatedPearls} - GameObject: {playerData.gameObject}");
+            Debug.Log($"PlayerUserData Name: {playerData.userData.userName} - Client Id: {playerData.clientId} - PlayableState: {playerData.playableState} - Pearls: {playerData.userData.UserPearls} - GameObject: {playerData.gameObject} - PlayerId: {playerData.userData.userAuthId}");
             Debug.Log($"Pearls To Win: {playerData.calculatedPearls.PearlsToWin} - Pearls To Lose: - {playerData.calculatedPearls.PearlsToLose}");
         }
     }

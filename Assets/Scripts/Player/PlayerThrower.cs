@@ -23,9 +23,6 @@ public class PlayerThrower : NetworkBehaviour
 
     private NetworkVariable<PlayableState> thisPlayableState = new();
 
-    private NetworkVariable<FixedString32Bytes> playerName = new();
-    private NetworkVariable<int> playerPearls = new();
-
 
     //Publics
     public PlayerStateMachine PlayerStateMachine => playerStateMachine;
@@ -35,8 +32,6 @@ public class PlayerThrower : NetworkBehaviour
     public PlayerDragController PlayerDragController => playerDragController;
     public PlayerLauncher PlayerLauncher => playerLauncher;
     public NetworkVariable<PlayableState> ThisPlayableState => thisPlayableState;
-    public NetworkVariable<FixedString32Bytes> PlayerName => playerName;
-    public NetworkVariable<int> PlayerPearls => playerPearls;
 
     public override void OnNetworkSpawn()
     {
@@ -45,15 +40,12 @@ public class PlayerThrower : NetworkBehaviour
 
             UserData userData = NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.GetUserDataByClientId(OwnerClientId);
 
-            playerName.Value = userData.userName;
-            playerPearls.Value = userData.userPearls;
-
             OnPlayerSpawned?.Invoke(this);
 
+            gameObject.name = "Player " + userData.userName; //Debug
         }
 
 
-        gameObject.name = "Player " + playerName.Value; //Debug
 
         thisPlayableState.OnValueChanged += PlayableStateInitialize;
 
