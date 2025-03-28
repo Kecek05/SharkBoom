@@ -38,11 +38,11 @@ public class PlayerThrower : NetworkBehaviour
         if(IsServer)
         {
 
-            UserData userData = NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.GetUserDataByClientId(OwnerClientId);
+            PlayerData playerData = NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.GetPlayerDataByClientId(OwnerClientId);
 
             OnPlayerSpawned?.Invoke(this);
 
-            gameObject.name = "Player " + userData.userName; //Debug
+            gameObject.name = "Player " + playerData.userData.userName; //Debug
         }
 
 

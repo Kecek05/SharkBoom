@@ -79,16 +79,16 @@ public class ServerGameManager : IDisposable
     }
 
 
-    private void UserJoined(UserData user)
+    private void UserJoined(PlayerData playerData)
     {
         multiplayAllocationService.AddPlayer();
     }
 
-    private void UserLeft(UserData user)
+    private void UserLeft(PlayerData playerData)
     {
         multiplayAllocationService.RemovePlayer();
 
-        Debug.Log($"User Left: {user.userName}");
+        Debug.Log($"User Left: {playerData.userData.userName}");
 
         //if (GameFlowManager.Instance != null)
         //{

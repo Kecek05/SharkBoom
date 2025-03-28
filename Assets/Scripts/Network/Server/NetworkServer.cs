@@ -9,8 +9,8 @@ public class NetworkServer : IDisposable
 {
 
     public Action<string> OnClientLeft;
-    public Action<UserData> OnUserLeft;
-    public Action<UserData> OnUserJoined;
+    public Action<PlayerData> OnUserLeft;
+    public Action<PlayerData> OnUserJoined;
 
     private NetworkManager networkManager;
     private IPlayerSpawner playerSpawner;
@@ -64,7 +64,7 @@ public class NetworkServer : IDisposable
     {
         Debug.Log($"Client {clientId} disconnected");
 
-        OnUserLeft?.Invoke(serverAuthenticationService.GetUserDataByClientId(clientId));
+        OnUserLeft?.Invoke(serverAuthenticationService.GetPlayerDataByClientId(clientId));
         OnClientLeft?.Invoke(serverAuthenticationService.GetAuthIdByClientId(clientId));
         serverAuthenticationService.UnregisterClient(clientId);
 
@@ -89,7 +89,7 @@ public class NetworkServer : IDisposable
 
 
 
-        OnUserJoined?.Invoke(userData);
+        OnUserJoined?.Invoke(newPlayerData);
 
         response.Approved = true; //Connection is approved
         response.CreatePlayerObject = false;

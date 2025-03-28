@@ -8,7 +8,7 @@ public class ServerAuthenticationService : IServerAuthenticationService
 
     private Dictionary<ulong, string> clientIdToAuth = new Dictionary<ulong, string>(); 
 
-    private Dictionary<string, UserData> authIdToUserData = new Dictionary<string, UserData>(); 
+    private Dictionary<string, PlayerData> authIdToPlayerData = new Dictionary<string, PlayerData>(); 
 
     private Dictionary<PlayableState, ulong> playableStateToClientId = new Dictionary<PlayableState, ulong>(); 
 
@@ -27,7 +27,7 @@ public class ServerAuthenticationService : IServerAuthenticationService
         //if dont exist, add
         clientIdToAuth[playerData.clientId] = playerData.userData.userAuthId;
         authToClientId[playerData.userData.userAuthId] = playerData.clientId;
-        authIdToUserData[playerData.userData.userAuthId] = playerData.userData;
+        authIdToPlayerData[playerData.userData.userAuthId] = playerData;
 
         playerDatas.Add(playerData);
         clientIdToPlayerData[playerData.clientId] = playerData;
@@ -44,18 +44,18 @@ public class ServerAuthenticationService : IServerAuthenticationService
         {
             authToClientId.Remove(authId);
             clientIdToAuth.Remove(clientId);
-            authIdToUserData.Remove(authId);
+            authIdToPlayerData.Remove(authId);
         }
     }
 
-    public UserData GetUserDataByClientId(ulong clientId)
+    public PlayerData GetPlayerDataByClientId(ulong clientId)
     {
         if (clientIdToAuth.TryGetValue(clientId, out string authId))
         {
             //Get Auth by client ID
-            if (authIdToUserData.TryGetValue(authId, out UserData userData))
+            if (authIdToPlayerData.TryGetValue(authId, out PlayerData playerData))
             {
-                return userData;
+                return playerData;
             }
         }
         return null;
