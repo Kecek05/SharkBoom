@@ -1,44 +1,21 @@
-using System;
 using System.Collections;
-using Unity.Netcode;
-using UnityEngine;
 
-public class GameTimerManager : NetworkBehaviour
+public class GameTimerManager : BaseGameTimerManager
 {
-    
-    public static event Action OnGameTimerEnd;
 
-    /// <summary>
-    /// Current time remaining in the Match in seconds
-    /// </summary>
-    private NetworkVariable<int> gameTimer = new(0);
-
-    public NetworkVariable<int> GameTimer => gameTimer;
-    /// <summary>
-    /// Duration of the Match in seconds
-    /// </summary>
-    private const int startGameTimer = 300;
-
-    private Coroutine gameTimerCoroutine;
-
-    private WaitForSeconds timerDelay = new WaitForSeconds(1); //cache
-
-    public override void OnNetworkSpawn()
+    public override void HandleOnGameStateChange(GameState gameState)
     {
         if (!IsServer) return;
-        GameStateManager.OnGameStateChange += GameStateManager_OnGameStateChange;
-    }
 
-    private void GameStateManager_OnGameStateChange(GameState gameState)
-    {
-        if(gameState == GameState.GameStarted)
+        if (gameState == GameState.GameStarted)
         {
             if (gameTimerCoroutine == null)
             {
                 gameTimerCoroutine = StartCoroutine(GameTimerTicks());
             }
 
-        } else if (gameState == GameState.GameEnded)
+        }
+        else if (gameState == GameState.GameEnded)
         {
             if (gameTimerCoroutine != null)
             {
@@ -47,7 +24,8 @@ public class GameTimerManager : NetworkBehaviour
             }
         }
     }
-    private IEnumerator GameTimerTicks()
+
+    protected override IEnumerator GameTimerTicks()
     {
         gameTimer.Value = startGameTimer;
 
@@ -58,13 +36,6 @@ public class GameTimerManager : NetworkBehaviour
         }
 
         gameTimerCoroutine = null;
-        OnGameTimerEnd?.Invoke();
-
-    }
-
-    public override void OnNetworkDespawn()
-    {
-        if (!IsServer) return;
-        GameStateManager.OnGameStateChange -= GameStateManager_OnGameStateChange;
+        TriggerOnGameTimerEnd();
     }
 }

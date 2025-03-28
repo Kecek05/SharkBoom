@@ -1,10 +1,5 @@
-using QFSW.QC;
 using Sortify;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -17,21 +12,87 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private ItemsListSO itemsListSO;
     [SerializeField] private List<Transform> spawnPointsPos;
 
-    //Publics
+    //private TurnManager turnManager;
+    //private TimerManager timerManager;
+    private BaseGameTimerManager gameTimerManager;
+    //private PlayersPublicInfoManager playersPublicInfoManager;
+    //private ItemActivableManager itemActivableManager;
+    private BaseGameStateManager gameStateManager;
+    private BaseGameOverManager gameOverManager;
+
 
 
     private void Awake()
     {
         instance = this;
-
-        ServiceLocator.Register(new TurnManager());
-        ServiceLocator.Register(new TimerManager());
-        ServiceLocator.Register(new GameTimerManager());
-        ServiceLocator.Register(new PlayersPublicInfoManager());
-        ServiceLocator.Register(new ItemActivableManager());
-        ServiceLocator.Register(new GameStateManager());
-        ServiceLocator.Register(new GameOverManager());
         //CalculatePearlsManager.Reset();
+    }
+
+    private void Start()
+    {
+        //turnManager = ServiceLocator.Get<TurnManager>();
+        //timerManager = ServiceLocator.Get<TimerManager>();
+        gameTimerManager = ServiceLocator.Get<BaseGameTimerManager>();
+        //playersPublicInfoManager = ServiceLocator.Get<PlayersPublicInfoManager>();
+        //itemActivableManager = ServiceLocator.Get<ItemActivableManager>();
+        gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
+        gameOverManager = ServiceLocator.Get<BaseGameOverManager>();
+
+        HandleEvents();
+    }
+
+    private void HandleEvents()
+    {
+        gameStateManager.CurrentGameState.OnValueChanged += HandleOnGameStateChange;
+
+        gameTimerManager.OnGameTimerEnd += HandleOnGameTimerEnd;
+
+        PlayerSpawner.OnPlayerSpawned += HandleOnPlayerSpawned;
+
+        PlayerHealth.OnPlayerDie += HandeOnPlayerDie;
+
+        gameOverManager.LosedPlayer.OnValueChanged += HandleOnLosedPlayerValueChanged;
+    }
+
+    private void HandeOnPlayerDie(PlayableState state)
+    {
+        gameOverManager.LoseGame(state);
+
+        PlayerHealth.OnPlayerDie -= HandeOnPlayerDie;
+    }
+
+    private void HandleOnLosedPlayerValueChanged(PlayableState previousValue, PlayableState newValue)
+    {
+        gameOverManager.HandleOnLosedPlayerValueChanged(previousValue, newValue);
+    }
+
+    private void HandleOnPlayerSpawned(int playerCount)
+    {
+        gameStateManager.HandleOnPlayerSpawned(playerCount);
+    }
+
+    private void HandleOnGameTimerEnd()
+    {
+        gameStateManager.HandleOnGameTimerEnd();
+    }
+
+    private void HandleOnGameStateChange(GameState previousValue, GameState newValue)
+    {
+        gameStateManager.HandleOnGameStateValueChanged(previousValue, newValue);
+        gameTimerManager.HandleOnGameStateChange(newValue);
+    }
+
+    private void UnHandleEvents()
+    {
+        gameStateManager.CurrentGameState.OnValueChanged -= HandleOnGameStateChange;
+
+        gameTimerManager.OnGameTimerEnd -= HandleOnGameTimerEnd;
+
+        PlayerSpawner.OnPlayerSpawned -= HandleOnPlayerSpawned;
+
+        gameOverManager.LosedPlayer.OnValueChanged -= HandleOnLosedPlayerValueChanged;
+
+        PlayerHealth.OnPlayerDie -= HandeOnPlayerDie;
     }
 
     /// <summary>
@@ -71,7 +132,10 @@ public class GameManager : NetworkBehaviour
     }
 
 
-
+    private void OnDestroy()
+    {
+        UnHandleEvents();
+    }
 
 }
 

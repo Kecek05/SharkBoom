@@ -46,7 +46,7 @@ public abstract class BaseGameOverManager : NetworkBehaviour
 
     public abstract void GameOverClient();
 
-    protected abstract void HandleOnLosedPlayerValueChanged(PlayableState previousValue, PlayableState newValue);
+    public abstract void HandleOnLosedPlayerValueChanged(PlayableState previousValue, PlayableState newValue);
 
 
     protected abstract void CheckForTheWinner();

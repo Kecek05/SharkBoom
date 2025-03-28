@@ -1,6 +1,3 @@
-using QFSW.QC;
-using Sortify;
-using System;
 using System.Threading.Tasks;
 using Unity.Netcode;
 using UnityEngine;
@@ -8,44 +5,8 @@ using UnityEngine;
 public class GameStateManager : BaseGameStateManager
 {
 
-    //public override void OnNetworkSpawn()
-    //{
-    //    losedPlayer.OnValueChanged += LosedPlayer_OnvalueChanged;
-    //    gameState.OnValueChanged += GameState_OnValueChanged;
-
-    //    if (IsServer)
-    //    {
-    //        PlayerHealth.OnPlayerDie += LoseGame;
-    //        PlayerSpawner.OnPlayerSpawned += PlayerSpawner_OnPlayerSpawned;
-
-    //        GameTimerManager.OnGameTimerEnd += GameTimerManager_OnGameTimerEnd;
-    //    }
-    //}
-
-    //public override void OnNetworkDespawn()
-    //{
-
-    //    losedPlayer.OnValueChanged -= LosedPlayer_OnvalueChanged;
-    //    gameState.OnValueChanged -= GameState_OnValueChanged;
-
-    //    if (IsServer)
-    //    {
-    //        PlayerHealth.OnPlayerDie -= LoseGame;
-    //        PlayerSpawner.OnPlayerSpawned -= PlayerSpawner_OnPlayerSpawned;
-
-    //        GameTimerManager.OnGameTimerEnd -= GameTimerManager_OnGameTimerEnd;
-    //    }
-    //}
-
-
-    public override void OnNetworkSpawn()
-    {
-        throw new NotImplementedException();
-    }
-
     public override async void ChangeGameState(GameState gameState, int delayToChange = 0)
     {
-
         //if (gameOver) return;
 
         await Task.Delay(delayToChange);
@@ -58,7 +19,7 @@ public class GameStateManager : BaseGameStateManager
         TriggerOnLostConnectionInHost();
     }
 
-    protected override void HandleOnGameStateValueChanged(GameState previousValue, GameState newValue)
+    public override void HandleOnGameStateValueChanged(GameState previousValue, GameState newValue)
     {
         switch (newValue)
         {
@@ -107,14 +68,18 @@ public class GameStateManager : BaseGameStateManager
         Debug.Log($"Game State Changed to: {newValue}");
     }
 
-    protected override void HandleOnGameTimerEnd()
+    public override void HandleOnGameTimerEnd()
     {
+        if(!IsServer) return;
+
         Debug.Log("Game Timer Ended");
         ChangeGameState(GameState.GameEnded);
     }
 
-    protected override void HandleOnPlayerSpawned(int playerCount)
+    public override void HandleOnPlayerSpawned(int playerCount)
     {
+        if(!IsServer) return;
+
         if (playerCount == 2)
         {
             ChangeGameState(GameState.CalculatingResults); // All players Spawned, calculating Results
@@ -125,11 +90,6 @@ public class GameStateManager : BaseGameStateManager
     protected override void SetGameStateServerRpc(GameState newState)
     {
         gameState.Value = newState;
-    }
-
-    public override void OnNetworkDespawn()
-    {
-        throw new NotImplementedException();
     }
 }
 

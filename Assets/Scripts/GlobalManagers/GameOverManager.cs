@@ -1,5 +1,4 @@
 using Unity.Netcode;
-using UnityEngine;
 
 public class GameOverManager : BaseGameOverManager
 {
@@ -17,7 +16,7 @@ public class GameOverManager : BaseGameOverManager
 
 
             //await CalculatePearlsManager.TriggerChangePearls();
-            OnLose?.Invoke();
+            TriggerOnLose();
         }
         else if (losedPlayer.Value == PlayableState.None)
         {
@@ -25,14 +24,14 @@ public class GameOverManager : BaseGameOverManager
 
 
             //await CalculatePearlsManager.TriggerChangePearls();
-            OnLose?.Invoke();
+            TriggerOnLose();
         }
         else
         {
             //Change pearls, then win
 
             //await CalculatePearlsManager.TriggerChangePearls();
-            OnWin?.Invoke();
+            TriggerOnWin();
         }
     }
 
@@ -110,7 +109,7 @@ public class GameOverManager : BaseGameOverManager
         TriggerCanCloseServerRpc();
     }
 
-    protected override void HandleOnLosedPlayerValueChanged(PlayableState previousValue, PlayableState newValue)
+    public override void HandleOnLosedPlayerValueChanged(PlayableState previousValue, PlayableState newValue)
     {
         TriggerOnGameOver();
 

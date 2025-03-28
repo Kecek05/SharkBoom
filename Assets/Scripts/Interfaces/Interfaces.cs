@@ -62,38 +62,10 @@ public interface IPlayerSpawner //Decopling of the Authentication Services
     PlayableState GetPlayableStateByCount();
 }
 
-public interface IGameStateManager //Decopling GameStateManager
+public interface IGameTimerManager //Decopling management of GameTimer
 {
-    public event Action<GameState> OnGameStateChange;
-    public event Action<int> OnCanShowPearls;
-    public event Action OnGameOver;
-    public event Action OnWin;
-    public event Action OnLose;
-
-    /// <summary>
-    /// Called when any player lost connection in Host.
-    /// </summary>
-    public event Action OnLostConnectionInHost;
-
-    /// <summary>
-    /// Called when the server should be closed.
-    /// </summary>
-    public event Action OnCanCloseServer;
-
-    public int DelayClosePlayersInfo { get; }
-
-    public NetworkVariable<GameState> CurrentGameState { get; }
-
-    public void ConnectionLostHostAndClient();
-    public void ChangeGameState(GameState gameState, int delayToChange = 0);
-}
-
-public interface IGameOverManager //Decopling management of GameOver
-{
-    public NetworkVariable<PlayableState> LosedPlayer { get; }
-    public bool GameOver { get; }
-    public void LoseGame(PlayableState playerLosedPlayableState);
-
-    public void GameOverClient();
-
+    public event Action OnGameTimerEnd;
+    public void StartGameTimer(int time);
+    public void StopGameTimer();
+    public void ResetGameTimer();
 }

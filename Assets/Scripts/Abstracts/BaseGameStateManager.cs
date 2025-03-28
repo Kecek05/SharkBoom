@@ -30,25 +30,25 @@ public abstract class BaseGameStateManager : NetworkBehaviour
 
     //Methods
 
-    public abstract override void OnNetworkSpawn();
+
 
     /// <summary>
     /// Game timer ended.
     /// </summary>
-    protected abstract void HandleOnGameTimerEnd();
+    public abstract void HandleOnGameTimerEnd();
 
     /// <summary>
     /// Player spawned in game.
     /// </summary>
     /// <param name="playerCount"></param>
-    protected abstract void HandleOnPlayerSpawned(int playerCount);
+    public abstract void HandleOnPlayerSpawned(int playerCount);
 
     /// <summary>
     /// Game state changed.
     /// </summary>
     /// <param name="previousValue"></param>
     /// <param name="newValue"></param>
-    protected abstract void HandleOnGameStateValueChanged(GameState previousValue, GameState newValue);
+    public abstract void HandleOnGameStateValueChanged(GameState previousValue, GameState newValue);
 
 
     /// <summary>
@@ -91,5 +91,4 @@ public abstract class BaseGameStateManager : NetworkBehaviour
     /// </summary>
     public abstract void ConnectionLostHostAndClient();
 
-    public abstract override void OnNetworkDespawn();
 }
