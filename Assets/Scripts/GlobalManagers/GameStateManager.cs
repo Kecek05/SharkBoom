@@ -250,7 +250,7 @@ public class GameStateManager : NetworkBehaviour
 
     //}
 
-    public async void GameOverClient()
+    public void GameOverClient()
     {
         if (losedPlayer.Value == GameFlowManager.Instance.TurnManager.LocalPlayableState)
         {
