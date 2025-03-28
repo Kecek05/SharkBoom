@@ -8,15 +8,13 @@ public class JumpItem : BaseItemThrowable
     private float currentFollowingTime = 0f;
     private Transform objectToFollowTransform;
 
-    private BaseTurnManager turnManager;
-
     protected override void ItemReleased(float force, Vector2 direction)
     {
         base.ItemReleased(force, direction);
 
         if (isServerObject) return; // Jump is Client Sided. The server should not follow the player
 
-        objectToFollowTransform = PlayersPublicInfoManager.Instance.GetPlayerObjectByPlayableState(thisItemLaucherData.ownerPlayableState).transform;
+        objectToFollowTransform = ServiceLocator.Get<BasePlayersPublicInfoManager>().GetPlayerObjectByPlayableState(thisItemLaucherData.ownerPlayableState).transform;
 
         turnManager = ServiceLocator.Get<BaseTurnManager>();
 

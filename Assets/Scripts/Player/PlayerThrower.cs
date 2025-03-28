@@ -166,7 +166,8 @@ public class PlayerThrower : NetworkBehaviour
             }
         }
 
-        PlayersPublicInfoManager.Instance.AddPlayerToPlayersDictionary(thisPlayableState.Value, gameObject);
+        ServiceLocator.Get<BasePlayersPublicInfoManager>().AddPlayerToPlayersDictionary(thisPlayableState.Value, gameObject);
+
     }
 
     public override void OnNetworkDespawn()

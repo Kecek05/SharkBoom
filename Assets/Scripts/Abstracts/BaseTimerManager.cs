@@ -4,7 +4,7 @@ using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
-public abstract class BaseTimerManager : NetworkManager
+public abstract class BaseTimerManager : NetworkBehaviour
 {
     public event Action OnTurnTimesUp;
 
