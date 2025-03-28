@@ -1,44 +1,28 @@
-using Sortify;
-using System;
 using System.Threading.Tasks;
 using Unity.Netcode;
-using UnityEngine;
 
-public class TurnManager : NetworkBehaviour
+public class TurnManager : BaseTurnManager
 {
 
-    public event Action OnMyTurnStarted; //local player can play
-    public event Action OnMyTurnEnded;
-    public event Action OnMyTurnJumped;
-    public event Action OnLocalPlayableStateChanged;
-
-    [BetterHeader("Settings")]
-    [Tooltip("in ms")][SerializeField] private int delayBetweenTurns = 3000;
-
-    private PlayableState localPlayableState = new();
-    private PlayableState localPlayedState = new();
-
-    private NetworkVariable<PlayableState> currentPlayableState = new(PlayableState.None);
-
-    //Publics
-    public PlayableState LocalPlayableState => localPlayableState;
-    public NetworkVariable<PlayableState> CurrentPlayableState => currentPlayableState;
-
-    private GameStateManager gameStateManager;
-
-    public override void OnNetworkSpawn()
+    public override void HandleOnPlayableStateValueChanged(PlayableState previousValue, PlayableState newValue)
     {
-        if (IsClient)
+        if(!IsClient) return;
+
+        if (GameManager.Instance.GameStateManager.GameOver) return;
+
+        if (newValue == localPlayableState)
         {
-            currentPlayableState.OnValueChanged += CurrentPlayableState_OnValueChanged;
+            //Local Player can play
+            TriggerOnMyTurnStarted();
+        }
+        else if (newValue == localPlayedState)
+        {
+            //Local Player cant play
+            TriggerOnMyTurnEnded();
         }
     }
 
-    /// <summary>
-    /// Set the localPlayable and localPlayed states to the GameFlowManager, Only Owner.
-    /// </summary>
-    /// <param name="playingState"> Playing State</param>
-    public void InitializeLocalStates(PlayableState playingState)
+    public override void InitializeLocalStates(PlayableState playingState)
     {
         switch (playingState)
         {
@@ -52,23 +36,20 @@ public class TurnManager : NetworkBehaviour
                 break;
         }
 
-        OnLocalPlayableStateChanged?.Invoke();
+        TriggerOnLocalPlayableStateChanged();
+
     }
 
-    public void StartGame()
-    {
-        SetPlayableStateServerRpc(PlayableState.Player1Playing); // Debug
-
-        //int randomStartPlayer = UnityEngine.Random.Range(0, 2);
-        //SetPlayableStateServerRpc(randomStartPlayer == 0 ? PlayableState.Player1Playing : PlayableState.Player2Playing);
-    }
-
-    /// <summary>
-    /// Call this when player played an item. It will change the turn.
-    /// </summary>
-    /// <param name="playerPlayingState"> Playing State</param>
     [Rpc(SendTo.Server)]
-    public void PlayerPlayedServerRpc(PlayableState playerPlayingState)
+    public override void PlayerJumpedServerRpc(PlayableState playableState)
+    {
+        if (GameManager.Instance.GameStateManager.GameOver) return;
+
+        PlayerJumpedClientRpc(playableState);
+    }
+
+    [Rpc(SendTo.Server)]
+    public override void PlayerPlayedServerRpc(PlayableState playerPlayingState)
     {
         if (GameManager.Instance.GameStateManager.GameOver) return;
 
@@ -88,39 +69,15 @@ public class TurnManager : NetworkBehaviour
         }
     }
 
-    /// <summary>
-    /// Called when the player jumped.
-    /// </summary>
-    /// <param name="playableState"> Playing State</param>
-    [Rpc(SendTo.Server)]
-    public void PlayerJumpedServerRpc(PlayableState playableState)
+    public override void StartGame()
     {
-        if (GameManager.Instance.GameStateManager.GameOver) return;
+        SetPlayableStateServerRpc(PlayableState.Player1Playing); // Debug
 
-        PlayerJumpedClientRpc(playableState);
+        //int randomStartPlayer = UnityEngine.Random.Range(0, 2);
+        //SetPlayableStateServerRpc(randomStartPlayer == 0 ? PlayableState.Player1Playing : PlayableState.Player2Playing);
     }
 
-    /// <summary>
-    /// Tell the owner that the player jumped.
-    /// </summary>
-    /// <param name="playableState"> Owner Playing State</param>
-    [Rpc(SendTo.ClientsAndHost)]
-    private void PlayerJumpedClientRpc(PlayableState playableState)
-    {
-        if (GameManager.Instance.GameStateManager.GameOver) return;
-
-        if (localPlayableState == playableState)
-        {
-            //if the jump item is the same as the player playing, owner jumped
-            OnMyTurnJumped?.Invoke();
-        }
-    }
-
-    /// <summary>
-    /// Call this to change the player's turn after a delay.
-    /// </summary>
-    /// <param name="playableState"> Playing State</param>
-    private async void DelayChangeTurns(PlayableState playableState)
+    protected override async void DelayChangeTurns(PlayableState playableState)
     {
         if (GameManager.Instance.GameStateManager.GameOver) return;
 
@@ -128,35 +85,21 @@ public class TurnManager : NetworkBehaviour
         SetPlayableStateServerRpc(playableState);
     }
 
-    [Rpc(SendTo.Server)]
-    private void SetPlayableStateServerRpc(PlayableState newState)
-    {
-        currentPlayableState.Value = newState;
-    }
-
-
-    private void CurrentPlayableState_OnValueChanged(PlayableState previousValue, PlayableState newValue)
+    [Rpc(SendTo.ClientsAndHost)]
+    protected override void PlayerJumpedClientRpc(PlayableState playableState)
     {
         if (GameManager.Instance.GameStateManager.GameOver) return;
 
-        if (newValue == localPlayableState)
+        if (localPlayableState == playableState)
         {
-            //Local Player can play
-            OnMyTurnStarted?.Invoke();
+            //if the jump item is the same as the player playing, owner jumped
+            TriggerOnMyTurnJumped();
         }
-        else if (newValue == localPlayedState)
-        {
-            //Local Player cant play
-            OnMyTurnEnded?.Invoke();
-        }
-
     }
 
-    public override void OnNetworkDespawn()
+    [Rpc(SendTo.Server)]
+    protected override void SetPlayableStateServerRpc(PlayableState newState)
     {
-        if (IsClient)
-        {
-            currentPlayableState.OnValueChanged -= CurrentPlayableState_OnValueChanged;
-        }
+        currentPlayableState.Value = newState;
     }
 }

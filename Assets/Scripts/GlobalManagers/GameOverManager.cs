@@ -3,11 +3,6 @@ using Unity.Netcode;
 public class GameOverManager : BaseGameOverManager
 {
 
-    public override void OnNetworkSpawn()
-    {
-        throw new System.NotImplementedException();
-    }
-
     public override void GameOverClient()
     {
         if (losedPlayer.Value == GameManager.Instance.TurnManager.LocalPlayableState)
@@ -134,10 +129,5 @@ public class GameOverManager : BaseGameOverManager
         //Owner
         OnCanShowPearls?.Invoke(valueToShow);
 
-    }
-
-    public override void OnNetworkDespawn()
-    {
-        throw new System.NotImplementedException();
     }
 }

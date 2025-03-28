@@ -12,7 +12,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private ItemsListSO itemsListSO;
     [SerializeField] private List<Transform> spawnPointsPos;
 
-    //private TurnManager turnManager;
+    private BaseTurnManager turnManager;
     //private TimerManager timerManager;
     private BaseGameTimerManager gameTimerManager;
     //private PlayersPublicInfoManager playersPublicInfoManager;
@@ -30,7 +30,7 @@ public class GameManager : NetworkBehaviour
 
     private void Start()
     {
-        //turnManager = ServiceLocator.Get<TurnManager>();
+        turnManager = ServiceLocator.Get<BaseTurnManager>();
         //timerManager = ServiceLocator.Get<TimerManager>();
         gameTimerManager = ServiceLocator.Get<BaseGameTimerManager>();
         //playersPublicInfoManager = ServiceLocator.Get<PlayersPublicInfoManager>();
@@ -52,6 +52,13 @@ public class GameManager : NetworkBehaviour
         PlayerHealth.OnPlayerDie += HandeOnPlayerDie;
 
         gameOverManager.LosedPlayer.OnValueChanged += HandleOnLosedPlayerValueChanged;
+
+        turnManager.CurrentPlayableState.OnValueChanged += HandleOnPlayableStateChange;
+    }
+
+    private void HandleOnPlayableStateChange(PlayableState previousValue, PlayableState newValue)
+    {
+        turnManager.HandleOnPlayableStateValueChanged(previousValue, newValue);
     }
 
     private void HandeOnPlayerDie(PlayableState state)
@@ -93,6 +100,10 @@ public class GameManager : NetworkBehaviour
         gameOverManager.LosedPlayer.OnValueChanged -= HandleOnLosedPlayerValueChanged;
 
         PlayerHealth.OnPlayerDie -= HandeOnPlayerDie;
+
+        gameOverManager.LosedPlayer.OnValueChanged -= HandleOnLosedPlayerValueChanged;
+
+        turnManager.CurrentPlayableState.OnValueChanged -= HandleOnPlayableStateChange;
     }
 
     /// <summary>

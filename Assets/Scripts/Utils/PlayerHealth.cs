@@ -13,6 +13,9 @@ public class PlayerHealth : Health
         public float playerMaxHealth;
     }
 
+    /// <summary>
+    /// Server is who calls this event.
+    /// </summary>
     public static event Action<PlayableState> OnPlayerDie;
 
     private float selectedMultiplier; //cache

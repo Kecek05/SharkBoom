@@ -20,25 +20,15 @@ public abstract class BaseGameOverManager : NetworkBehaviour
 
 
     //Methods
-    protected void TriggerOnGameOver()
-    {
-        OnGameOver?.Invoke();
-    }
+    protected void TriggerOnGameOver() => OnGameOver?.Invoke();
 
-    protected void TriggerOnWin()
-    {
-        OnWin?.Invoke();
-    }
+    protected void TriggerOnWin() => OnWin?.Invoke();
 
-    protected void TriggerOnLose()
-    {
-        OnLose?.Invoke();
-    }
+    protected void TriggerOnLose() => OnLose?.Invoke();
 
-    public abstract override void OnNetworkSpawn();
 
     /// <summary>
-    /// Call this to know who loses and who wins. Server only.
+    /// Call this to know who loses and who wins. Server is the only who call this.
     /// </summary>
     /// <param name="playerLosedPlayableState"> Playing State of the player who loses</param>
     public abstract void LoseGame(PlayableState playerLosedPlayableState);
@@ -54,7 +44,5 @@ public abstract class BaseGameOverManager : NetworkBehaviour
 
     [Rpc(SendTo.ClientsAndHost)]
     protected abstract void SendGameResultsToClientRpc(string authId, int valueToShow);
-
-    public abstract override void OnNetworkDespawn();
 
 }
