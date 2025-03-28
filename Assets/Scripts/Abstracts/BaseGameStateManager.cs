@@ -53,8 +53,7 @@ public abstract class BaseGameStateManager : NetworkBehaviour
     /// <summary>
     /// Trigger event to close the server
     /// </summary>
-    [Rpc(SendTo.Server)]
-    protected void TriggerCanCloseServerRpc() => OnCanCloseServer?.Invoke();
+    protected void TriggerCanCloseServer() => OnCanCloseServer?.Invoke();
 
     protected void TriggerOnLostConnectionInHost() => OnLostConnectionInHost?.Invoke();
 
@@ -71,8 +70,7 @@ public abstract class BaseGameStateManager : NetworkBehaviour
     /// Set the game state on server.
     /// </summary>
     /// <param name="newState"></param>
-    [Rpc(SendTo.Server)]
-    protected abstract void SetGameStateServerRpc(GameState newState);
+    protected abstract void SetGameState(GameState newState);
 
     /// <summary>
     /// Called when any player lost connection in Host.

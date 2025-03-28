@@ -55,7 +55,7 @@ public class BaseItemThrowable : MonoBehaviour
     {
         if(!isServerObject) return; // Only the server should call the callback action
 
-        turnManager.PlayerPlayedServerRpc(thisItemLaucherData.ownerPlayableState);
+        turnManager.PlayerPlayed(thisItemLaucherData.ownerPlayableState);
     }
 
     protected void OnDestroy()

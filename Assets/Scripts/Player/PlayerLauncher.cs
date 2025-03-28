@@ -60,7 +60,7 @@ public class PlayerLauncher : NetworkBehaviour
             dragForce = player.PlayerDragController.DragForce, 
             dragDirection = player.PlayerDragController.DirectionOfDrag,
             selectedItemSOIndex = player.PlayerInventory.GetSelectedItemSOIndex(), 
-            ownerPlayableState = GameManager.Instance.TurnManager.LocalPlayableState,
+            ownerPlayableState = ServiceLocator.Get<BaseTurnManager>().LocalPlayableState,
         };
 
         SpawnProjectileServerRpc(itemLauncherData); //Spawn real projectile on server need to send the speed and force values through the network

@@ -61,7 +61,7 @@ public class TimerManager : BaseTimerManager
         TriggerOnTurnTimesUp();
 
         //time's up
-        turnManager.PlayerPlayedServerRpc(turnManager.CurrentPlayableState.Value); //change turn
+        turnManager.PlayerPlayed(turnManager.CurrentPlayableState.Value); //change turn
 
         timerCoroutine = null;
     }

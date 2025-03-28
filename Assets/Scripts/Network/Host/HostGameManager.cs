@@ -102,7 +102,7 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
 
         NetworkManager.Singleton.StartHost();
 
-        GameStateManager.OnCanCloseServer += GameStateManager_OnCanCloseServer;
+        //GameStateManager.OnCanCloseServer += GameStateManager_OnCanCloseServer;
 
         networkServer.OnClientLeft += HandleClientLeft;
 
@@ -124,7 +124,7 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
         if (GameManager.Instance != null)
         {
             //Client Left, Cancel Game
-            GameManager.Instance.GameStateManager.ConnectionLostHostAndClient();
+            ServiceLocator.Get<BaseGameStateManager>().ConnectionLostHostAndClient();
         }
         else
         {
@@ -168,7 +168,7 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
 
         networkServer.OnClientLeft -= HandleClientLeft;
 
-        GameStateManager.OnCanCloseServer -= GameStateManager_OnCanCloseServer;
+        //GameStateManager.OnCanCloseServer -= GameStateManager_OnCanCloseServer;
 
         networkServer?.Dispose();
     }

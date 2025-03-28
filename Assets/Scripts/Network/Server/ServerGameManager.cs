@@ -145,7 +145,7 @@ public class ServerGameManager : IDisposable
 #if UNITY_SERVER
         multiplayAllocationService?.Dispose();
 #endif
-        GameStateManager.OnCanCloseServer -= GameStateManager_OnCanCloseServer;
+        //GameStateManager.OnCanCloseServer -= GameStateManager_OnCanCloseServer;
         networkServer?.Dispose();
     }
 

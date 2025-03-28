@@ -19,6 +19,13 @@ public class LoadingPlayersUI : NetworkBehaviour
     [SerializeField] private TextMeshProUGUI player2NameText;
     [SerializeField] private TextMeshProUGUI player2PearlsText;
 
+    private BaseGameStateManager gameStateManager;
+
+    private void Start()
+    {
+        gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
+    }
+
     public override void OnNetworkSpawn()
     {
         HidePlayersInfo();
@@ -27,7 +34,7 @@ public class LoadingPlayersUI : NetworkBehaviour
 
         if(IsClient)
         {
-            GameManager.Instance.GameStateManager.CurrentGameState.OnValueChanged += GameState_OnValueChanged;
+            gameStateManager.CurrentGameState.OnValueChanged += GameState_OnValueChanged;
         }
 
         if(IsServer)
@@ -120,7 +127,7 @@ public class LoadingPlayersUI : NetworkBehaviour
     {
         if (!IsServer)
         {
-            GameManager.Instance.GameStateManager.CurrentGameState.OnValueChanged -= GameState_OnValueChanged;
+            gameStateManager.CurrentGameState.OnValueChanged -= GameState_OnValueChanged;
         }
 
         if (IsServer)

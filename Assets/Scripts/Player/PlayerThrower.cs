@@ -23,6 +23,8 @@ public class PlayerThrower : NetworkBehaviour
 
     private NetworkVariable<PlayableState> thisPlayableState = new();
 
+    private BaseTurnManager turnManager;
+    private BaseGameOverManager gameOverManager;
 
     //Publics
     public PlayerStateMachine PlayerStateMachine => playerStateMachine;
@@ -32,6 +34,14 @@ public class PlayerThrower : NetworkBehaviour
     public PlayerDragController PlayerDragController => playerDragController;
     public PlayerLauncher PlayerLauncher => playerLauncher;
     public NetworkVariable<PlayableState> ThisPlayableState => thisPlayableState;
+
+
+
+    private void Start()
+    {
+        turnManager = ServiceLocator.Get<BaseTurnManager>();
+        gameOverManager = ServiceLocator.Get<BaseGameOverManager>();
+    }
 
     public override void OnNetworkSpawn()
     {
@@ -55,13 +65,13 @@ public class PlayerThrower : NetworkBehaviour
         if (IsOwner)
         {
 
-            GameManager.Instance.TurnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
+            turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
 
-            GameManager.Instance.TurnManager.OnMyTurnEnded += GameFlowManager_OnMyTurnEnded;
+            turnManager.OnMyTurnEnded += GameFlowManager_OnMyTurnEnded;
 
-            GameManager.Instance.TurnManager.OnMyTurnJumped += GameFlowManager_OnMyTurnJumped;
+            turnManager.OnMyTurnJumped += GameFlowManager_OnMyTurnJumped;
 
-            GameManager.Instance.GameStateManager.OnGameOver += GameFlowManager_OnGameOver;
+            gameOverManager.OnGameOver += GameFlowManager_OnGameOver;
 
             playerStateMachine = new PlayerStateMachine(this);
 
@@ -127,7 +137,7 @@ public class PlayerThrower : NetworkBehaviour
         }
 
         playerStateMachine.TransitionTo(playerStateMachine.idleEnemyTurnState);
-        GameManager.Instance.TurnManager.PlayerPlayedServerRpc(GameManager.Instance.TurnManager.LocalPlayableState);
+        turnManager.PlayerPlayed(turnManager.LocalPlayableState);
 
     }
 
@@ -137,7 +147,7 @@ public class PlayerThrower : NetworkBehaviour
     {
         if (IsOwner)
         {
-            GameManager.Instance.TurnManager.InitializeLocalStates(thisPlayableState.Value); //pass to GameFlow to know when its local turn
+            turnManager.InitializeLocalStates(thisPlayableState.Value); //pass to GameFlow to know when its local turn
         }
 
         if (thisPlayableState.Value == PlayableState.Player1Playing)
@@ -165,13 +175,13 @@ public class PlayerThrower : NetworkBehaviour
 
         if (IsOwner)
         {
-            GameManager.Instance.TurnManager.OnMyTurnStarted -= GameFlowManager_OnMyTurnStarted;
+            turnManager.OnMyTurnStarted -= GameFlowManager_OnMyTurnStarted;
 
-            GameManager.Instance.TurnManager.OnMyTurnEnded -= GameFlowManager_OnMyTurnEnded;
+            turnManager.OnMyTurnEnded -= GameFlowManager_OnMyTurnEnded;
 
-            GameManager.Instance.TurnManager.OnMyTurnJumped -= GameFlowManager_OnMyTurnJumped;
+            turnManager.OnMyTurnJumped -= GameFlowManager_OnMyTurnJumped;
 
-            GameManager.Instance.GameStateManager.OnGameOver -= GameFlowManager_OnGameOver;
+            gameOverManager.OnGameOver -= GameFlowManager_OnGameOver;
         }
     }
 

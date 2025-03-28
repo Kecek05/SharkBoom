@@ -16,8 +16,11 @@ public class GameOverUI : MonoBehaviour
 
     private bool alreadyChanged = false; //Prevent double change when losting connection
 
+    private BaseGameOverManager gameOverManager;
     private void Awake()
     {
+        Hide();
+
         alreadyChanged = false;
 
         returnButton.onClick.AddListener(() =>
@@ -27,17 +30,18 @@ public class GameOverUI : MonoBehaviour
             if(ClientSingleton.Instance != null)
                 ClientSingleton.Instance.GameManager.Disconnect();
         });
+
     }
 
     private void Start()
     {
-        Hide();
+        gameOverManager = ServiceLocator.Get<BaseGameOverManager>();
 
-        GameManager.Instance.GameStateManager.OnWin += GameStateManager_OnWin;
-        GameManager.Instance.GameStateManager.OnLose += GameStateManager_OnLose;
+        gameOverManager.OnWin += GameStateManager_OnWin;
+        gameOverManager.OnLose += GameStateManager_OnLose;
 
-        //CalculatePearlsManager.OnPearlsDeltaChanged += CalculatePearlsManager_OnPearlsDeltaChanged;
-        GameManager.Instance.GameStateManager.OnCanShowPearls += GameStateManager_OnCanShowPearls;
+        ////CalculatePearlsManager.OnPearlsDeltaChanged += CalculatePearlsManager_OnPearlsDeltaChanged;
+        //gameOverManager.OnCanShowPearls += GameStateManager_OnCanShowPearls;
         //GameFlowManager.Instance.GameStateManager.OnGameOver += GameStateManager_OnGameOver;
     }
 
@@ -119,10 +123,10 @@ public class GameOverUI : MonoBehaviour
 
     private void OnDestroy()
     {
-        GameManager.Instance.GameStateManager.OnWin -= GameStateManager_OnWin;
-        GameManager.Instance.GameStateManager.OnLose -= GameStateManager_OnLose;
+        gameOverManager.OnWin -= GameStateManager_OnWin;
+        gameOverManager.OnLose -= GameStateManager_OnLose;
 
-        GameManager.Instance.GameStateManager.OnCanShowPearls -= GameStateManager_OnCanShowPearls;
-        //CalculatePearlsManager.OnPearlsDeltaChanged -= CalculatePearlsManager_OnPearlsDeltaChanged;
+        //GameManager.Instance.GameStateManager.OnCanShowPearls -= GameStateManager_OnCanShowPearls;
+        ////CalculatePearlsManager.OnPearlsDeltaChanged -= CalculatePearlsManager_OnPearlsDeltaChanged;
     }
 }

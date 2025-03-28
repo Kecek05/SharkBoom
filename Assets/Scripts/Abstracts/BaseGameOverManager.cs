@@ -40,8 +40,6 @@ public abstract class BaseGameOverManager : NetworkBehaviour
     public abstract void HandleOnGameStateChanged(GameState newValue);
     protected abstract void CheckForTheWinner();
 
-
-    [Rpc(SendTo.ClientsAndHost)]
-    protected abstract void SendGameResultsToClientRpc(string authId, int valueToShow);
+    protected abstract void SendGameResultsToClient(string authId, int valueToShow);
 
 }

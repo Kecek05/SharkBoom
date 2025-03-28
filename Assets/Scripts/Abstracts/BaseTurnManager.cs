@@ -51,22 +51,19 @@ public abstract class BaseTurnManager : NetworkBehaviour
     /// Call this when player played an item. It will change the turn.
     /// </summary>
     /// <param name="playerPlayingState"> Playing State</param>
-    [Rpc(SendTo.Server)]
-    public abstract void PlayerPlayedServerRpc(PlayableState playerPlayingState);
+    public abstract void PlayerPlayed(PlayableState playerPlayingState);
 
     /// <summary>
     /// Called when the player jumped.
     /// </summary>
     /// <param name="playableState"> Playing State</param>
-    [Rpc(SendTo.Server)]
-    public abstract void PlayerJumpedServerRpc(PlayableState playableState);
+    public abstract void PlayerJumped(PlayableState playableState);
 
     /// <summary>
     /// Tell the owner that the player jumped.
     /// </summary>
     /// <param name="playableState"> Owner Playing State</param>
-    [Rpc(SendTo.ClientsAndHost)]
-    protected abstract void PlayerJumpedClientRpc(PlayableState playableState);
+    protected abstract void PlayerJumpedClient(PlayableState playableState);
 
     /// <summary>
     /// Call this to change the player's turn after a delay.
@@ -74,8 +71,7 @@ public abstract class BaseTurnManager : NetworkBehaviour
     /// <param name="playableState"> Playing State</param>
     protected abstract void DelayChangeTurns(PlayableState playableState);
 
-    [Rpc(SendTo.Server)]
-    protected abstract void SetPlayableStateServerRpc(PlayableState newState);
+    protected abstract void SetPlayableStateServer(PlayableState newState);
 
     public abstract void HandleOnGameStateChanged(GameState newValue);
     public abstract void HandleOnPlayableStateValueChanged(PlayableState previousValue, PlayableState newValue);

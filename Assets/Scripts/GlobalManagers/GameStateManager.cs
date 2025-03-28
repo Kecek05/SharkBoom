@@ -15,7 +15,7 @@ public class GameStateManager : BaseGameStateManager
         if (gameOverManager.GameOver) return;
 
         await Task.Delay(delayToChange);
-        SetGameStateServerRpc(gameState);
+        SetGameState(gameState);
 
     }
 
@@ -65,8 +65,6 @@ public class GameStateManager : BaseGameStateManager
                 break;
             case GameState.GameEnded:
                 //If is DS, change players save
-                if (IsServer)
-                    CheckForTheWinner();
                 //Show UI for clients
                 break;
         }
@@ -91,8 +89,14 @@ public class GameStateManager : BaseGameStateManager
         }
     }
 
+
+    protected override void SetGameState(GameState newState)
+    {
+        SetGameStateServerRpc(newState);
+    }
+
     [Rpc(SendTo.Server)]
-    protected override void SetGameStateServerRpc(GameState newState)
+    private void SetGameStateServerRpc(GameState newState)
     {
         gameState.Value = newState;
     }

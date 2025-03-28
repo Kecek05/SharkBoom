@@ -54,16 +54,29 @@ public class TurnManager : BaseTurnManager
 
     }
 
+
+    public override void PlayerJumped(PlayableState playableState)
+    {
+        PlayerJumpedServerRpc(playableState);
+    }
+
+
     [Rpc(SendTo.Server)]
-    public override void PlayerJumpedServerRpc(PlayableState playableState)
+    private void PlayerJumpedServerRpc(PlayableState playableState)
     {
         if (gameOverManager.GameOver) return;
 
-        PlayerJumpedClientRpc(playableState);
+        PlayerJumpedClient(playableState);
+    }
+
+
+    public override void PlayerPlayed(PlayableState playerPlayingState)
+    {
+        PlayerPlayedServerRpc(playerPlayingState);
     }
 
     [Rpc(SendTo.Server)]
-    public override void PlayerPlayedServerRpc(PlayableState playerPlayingState)
+    private void PlayerPlayedServerRpc(PlayableState playerPlayingState)
     {
         if (gameOverManager.GameOver) return;
 
@@ -87,7 +100,7 @@ public class TurnManager : BaseTurnManager
     {
         if(!IsServer) return;
 
-        SetPlayableStateServerRpc(PlayableState.Player1Playing); // Debug
+        SetPlayableStateServer(PlayableState.Player1Playing); // Debug
 
         //int randomStartPlayer = UnityEngine.Random.Range(0, 2);
         //SetPlayableStateServerRpc(randomStartPlayer == 0 ? PlayableState.Player1Playing : PlayableState.Player2Playing);
@@ -98,11 +111,17 @@ public class TurnManager : BaseTurnManager
         if (gameOverManager.GameOver) return;
 
         await Task.Delay(delayBetweenTurns);
-        SetPlayableStateServerRpc(playableState);
+        SetPlayableStateServer(playableState);
+    }
+
+
+    protected override void PlayerJumpedClient(PlayableState playableState)
+    {
+        PlayerJumpedClientRpc(playableState);
     }
 
     [Rpc(SendTo.ClientsAndHost)]
-    protected override void PlayerJumpedClientRpc(PlayableState playableState)
+    private void PlayerJumpedClientRpc(PlayableState playableState)
     {
         if (gameOverManager.GameOver) return;
 
@@ -113,8 +132,14 @@ public class TurnManager : BaseTurnManager
         }
     }
 
+
+    protected override void SetPlayableStateServer(PlayableState newState)
+    {
+        SetPlayableStateServerRpc(newState);
+    }
+
     [Rpc(SendTo.Server)]
-    protected override void SetPlayableStateServerRpc(PlayableState newState)
+    private void SetPlayableStateServerRpc(PlayableState newState)
     {
         currentPlayableState.Value = newState;
     }

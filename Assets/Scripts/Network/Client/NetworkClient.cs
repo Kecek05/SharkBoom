@@ -35,11 +35,11 @@ public class NetworkClient : IDisposable //Actual Client Game Logic
             //Host
             if(GameManager.Instance != null)
             {
-                if (GameManager.Instance.GameStateManager.CurrentGameState.Value != GameState.GameEnded)
-                {
-                    //Game not ended yet
-                    GameManager.Instance.GameStateManager.ConnectionLostHostAndClient();
-                }
+                //if (GameManager.Instance.GameStateManager.CurrentGameState.Value != GameState.GameEnded)
+                //{
+                //    //Game not ended yet
+                //    GameManager.Instance.GameStateManager.ConnectionLostHostAndClient();
+                //}
             } 
             else
             {
@@ -56,7 +56,7 @@ public class NetworkClient : IDisposable //Actual Client Game Logic
         }
     }
 
-    private async void IDisconnectedFromDS()
+    private void IDisconnectedFromDS()
     {
         Debug.Log("I Disconnected from DS");
         if(SceneManager.GetActiveScene().name == Loader.Scene.Loading.ToString())
