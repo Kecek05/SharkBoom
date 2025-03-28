@@ -62,8 +62,8 @@ public class DebuggingTools : NetworkBehaviour
 
     private void Update()
     {
-        debugGameStateText.text = GameFlowManager.Instance.GameStateManager.CurrentGameState.Value.ToString();
-        debugPlayableStateText.text = GameFlowManager.Instance.TurnManager.CurrentPlayableState.Value.ToString();
+        debugGameStateText.text = GameManager.Instance.GameStateManager.CurrentGameState.Value.ToString();
+        debugPlayableStateText.text = GameManager.Instance.TurnManager.CurrentPlayableState.Value.ToString();
     }
 
 
@@ -108,7 +108,7 @@ public class DebuggingTools : NetworkBehaviour
     [Rpc(SendTo.Server)]
     private void SetGameOverRpc(PlayableState playableState)
     {
-        GameFlowManager.Instance.GameStateManager.LoseGame(playableState);
+        GameManager.Instance.GameStateManager.LoseGame(playableState);
     }
 
     [Rpc(SendTo.Server)]

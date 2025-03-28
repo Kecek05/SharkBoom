@@ -5,74 +5,61 @@ using System.Threading.Tasks;
 using Unity.Netcode;
 using UnityEngine;
 
-public class GameStateManager : NetworkBehaviour
+public class GameStateManager : BaseGameStateManager
 {
-    public static event Action<GameState> OnGameStateChange;
-    public event Action<int> OnCanShowPearls;
-    public event Action OnGameOver;
-    public event Action OnWin;
-    public event Action OnLose;
 
-    /// <summary>
-    /// Called when any player lost connection in Host.
-    /// </summary>
-    public static event Action OnLostConnectionInHost;
+    //public override void OnNetworkSpawn()
+    //{
+    //    losedPlayer.OnValueChanged += LosedPlayer_OnvalueChanged;
+    //    gameState.OnValueChanged += GameState_OnValueChanged;
 
-    /// <summary>
-    /// Called when the server should be closed.
-    /// </summary>
-    public static event Action OnCanCloseServer;
+    //    if (IsServer)
+    //    {
+    //        PlayerHealth.OnPlayerDie += LoseGame;
+    //        PlayerSpawner.OnPlayerSpawned += PlayerSpawner_OnPlayerSpawned;
 
-    [BetterHeader("Settings")]
-    [Tooltip("in ms")][SerializeField] private int delayClosePlayersInfo = 3000;
+    //        GameTimerManager.OnGameTimerEnd += GameTimerManager_OnGameTimerEnd;
+    //    }
+    //}
 
+    //public override void OnNetworkDespawn()
+    //{
 
-    private NetworkVariable<GameState> gameState = new(GameState.WaitingForPlayers);
-    private NetworkVariable<PlayableState> losedPlayer = new(PlayableState.None);
+    //    losedPlayer.OnValueChanged -= LosedPlayer_OnvalueChanged;
+    //    gameState.OnValueChanged -= GameState_OnValueChanged;
 
-    private bool gameOver = false;
+    //    if (IsServer)
+    //    {
+    //        PlayerHealth.OnPlayerDie -= LoseGame;
+    //        PlayerSpawner.OnPlayerSpawned -= PlayerSpawner_OnPlayerSpawned;
 
-
-    //Publics
-
-
-    public NetworkVariable<PlayableState> LosedPlayer => losedPlayer;
-    public bool GameOver => gameOver;
-    public NetworkVariable<GameState> CurrentGameState => gameState;
-
+    //        GameTimerManager.OnGameTimerEnd -= GameTimerManager_OnGameTimerEnd;
+    //    }
+    //}
 
 
     public override void OnNetworkSpawn()
     {
-        losedPlayer.OnValueChanged += LosedPlayer_OnvalueChanged;
-        gameState.OnValueChanged += GameState_OnValueChanged;
-
-        if (IsServer)
-        {
-            PlayerHealth.OnPlayerDie += LoseGame;
-            PlayerSpawner.OnPlayerSpawned += PlayerSpawner_OnPlayerSpawned;
-
-            GameTimerManager.OnGameTimerEnd += GameTimerManager_OnGameTimerEnd;
-        }
+        throw new NotImplementedException();
     }
 
-    private void GameTimerManager_OnGameTimerEnd()
+    public override async void ChangeGameState(GameState gameState, int delayToChange = 0)
     {
-        Debug.Log("Game Timer Ended");
-        ChangeGameState(GameState.GameEnded);
+
+        //if (gameOver) return;
+
+        await Task.Delay(delayToChange);
+        SetGameStateServerRpc(gameState);
+
     }
 
-    private void PlayerSpawner_OnPlayerSpawned(int playerCount)
+    public override void ConnectionLostHostAndClient()
     {
-        if (playerCount == 2)
-        {
-            ChangeGameState(GameState.CalculatingResults); // All players Spawned, calculating Results
-        }
+        TriggerOnLostConnectionInHost();
     }
 
-    private void GameState_OnValueChanged(GameState previousValue, GameState newValue)
+    protected override void HandleOnGameStateValueChanged(GameState previousValue, GameState newValue)
     {
-
         switch (newValue)
         {
             case GameState.WaitingForPlayers:
@@ -88,241 +75,62 @@ public class GameStateManager : NetworkBehaviour
                     //REFACTOR
                     CalculatePearlsManager.CalculatePossibleResults(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0], NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1]);
                     ChangeGameState(GameState.ShowingPlayersInfo);
-                } else if (IsHost)
+                }
+                else if (IsHost)
                 {
                     ChangeGameState(GameState.ShowingPlayersInfo);
                 }
                 break;
             case GameState.ShowingPlayersInfo:
-                if(IsServer)
+                if (IsServer)
                 {
-                    GameFlowManager.Instance.RandomizePlayerItems();
+                    GameManager.Instance.RandomizePlayerItems();
                     ChangeGameState(GameState.GameStarted, delayClosePlayersInfo); //Show Players Info delay
                 }
                 break;
             case GameState.GameStarted:
-                if(IsServer)
+                if (IsServer)
                 {
                     //START GAME TIMER 
-                    GameFlowManager.Instance.TurnManager.StartGame();
+                    GameManager.Instance.TurnManager.StartGame();
                 }
                 break;
             case GameState.GameEnded:
                 //If is DS, change players save
-                if(IsServer)
+                if (IsServer)
                     CheckForTheWinner();
                 //Show UI for clients
                 break;
         }
 
-        OnGameStateChange?.Invoke(newValue);
+        TriggerOnGameStateChange();
         Debug.Log($"Game State Changed to: {newValue}");
     }
 
-    private async void CheckForTheWinner()
+    protected override void HandleOnGameTimerEnd()
     {
-        //Code to check if both players have the same health, if so, tie, otherwise check who has the most health and declare the winner.
-
-        if (LosedPlayer.Value == PlayableState.None)
-        {
-            //Tie, both lose
-
-            if (!IsHost)
-            {
-                //DS
-                await CalculatePearlsManager.ChangePearlsLoser(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0]);
-
-                await CalculatePearlsManager.ChangePearlsLoser(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1]);
-
-            }
-
-            SendGameResultsToClientRpc(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId, NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].calculatedPearls.PearlsToLose);
-
-            SendGameResultsToClientRpc(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId, NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].calculatedPearls.PearlsToLose);
-
-            TriggerCanCloseServerRpc();
-
-            return;
-        }
-
-        if (LosedPlayer.Value == NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].playableState)
-        {
-            //Player 2 Winner
-
-            if (!IsHost)
-            {
-                //DS
-                await CalculatePearlsManager.ChangePearlsWinner(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1]);
-
-                await CalculatePearlsManager.ChangePearlsLoser(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0]);
-
-
-            }
-            SendGameResultsToClientRpc(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId, NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].calculatedPearls.PearlsToLose);
-
-            SendGameResultsToClientRpc(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId, NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].calculatedPearls.PearlsToWin);
-
-        }
-        else
-        {
-            //Player 1 Winner
-
-            if (!IsHost)
-            {
-                //DS
-                await CalculatePearlsManager.ChangePearlsWinner(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0]);
-
-                await CalculatePearlsManager.ChangePearlsLoser(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1]);
-
-            }
-            SendGameResultsToClientRpc(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId, NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].calculatedPearls.PearlsToWin);
-
-            SendGameResultsToClientRpc(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId, NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].calculatedPearls.PearlsToLose);
-
-        }
-
-        TriggerCanCloseServerRpc();
+        Debug.Log("Game Timer Ended");
+        ChangeGameState(GameState.GameEnded);
     }
 
-    [Rpc(SendTo.ClientsAndHost)]
-    private void SendGameResultsToClientRpc(string authId, int valueToShow)
+    protected override void HandleOnPlayerSpawned(int playerCount)
     {
-        if(ClientSingleton.Instance == null) return;
-
-        if (ClientSingleton.Instance.GameManager.UserData.userAuthId != authId) return;
-
-        //Owner
-        OnCanShowPearls?.Invoke(valueToShow);
-
-    }
-
-
-    public void ConnectionLostHostAndClient()
-    {
-        OnLostConnectionInHost?.Invoke();
-    }
-
-    private void LosedPlayer_OnvalueChanged(PlayableState previousValue, PlayableState newValue)
-    {
-        OnGameOver?.Invoke();
-
-        if(IsServer)
-            ChangeGameState(GameState.GameEnded);
-        
-        if(IsClient)
+        if (playerCount == 2)
         {
-            GameOverClient();
+            ChangeGameState(GameState.CalculatingResults); // All players Spawned, calculating Results
         }
-
-        gameOver = true;
-    }
-
-    //[Rpc(SendTo.Server)]
-    //private void ClientChangedResultsRpc()
-    //{
-    //    changedResults++;
-
-    //    if(changedResults == 2)
-    //    {
-    //        //Both clients changed the results
-    //        //Close Server
-    //        TriggerCanCloseServerRpc();
-    //    }
-    //}
-
-    [Rpc(SendTo.Server)]
-    private void TriggerCanCloseServerRpc()
-    {
-        OnCanCloseServer?.Invoke();
-    }
-
-
-    //private async void IwinGameOverAsync()
-    //{
-    //    //Change pearls, then win
-    //    localWin = true;
-    //    //await CalculatePearlsManager.TriggerChangePearls();
-
-    //    Debug.Log("IwinGameOverAsync Finished");
-    //    TriggerCanCloseServerRpc();
-
-    //    OnWin?.Invoke();
-
-    //}
-
-    public void GameOverClient()
-    {
-        if (losedPlayer.Value == GameFlowManager.Instance.TurnManager.LocalPlayableState)
-        {
-            //Change pearls, then lose
-
-
-            //await CalculatePearlsManager.TriggerChangePearls();
-            OnLose?.Invoke();
-        }
-        else if (losedPlayer.Value == PlayableState.None)
-        {
-            //Tie, lose
-
-
-            //await CalculatePearlsManager.TriggerChangePearls();
-            OnLose?.Invoke();
-        }
-        else
-        {
-            //Change pearls, then win
-
-            //await CalculatePearlsManager.TriggerChangePearls();
-            OnWin?.Invoke();
-        }
-    }
-
-
-
-    /// <summary>
-    /// Call this to know who loses and who wins. Server only.
-    /// </summary>
-    /// <param name="playerLosedPlayableState"> Playing State of the player who loses</param>
-    public void LoseGame(PlayableState playerLosedPlayableState)
-    {
-        losedPlayer.Value = playerLosedPlayableState;
-    }
-
-    /// <summary>
-    /// Call this to change the Game State, delay its optional.
-    /// </summary>
-    /// <param name="gameState"> Game State</param>
-    /// <param name="delayToChange"> Delay in ms</param>
-    [Command("gameStateManager-ChangeGameState")]
-    public async void ChangeGameState(GameState gameState, int delayToChange = 0) //0ms default
-    {
-        if (gameOver) return;
-
-        await Task.Delay(delayToChange);
-        SetGameStateServerRpc(gameState);
     }
 
     [Rpc(SendTo.Server)]
-    private void SetGameStateServerRpc(GameState newState)
+    protected override void SetGameStateServerRpc(GameState newState)
     {
         gameState.Value = newState;
     }
 
     public override void OnNetworkDespawn()
     {
-
-        losedPlayer.OnValueChanged -= LosedPlayer_OnvalueChanged;
-        gameState.OnValueChanged -= GameState_OnValueChanged;
-
-        if (IsServer)
-        {
-            PlayerHealth.OnPlayerDie -= LoseGame;
-            PlayerSpawner.OnPlayerSpawned -= PlayerSpawner_OnPlayerSpawned;
-
-            GameTimerManager.OnGameTimerEnd -= GameTimerManager_OnGameTimerEnd;
-        }
+        throw new NotImplementedException();
     }
-
 }
 
 

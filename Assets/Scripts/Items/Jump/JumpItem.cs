@@ -25,7 +25,7 @@ public class JumpItem : BaseItemThrowable
     {
         if (!isServerObject) return;
 
-        GameFlowManager.Instance.TurnManager.PlayerJumpedServerRpc(thisItemLaucherData.ownerPlayableState);
+        GameManager.Instance.TurnManager.PlayerJumpedServerRpc(thisItemLaucherData.ownerPlayableState);
 
     }
 

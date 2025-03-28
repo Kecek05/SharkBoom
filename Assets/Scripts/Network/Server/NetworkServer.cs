@@ -95,7 +95,7 @@ public class NetworkServer : IDisposable
         response.CreatePlayerObject = false;
 
         if(serverAuthenticationService.RegisteredClientCount == 2) //two clients in game
-            GameFlowManager.Instance.GameStateManager.ChangeGameState(GameState.SpawningPlayers);
+            GameManager.Instance.GameStateManager.ChangeGameState(GameState.SpawningPlayers);
         
     }
 

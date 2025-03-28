@@ -121,10 +121,10 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
             Debug.LogException(lobbyEx);
         }
 
-        if (GameFlowManager.Instance != null)
+        if (GameManager.Instance != null)
         {
             //Client Left, Cancel Game
-            GameFlowManager.Instance.GameStateManager.ConnectionLostHostAndClient();
+            GameManager.Instance.GameStateManager.ConnectionLostHostAndClient();
         }
         else
         {

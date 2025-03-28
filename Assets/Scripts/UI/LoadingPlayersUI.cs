@@ -27,7 +27,7 @@ public class LoadingPlayersUI : NetworkBehaviour
 
         if(IsClient)
         {
-            GameFlowManager.Instance.GameStateManager.CurrentGameState.OnValueChanged += GameState_OnValueChanged;
+            GameManager.Instance.GameStateManager.CurrentGameState.OnValueChanged += GameState_OnValueChanged;
         }
 
         if(IsServer)
@@ -120,7 +120,7 @@ public class LoadingPlayersUI : NetworkBehaviour
     {
         if (!IsServer)
         {
-            GameFlowManager.Instance.GameStateManager.CurrentGameState.OnValueChanged -= GameState_OnValueChanged;
+            GameManager.Instance.GameStateManager.CurrentGameState.OnValueChanged -= GameState_OnValueChanged;
         }
 
         if (IsServer)

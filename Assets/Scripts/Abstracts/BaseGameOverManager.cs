@@ -1,0 +1,60 @@
+using System;
+using Unity.Netcode;
+using UnityEngine;
+
+public abstract class BaseGameOverManager : NetworkBehaviour
+{
+    //Events
+    public event Action OnGameOver;
+    public event Action OnWin;
+    public event Action OnLose;
+
+    //Variables
+
+    protected NetworkVariable<PlayableState> losedPlayer = new(PlayableState.None);
+    protected bool gameOver = false;
+
+    //Publics
+    public NetworkVariable<PlayableState> LosedPlayer => losedPlayer;
+    public bool GameOver => gameOver;
+
+
+    //Methods
+    protected void TriggerOnGameOver()
+    {
+        OnGameOver?.Invoke();
+    }
+
+    protected void TriggerOnWin()
+    {
+        OnWin?.Invoke();
+    }
+
+    protected void TriggerOnLose()
+    {
+        OnLose?.Invoke();
+    }
+
+    public abstract override void OnNetworkSpawn();
+
+    /// <summary>
+    /// Call this to know who loses and who wins. Server only.
+    /// </summary>
+    /// <param name="playerLosedPlayableState"> Playing State of the player who loses</param>
+    public abstract void LoseGame(PlayableState playerLosedPlayableState);
+
+
+    public abstract void GameOverClient();
+
+    protected abstract void HandleOnLosedPlayerValueChanged(PlayableState previousValue, PlayableState newValue);
+
+
+    protected abstract void CheckForTheWinner();
+
+
+    [Rpc(SendTo.ClientsAndHost)]
+    protected abstract void SendGameResultsToClientRpc(string authId, int valueToShow);
+
+    public abstract override void OnNetworkDespawn();
+
+}

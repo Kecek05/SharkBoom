@@ -30,7 +30,7 @@ public class PlayerSpawner : IPlayerSpawner
     {
         playerSpawned++;
 
-        Transform randomSpawnPointSelected = GameFlowManager.Instance.GetRandomSpawnPoint();
+        Transform randomSpawnPointSelected = GameManager.Instance.GetRandomSpawnPoint();
 
         NetworkObject playerInstance = GameObject.Instantiate(playerPrefab, randomSpawnPointSelected.position, Quaternion.identity);
 

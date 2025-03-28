@@ -19,16 +19,16 @@ public class TimerManager : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        GameFlowManager.Instance.TurnManager.CurrentPlayableState.OnValueChanged += CurrentPlayableState_OnValueChanged;
+        GameManager.Instance.TurnManager.CurrentPlayableState.OnValueChanged += CurrentPlayableState_OnValueChanged;
 
-        GameFlowManager.Instance.GameStateManager.OnGameOver += GameFlowManager_OnGameOver;
+        GameManager.Instance.GameStateManager.OnGameOver += GameFlowManager_OnGameOver;
     }
 
 
 
     private void CurrentPlayableState_OnValueChanged(PlayableState previousValue, PlayableState newValue)
     {
-        if (GameFlowManager.Instance.GameStateManager.GameOver) return;
+        if (GameManager.Instance.GameStateManager.GameOver) return;
 
         if (newValue == PlayableState.Player1Playing || newValue == PlayableState.Player2Playing)
         {
@@ -65,9 +65,9 @@ public class TimerManager : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        GameFlowManager.Instance.TurnManager.CurrentPlayableState.OnValueChanged -= CurrentPlayableState_OnValueChanged;
+        GameManager.Instance.TurnManager.CurrentPlayableState.OnValueChanged -= CurrentPlayableState_OnValueChanged;
 
-        GameFlowManager.Instance.GameStateManager.OnGameOver -= GameFlowManager_OnGameOver;
+        GameManager.Instance.GameStateManager.OnGameOver -= GameFlowManager_OnGameOver;
     }
 
     private IEnumerator Timer()
@@ -81,7 +81,7 @@ public class TimerManager : NetworkBehaviour
         OnTimesUp?.Invoke();
 
         //time's up
-        GameFlowManager.Instance.TurnManager.PlayerPlayedServerRpc(GameFlowManager.Instance.TurnManager.CurrentPlayableState.Value); //change turn
+        GameManager.Instance.TurnManager.PlayerPlayedServerRpc(GameManager.Instance.TurnManager.CurrentPlayableState.Value); //change turn
 
         timerCoroutine = null;
     }

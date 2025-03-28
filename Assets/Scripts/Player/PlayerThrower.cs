@@ -55,13 +55,13 @@ public class PlayerThrower : NetworkBehaviour
         if (IsOwner)
         {
 
-            GameFlowManager.Instance.TurnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
+            GameManager.Instance.TurnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
 
-            GameFlowManager.Instance.TurnManager.OnMyTurnEnded += GameFlowManager_OnMyTurnEnded;
+            GameManager.Instance.TurnManager.OnMyTurnEnded += GameFlowManager_OnMyTurnEnded;
 
-            GameFlowManager.Instance.TurnManager.OnMyTurnJumped += GameFlowManager_OnMyTurnJumped;
+            GameManager.Instance.TurnManager.OnMyTurnJumped += GameFlowManager_OnMyTurnJumped;
 
-            GameFlowManager.Instance.GameStateManager.OnGameOver += GameFlowManager_OnGameOver;
+            GameManager.Instance.GameStateManager.OnGameOver += GameFlowManager_OnGameOver;
 
             playerStateMachine = new PlayerStateMachine(this);
 
@@ -127,7 +127,7 @@ public class PlayerThrower : NetworkBehaviour
         }
 
         playerStateMachine.TransitionTo(playerStateMachine.idleEnemyTurnState);
-        GameFlowManager.Instance.TurnManager.PlayerPlayedServerRpc(GameFlowManager.Instance.TurnManager.LocalPlayableState);
+        GameManager.Instance.TurnManager.PlayerPlayedServerRpc(GameManager.Instance.TurnManager.LocalPlayableState);
 
     }
 
@@ -137,7 +137,7 @@ public class PlayerThrower : NetworkBehaviour
     {
         if (IsOwner)
         {
-            GameFlowManager.Instance.TurnManager.InitializeLocalStates(thisPlayableState.Value); //pass to GameFlow to know when its local turn
+            GameManager.Instance.TurnManager.InitializeLocalStates(thisPlayableState.Value); //pass to GameFlow to know when its local turn
         }
 
         if (thisPlayableState.Value == PlayableState.Player1Playing)
@@ -165,13 +165,13 @@ public class PlayerThrower : NetworkBehaviour
 
         if (IsOwner)
         {
-            GameFlowManager.Instance.TurnManager.OnMyTurnStarted -= GameFlowManager_OnMyTurnStarted;
+            GameManager.Instance.TurnManager.OnMyTurnStarted -= GameFlowManager_OnMyTurnStarted;
 
-            GameFlowManager.Instance.TurnManager.OnMyTurnEnded -= GameFlowManager_OnMyTurnEnded;
+            GameManager.Instance.TurnManager.OnMyTurnEnded -= GameFlowManager_OnMyTurnEnded;
 
-            GameFlowManager.Instance.TurnManager.OnMyTurnJumped -= GameFlowManager_OnMyTurnJumped;
+            GameManager.Instance.TurnManager.OnMyTurnJumped -= GameFlowManager_OnMyTurnJumped;
 
-            GameFlowManager.Instance.GameStateManager.OnGameOver -= GameFlowManager_OnGameOver;
+            GameManager.Instance.GameStateManager.OnGameOver -= GameFlowManager_OnGameOver;
         }
     }
 

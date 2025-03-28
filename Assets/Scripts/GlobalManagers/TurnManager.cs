@@ -24,6 +24,7 @@ public class TurnManager : NetworkBehaviour
     public PlayableState LocalPlayableState => localPlayableState;
     public NetworkVariable<PlayableState> CurrentPlayableState => currentPlayableState;
 
+    private GameStateManager gameStateManager;
 
     public override void OnNetworkSpawn()
     {
@@ -69,7 +70,7 @@ public class TurnManager : NetworkBehaviour
     [Rpc(SendTo.Server)]
     public void PlayerPlayedServerRpc(PlayableState playerPlayingState)
     {
-        if (GameFlowManager.Instance.GameStateManager.GameOver) return;
+        if (GameManager.Instance.GameStateManager.GameOver) return;
 
         if (playerPlayingState == PlayableState.Player1Playing)
         {
@@ -94,7 +95,7 @@ public class TurnManager : NetworkBehaviour
     [Rpc(SendTo.Server)]
     public void PlayerJumpedServerRpc(PlayableState playableState)
     {
-        if (GameFlowManager.Instance.GameStateManager.GameOver) return;
+        if (GameManager.Instance.GameStateManager.GameOver) return;
 
         PlayerJumpedClientRpc(playableState);
     }
@@ -106,7 +107,7 @@ public class TurnManager : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost)]
     private void PlayerJumpedClientRpc(PlayableState playableState)
     {
-        if (GameFlowManager.Instance.GameStateManager.GameOver) return;
+        if (GameManager.Instance.GameStateManager.GameOver) return;
 
         if (localPlayableState == playableState)
         {
@@ -121,7 +122,7 @@ public class TurnManager : NetworkBehaviour
     /// <param name="playableState"> Playing State</param>
     private async void DelayChangeTurns(PlayableState playableState)
     {
-        if (GameFlowManager.Instance.GameStateManager.GameOver) return;
+        if (GameManager.Instance.GameStateManager.GameOver) return;
 
         await Task.Delay(delayBetweenTurns);
         SetPlayableStateServerRpc(playableState);
@@ -136,7 +137,7 @@ public class TurnManager : NetworkBehaviour
 
     private void CurrentPlayableState_OnValueChanged(PlayableState previousValue, PlayableState newValue)
     {
-        if (GameFlowManager.Instance.GameStateManager.GameOver) return;
+        if (GameManager.Instance.GameStateManager.GameOver) return;
 
         if (newValue == localPlayableState)
         {

@@ -8,26 +8,29 @@ using System.Xml.Serialization;
 using Unity.Netcode;
 using UnityEngine;
 
-public class GameFlowManager : NetworkBehaviour
+public class GameManager : NetworkBehaviour
 {
-    private static GameFlowManager instance;
-    public static GameFlowManager Instance => instance;
+    private static GameManager instance;
+    public static GameManager Instance => instance;
 
     [BetterHeader("References")]
-    [SerializeField] private GameStateManager gameStateManager;
-    [SerializeField] private TurnManager turnManager;
     [SerializeField] private ItemsListSO itemsListSO;
     [SerializeField] private List<Transform> spawnPointsPos;
 
     //Publics
-    public TurnManager TurnManager => turnManager;
-    public GameStateManager GameStateManager => gameStateManager;
 
 
     private void Awake()
     {
         instance = this;
 
+        ServiceLocator.Register(new TurnManager());
+        ServiceLocator.Register(new TimerManager());
+        ServiceLocator.Register(new GameTimerManager());
+        ServiceLocator.Register(new PlayersPublicInfoManager());
+        ServiceLocator.Register(new ItemActivableManager());
+        ServiceLocator.Register(new GameStateManager());
+        ServiceLocator.Register(new GameOverManager());
         //CalculatePearlsManager.Reset();
     }
 

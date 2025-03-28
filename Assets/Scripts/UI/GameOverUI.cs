@@ -33,11 +33,11 @@ public class GameOverUI : MonoBehaviour
     {
         Hide();
 
-        GameFlowManager.Instance.GameStateManager.OnWin += GameStateManager_OnWin;
-        GameFlowManager.Instance.GameStateManager.OnLose += GameStateManager_OnLose;
+        GameManager.Instance.GameStateManager.OnWin += GameStateManager_OnWin;
+        GameManager.Instance.GameStateManager.OnLose += GameStateManager_OnLose;
 
         //CalculatePearlsManager.OnPearlsDeltaChanged += CalculatePearlsManager_OnPearlsDeltaChanged;
-        GameFlowManager.Instance.GameStateManager.OnCanShowPearls += GameStateManager_OnCanShowPearls;
+        GameManager.Instance.GameStateManager.OnCanShowPearls += GameStateManager_OnCanShowPearls;
         //GameFlowManager.Instance.GameStateManager.OnGameOver += GameStateManager_OnGameOver;
     }
 
@@ -119,10 +119,10 @@ public class GameOverUI : MonoBehaviour
 
     private void OnDestroy()
     {
-        GameFlowManager.Instance.GameStateManager.OnWin -= GameStateManager_OnWin;
-        GameFlowManager.Instance.GameStateManager.OnLose -= GameStateManager_OnLose;
+        GameManager.Instance.GameStateManager.OnWin -= GameStateManager_OnWin;
+        GameManager.Instance.GameStateManager.OnLose -= GameStateManager_OnLose;
 
-        GameFlowManager.Instance.GameStateManager.OnCanShowPearls -= GameStateManager_OnCanShowPearls;
+        GameManager.Instance.GameStateManager.OnCanShowPearls -= GameStateManager_OnCanShowPearls;
         //CalculatePearlsManager.OnPearlsDeltaChanged -= CalculatePearlsManager_OnPearlsDeltaChanged;
     }
 }
