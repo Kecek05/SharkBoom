@@ -4,10 +4,15 @@ using UnityEngine;
 
 public class GameStateManager : BaseGameStateManager
 {
+    private BaseGameOverManager gameOverManager;
+    private void Start()
+    {
+        gameOverManager = ServiceLocator.Get<BaseGameOverManager>();
+    }
 
     public override async void ChangeGameState(GameState gameState, int delayToChange = 0)
     {
-        //if (gameOver) return;
+        if (gameOverManager.GameOver) return;
 
         await Task.Delay(delayToChange);
         SetGameStateServerRpc(gameState);
@@ -19,7 +24,14 @@ public class GameStateManager : BaseGameStateManager
         TriggerOnLostConnectionInHost();
     }
 
-    public override void HandleOnGameStateValueChanged(GameState previousValue, GameState newValue)
+    public override void HandleOnGameOver()
+    {
+        if (!IsServer) return;
+
+        ChangeGameState(GameState.GameEnded);
+    }
+
+    public override void HandleOnGameStateValueChanged(GameState newValue)
     {
         switch (newValue)
         {
@@ -50,11 +62,6 @@ public class GameStateManager : BaseGameStateManager
                 }
                 break;
             case GameState.GameStarted:
-                if (IsServer)
-                {
-                    //START GAME TIMER 
-                    GameManager.Instance.TurnManager.StartGame();
-                }
                 break;
             case GameState.GameEnded:
                 //If is DS, change players save
@@ -63,8 +70,6 @@ public class GameStateManager : BaseGameStateManager
                 //Show UI for clients
                 break;
         }
-
-        TriggerOnGameStateChange();
         Debug.Log($"Game State Changed to: {newValue}");
     }
 
@@ -91,19 +96,4 @@ public class GameStateManager : BaseGameStateManager
     {
         gameState.Value = newState;
     }
-}
-
-
-/// <summary>
-/// Related to game flow, use PlayableState to player relayed states.
-/// </summary>
-public enum GameState
-{
-    None,
-    WaitingForPlayers, //Waiting for players to connect
-    SpawningPlayers, //Spawning Players
-    CalculatingResults, //Calculating Results
-    ShowingPlayersInfo, // All players connected, and Spawned, Showing Players Info
-    GameStarted, //Game Started
-    GameEnded, //Game Over
 }

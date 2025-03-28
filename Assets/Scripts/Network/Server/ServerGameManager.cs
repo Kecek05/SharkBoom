@@ -28,7 +28,7 @@ public class ServerGameManager : IDisposable
         multiplayAllocationService = new MultiplayAllocationService();
 #endif
 
-        GameStateManager.OnCanCloseServer += GameStateManager_OnCanCloseServer;
+        //GameStateManager.OnCanCloseServer += GameStateManager_OnCanCloseServer;
     }
 
     public async Task StartGameServerAsync()

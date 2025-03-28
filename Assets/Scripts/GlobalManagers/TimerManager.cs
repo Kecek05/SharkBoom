@@ -1,34 +1,33 @@
-using Sortify;
-using System;
 using System.Collections;
-using Unity.Netcode;
-using UnityEngine;
 
-public class TimerManager : NetworkBehaviour
+public class TimerManager : BaseTimerManager
 {
-    public static event Action OnTimesUp;
+    private BaseGameOverManager gameOverManager;
+    private BaseTurnManager turnManager;
 
-    [Unit(" s")][SerializeField] private int turnTime = 30;
-    private NetworkVariable<int> timerTurn = new(0);
-
-    private Coroutine timerCoroutine;
-    private WaitForSeconds timerDelay = new WaitForSeconds(1); //cache
-
-    public NetworkVariable<int> TimerTurn => timerTurn;
-    public override void OnNetworkSpawn()
+    private void Start()
     {
-        if (!IsServer) return;
+        gameOverManager = ServiceLocator.Get<BaseGameOverManager>();
 
-        GameManager.Instance.TurnManager.CurrentPlayableState.OnValueChanged += CurrentPlayableState_OnValueChanged;
-
-        GameManager.Instance.GameStateManager.OnGameOver += GameFlowManager_OnGameOver;
+        turnManager = ServiceLocator.Get<BaseTurnManager>();
     }
 
-
-
-    private void CurrentPlayableState_OnValueChanged(PlayableState previousValue, PlayableState newValue)
+    public override void HandleOnGameOver()
     {
-        if (GameManager.Instance.GameStateManager.GameOver) return;
+        if(!IsServer) return;
+
+        if (timerCoroutine != null)
+        {
+            StopCoroutine(timerCoroutine);
+            timerCoroutine = null;
+        }
+    }
+
+    public override void HandleOnPlayableStateValueChanged(PlayableState previousValue, PlayableState newValue)
+    {
+        if(!IsServer) return;
+
+        if (gameOverManager.GameOver) return;
 
         if (newValue == PlayableState.Player1Playing || newValue == PlayableState.Player2Playing)
         {
@@ -51,26 +50,7 @@ public class TimerManager : NetworkBehaviour
         }
     }
 
-    private void GameFlowManager_OnGameOver()
-    {
-
-        if (timerCoroutine != null)
-        {
-            StopCoroutine(timerCoroutine);
-            timerCoroutine = null;
-        }
-    }
-
-    public override void OnNetworkDespawn()
-    {
-        if (!IsServer) return;
-
-        GameManager.Instance.TurnManager.CurrentPlayableState.OnValueChanged -= CurrentPlayableState_OnValueChanged;
-
-        GameManager.Instance.GameStateManager.OnGameOver -= GameFlowManager_OnGameOver;
-    }
-
-    private IEnumerator Timer()
+    protected override IEnumerator Timer()
     {
         while (timerTurn.Value > 0)
         {
@@ -78,12 +58,11 @@ public class TimerManager : NetworkBehaviour
             timerTurn.Value--;
         }
 
-        OnTimesUp?.Invoke();
+        TriggerOnTurnTimesUp();
 
         //time's up
-        GameManager.Instance.TurnManager.PlayerPlayedServerRpc(GameManager.Instance.TurnManager.CurrentPlayableState.Value); //change turn
+        turnManager.PlayerPlayedServerRpc(turnManager.CurrentPlayableState.Value); //change turn
 
         timerCoroutine = null;
     }
-
 }

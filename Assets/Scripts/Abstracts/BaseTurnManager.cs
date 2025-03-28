@@ -77,6 +77,6 @@ public abstract class BaseTurnManager : NetworkBehaviour
     [Rpc(SendTo.Server)]
     protected abstract void SetPlayableStateServerRpc(PlayableState newState);
 
-
+    public abstract void HandleOnGameStateChanged(GameState newValue);
     public abstract void HandleOnPlayableStateValueChanged(PlayableState previousValue, PlayableState newValue);
 }

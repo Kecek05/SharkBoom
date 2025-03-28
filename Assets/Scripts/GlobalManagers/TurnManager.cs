@@ -3,12 +3,26 @@ using Unity.Netcode;
 
 public class TurnManager : BaseTurnManager
 {
+    private BaseGameOverManager gameOverManager;
+
+    private void Start()
+    {
+        gameOverManager = ServiceLocator.Get<BaseGameOverManager>();
+    }
+
+    public override void HandleOnGameStateChanged(GameState newValue)
+    {
+        if (newValue == GameState.GameStarted)
+        {
+            StartGame();
+        }
+    }
 
     public override void HandleOnPlayableStateValueChanged(PlayableState previousValue, PlayableState newValue)
     {
         if(!IsClient) return;
 
-        if (GameManager.Instance.GameStateManager.GameOver) return;
+        if (gameOverManager.GameOver) return;
 
         if (newValue == localPlayableState)
         {
@@ -43,7 +57,7 @@ public class TurnManager : BaseTurnManager
     [Rpc(SendTo.Server)]
     public override void PlayerJumpedServerRpc(PlayableState playableState)
     {
-        if (GameManager.Instance.GameStateManager.GameOver) return;
+        if (gameOverManager.GameOver) return;
 
         PlayerJumpedClientRpc(playableState);
     }
@@ -51,7 +65,7 @@ public class TurnManager : BaseTurnManager
     [Rpc(SendTo.Server)]
     public override void PlayerPlayedServerRpc(PlayableState playerPlayingState)
     {
-        if (GameManager.Instance.GameStateManager.GameOver) return;
+        if (gameOverManager.GameOver) return;
 
         if (playerPlayingState == PlayableState.Player1Playing)
         {
@@ -71,6 +85,8 @@ public class TurnManager : BaseTurnManager
 
     public override void StartGame()
     {
+        if(!IsServer) return;
+
         SetPlayableStateServerRpc(PlayableState.Player1Playing); // Debug
 
         //int randomStartPlayer = UnityEngine.Random.Range(0, 2);
@@ -79,7 +95,7 @@ public class TurnManager : BaseTurnManager
 
     protected override async void DelayChangeTurns(PlayableState playableState)
     {
-        if (GameManager.Instance.GameStateManager.GameOver) return;
+        if (gameOverManager.GameOver) return;
 
         await Task.Delay(delayBetweenTurns);
         SetPlayableStateServerRpc(playableState);
@@ -88,7 +104,7 @@ public class TurnManager : BaseTurnManager
     [Rpc(SendTo.ClientsAndHost)]
     protected override void PlayerJumpedClientRpc(PlayableState playableState)
     {
-        if (GameManager.Instance.GameStateManager.GameOver) return;
+        if (gameOverManager.GameOver) return;
 
         if (localPlayableState == playableState)
         {

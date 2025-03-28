@@ -8,6 +8,7 @@ public class JumpItem : BaseItemThrowable
     private float currentFollowingTime = 0f;
     private Transform objectToFollowTransform;
 
+    private BaseTurnManager turnManager;
 
     protected override void ItemReleased(float force, Vector2 direction)
     {
@@ -17,6 +18,7 @@ public class JumpItem : BaseItemThrowable
 
         objectToFollowTransform = PlayersPublicInfoManager.Instance.GetPlayerObjectByPlayableState(thisItemLaucherData.ownerPlayableState).transform;
 
+        turnManager = ServiceLocator.Get<BaseTurnManager>();
 
         StartCoroutine(PlayerFollowFirework());
     }
@@ -25,7 +27,7 @@ public class JumpItem : BaseItemThrowable
     {
         if (!isServerObject) return;
 
-        GameManager.Instance.TurnManager.PlayerJumpedServerRpc(thisItemLaucherData.ownerPlayableState);
+        turnManager.PlayerJumpedServerRpc(thisItemLaucherData.ownerPlayableState);
 
     }
 

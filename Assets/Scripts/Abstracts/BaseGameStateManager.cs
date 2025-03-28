@@ -1,11 +1,9 @@
 using System;
 using Unity.Netcode;
-using UnityEngine;
 
 public abstract class BaseGameStateManager : NetworkBehaviour
 {
     //Events
-    public event Action<GameState> OnGameStateChange;
 
     /// <summary>
     /// Called when any player lost connection in Host.
@@ -48,16 +46,15 @@ public abstract class BaseGameStateManager : NetworkBehaviour
     /// </summary>
     /// <param name="previousValue"></param>
     /// <param name="newValue"></param>
-    public abstract void HandleOnGameStateValueChanged(GameState previousValue, GameState newValue);
+    public abstract void HandleOnGameStateValueChanged(GameState newValue);
 
+    public abstract void HandleOnGameOver();
 
     /// <summary>
     /// Trigger event to close the server
     /// </summary>
     [Rpc(SendTo.Server)]
     protected void TriggerCanCloseServerRpc() => OnCanCloseServer?.Invoke();
-
-    protected void TriggerOnGameStateChange() => OnGameStateChange?.Invoke(gameState.Value);
 
     protected void TriggerOnLostConnectionInHost() => OnLostConnectionInHost?.Invoke();
 
@@ -82,4 +79,18 @@ public abstract class BaseGameStateManager : NetworkBehaviour
     /// </summary>
     public abstract void ConnectionLostHostAndClient();
 
+}
+
+/// <summary>
+/// Related to game flow, use PlayableState to player relayed states.
+/// </summary>
+public enum GameState
+{
+    None,
+    WaitingForPlayers, //Waiting for players to connect
+    SpawningPlayers, //Spawning Players
+    CalculatingResults, //Calculating Results
+    ShowingPlayersInfo, // All players connected, and Spawned, Showing Players Info
+    GameStarted, //Game Started
+    GameEnded, //Game Over
 }

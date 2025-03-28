@@ -2,10 +2,17 @@ using Unity.Netcode;
 
 public class GameOverManager : BaseGameOverManager
 {
+    
+    private BaseTurnManager turnManager;
+
+    private void Start()
+    {
+        turnManager = ServiceLocator.Get<BaseTurnManager>();
+    }
 
     public override void GameOverClient()
     {
-        if (losedPlayer.Value == GameManager.Instance.TurnManager.LocalPlayableState)
+        if (losedPlayer.Value == turnManager.LocalPlayableState)
         {
             //Change pearls, then lose
 
@@ -30,18 +37,24 @@ public class GameOverManager : BaseGameOverManager
         }
     }
 
+    public override void HandleOnGameStateChanged(GameState newValue)
+    {
+        if (newValue == GameState.GameEnded)
+        {
+            CheckForTheWinner();
+        }
+    }
+
     public override void LoseGame(PlayableState playerLosedPlayableState)
     {
         losedPlayer.Value = playerLosedPlayableState;
     }
 
-
-
-
-
-    protected override void CheckForTheWinner()
+    protected override async void CheckForTheWinner()
     {
         //Code to check if both players have the same health, if so, tie, otherwise check who has the most health and declare the winner.
+
+        if(!IsServer) return;
 
         if (LosedPlayer.Value == PlayableState.None)
         {
@@ -60,7 +73,7 @@ public class GameOverManager : BaseGameOverManager
 
             SendGameResultsToClientRpc(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId, NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].calculatedPearls.PearlsToLose);
 
-            TriggerCanCloseServerRpc();
+            //TriggerCanCloseServerRpc();
 
             return;
         }
@@ -101,15 +114,12 @@ public class GameOverManager : BaseGameOverManager
 
         }
 
-        TriggerCanCloseServerRpc();
+        //TriggerCanCloseServerRpc();
     }
 
     public override void HandleOnLosedPlayerValueChanged(PlayableState previousValue, PlayableState newValue)
     {
         TriggerOnGameOver();
-
-        if (IsServer)
-            ChangeGameState(GameState.GameEnded);
 
         if (IsClient)
         {
@@ -127,7 +137,7 @@ public class GameOverManager : BaseGameOverManager
         if (ClientSingleton.Instance.GameManager.UserData.userAuthId != authId) return;
 
         //Owner
-        OnCanShowPearls?.Invoke(valueToShow);
+        //OnCanShowPearls?.Invoke(valueToShow);
 
     }
 }

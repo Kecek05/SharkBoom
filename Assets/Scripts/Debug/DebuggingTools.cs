@@ -21,6 +21,10 @@ public class DebuggingTools : NetworkBehaviour
     private float lastPingTime;
     private float currentPing = 0f;
 
+    private BaseGameStateManager stateManager;
+    private BaseTurnManager turnManager;
+    private BaseGameOverManager gameOverManager;
+
     private void Awake()
     {
         Instance = this;
@@ -32,6 +36,9 @@ public class DebuggingTools : NetworkBehaviour
         {
             StartCoroutine(PingCoroutine());
         }
+
+        stateManager = ServiceLocator.Get<BaseGameStateManager>();
+        turnManager = ServiceLocator.Get<BaseTurnManager>();
     }
 
     private IEnumerator PingCoroutine()
@@ -62,8 +69,8 @@ public class DebuggingTools : NetworkBehaviour
 
     private void Update()
     {
-        debugGameStateText.text = GameManager.Instance.GameStateManager.CurrentGameState.Value.ToString();
-        debugPlayableStateText.text = GameManager.Instance.TurnManager.CurrentPlayableState.Value.ToString();
+        debugGameStateText.text = stateManager.CurrentGameState.Value.ToString();
+        debugPlayableStateText.text = turnManager.CurrentPlayableState.Value.ToString();
     }
 
 
@@ -108,7 +115,7 @@ public class DebuggingTools : NetworkBehaviour
     [Rpc(SendTo.Server)]
     private void SetGameOverRpc(PlayableState playableState)
     {
-        GameManager.Instance.GameStateManager.LoseGame(playableState);
+        gameOverManager.LoseGame(playableState);
     }
 
     [Rpc(SendTo.Server)]

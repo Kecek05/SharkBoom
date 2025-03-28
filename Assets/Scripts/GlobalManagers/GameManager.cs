@@ -1,4 +1,5 @@
 using Sortify;
+using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
@@ -13,7 +14,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private List<Transform> spawnPointsPos;
 
     private BaseTurnManager turnManager;
-    //private TimerManager timerManager;
+    private BaseTimerManager timerManager;
     private BaseGameTimerManager gameTimerManager;
     //private PlayersPublicInfoManager playersPublicInfoManager;
     //private ItemActivableManager itemActivableManager;
@@ -31,7 +32,7 @@ public class GameManager : NetworkBehaviour
     private void Start()
     {
         turnManager = ServiceLocator.Get<BaseTurnManager>();
-        //timerManager = ServiceLocator.Get<TimerManager>();
+        timerManager = ServiceLocator.Get<BaseTimerManager>();
         gameTimerManager = ServiceLocator.Get<BaseGameTimerManager>();
         //playersPublicInfoManager = ServiceLocator.Get<PlayersPublicInfoManager>();
         //itemActivableManager = ServiceLocator.Get<ItemActivableManager>();
@@ -52,12 +53,20 @@ public class GameManager : NetworkBehaviour
         PlayerHealth.OnPlayerDie += HandeOnPlayerDie;
 
         gameOverManager.LosedPlayer.OnValueChanged += HandleOnLosedPlayerValueChanged;
+        gameOverManager.OnGameOver += HandleOnGameOver;
 
         turnManager.CurrentPlayableState.OnValueChanged += HandleOnPlayableStateChange;
     }
 
+    private void HandleOnGameOver()
+    {
+        gameStateManager.HandleOnGameOver();
+        timerManager.HandleOnGameOver();
+    }
+
     private void HandleOnPlayableStateChange(PlayableState previousValue, PlayableState newValue)
     {
+        timerManager.HandleOnPlayableStateValueChanged(previousValue, newValue);
         turnManager.HandleOnPlayableStateValueChanged(previousValue, newValue);
     }
 
@@ -85,7 +94,10 @@ public class GameManager : NetworkBehaviour
 
     private void HandleOnGameStateChange(GameState previousValue, GameState newValue)
     {
-        gameStateManager.HandleOnGameStateValueChanged(previousValue, newValue);
+        gameStateManager.HandleOnGameStateValueChanged(newValue);
+
+        gameOverManager.HandleOnGameStateChanged(newValue);
+        turnManager.HandleOnGameStateChanged(newValue);
         gameTimerManager.HandleOnGameStateChange(newValue);
     }
 
@@ -102,6 +114,7 @@ public class GameManager : NetworkBehaviour
         PlayerHealth.OnPlayerDie -= HandeOnPlayerDie;
 
         gameOverManager.LosedPlayer.OnValueChanged -= HandleOnLosedPlayerValueChanged;
+        gameOverManager.OnGameOver -= HandleOnGameOver;
 
         turnManager.CurrentPlayableState.OnValueChanged -= HandleOnPlayableStateChange;
     }

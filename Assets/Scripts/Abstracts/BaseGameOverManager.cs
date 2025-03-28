@@ -1,6 +1,5 @@
 using System;
 using Unity.Netcode;
-using UnityEngine;
 
 public abstract class BaseGameOverManager : NetworkBehaviour
 {
@@ -38,7 +37,7 @@ public abstract class BaseGameOverManager : NetworkBehaviour
 
     public abstract void HandleOnLosedPlayerValueChanged(PlayableState previousValue, PlayableState newValue);
 
-
+    public abstract void HandleOnGameStateChanged(GameState newValue);
     protected abstract void CheckForTheWinner();
 
 
