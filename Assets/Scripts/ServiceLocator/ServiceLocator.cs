@@ -10,6 +10,7 @@ public static class ServiceLocator
     public static void Register<T>(T service) where T : class
     {
         services[typeof(T)] = service;
+        Debug.Log($"Registered: {service}");
     }
     
 
@@ -21,8 +22,7 @@ public static class ServiceLocator
         }
         else
         {
-            Debug.LogError($"Service of type {typeof(T)} not found");
-            return null;
+            throw new Exception($"Service of type {typeof(T).Name} not found");
         }
     }
 

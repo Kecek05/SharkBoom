@@ -10,8 +10,6 @@ using UnityEngine;
 public class DebuggingTools : NetworkBehaviour
 {
 
-    public static DebuggingTools Instance;
-
     [BetterHeader("References")]
     public TextMeshProUGUI debugGameStateText;
     public TextMeshProUGUI debugPlayableStateText;
@@ -25,20 +23,16 @@ public class DebuggingTools : NetworkBehaviour
     private BaseTurnManager turnManager;
     private BaseGameOverManager gameOverManager;
 
-    private void Awake()
+    public override void OnNetworkSpawn()
     {
-        Instance = this;
-    }
-
-    private void Start()
-    {
-        if(IsClient)
+        if (IsClient)
         {
             StartCoroutine(PingCoroutine());
         }
 
         stateManager = ServiceLocator.Get<BaseGameStateManager>();
         turnManager = ServiceLocator.Get<BaseTurnManager>();
+        gameOverManager = ServiceLocator.Get<BaseGameOverManager>();
     }
 
     private IEnumerator PingCoroutine()
@@ -124,15 +118,10 @@ public class DebuggingTools : NetworkBehaviour
         Debug.Log(debugText);
     }
 
-    private void OnDestroy()
+    [Command("serverDebugLog")]
+    private void SendDebugLogToServer(string message)
     {
-        DebugOnServerRpc("On Destroy Client");
+        DebugOnServerRpc(message);
     }
-
-    private void OnApplicationQuit()
-    {
-        DebugOnServerRpc("On Application Quit Client");
-    }
-
 
 }

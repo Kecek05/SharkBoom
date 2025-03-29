@@ -46,7 +46,7 @@ public class GameStateManager : BaseGameStateManager
                 if (IsServer && !IsHost) //DS
                 {
                     //REFACTOR
-                    CalculatePearlsManager.CalculatePossibleResults(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0], NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1]);
+                    CalculatePearls.CalculatePossibleResults(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0], NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1]);
                     ChangeGameState(GameState.ShowingPlayersInfo);
                 }
                 else if (IsHost)

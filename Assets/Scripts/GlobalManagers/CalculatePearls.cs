@@ -1,9 +1,8 @@
 using System;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public static class CalculatePearlsManager
+public static class CalculatePearls
 {
     //public static event Action<int> OnPearlsDeltaChanged;
     //public static event Action OnFinishedCalculateResults;

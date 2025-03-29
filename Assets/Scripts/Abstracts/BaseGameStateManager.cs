@@ -17,7 +17,7 @@ public abstract class BaseGameStateManager : NetworkBehaviour
 
 
     //Variables
-    protected int delayClosePlayersInfo;
+    protected int delayClosePlayersInfo = 3000; //in ms
     protected NetworkVariable<GameState> gameState = new(GameState.WaitingForPlayers);
 
 

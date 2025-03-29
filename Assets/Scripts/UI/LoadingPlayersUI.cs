@@ -21,13 +21,10 @@ public class LoadingPlayersUI : NetworkBehaviour
 
     private BaseGameStateManager gameStateManager;
 
-    private void Start()
-    {
-        gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
-    }
-
     public override void OnNetworkSpawn()
     {
+        gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
+
         HidePlayersInfo();
         ShowWaitingForPlayers();
 

@@ -36,18 +36,11 @@ public class PlayerThrower : NetworkBehaviour
     public NetworkVariable<PlayableState> ThisPlayableState => thisPlayableState;
 
 
-
-    private void Start()
-    {
-        turnManager = ServiceLocator.Get<BaseTurnManager>();
-        gameOverManager = ServiceLocator.Get<BaseGameOverManager>();
-    }
-
     public override void OnNetworkSpawn()
     {
-        if(IsServer)
-        {
 
+        if (IsServer)
+        {
             PlayerData playerData = NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.GetPlayerDataByClientId(OwnerClientId);
 
             OnPlayerSpawned?.Invoke(this);
@@ -64,6 +57,8 @@ public class PlayerThrower : NetworkBehaviour
 
         if (IsOwner)
         {
+            gameOverManager = ServiceLocator.Get<BaseGameOverManager>();
+            turnManager = ServiceLocator.Get<BaseTurnManager>();
 
             turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
 
@@ -147,7 +142,7 @@ public class PlayerThrower : NetworkBehaviour
     {
         if (IsOwner)
         {
-            turnManager.InitializeLocalStates(thisPlayableState.Value); //pass to GameFlow to know when its local turn
+            ServiceLocator.Get<BaseTurnManager>().InitializeLocalStates(thisPlayableState.Value); //pass to GameFlow to know when its local turn
         }
 
         if (thisPlayableState.Value == PlayableState.Player1Playing)

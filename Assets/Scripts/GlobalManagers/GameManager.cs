@@ -6,8 +6,7 @@ using UnityEngine;
 
 public class GameManager : NetworkBehaviour
 {
-    private static GameManager instance;
-    public static GameManager Instance => instance;
+    public static GameManager Instance { get; private set; }
 
     [BetterHeader("References")]
     [SerializeField] private ItemsListSO itemsListSO;
@@ -20,16 +19,14 @@ public class GameManager : NetworkBehaviour
     //private ItemActivableManager itemActivableManager;
     private BaseGameStateManager gameStateManager;
     private BaseGameOverManager gameOverManager;
-
-
+    private BasePearlsManager pearlsManager;
 
     private void Awake()
     {
-        instance = this;
-        //CalculatePearlsManager.Reset();
+        Instance = this;
     }
 
-    private void Start()
+    public override void OnNetworkSpawn()
     {
         turnManager = ServiceLocator.Get<BaseTurnManager>();
         timerManager = ServiceLocator.Get<BaseTimerManager>();
@@ -38,6 +35,7 @@ public class GameManager : NetworkBehaviour
         //itemActivableManager = ServiceLocator.Get<ItemActivableManager>();
         gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
         gameOverManager = ServiceLocator.Get<BaseGameOverManager>();
+        pearlsManager = ServiceLocator.Get<BasePearlsManager>();
 
         HandleEvents();
     }
@@ -96,7 +94,7 @@ public class GameManager : NetworkBehaviour
     {
         gameStateManager.HandleOnGameStateValueChanged(newValue);
 
-        gameOverManager.HandleOnGameStateChanged(newValue);
+        pearlsManager.HandleOnGameStateChanged(newValue);
         turnManager.HandleOnGameStateChanged(newValue);
         gameTimerManager.HandleOnGameStateChange(newValue);
     }
@@ -155,8 +153,7 @@ public class GameManager : NetworkBehaviour
         return selectedSpawnPoint;
     }
 
-
-    private void OnDestroy()
+    public override void OnNetworkDespawn()
     {
         UnHandleEvents();
     }

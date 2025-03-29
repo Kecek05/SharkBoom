@@ -33,14 +33,14 @@ public class NetworkClient : IDisposable //Actual Client Game Logic
         if(!ClientSingleton.Instance.GameManager.IsDedicatedServerGame)
         {
             //Host
-            if(GameManager.Instance != null)
+            if (GameManager.Instance != null)
             {
                 //if (GameManager.Instance.GameStateManager.CurrentGameState.Value != GameState.GameEnded)
                 //{
                 //    //Game not ended yet
                 //    GameManager.Instance.GameStateManager.ConnectionLostHostAndClient();
                 //}
-            } 
+            }
             else
             {
                 //Not in game scene

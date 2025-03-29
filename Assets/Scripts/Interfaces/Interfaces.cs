@@ -1,3 +1,4 @@
+using Sortify;
 using System;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -53,19 +54,11 @@ public interface IServerAuthenticationService //Decopling of the Authentication 
     public ulong GetClientIdByAuthId(string authId);
 }
 
-public interface IPlayerSpawner //Decopling of the Authentication Services
+public interface IPlayerSpawner
 {
     int PlayerCount { get; }
 
     void SpawnPlayer(ulong clientId);
 
     PlayableState GetPlayableStateByCount();
-}
-
-public interface IGameTimerManager //Decopling management of GameTimer
-{
-    public event Action OnGameTimerEnd;
-    public void StartGameTimer(int time);
-    public void StopGameTimer();
-    public void ResetGameTimer();
 }

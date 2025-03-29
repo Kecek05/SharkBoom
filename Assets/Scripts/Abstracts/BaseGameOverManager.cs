@@ -4,6 +4,7 @@ using Unity.Netcode;
 public abstract class BaseGameOverManager : NetworkBehaviour
 {
     //Events
+    public event Action<int> OnCanShowPearls;
     public event Action OnGameOver;
     public event Action OnWin;
     public event Action OnLose;
@@ -25,7 +26,6 @@ public abstract class BaseGameOverManager : NetworkBehaviour
 
     protected void TriggerOnLose() => OnLose?.Invoke();
 
-
     /// <summary>
     /// Call this to know who loses and who wins. Server is the only who call this.
     /// </summary>
@@ -36,10 +36,5 @@ public abstract class BaseGameOverManager : NetworkBehaviour
     public abstract void GameOverClient();
 
     public abstract void HandleOnLosedPlayerValueChanged(PlayableState previousValue, PlayableState newValue);
-
-    public abstract void HandleOnGameStateChanged(GameState newValue);
-    protected abstract void CheckForTheWinner();
-
-    protected abstract void SendGameResultsToClient(string authId, int valueToShow);
 
 }
