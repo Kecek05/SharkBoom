@@ -14,7 +14,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &6932234482931318273
 Transform:
@@ -46,7 +46,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &8360721014962939102
 Transform:
@@ -112,6 +112,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7564421573030646366, guid: 5bdfe50a91d078641823f778f8a839ca, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     - target: {fileID: -6126973646161254530, guid: 5bdfe50a91d078641823f778f8a839ca, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -124,10 +128,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: GO_Shovel_LOD0
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 5bdfe50a91d078641823f778f8a839ca, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 1126206522264102758, guid: 5bdfe50a91d078641823f778f8a839ca, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     - target: {fileID: 5622650732123314960, guid: 5bdfe50a91d078641823f778f8a839ca, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 37761e1f4540c0a4ab4ab5388878c74a, type: 2}
+    - target: {fileID: 8814392952281128753, guid: 5bdfe50a91d078641823f778f8a839ca, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

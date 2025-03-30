@@ -14,7 +14,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &6932234482931318273
 Transform:
@@ -46,7 +46,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &8360721014962939102
 Transform:
@@ -120,9 +120,25 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 1bb289844cedb8c4db935b139d6f55fa, type: 2}
+    - target: {fileID: -983853999483213168, guid: 66b8297fd4a32f3488ddc78469ed5b3b, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 66b8297fd4a32f3488ddc78469ed5b3b, type: 3}
       propertyPath: m_Name
       value: GO_Sword_LOD0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 66b8297fd4a32f3488ddc78469ed5b3b, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 1048752208400228727, guid: 66b8297fd4a32f3488ddc78469ed5b3b, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 2019366258293250783, guid: 66b8297fd4a32f3488ddc78469ed5b3b, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 6375988212704939620, guid: 66b8297fd4a32f3488ddc78469ed5b3b, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'

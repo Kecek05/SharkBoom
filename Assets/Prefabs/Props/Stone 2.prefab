@@ -14,7 +14,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &8572034688966287534
 Transform:
@@ -46,7 +46,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &3050741500913788043
 Transform:
@@ -116,6 +116,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -4868127601596241522, guid: 353cc55e65b18ed4f84475f36a36ec45, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: -3273987590468187535, guid: 353cc55e65b18ed4f84475f36a36ec45, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     - target: {fileID: -2230049388428975177, guid: 353cc55e65b18ed4f84475f36a36ec45, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -127,6 +135,14 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 353cc55e65b18ed4f84475f36a36ec45, type: 3}
       propertyPath: m_Name
       value: GO_Stone2_LOD0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 353cc55e65b18ed4f84475f36a36ec45, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 1116680719884564223, guid: 353cc55e65b18ed4f84475f36a36ec45, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
