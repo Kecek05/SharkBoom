@@ -14,7 +14,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &6604147052546316905
 Transform:
@@ -46,7 +46,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &6707521399075076650
 Transform:
@@ -112,10 +112,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -5888223564438077525, guid: a8ec8d7072cb1274eb8b031f7e62cb6f, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     - target: {fileID: -1909697930243040569, guid: a8ec8d7072cb1274eb8b031f7e62cb6f, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 9f5735c1d9271c14cadc802eadc67d81, type: 2}
+    - target: {fileID: -323657825978888517, guid: a8ec8d7072cb1274eb8b031f7e62cb6f, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     - target: {fileID: 584223975106596860, guid: a8ec8d7072cb1274eb8b031f7e62cb6f, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -123,6 +131,14 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: a8ec8d7072cb1274eb8b031f7e62cb6f, type: 3}
       propertyPath: m_Name
       value: GO_Anchor_LOD0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a8ec8d7072cb1274eb8b031f7e62cb6f, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 4979219722408870283, guid: a8ec8d7072cb1274eb8b031f7e62cb6f, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 6305510192349461674, guid: a8ec8d7072cb1274eb8b031f7e62cb6f, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'

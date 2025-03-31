@@ -30,127 +30,103 @@ public class NetworkClient : IDisposable //Actual Client Game Logic
 
     private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
     {
-        if (clientId != networkManager.LocalClientId)
+        if(!ClientSingleton.Instance.GameManager.IsDedicatedServerGame)
         {
-            OtherDisconnected();
-        } else
-        {
-            IDisconnected();
-        }
-       
-    }
-
-
-    private void OtherDisconnected()
-    {
-        Debug.Log("Other Client Disconnected");
-
-        if (GameFlowManager.Instance != null)
-        {
-            if (GameFlowManager.Instance.GameStateManager == null)
+            //Host
+            if (GameManager.Instance != null)
             {
-                Disconnect();
-                return;
+                //if (GameManager.Instance.GameStateManager.CurrentGameState.Value != GameState.GameEnded)
+                //{
+                //    //Game not ended yet
+                //    GameManager.Instance.GameStateManager.ConnectionLostHostAndClient();
+                //}
             }
-
-            if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.None || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.WaitingForPlayers || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.SpawningPlayers || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.CalculatingResults)
+            else
             {
-                //Game not started yet, go to menu
+                //Not in game scene
                 Disconnect();
             }
-            else if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.ShowingPlayersInfo || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.GameStarted)
+        }  else
+        {
+            //Is Dedicated Server
+            if (clientId == networkManager.LocalClientId)
             {
-                //Game Started
-
-                if(ClientSingleton.Instance.GameManager.IsDedicatedServerGame)
-                {
-                    //Dedicated, I Win
-                    GameFlowManager.Instance.GameStateManager.IwinGameOverAsync();
-                }
-                else
-                {
-                    //Host, stop game
-                    Debug.Log("Not Dedicated Server Game, Show Disconnect UI");
-                    GameFlowManager.Instance.GameStateManager.ConnectionLostHostAndClinet();
-                }
+                IDisconnectedFromDS();
             }
         }
     }
 
-    private async void IDisconnected()
+    private void IDisconnectedFromDS()
     {
-        Debug.Log("I Disconnected");
-
-        if (GameFlowManager.Instance != null)
+        Debug.Log("I Disconnected from DS");
+        if(SceneManager.GetActiveScene().name == Loader.Scene.Loading.ToString())
         {
-            if (GameFlowManager.Instance.GameStateManager == null)
-            {
-                Disconnect();
-                return;
-            }
-
-            //In Game Scene
-
-            if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.None || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.WaitingForPlayers || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.SpawningPlayers || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.CalculatingResults)
-            {
-                //Game not started yet, go to menu
-                Disconnect();
-            }
-            else if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.ShowingPlayersInfo || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.GameStarted)
-            {
-                //Game Started
-                if(ClientSingleton.Instance.GameManager.IsDedicatedServerGame)
-                {
-                    //Dedicated, I lose
-                    GameFlowManager.Instance.GameStateManager.GameOverAsync();
-                } else
-                {
-                    //Host, stop game
-                    Debug.Log("Not Dedicated Server Game, Show Disconnect UI");
-                    GameFlowManager.Instance.GameStateManager.ConnectionLostHostAndClinet();
-                }
-
-            }
-            else if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.GameEnded)
-            {
-                //Game Ended
-
-                if (ClientSingleton.Instance.GameManager.IsDedicatedServerGame)
-                {
-                    //Dedicated, Trigger Change Pearls, guarantee the change on pearls
-                    await CalculatePearlsManager.TriggerChangePearls();
-                }
-                else
-                {
-                    //Host. Do nothing
-                }
-            }
+            Debug.LogWarning("Disconnected in LoadingScene, closing the game");
+            Disconnect();
+            Application.Quit();
+            return;
         }
 
+        //Disconnect();
+        //Application.Quit();
+        //If the client disconects from DS, make a way to be possible to reconnect.
 
+        //if (GameFlowManager.Instance != null)
+        //{
+        //    if (GameFlowManager.Instance.GameStateManager == null)
+        //    {
+        //        Disconnect();
+        //        return;
+        //    }
+
+        //    //In Game Scene
+
+        //    if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.None || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.WaitingForPlayers || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.SpawningPlayers || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.CalculatingResults)
+        //    {
+        //        //Game not started yet, go to menu
+        //        Disconnect();
+        //    }
+        //    else if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.ShowingPlayersInfo || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.GameStarted)
+        //    {
+        //        //Game Started
+        //        GameFlowManager.Instance.GameStateManager.GameOverAsync();
+        //    }
+        //    else if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.GameEnded)
+        //    {
+        //        //Game Ended
+        //        //Trigger Change Pearls, guarantee the change on pearls
+        //        //await CalculatePearlsManager.TriggerChangePearls();
+        //    }
+        //} else
+        //{
+        //    Disconnect();
+        //}
     }
 
     public void Disconnect()
     {
+        Debug.Log("Client Disconnect");
         //Check if is host first
         if (networkManager != null && HostSingleton.Instance != null && networkManager.IsHost) //Server cant click buttons
         {
             HostSingleton.Instance.GameManager.ShutdownAsync();
         }
 
+        if(networkManager.IsConnectedClient)
+            networkManager.Shutdown();
+
         if (SceneManager.GetActiveScene().name != Loader.Scene.MainMenu.ToString())
         {
             Loader.Load(Loader.Scene.MainMenu);
         }
-
-        if(networkManager.IsConnectedClient)
-            networkManager.Shutdown();
     }
 
     public void Dispose()
     {
         if (networkManager != null)
         {
+            Disconnect();
+
             networkManager.OnClientDisconnectCallback -= NetworkManager_OnClientDisconnectCallback;
 
             networkManager.OnClientStarted -= NetworkManager_OnClientStarted;

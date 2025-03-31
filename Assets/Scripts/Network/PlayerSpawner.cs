@@ -30,13 +30,18 @@ public class PlayerSpawner : IPlayerSpawner
     {
         playerSpawned++;
 
-        Transform randomSpawnPointSelected = GameFlowManager.Instance.GetRandomSpawnPoint();
+        Transform randomSpawnPointSelected = GameManager.Instance.GetRandomSpawnPoint();
 
         NetworkObject playerInstance = GameObject.Instantiate(playerPrefab, randomSpawnPointSelected.position, Quaternion.identity);
 
         playerInstance.SpawnAsPlayerObject(clientId);
 
         playerInstance.GetComponent<PlayerThrower>().InitializePlayerRpc(GetPlayableStateByCount(), randomSpawnPointSelected.rotation);
+
+        PlayerData playerData = NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.ClientIdToPlayerData[clientId];
+
+        playerData.gameObject = playerInstance.gameObject;
+        playerData.playableState = GetPlayableStateByCount();
 
         OnPlayerSpawned?.Invoke(playerSpawned);
 

@@ -6,7 +6,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameOverUI : NetworkBehaviour
+public class GameOverUI : MonoBehaviour
 {
     [BetterHeader("References")]
     [SerializeField] private GameObject gameOverBackground;
@@ -14,8 +14,15 @@ public class GameOverUI : NetworkBehaviour
     [SerializeField] private TextMeshProUGUI pearlsResultText;
     [SerializeField] private Button returnButton;
 
+    private bool alreadyChanged = false; //Prevent double change when losting connection
+
+    private BaseGameOverManager gameOverManager;
     private void Awake()
     {
+        Hide();
+
+        alreadyChanged = false;
+
         returnButton.onClick.AddListener(() =>
         {
             //Return to main menu
@@ -23,54 +30,52 @@ public class GameOverUI : NetworkBehaviour
             if(ClientSingleton.Instance != null)
                 ClientSingleton.Instance.GameManager.Disconnect();
         });
+
     }
 
-    [Command("quitGame")]
-    private void QuitGameDEBUG()
+    private void Start()
     {
-        //Return to main menu
-        if (NetworkManager.Singleton != null && HostSingleton.Instance != null && NetworkManager.Singleton.IsHost) //Server cant click buttons
-        {
-            HostSingleton.Instance.GameManager.ShutdownAsync();
-        }
+        gameOverManager = ServiceLocator.Get<BaseGameOverManager>();
 
-        if (ClientSingleton.Instance != null)
-            ClientSingleton.Instance.GameManager.Disconnect();
+        gameOverManager.OnWin += GameStateManager_OnWin;
+        gameOverManager.OnLose += GameStateManager_OnLose;
+
+        ////CalculatePearlsManager.OnPearlsDeltaChanged += CalculatePearlsManager_OnPearlsDeltaChanged;
+        gameOverManager.OnCanShowPearls += GameStateManager_OnCanShowPearls;
+        //GameFlowManager.Instance.GameStateManager.OnGameOver += GameStateManager_OnGameOver;
     }
 
-    public override void OnNetworkSpawn()
+    private void GameStateManager_OnCanShowPearls(int pearlsToShow)
     {
-
-        Hide();
-
-        if (IsClient)
-        {
-            GameFlowManager.Instance.GameStateManager.OnWin += GameStateManager_OnWin;
-            GameFlowManager.Instance.GameStateManager.OnLose += GameStateManager_OnLose;
-
-            CalculatePearlsManager.OnPearlsDeltaChanged += CalculatePearlsManager_OnPearlsDeltaChanged;
-        }
+        SetupPearlsResult(pearlsToShow);
+        Show();
     }
 
-    private void CalculatePearlsManager_OnPearlsDeltaChanged(int pearlsDelta)
-    {
-        //Pearls value to show changed, show UI.
-        SetupPearlsResult(pearlsDelta);
-    }
+    //private void GameStateManager_OnGameOver()
+    //{
+    //    Debug.Log("GameOverUI: GameStateManager_OnGameOver");
+    //    Show();
+    //}
+
+    //private void CalculatePearlsManager_OnPearlsDeltaChanged(int pearlsDelta)
+    //{
+    //    //Pearls value to show changed, show UI.
+    //    SetupPearlsResult(pearlsDelta);
+    //}
 
     private void SetupPearlsResult(int pearlsDelta)
     {
-        if(pearlsDelta == 0)
+        if (pearlsDelta == 0)
         {
             //Relay game, no pearls to show
             pearlsResultText.gameObject.SetActive(false);
         }
-
-        if (pearlsDelta > 0)
+        else if (pearlsDelta > 0)
         {
             //Win
             pearlsResultText.text = "+" + pearlsDelta.ToString();
-        } else
+        }
+        else
         {
             //Lose
             pearlsResultText.text = pearlsDelta.ToString();
@@ -79,18 +84,30 @@ public class GameOverUI : NetworkBehaviour
 
     private void GameStateManager_OnWin()
     {
+        if(alreadyChanged) return;
+
+        alreadyChanged = true;
+
+        //Win UI Code
+
         playerResultText.text = "You Win!";
         playerResultText.color = Color.green;
 
-        Show();
+        Debug.Log("Change GameOverUI to WIN");
     }
 
     private void GameStateManager_OnLose()
     {
+        if (alreadyChanged) return;
+
+        alreadyChanged = true;
+
+        //Lose UI Code
+
         playerResultText.text = "You Lose!";
         playerResultText.color = Color.red;
 
-        Show();
+        Debug.Log("Change GameOverUI to Lose");
     }
 
     private void Hide()
@@ -104,14 +121,12 @@ public class GameOverUI : NetworkBehaviour
         gameOverBackground.SetActive(true);
     }
 
-    public override void OnNetworkDespawn()
+    private void OnDestroy()
     {
-        if(IsClient)
-        {
-            GameFlowManager.Instance.GameStateManager.OnWin -= GameStateManager_OnWin;
-            GameFlowManager.Instance.GameStateManager.OnLose -= GameStateManager_OnLose;
-
-            CalculatePearlsManager.OnPearlsDeltaChanged -= CalculatePearlsManager_OnPearlsDeltaChanged;
-        }
+        gameOverManager.OnWin -= GameStateManager_OnWin;
+        gameOverManager.OnLose -= GameStateManager_OnLose;
+        gameOverManager.OnCanShowPearls -= GameStateManager_OnCanShowPearls;
+        //GameManager.Instance.GameStateManager.OnCanShowPearls -= GameStateManager_OnCanShowPearls;
+        ////CalculatePearlsManager.OnPearlsDeltaChanged -= CalculatePearlsManager_OnPearlsDeltaChanged;
     }
 }

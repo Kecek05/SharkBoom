@@ -31,7 +31,6 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
         playerPrefab = _playerPrefab;
     }
 
-
     public async Task StartHostAsync()
     {
         try
@@ -87,19 +86,23 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
 
         networkServer = new NetworkServer(NetworkManager.Singleton, playerPrefab);
 
-        UserData userData = new UserData
-        {
-            userName = AuthenticationWrapper.PlayerName,
-            userAuthId = AuthenticationService.Instance.PlayerId,
-            userPearls = UnityEngine.Random.Range(0, 1001), // random for debug
-        };
 
-        string payload = JsonUtility.ToJson(userData); //serialize the payload to json
+        string payload = JsonUtility.ToJson(ClientSingleton.Instance.GameManager.UserData); //serialize the payload to json
         byte[] payloadBytes = System.Text.Encoding.UTF8.GetBytes(payload); // serialize the payload to bytes
 
         NetworkManager.Singleton.NetworkConfig.ConnectionData = payloadBytes;
 
+        if(ClientSingleton.Instance != null)
+        {
+            ClientSingleton.Instance.GameManager.SetIsDedicatedServerGame(false);
+        } else
+        {
+            Debug.LogError("ClientSingleton is null, couldn't set IsDedicatedServerGame to false");
+        }
+
         NetworkManager.Singleton.StartHost();
+
+        //GameStateManager.OnCanCloseServer += GameStateManager_OnCanCloseServer;
 
         networkServer.OnClientLeft += HandleClientLeft;
 
@@ -111,10 +114,22 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
     {
         try
         {
-           await LobbyService.Instance.RemovePlayerAsync(lobbyId, authId); //Owner of the lobby is allowed to kick players
-        } catch (LobbyServiceException lobbyEx)
+            await LobbyService.Instance.RemovePlayerAsync(lobbyId, authId); //Owner of the lobby is allowed to kick players
+        }
+        catch (LobbyServiceException lobbyEx)
         {
             Debug.LogException(lobbyEx);
+        }
+
+        if (GameManager.Instance != null)
+        {
+            //Client Left, Cancel Game
+            ServiceLocator.Get<BaseGameStateManager>().ConnectionLostHostAndClient();
+        }
+        else
+        {
+            //Not in game, shutdown
+            ShutdownAsync();
         }
     }
 
@@ -153,9 +168,16 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
 
         networkServer.OnClientLeft -= HandleClientLeft;
 
+        //GameStateManager.OnCanCloseServer -= GameStateManager_OnCanCloseServer;
+
         networkServer?.Dispose();
     }
 
+    private void GameStateManager_OnCanCloseServer()
+    {
+        Debug.Log("OnCanCloseServer on Host");
+        ShutdownAsync();
+    }
     public NetworkServer GetNetworkServer()
     {
         return networkServer;

@@ -1,24 +1,9 @@
 using Unity.Netcode;
-using UnityEngine;
 
-public class ItemActivableManager : NetworkBehaviour
+public class ItemActivableManager : BaseItemActivableManager
 {
-    private static ItemActivableManager instance;
-    public static ItemActivableManager Instance => instance;
 
-    private BaseItemThrowableActivable itemThrowableActivableClient;
-    private BaseItemThrowableActivable itemThrowableActivableServer;
-
-
-    public BaseItemThrowableActivable ItemThrowableActivableClient => itemThrowableActivableClient;
-    public BaseItemThrowableActivable ItemThrowableActivableServer => itemThrowableActivableServer;
-
-    private void Awake()
-    {
-        instance = this;
-    }
-
-    public void UseItem()
+    public override void UseItem()
     {
         //always local machine will call this
 
@@ -26,6 +11,11 @@ public class ItemActivableManager : NetworkBehaviour
             itemThrowableActivableClient.TryActivate();
 
         UseItemServerRpc();
+    }
+
+    protected override void UseItemServer(ServerRpcParams serverRpc = default)
+    {
+        UseItemServerRpc(serverRpc);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -39,6 +29,11 @@ public class ItemActivableManager : NetworkBehaviour
 
     }
 
+    protected override void UseItemClient(ulong clientIdUsed)
+    {
+        UseItemClientRpc(clientIdUsed);
+    }
+
     [Rpc(SendTo.ClientsAndHost)]
     private void UseItemClientRpc(ulong clientIdUsed) //change to other thing rather than clientId
     {
@@ -48,19 +43,20 @@ public class ItemActivableManager : NetworkBehaviour
             itemThrowableActivableClient.TryActivate();
     }
 
-    public void SetItemThrowableActivableClient(BaseItemThrowableActivable itemThrowableActivableClient)
+    public override void SetItemThrowableActivableClient(BaseItemThrowableActivable itemThrowableActivableClient)
     {
         this.itemThrowableActivableClient = itemThrowableActivableClient;
     }
 
-    public void SetItemThrowableActivableServer(BaseItemThrowableActivable itemThrowableActivableServer)
+    public override void SetItemThrowableActivableServer(BaseItemThrowableActivable itemThrowableActivableServer)
     {
         this.itemThrowableActivableServer = itemThrowableActivableServer;
     }
 
-    public void ResetItemActivable()
+    public override void ResetItemActivable()
     {
         itemThrowableActivableClient = null;
         itemThrowableActivableServer = null;
     }
+
 }

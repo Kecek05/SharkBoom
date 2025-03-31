@@ -20,6 +20,8 @@ public class PlayerLauncher : NetworkBehaviour
 
     //private BaseItemThrowableActivable itemThrowableActivableClient;
     //private BaseItemThrowableActivable itemThrowableActivableServer;
+    private BaseItemActivableManager itemActivableManager;
+
     public override void OnNetworkSpawn()
     {
         if (IsOwner)
@@ -27,6 +29,8 @@ public class PlayerLauncher : NetworkBehaviour
             player.PlayerStateMachine.OnStateChanged += PlayerStateMachine_OnStateChanged;
 
             inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
+
+            itemActivableManager = ServiceLocator.Get<BaseItemActivableManager>();
         }
     }
 
@@ -34,9 +38,9 @@ public class PlayerLauncher : NetworkBehaviour
     {
         //Debug.Log($"Debug Touch itemActivated: {itemActivated} ItemActivable: {itemActivable}");
 
-        if(context.started && (ItemActivableManager.Instance.ItemThrowableActivableClient != null || ItemActivableManager.Instance.ItemThrowableActivableServer != null))
+        if(context.started && (itemActivableManager.ItemThrowableActivableClient != null || itemActivableManager.ItemThrowableActivableServer != null))
         {
-            ItemActivableManager.Instance.UseItem();
+            itemActivableManager.UseItem();
         }
     }
 
@@ -52,7 +56,7 @@ public class PlayerLauncher : NetworkBehaviour
     private void Launch()
     {
 
-        ItemActivableManager.Instance.ResetItemActivable();
+        itemActivableManager.ResetItemActivable();
 
 
         ItemLauncherData itemLauncherData = new ItemLauncherData
@@ -60,7 +64,7 @@ public class PlayerLauncher : NetworkBehaviour
             dragForce = player.PlayerDragController.DragForce, 
             dragDirection = player.PlayerDragController.DirectionOfDrag,
             selectedItemSOIndex = player.PlayerInventory.GetSelectedItemSOIndex(), 
-            ownerPlayableState = GameFlowManager.Instance.TurnManager.LocalPlayableState,
+            ownerPlayableState = ServiceLocator.Get<BaseTurnManager>().LocalPlayableState,
         };
 
         SpawnProjectileServerRpc(itemLauncherData); //Spawn real projectile on server need to send the speed and force values through the network
@@ -93,7 +97,7 @@ public class PlayerLauncher : NetworkBehaviour
         if (projetctile.transform.TryGetComponent(out BaseItemThrowableActivable activable))
         {
             //Get the ref to active the item
-            ItemActivableManager.Instance.SetItemThrowableActivableServer(activable);
+            itemActivableManager.SetItemThrowableActivableServer(activable);
         }
 
 
@@ -130,7 +134,7 @@ public class PlayerLauncher : NetworkBehaviour
         if (projetctile.transform.TryGetComponent(out BaseItemThrowableActivable activable))
         {
             //Get the ref to active the item
-            ItemActivableManager.Instance.SetItemThrowableActivableClient(activable);
+            itemActivableManager.SetItemThrowableActivableClient(activable);
         }
 
     }

@@ -16,6 +16,8 @@ public class BaseItemThrowable : MonoBehaviour
     [SerializeField] protected GameObject[] collidersToChangeLayer;
     protected ItemLauncherData thisItemLaucherData;
 
+    protected BaseTurnManager turnManager;
+
     public virtual void Initialize(ItemLauncherData itemLauncherData)
     {
         thisItemLaucherData = itemLauncherData;
@@ -36,6 +38,7 @@ public class BaseItemThrowable : MonoBehaviour
                 break;
         }
 
+        turnManager = ServiceLocator.Get<BaseTurnManager>();
         ItemReleased(thisItemLaucherData.dragForce, thisItemLaucherData.dragDirection);
     }
 
@@ -52,7 +55,7 @@ public class BaseItemThrowable : MonoBehaviour
     {
         if(!isServerObject) return; // Only the server should call the callback action
 
-        GameFlowManager.Instance.TurnManager.PlayerPlayedServerRpc(thisItemLaucherData.ownerPlayableState);
+        turnManager.PlayerPlayed(thisItemLaucherData.ownerPlayableState);
     }
 
     protected void OnDestroy()

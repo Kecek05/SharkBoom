@@ -8,15 +8,15 @@ public class JumpItem : BaseItemThrowable
     private float currentFollowingTime = 0f;
     private Transform objectToFollowTransform;
 
-
     protected override void ItemReleased(float force, Vector2 direction)
     {
         base.ItemReleased(force, direction);
 
         if (isServerObject) return; // Jump is Client Sided. The server should not follow the player
 
-        objectToFollowTransform = PlayersPublicInfoManager.Instance.GetPlayerObjectByPlayableState(thisItemLaucherData.ownerPlayableState).transform;
+        objectToFollowTransform = ServiceLocator.Get<BasePlayersPublicInfoManager>().GetPlayerObjectByPlayableState(thisItemLaucherData.ownerPlayableState).transform;
 
+        turnManager = ServiceLocator.Get<BaseTurnManager>();
 
         StartCoroutine(PlayerFollowFirework());
     }
@@ -25,7 +25,7 @@ public class JumpItem : BaseItemThrowable
     {
         if (!isServerObject) return;
 
-        GameFlowManager.Instance.TurnManager.PlayerJumpedServerRpc(thisItemLaucherData.ownerPlayableState);
+        turnManager.PlayerJumped(thisItemLaucherData.ownerPlayableState);
 
     }
 

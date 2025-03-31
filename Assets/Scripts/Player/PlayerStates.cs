@@ -239,6 +239,7 @@ public class MyTurnEndedState : IState
     //My Turn ended, next is enemy turn
 
     private PlayerThrower player;
+    private BaseTurnManager turnManager;
 
     public MyTurnEndedState(PlayerThrower player)
     {
@@ -249,7 +250,9 @@ public class MyTurnEndedState : IState
     {
         Debug.Log("Entering My Turn End State");
 
-        GameFlowManager.Instance.TurnManager.PlayerPlayedServerRpc(GameFlowManager.Instance.TurnManager.LocalPlayableState);
+        turnManager = ServiceLocator.Get<BaseTurnManager>();
+
+        turnManager.PlayerPlayed(turnManager.LocalPlayableState);
 
         MyTurnEndedCallback();
 

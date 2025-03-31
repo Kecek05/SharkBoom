@@ -11,25 +11,27 @@ public class PlayerTurnUI : MonoBehaviour
     [SerializeField] private GameObject player1You;
     [SerializeField] private GameObject player2You;
 
-
+    private BaseTurnManager turnManager;
 
     private void Start()
     {
         HideAllTurns();
 
-        GameFlowManager.Instance.TurnManager.OnLocalPlayableStateChanged += GameFlowManager_OnLocalPlayableStateChanged;
+        turnManager = ServiceLocator.Get<BaseTurnManager>();
+
+        turnManager.OnLocalPlayableStateChanged += GameFlowManager_OnLocalPlayableStateChanged;
         GameFlowManager_OnLocalPlayableStateChanged(); //check at start
 
-        GameFlowManager.Instance.TurnManager.CurrentPlayableState.OnValueChanged += CurrentPlayableState_OnValueChanged;
+        turnManager.CurrentPlayableState.OnValueChanged += CurrentPlayableState_OnValueChanged;
     }
 
     private void GameFlowManager_OnLocalPlayableStateChanged()
     {
-        if (GameFlowManager.Instance.TurnManager.LocalPlayableState == PlayableState.Player1Playing)
+        if (turnManager.LocalPlayableState == PlayableState.Player1Playing)
         {
             player2You.SetActive(false);
         }
-        else if (GameFlowManager.Instance.TurnManager.LocalPlayableState == PlayableState.Player2Playing)
+        else if (turnManager.LocalPlayableState == PlayableState.Player2Playing)
         {
             player1You.SetActive(false);
         }
@@ -68,9 +70,9 @@ public class PlayerTurnUI : MonoBehaviour
 
     private void OnDestroy()
     {
-        GameFlowManager.Instance.TurnManager.OnLocalPlayableStateChanged -= GameFlowManager_OnLocalPlayableStateChanged;
+        turnManager.OnLocalPlayableStateChanged -= GameFlowManager_OnLocalPlayableStateChanged;
 
-        GameFlowManager.Instance.TurnManager.CurrentPlayableState.OnValueChanged -= CurrentPlayableState_OnValueChanged;
+        turnManager.CurrentPlayableState.OnValueChanged -= CurrentPlayableState_OnValueChanged;
     }
 
 }

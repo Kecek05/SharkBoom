@@ -3,15 +3,19 @@ using UnityEngine.UI;
 using Sortify;
 using Unity.Netcode;
 
-public class ConnectionLostUI : NetworkBehaviour
+public class ConnectionLostUI : MonoBehaviour
 {
     //ONLY FOR HOST AND CLIENT
     [BetterHeader("References")]
     [SerializeField] private GameObject connectionLostBackground;
     [SerializeField] private Button returnButton;
 
+    private BaseGameStateManager gameStateManager;
+
     private void Awake()
     {
+        Hide();
+
         returnButton.onClick.AddListener(() =>
         {
             //Return to main menu
@@ -21,18 +25,16 @@ public class ConnectionLostUI : NetworkBehaviour
         });
     }
 
-    public override void OnNetworkSpawn()
+    private void Start()
     {
-        Hide();
+        gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
 
-        if(IsClient)
-        {
-            GameFlowManager.Instance.GameStateManager.OnConnectionLost += GameStateManager_OnConnectionLost;
-        }
+        gameStateManager.OnLostConnectionInHost += GameStateManager_OnLostConnectionInHost;
     }
 
-    private void GameStateManager_OnConnectionLost()
+    private void GameStateManager_OnLostConnectionInHost()
     {
+        Debug.Log("OnLostConnectionInHost in ConnectionLostUI");
         Show();
     }
 
@@ -46,11 +48,8 @@ public class ConnectionLostUI : NetworkBehaviour
         connectionLostBackground.SetActive(true);
     }
 
-    public override void OnNetworkDespawn()
+    private void OnDestroy()
     {
-        if (IsClient)
-        {
-            GameFlowManager.Instance.GameStateManager.OnConnectionLost -= GameStateManager_OnConnectionLost;
-        }
+        gameStateManager.OnLostConnectionInHost -= GameStateManager_OnLostConnectionInHost;
     }
 }

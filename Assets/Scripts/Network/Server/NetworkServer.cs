@@ -9,8 +9,8 @@ public class NetworkServer : IDisposable
 {
 
     public Action<string> OnClientLeft;
-    public Action<UserData> OnUserLeft;
-    public Action<UserData> OnUserJoined;
+    public Action<PlayerData> OnUserLeft;
+    public Action<PlayerData> OnUserJoined;
 
     private NetworkManager networkManager;
     private IPlayerSpawner playerSpawner;
@@ -28,7 +28,9 @@ public class NetworkServer : IDisposable
         networkManager.ConnectionApprovalCallback += ApprovalCheck;
 
         networkManager.OnServerStarted += NetworkManager_OnServerStarted;
+
     }
+
 
     private void SceneManager_OnLoadComplete(ulong clientId, string sceneName, UnityEngine.SceneManagement.LoadSceneMode loadSceneMode)
     {
@@ -62,7 +64,7 @@ public class NetworkServer : IDisposable
     {
         Debug.Log($"Client {clientId} disconnected");
 
-        OnUserLeft?.Invoke(serverAuthenticationService.GetUserDataByClientId(clientId));
+        OnUserLeft?.Invoke(serverAuthenticationService.GetPlayerDataByClientId(clientId));
         OnClientLeft?.Invoke(serverAuthenticationService.GetAuthIdByClientId(clientId));
         serverAuthenticationService.UnregisterClient(clientId);
 
@@ -74,15 +76,26 @@ public class NetworkServer : IDisposable
 
         UserData userData = JsonUtility.FromJson<UserData>(payload); //Deserialize the payload to UserData
 
-        serverAuthenticationService.RegisterClient(request.ClientNetworkId, userData);
+        PlayerData newPlayerData = new PlayerData()
+        {
+            userData = userData,
+            clientId = request.ClientNetworkId,
+            playableState = PlayableState.None, //None for now
+            calculatedPearls = new CalculatedPearls(),
+            gameObject = null
+        };
 
-        OnUserJoined?.Invoke(userData);
+        serverAuthenticationService.RegisterClient(newPlayerData);
+
+
+
+        OnUserJoined?.Invoke(newPlayerData);
 
         response.Approved = true; //Connection is approved
         response.CreatePlayerObject = false;
 
         if(serverAuthenticationService.RegisteredClientCount == 2) //two clients in game
-            GameFlowManager.Instance.GameStateManager.ChangeGameState(GameState.SpawningPlayers);
+            ServiceLocator.Get<BaseGameStateManager>().ChangeGameState(GameState.SpawningPlayers);
         
     }
 

@@ -1,4 +1,7 @@
+using Sortify;
+using System;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public interface IDamageable
@@ -38,15 +41,20 @@ public interface IFollowable
 public interface IServerAuthenticationService //Decopling of the Authentication Services
 {
     int RegisteredClientCount { get; }
-    void RegisterClient(ulong clientId, UserData userData);
+    void RegisterClient(PlayerData playerData);
     void UnregisterClient(ulong clientId);
+
+    void RegisterPlayableClient(PlayerData playerData);
+
+    public List<PlayerData> PlayerDatas { get; }
+    public Dictionary<ulong, PlayerData> ClientIdToPlayerData { get; }
     public Dictionary<string, ulong>.ValueCollection AuthToClientIdValues { get; }
-    UserData GetUserDataByClientId(ulong clientId);
+    PlayerData GetPlayerDataByClientId(ulong clientId);
     public string GetAuthIdByClientId(ulong clientId);
     public ulong GetClientIdByAuthId(string authId);
 }
 
-public interface IPlayerSpawner //Decopling of the Authentication Services
+public interface IPlayerSpawner
 {
     int PlayerCount { get; }
 

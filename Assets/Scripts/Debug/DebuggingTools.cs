@@ -10,8 +10,6 @@ using UnityEngine;
 public class DebuggingTools : NetworkBehaviour
 {
 
-    public static DebuggingTools Instance;
-
     [BetterHeader("References")]
     public TextMeshProUGUI debugGameStateText;
     public TextMeshProUGUI debugPlayableStateText;
@@ -21,17 +19,20 @@ public class DebuggingTools : NetworkBehaviour
     private float lastPingTime;
     private float currentPing = 0f;
 
-    private void Awake()
-    {
-        Instance = this;
-    }
+    private BaseGameStateManager stateManager;
+    private BaseTurnManager turnManager;
+    private BaseGameOverManager gameOverManager;
 
-    private void Start()
+    public override void OnNetworkSpawn()
     {
-        if(IsClient)
+        if (IsClient)
         {
             StartCoroutine(PingCoroutine());
         }
+
+        stateManager = ServiceLocator.Get<BaseGameStateManager>();
+        turnManager = ServiceLocator.Get<BaseTurnManager>();
+        gameOverManager = ServiceLocator.Get<BaseGameOverManager>();
     }
 
     private IEnumerator PingCoroutine()
@@ -62,8 +63,65 @@ public class DebuggingTools : NetworkBehaviour
 
     private void Update()
     {
-        debugGameStateText.text = GameFlowManager.Instance.GameStateManager.CurrentGameState.Value.ToString();
-        debugPlayableStateText.text = GameFlowManager.Instance.TurnManager.CurrentPlayableState.Value.ToString();
+        debugGameStateText.text = stateManager.CurrentGameState.Value.ToString();
+        debugPlayableStateText.text = turnManager.CurrentPlayableState.Value.ToString();
+    }
+
+
+
+    [Command("shutDownDebug")]
+    private void ShutdownDebug() //DEBUG
+    {
+        if (NetworkManager.Singleton.IsConnectedClient)
+            NetworkManager.Singleton.Shutdown();
+    }
+
+    [Command("quitGame")]
+    private void QuitGameDEBUG()
+    {
+        //Return to main menu
+        if (NetworkManager.Singleton != null && HostSingleton.Instance != null && NetworkManager.Singleton.IsHost) //Server cant click buttons
+        {
+            HostSingleton.Instance.GameManager.ShutdownAsync();
+        }
+
+        if (ClientSingleton.Instance != null)
+            ClientSingleton.Instance.GameManager.Disconnect();
+    }
+
+    [Command("listAllPlayerData")]
+    private void ListAllPlayerData()
+    {
+        foreach (PlayerData playerData in NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.ClientIdToPlayerData.Values)
+        {
+            Debug.Log($"PlayerUserData Name: {playerData.userData.userName} - Client Id: {playerData.clientId} - PlayableState: {playerData.playableState} - Pearls: {playerData.userData.UserPearls} - GameObject: {playerData.gameObject} - PlayerId: {playerData.userData.userAuthId}");
+            Debug.Log($"Pearls To Win: {playerData.calculatedPearls.PearlsToWin} - Pearls To Lose: - {playerData.calculatedPearls.PearlsToLose}");
+        }
+    }
+
+
+    [Command("setGameOver")]
+    private void SetGameOver(PlayableState playableState)
+    {
+        SetGameOverRpc(playableState);
+    }
+
+    [Rpc(SendTo.Server)]
+    private void SetGameOverRpc(PlayableState playableState)
+    {
+        gameOverManager.LoseGame(playableState);
+    }
+
+    [Rpc(SendTo.Server)]
+    private void DebugOnServerRpc(string debugText)
+    {
+        Debug.Log(debugText);
+    }
+
+    [Command("serverDebugLog")]
+    private void SendDebugLogToServer(string message)
+    {
+        DebugOnServerRpc(message);
     }
 
 }

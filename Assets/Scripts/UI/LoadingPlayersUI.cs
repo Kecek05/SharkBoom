@@ -19,15 +19,19 @@ public class LoadingPlayersUI : NetworkBehaviour
     [SerializeField] private TextMeshProUGUI player2NameText;
     [SerializeField] private TextMeshProUGUI player2PearlsText;
 
+    private BaseGameStateManager gameStateManager;
+
     public override void OnNetworkSpawn()
     {
+        gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
+
         HidePlayersInfo();
         ShowWaitingForPlayers();
 
 
         if(IsClient)
         {
-            GameFlowManager.Instance.GameStateManager.CurrentGameState.OnValueChanged += GameState_OnValueChanged;
+            gameStateManager.CurrentGameState.OnValueChanged += GameState_OnValueChanged;
         }
 
         if(IsServer)
@@ -67,9 +71,9 @@ public class LoadingPlayersUI : NetworkBehaviour
 
         foreach (ulong connectedClientId in NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.AuthToClientIdValues)
         {
-            UserData playerUserData = NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.GetUserDataByClientId(connectedClientId);
+            PlayerData playerData = NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.GetPlayerDataByClientId(connectedClientId);
 
-            PlayerSpawnedClientRpc(playerUserData.userName, playerUserData.userPearls, playerCount);
+            PlayerSpawnedClientRpc(playerData.userData.userName, playerData.userData.UserPearls, playerCount);
 
             playerCount++;
         }
@@ -120,7 +124,7 @@ public class LoadingPlayersUI : NetworkBehaviour
     {
         if (!IsServer)
         {
-            GameFlowManager.Instance.GameStateManager.CurrentGameState.OnValueChanged -= GameState_OnValueChanged;
+            gameStateManager.CurrentGameState.OnValueChanged -= GameState_OnValueChanged;
         }
 
         if (IsServer)

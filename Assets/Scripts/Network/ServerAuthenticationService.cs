@@ -4,20 +4,38 @@ using UnityEngine;
 public class ServerAuthenticationService : IServerAuthenticationService
 {
 
-    private Dictionary<string, ulong> authToClientId = new Dictionary<string, ulong>(); // save authentication IDs to their client IDs
-    private Dictionary<ulong, string> clientIdToAuth = new Dictionary<ulong, string>(); // save client IDs to their authentication IDs
-    private Dictionary<string, UserData> authIdToUserData = new Dictionary<string, UserData>(); // save authentication IDs to user data
+    private Dictionary<string, ulong> authToClientId = new Dictionary<string, ulong>(); 
 
+    private Dictionary<ulong, string> clientIdToAuth = new Dictionary<ulong, string>(); 
+
+    private Dictionary<string, PlayerData> authIdToPlayerData = new Dictionary<string, PlayerData>(); 
+
+    private Dictionary<PlayableState, ulong> playableStateToClientId = new Dictionary<PlayableState, ulong>(); 
+
+    private List<PlayerData> playerDatas = new List<PlayerData>();
+
+    private Dictionary<ulong, PlayerData> clientIdToPlayerData = new Dictionary<ulong, PlayerData>();
+
+    public List<PlayerData> PlayerDatas => playerDatas;
+    public Dictionary<ulong, PlayerData> ClientIdToPlayerData => clientIdToPlayerData;
     public int RegisteredClientCount => clientIdToAuth.Count;
 
     public Dictionary<string, ulong>.ValueCollection AuthToClientIdValues => authToClientId.Values;
 
-    public void RegisterClient(ulong clientId, UserData userData)
+    public void RegisterClient(PlayerData playerData)
     {
-        //if dont exist, add to dictionary
-        clientIdToAuth[clientId] = userData.userAuthId;
-        authToClientId[userData.userAuthId] = clientId;
-        authIdToUserData[userData.userAuthId] = userData;
+        //if dont exist, add
+        clientIdToAuth[playerData.clientId] = playerData.userData.userAuthId;
+        authToClientId[playerData.userData.userAuthId] = playerData.clientId;
+        authIdToPlayerData[playerData.userData.userAuthId] = playerData;
+
+        playerDatas.Add(playerData);
+        clientIdToPlayerData[playerData.clientId] = playerData;
+    }
+
+    public void RegisterPlayableClient(PlayerData playerData)
+    {
+        playableStateToClientId[playerData.playableState] = playerData.clientId;
     }
 
     public void UnregisterClient(ulong clientId)
@@ -26,18 +44,18 @@ public class ServerAuthenticationService : IServerAuthenticationService
         {
             authToClientId.Remove(authId);
             clientIdToAuth.Remove(clientId);
-            authIdToUserData.Remove(authId);
+            authIdToPlayerData.Remove(authId);
         }
     }
 
-    public UserData GetUserDataByClientId(ulong clientId)
+    public PlayerData GetPlayerDataByClientId(ulong clientId)
     {
         if (clientIdToAuth.TryGetValue(clientId, out string authId))
         {
             //Get Auth by client ID
-            if (authIdToUserData.TryGetValue(authId, out UserData userData))
+            if (authIdToPlayerData.TryGetValue(authId, out PlayerData playerData))
             {
-                return userData;
+                return playerData;
             }
         }
         return null;
@@ -60,4 +78,5 @@ public class ServerAuthenticationService : IServerAuthenticationService
         }
         return 0;
     }
+
 }

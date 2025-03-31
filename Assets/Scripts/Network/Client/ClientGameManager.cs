@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
 using Unity.Services.Authentication;
+using Unity.Services.CloudCode;
 using Unity.Services.Core;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
@@ -34,6 +36,14 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
     public ClientGameManager()
     {
         Save.OnPlayerPearlsChanged += Save_OnPlayerPearlsChanged;
+
+        MainMenuController.OnLoadMainMenu += MainMenuController_OnLoadMainMenu;
+    }
+
+    private async void MainMenuController_OnLoadMainMenu()
+    {
+        //Every time that loads the menu, update the pearls
+        userData.SetUserPearls(await Save.LoadPlayerPearls(UserData.userAuthId));
     }
 
     public async Task<bool> InitAsync(AuthTypes authTypes)
@@ -45,8 +55,8 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         initializationOptions.SetProfile(UnityEngine.Random.Range(0, 10000).ToString());
         await UnityServices.InitializeAsync(initializationOptions);
         //
-        //await UnityServices.InitializeAsync();
 
+        //await UnityServices.InitializeAsync();
 
         networkClient = new NetworkClient(NetworkManager.Singleton);
         matchmaker = new();
@@ -57,12 +67,10 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         //await AuthenticationService.Instance.SignInWithUsernamePasswordAsync("kecekTest", "Passw0rd!");
         //AuthState authState = AuthState.Authenticated;
         //
+        Debug.Log($"PlayerId: {AuthenticationService.Instance.PlayerId}");
 
         if (authState == AuthState.Authenticated)
         {
-            AuthenticationWrapper.SetPlayerName(await AuthenticationService.Instance.GetPlayerNameAsync());
-
-            int playerPearls = await Save.LoadPlayerPearls();
 
             Debug.Log(AuthenticationWrapper.PlayerName + authState);
 
@@ -70,8 +78,9 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
             {
                 userName = AuthenticationWrapper.PlayerName,
                 userAuthId = AuthenticationService.Instance.PlayerId,
-                userPearls = playerPearls, // random for debug
             };
+
+            userData.SetUserPearls(await Save.LoadPlayerPearls(AuthenticationService.Instance.PlayerId));
 
              Loader.Load(Loader.Scene.MainMenu);
 
@@ -83,7 +92,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
 
     public void StartMatchmakingClient(string ip, int port)
     {
-        isDedicatedServerGame = true;
+        SetIsDedicatedServerGame(true);
         UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
         transport.SetConnectionData(ip, (ushort)port);
         Loader.LoadClient();
@@ -94,7 +103,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
     {
         if (joinCode == null || joinCode == string.Empty) return;
 
-        isDedicatedServerGame = false;
+        SetIsDedicatedServerGame(false);
 
         try
         {
@@ -175,6 +184,8 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
     /// <returns></returns>
     private async Task<MatchmakerPollingResult> GetMatchAsync()
     {
+        userData.SetUserPearls(await Save.LoadPlayerPearls(UserData.userAuthId)); //Update before try to matchmake
+
         MatchmakingResult matchmakingResult = await matchmaker.Matchmake(userData);
 
         if(matchmakingResult.result == MatchmakerPollingResult.Success)
@@ -191,11 +202,15 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         await matchmaker.CancelMatchmaking();
     }
 
-    private void Save_OnPlayerPearlsChanged(int newValue)
+    public void SetIsDedicatedServerGame(bool isDedicatedServer)
     {
-        UserData.userPearls = newValue;
+        isDedicatedServerGame = isDedicatedServer;
+    }
 
-        Debug.Log($"Player Pearls Changed to: {newValue}");
+    private async void Save_OnPlayerPearlsChanged()
+    {
+        UserData.SetUserPearls(await Save.LoadPlayerPearls(UserData.userAuthId));
+        Debug.Log($"Save Player Pearls Changed to: {UserData.UserPearls}");
     }
 
     /// <summary>
@@ -208,6 +223,8 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
 
     public void Dispose()
     {
+        MainMenuController.OnLoadMainMenu -= MainMenuController_OnLoadMainMenu;
+
         Save.OnPlayerPearlsChanged -= Save_OnPlayerPearlsChanged;
 
         networkClient?.Dispose();

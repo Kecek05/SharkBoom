@@ -1,10 +1,13 @@
 using Sortify;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class MainMenuController : MonoBehaviour
 {
+    public static event Action OnLoadMainMenu;
+
     [BetterHeader("References")]
     [SerializeField] private Button clientButton;
     [SerializeField] private Button hostButton;
@@ -65,12 +68,18 @@ public class MainMenuController : MonoBehaviour
 
         });
     }
+
+    private void Start()
+    {
+        OnLoadMainMenu?.Invoke();
+    }
+
     private void Update()
     {
         //DEBUG
         if(ClientSingleton.Instance != null)
         {
-            lobbyCodeInputField.text = ClientSingleton.Instance.GameManager.UserData.userPearls.ToString();
+            lobbyCodeInputField.text = ClientSingleton.Instance.GameManager.UserData.UserPearls.ToString();
         }
     }
 
