@@ -1,7 +1,6 @@
 using Sortify;
 using System;
 using Unity.Netcode;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 public abstract class BaseTurnManager : NetworkBehaviour
@@ -74,4 +73,6 @@ public abstract class BaseTurnManager : NetworkBehaviour
 
     public abstract void HandleOnGameStateChanged(GameState newValue);
     public abstract void HandleOnPlayableStateValueChanged(PlayableState previousValue, PlayableState newValue);
+
+    public abstract void HandleOnTimesUp();
 }

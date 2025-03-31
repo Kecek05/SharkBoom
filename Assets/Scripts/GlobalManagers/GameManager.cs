@@ -43,6 +43,14 @@ public class GameManager : NetworkBehaviour
         turnManager.CurrentPlayableState.OnValueChanged += HandleOnPlayableStateChanged;
 
         gameOverManager.LosedPlayer.OnValueChanged += HandleOnLosedPlayerChanged;
+
+        timerManager.OnTurnTimesUp += HandleOnTurnTimesUp;
+    }
+
+    // Times up
+    private void HandleOnTurnTimesUp()
+    {
+        turnManager.HandleOnTimesUp();
     }
 
 
@@ -107,6 +115,8 @@ public class GameManager : NetworkBehaviour
         turnManager.CurrentPlayableState.OnValueChanged -= HandleOnPlayableStateChanged;
 
         gameOverManager.LosedPlayer.OnValueChanged -= HandleOnLosedPlayerChanged;
+
+        timerManager.OnTurnTimesUp -= HandleOnTurnTimesUp;
     }
 
     public override void OnNetworkDespawn()

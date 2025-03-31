@@ -2,15 +2,11 @@ using System.Collections;
 
 public class TimerManager : BaseTimerManager
 {
-
-    private BaseTurnManager turnManager;
     private BaseGameStateManager gameStateManager;
 
     private void Start()
     {
         gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
-
-        turnManager = ServiceLocator.Get<BaseTurnManager>();
     }
 
     public override void HandleOnGameStateChanged(GameState gameState)
@@ -66,7 +62,6 @@ public class TimerManager : BaseTimerManager
         TriggerOnTurnTimesUp();
 
         //time's up
-        turnManager.PlayerPlayed(turnManager.CurrentPlayableState.Value); //change turn
 
         timerCoroutine = null;
     }

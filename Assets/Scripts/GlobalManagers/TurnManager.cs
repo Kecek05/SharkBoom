@@ -37,6 +37,12 @@ public class TurnManager : BaseTurnManager
         }
     }
 
+
+    public override void HandleOnTimesUp()
+    {
+        PlayerPlayed(currentPlayableState.Value); //change turn
+    }
+
     public override void InitializeLocalStates(PlayableState playingState)
     {
         switch (playingState)
@@ -144,4 +150,5 @@ public class TurnManager : BaseTurnManager
     {
         currentPlayableState.Value = newState;
     }
+
 }
