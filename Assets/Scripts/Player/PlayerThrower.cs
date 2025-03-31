@@ -24,7 +24,7 @@ public class PlayerThrower : NetworkBehaviour
     private NetworkVariable<PlayableState> thisPlayableState = new();
 
     private BaseTurnManager turnManager;
-    private BaseGameOverManager gameOverManager;
+    private BaseGameStateManager gameStateManager;
 
     //Publics
     public PlayerStateMachine PlayerStateMachine => playerStateMachine;
@@ -57,7 +57,7 @@ public class PlayerThrower : NetworkBehaviour
 
         if (IsOwner)
         {
-            gameOverManager = ServiceLocator.Get<BaseGameOverManager>();
+            gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
             turnManager = ServiceLocator.Get<BaseTurnManager>();
 
             turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
@@ -66,7 +66,7 @@ public class PlayerThrower : NetworkBehaviour
 
             turnManager.OnMyTurnJumped += GameFlowManager_OnMyTurnJumped;
 
-            gameOverManager.OnGameOver += GameFlowManager_OnGameOver;
+            gameStateManager.CurrentGameState.OnValueChanged += HandleOnGameStateChanged;
 
             playerStateMachine = new PlayerStateMachine(this);
 
@@ -81,7 +81,13 @@ public class PlayerThrower : NetworkBehaviour
 
     }
 
-
+    private void HandleOnGameStateChanged(GameState previousValue, GameState newValue)
+    {
+        if(newValue == GameState.GameEnded)
+        {
+            playerStateMachine.TransitionTo(playerStateMachine.playerGameOverState);
+        }
+    }
 
     [Rpc(SendTo.Server)]
     public void InitializePlayerRpc(PlayableState playableState, Quaternion GFXRotation)
@@ -117,10 +123,6 @@ public class PlayerThrower : NetworkBehaviour
 
     }
 
-    private void GameFlowManager_OnGameOver()
-    {
-        playerStateMachine.TransitionTo(playerStateMachine.playerGameOverState);
-    }
 
     //DEBUG
     [Command("player-passTurn", MonoTargetType.All)]
@@ -177,7 +179,7 @@ public class PlayerThrower : NetworkBehaviour
 
             turnManager.OnMyTurnJumped -= GameFlowManager_OnMyTurnJumped;
 
-            gameOverManager.OnGameOver -= GameFlowManager_OnGameOver;
+            gameStateManager.CurrentGameState.OnValueChanged -= HandleOnGameStateChanged;
         }
     }
 

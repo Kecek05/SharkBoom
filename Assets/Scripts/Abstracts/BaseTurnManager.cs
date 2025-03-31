@@ -23,7 +23,6 @@ public abstract class BaseTurnManager : NetworkBehaviour
 
     protected NetworkVariable<PlayableState> currentPlayableState = new(PlayableState.None);
 
-    protected GameStateManager gameStateManager;
     //Publics
     public PlayableState LocalPlayableState => localPlayableState;
     public NetworkVariable<PlayableState> CurrentPlayableState => currentPlayableState;

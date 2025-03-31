@@ -1,6 +1,4 @@
-using Sortify;
-using System;
-using System.Collections.Generic;
+using QFSW.QC;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -16,6 +14,7 @@ public class GameManager : NetworkBehaviour
     private BaseGameOverManager gameOverManager;
     private BasePearlsManager pearlsManager;
 
+    [SerializeField] private DamageableSO debugHitKillDamageableSO;
 
     public override void OnNetworkSpawn()
     {
@@ -33,7 +32,7 @@ public class GameManager : NetworkBehaviour
 
     private void HandleEvents()
     {
-        gameStateManager.CurrentGameState.OnValueChanged += HandleOnGameStateChange;
+        gameStateManager.CurrentGameState.OnValueChanged += HandleOnGameStateChanged;
 
         gameTimerManager.OnGameTimerEnd += HandleOnGameTimerEnd;
 
@@ -41,25 +40,20 @@ public class GameManager : NetworkBehaviour
 
         PlayerHealth.OnPlayerDie += HandeOnPlayerDie;
 
-        turnManager.CurrentPlayableState.OnValueChanged += HandleOnPlayableStateChange;
+        turnManager.CurrentPlayableState.OnValueChanged += HandleOnPlayableStateChanged;
 
-        gameOverManager.LosedPlayer.OnValueChanged += HandleOnLosedPlayerChange;
+        gameOverManager.LosedPlayer.OnValueChanged += HandleOnLosedPlayerChanged;
     }
 
-    private void HandleOnLosedPlayerChange(PlayableState previousValue, PlayableState newValue)
-    {
-        pearlsManager.HandleOnLosedPlayerChanged(newValue);
 
-        gameOverManager.HandleOnLosedPlayerChanged(newValue);
-
-    }
-
-    private void HandleOnPlayableStateChange(PlayableState previousValue, PlayableState newValue)
+    // Playable State
+    private void HandleOnPlayableStateChanged(PlayableState previousValue, PlayableState newValue)
     {
         timerManager.HandleOnPlayableStateValueChanged(previousValue, newValue);
         turnManager.HandleOnPlayableStateValueChanged(previousValue, newValue);
     }
 
+    // Player Die
     private void HandeOnPlayerDie()
     {
         gameStateManager.HandeOnPlayerDie();
@@ -67,31 +61,42 @@ public class GameManager : NetworkBehaviour
         PlayerHealth.OnPlayerDie -= HandeOnPlayerDie;
     }
 
+    // Player Spawned
     private void HandleOnPlayerSpawned(int playerCount)
     {
         gameStateManager.HandleOnPlayerSpawned(playerCount);
     }
 
+    // Game Timer End
     private void HandleOnGameTimerEnd()
     {
         gameStateManager.HandleOnGameTimerEnd();
     }
 
-    private void HandleOnGameStateChange(GameState previousValue, GameState newValue)
+    // Game State
+    private void HandleOnGameStateChanged(GameState previousValue, GameState newValue)
     {
         gameStateManager.HandleOnGameStateValueChanged(newValue);
 
-        gameOverManager.HandleOnGameStateChange(newValue); //Define the winner
+        gameOverManager.HandleOnGameStateChanged(newValue); //Define the winner
 
-        pearlsManager.HandleOnLosedPlayerChanged(newValue);
         turnManager.HandleOnGameStateChanged(newValue);
-        gameTimerManager.HandleOnGameStateChange(newValue);
-        timerManager.HandleOnGameStateChange(newValue);
+        gameTimerManager.HandleOnGameStateChanged(newValue);
+        timerManager.HandleOnGameStateChanged(newValue);
+    }
+
+    // Losed Player
+    private void HandleOnLosedPlayerChanged(PlayableState previousValue, PlayableState newValue)
+    {
+        pearlsManager.HandleOnLosedPlayerChanged(newValue);
+
+        gameOverManager.HandleOnLosedPlayerChanged(newValue);
+
     }
 
     private void UnHandleEvents()
     {
-        gameStateManager.CurrentGameState.OnValueChanged -= HandleOnGameStateChange;
+        gameStateManager.CurrentGameState.OnValueChanged -= HandleOnGameStateChanged;
 
         gameTimerManager.OnGameTimerEnd -= HandleOnGameTimerEnd;
 
@@ -99,13 +104,32 @@ public class GameManager : NetworkBehaviour
 
         PlayerHealth.OnPlayerDie -= HandeOnPlayerDie;
 
-        turnManager.CurrentPlayableState.OnValueChanged -= HandleOnPlayableStateChange;
+        turnManager.CurrentPlayableState.OnValueChanged -= HandleOnPlayableStateChanged;
 
+        gameOverManager.LosedPlayer.OnValueChanged -= HandleOnLosedPlayerChanged;
     }
 
     public override void OnNetworkDespawn()
     {
         UnHandleEvents();
+    }
+
+
+
+    //DEBUG
+    [Command("killPlayer")]
+    private void SetGameOver(PlayableState playableState)
+    {
+        SetGameOverRpc(playableState);
+    }
+
+    [Rpc(SendTo.Server)]
+    private void SetGameOverRpc(PlayableState playableState)
+    {
+        PlayerHealth playerHealth = ServiceLocator.Get<BasePlayersPublicInfoManager>().GetPlayerObjectByPlayableState(playableState).GetComponent<PlayerHealth>();
+
+        playerHealth.PlayerTakeDamage(debugHitKillDamageableSO, BodyPartEnum.Head);
+
     }
 
 }

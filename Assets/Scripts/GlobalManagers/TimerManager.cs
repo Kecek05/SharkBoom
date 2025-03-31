@@ -2,17 +2,18 @@ using System.Collections;
 
 public class TimerManager : BaseTimerManager
 {
-    private BaseGameOverManager gameOverManager;
+
     private BaseTurnManager turnManager;
+    private BaseGameStateManager gameStateManager;
 
     private void Start()
     {
-        gameOverManager = ServiceLocator.Get<BaseGameOverManager>();
+        gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
 
         turnManager = ServiceLocator.Get<BaseTurnManager>();
     }
 
-    public override void HandleOnGameStateChange(GameState gameState)
+    public override void HandleOnGameStateChanged(GameState gameState)
     {
         if(!IsServer) return;
 
@@ -31,7 +32,7 @@ public class TimerManager : BaseTimerManager
     {
         if(!IsServer) return;
 
-        if (gameOverManager.GameOver) return;
+        if (gameStateManager.CurrentGameState.Value == GameState.GameEnded) return;
 
         if (newValue == PlayableState.Player1Playing || newValue == PlayableState.Player2Playing)
         {

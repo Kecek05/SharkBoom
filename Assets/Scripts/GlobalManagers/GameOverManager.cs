@@ -16,25 +16,14 @@ public class GameOverManager : BaseGameOverManager
     {
         if (losedPlayer.Value == turnManager.LocalPlayableState)
         {
-            //Change pearls, then lose
-
-
-            //await CalculatePearlsManager.TriggerChangePearls();
             TriggerOnLose();
         }
-        else if (losedPlayer.Value == PlayableState.None)
+        else if (losedPlayer.Value == PlayableState.Tie)
         {
-            //Tie, lose
-
-
-            //await CalculatePearlsManager.TriggerChangePearls();
             TriggerOnLose();
         }
         else
         {
-            //Change pearls, then win
-
-            //await CalculatePearlsManager.TriggerChangePearls();
             TriggerOnWin();
         }
     }
@@ -53,7 +42,7 @@ public class GameOverManager : BaseGameOverManager
         if (player1Health.CurrentHealth.Value == player2Health.CurrentHealth.Value)
         {
             //Tie
-            losedPlayer.Value = PlayableState.None;
+            losedPlayer.Value = PlayableState.Tie;
         }
         else if (player1Health.CurrentHealth.Value > player2Health.CurrentHealth.Value)
         {
@@ -69,11 +58,14 @@ public class GameOverManager : BaseGameOverManager
 
     public override void HandleOnLosedPlayerChanged(PlayableState newValue)
     {
-
+        if(IsClient)
+        {
+            GameOverClient();
+        }
     }
 
 
-    public override void HandleOnGameStateChange(GameState gameState)
+    public override void HandleOnGameStateChanged(GameState gameState)
     {
         if(gameState == GameState.GameEnded)
         {

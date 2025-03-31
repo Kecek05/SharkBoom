@@ -1,4 +1,3 @@
-using QFSW.QC;
 using System;
 using UnityEngine;
 
@@ -41,8 +40,6 @@ public class PlayerHealth : Health
 
     public void PlayerTakeDamage(DamageableSO damageableSO, BodyPartEnum bodyPart)
     {
-
-
         if (IsServer && !isDead)
         {
             selectedMultiplier = bodyPart == BodyPartEnum.Head ? damageableSO.headMultiplier : bodyPart == BodyPartEnum.Body ? damageableSO.bodyMultiplier : bodyPart == BodyPartEnum.Foot ? damageableSO.footMultiplier : 0f; //0f error
@@ -61,14 +58,13 @@ public class PlayerHealth : Health
 
     }
 
-    [Command("playerHealth-Die", MonoTargetType.Single)]
     protected override void Die()
     {
         base.Die(); // call the function on base class "Health"
 
         if (!IsServer) return;
 
-        OnPlayerDie?.Invoke(player.ThisPlayableState.Value);
+        OnPlayerDie?.Invoke();
     }
 
     public override void OnNetworkDespawn()

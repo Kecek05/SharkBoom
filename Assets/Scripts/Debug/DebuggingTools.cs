@@ -21,7 +21,6 @@ public class DebuggingTools : NetworkBehaviour
 
     private BaseGameStateManager stateManager;
     private BaseTurnManager turnManager;
-    private BaseGameOverManager gameOverManager;
 
     public override void OnNetworkSpawn()
     {
@@ -32,7 +31,6 @@ public class DebuggingTools : NetworkBehaviour
 
         stateManager = ServiceLocator.Get<BaseGameStateManager>();
         turnManager = ServiceLocator.Get<BaseTurnManager>();
-        gameOverManager = ServiceLocator.Get<BaseGameOverManager>();
     }
 
     private IEnumerator PingCoroutine()
@@ -99,29 +97,5 @@ public class DebuggingTools : NetworkBehaviour
         }
     }
 
-
-    [Command("setGameOver")]
-    private void SetGameOver(PlayableState playableState)
-    {
-        SetGameOverRpc(playableState);
-    }
-
-    [Rpc(SendTo.Server)]
-    private void SetGameOverRpc(PlayableState playableState)
-    {
-        gameOverManager.LoseGame(playableState);
-    }
-
-    [Rpc(SendTo.Server)]
-    private void DebugOnServerRpc(string debugText)
-    {
-        Debug.Log(debugText);
-    }
-
-    [Command("serverDebugLog")]
-    private void SendDebugLogToServer(string message)
-    {
-        DebugOnServerRpc(message);
-    }
 
 }
