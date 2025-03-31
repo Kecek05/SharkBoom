@@ -19,7 +19,7 @@ public abstract class BasePearlsManager : NetworkBehaviour
 
     protected abstract void ChangePearls(PlayableState losedPlayerState);
 
-    public abstract void HandleOnGameStateChanged(GameState newValue);
+    public abstract void HandleOnLosedPlayerChanged(PlayableState newValue);
 
     protected abstract void SendGameResultsToClient(string authId, int valueToShow);
 }

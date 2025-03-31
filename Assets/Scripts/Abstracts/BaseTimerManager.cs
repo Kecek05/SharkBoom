@@ -21,7 +21,7 @@ public abstract class BaseTimerManager : NetworkBehaviour
 
     public abstract void HandleOnPlayableStateValueChanged(PlayableState previousValue, PlayableState newValue);
 
-    public abstract void HandleOnGameOver();
+    public abstract void HandleOnGameStateChange(GameState gameState);
 
     protected abstract IEnumerator Timer();
 

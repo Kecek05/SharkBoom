@@ -1,23 +1,21 @@
 using Unity.Netcode;
+using UnityEngine;
 
 public class PearlsManager : BasePearlsManager
 {
 
-    public override void HandleOnGameStateChanged(GameState newValue)
+    public override void HandleOnLosedPlayerChanged(PlayableState newValue)
     {
-        if (newValue == GameState.GameEnded)
-        {
-            //ChangePearls(GetTheWinner());
-        }
+        if (!IsServer) return;
+
+        ChangePearls(newValue);
     }
 
     protected override async void ChangePearls(PlayableState losedPlayerState)
     {
         if (!IsServer) return;
 
-
-
-        if (losedPlayerState == PlayableState.None)
+        if (losedPlayerState == PlayableState.Tie)
         {
             //Tie, both lose
 
@@ -36,6 +34,7 @@ public class PearlsManager : BasePearlsManager
 
             TriggerOnFinishedCalculationsOnServer();
 
+            Debug.Log("Tie, both lose");
             return;
         }
 
@@ -55,8 +54,9 @@ public class PearlsManager : BasePearlsManager
 
             SendGameResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId, NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].calculatedPearls.PearlsToWin);
 
+            Debug.Log($"Player {NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userName} Winner");
         }
-        else
+        else if (losedPlayerState == NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].playableState)
         {
             //Player 1 Winner
 
@@ -72,6 +72,7 @@ public class PearlsManager : BasePearlsManager
 
             SendGameResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId, NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].calculatedPearls.PearlsToLose);
 
+            Debug.Log($"Player {NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userName} Winner");
         }
 
         TriggerOnFinishedCalculationsOnServer();

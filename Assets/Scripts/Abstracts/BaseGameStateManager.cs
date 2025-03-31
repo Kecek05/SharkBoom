@@ -43,8 +43,6 @@ public abstract class BaseGameStateManager : NetworkBehaviour
     /// <param name="newValue"></param>
     public abstract void HandleOnGameStateValueChanged(GameState newValue);
 
-    public abstract void HandleOnGameOver();
-
 
     protected void TriggerOnLostConnectionInHost() => OnLostConnectionInHost?.Invoke();
 
@@ -56,12 +54,6 @@ public abstract class BaseGameStateManager : NetworkBehaviour
     /// <param name="gameState"></param>
     /// <param name="delayToChange"></param>
     public abstract void ChangeGameState(GameState gameState, int delayToChange = 0);
-
-    /// <summary>
-    /// Set the game state on server.
-    /// </summary>
-    /// <param name="newState"></param>
-    protected abstract void SetGameState(GameState newState);
 
     /// <summary>
     /// Called when any player lost connection in Host.

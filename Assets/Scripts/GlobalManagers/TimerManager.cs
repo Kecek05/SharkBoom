@@ -12,15 +12,19 @@ public class TimerManager : BaseTimerManager
         turnManager = ServiceLocator.Get<BaseTurnManager>();
     }
 
-    public override void HandleOnGameOver()
+    public override void HandleOnGameStateChange(GameState gameState)
     {
         if(!IsServer) return;
 
-        if (timerCoroutine != null)
+        if(gameState == GameState.GameEnded)
         {
-            StopCoroutine(timerCoroutine);
-            timerCoroutine = null;
+            if (timerCoroutine != null)
+            {
+                StopCoroutine(timerCoroutine);
+                timerCoroutine = null;
+            }
         }
+
     }
 
     public override void HandleOnPlayableStateValueChanged(PlayableState previousValue, PlayableState newValue)

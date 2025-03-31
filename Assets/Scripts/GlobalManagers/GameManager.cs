@@ -41,15 +41,17 @@ public class GameManager : NetworkBehaviour
 
         PlayerHealth.OnPlayerDie += HandeOnPlayerDie;
 
-        gameOverManager.OnGameOver += HandleOnGameOver;
-
         turnManager.CurrentPlayableState.OnValueChanged += HandleOnPlayableStateChange;
+
+        gameOverManager.LosedPlayer.OnValueChanged += HandleOnLosedPlayerChange;
     }
 
-    private void HandleOnGameOver()
+    private void HandleOnLosedPlayerChange(PlayableState previousValue, PlayableState newValue)
     {
-        gameStateManager.HandleOnGameOver();
-        timerManager.HandleOnGameOver();
+        pearlsManager.HandleOnLosedPlayerChanged(newValue);
+
+        gameOverManager.HandleOnLosedPlayerChanged(newValue);
+
     }
 
     private void HandleOnPlayableStateChange(PlayableState previousValue, PlayableState newValue)
@@ -61,8 +63,6 @@ public class GameManager : NetworkBehaviour
     private void HandeOnPlayerDie()
     {
         gameStateManager.HandeOnPlayerDie();
-
-        gameOverManager.LoseGame();
 
         PlayerHealth.OnPlayerDie -= HandeOnPlayerDie;
     }
@@ -81,9 +81,12 @@ public class GameManager : NetworkBehaviour
     {
         gameStateManager.HandleOnGameStateValueChanged(newValue);
 
-        pearlsManager.HandleOnGameStateChanged(newValue);
+        gameOverManager.HandleOnGameStateChange(newValue); //Define the winner
+
+        pearlsManager.HandleOnLosedPlayerChanged(newValue);
         turnManager.HandleOnGameStateChanged(newValue);
         gameTimerManager.HandleOnGameStateChange(newValue);
+        timerManager.HandleOnGameStateChange(newValue);
     }
 
     private void UnHandleEvents()
@@ -95,9 +98,6 @@ public class GameManager : NetworkBehaviour
         PlayerSpawner.OnPlayerSpawned -= HandleOnPlayerSpawned;
 
         PlayerHealth.OnPlayerDie -= HandeOnPlayerDie;
-
-
-        gameOverManager.OnGameOver -= HandleOnGameOver;
 
         turnManager.CurrentPlayableState.OnValueChanged -= HandleOnPlayableStateChange;
 

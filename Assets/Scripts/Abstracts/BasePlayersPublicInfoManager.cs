@@ -43,6 +43,7 @@ public abstract class BasePlayersPublicInfoManager : MonoBehaviour
 public enum PlayableState
 {
     None,
+    Tie,
     Player1Playing, //Player 1 Can Play
     Player1Played, //Player 1 Cant Play
     Player2Playing, //Player 2 Can Play

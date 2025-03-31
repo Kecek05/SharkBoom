@@ -39,12 +39,6 @@ public class GameOverManager : BaseGameOverManager
         }
     }
 
-    [Rpc(SendTo.ClientsAndHost)]
-    public void GameOverClientRpc()
-    {
-        GameOverClient();
-    }
-
     public override void DefineTheWinner()
     {
         // Calculate the winner of the game
@@ -71,17 +65,19 @@ public class GameOverManager : BaseGameOverManager
             //Player 1 loses
             losedPlayer.Value = PlayableState.Player1Playing;
         }
-
-        GameOverClientRpc();
     }
 
-    public override void LoseGame()
+    public override void HandleOnLosedPlayerChanged(PlayableState newValue)
     {
-        DefineTheWinner();
 
-        TriggerOnGameOver();
-
-        gameOver = true;
     }
 
+
+    public override void HandleOnGameStateChange(GameState gameState)
+    {
+        if(gameState == GameState.GameEnded)
+        {
+            DefineTheWinner();
+        }
+    }
 }

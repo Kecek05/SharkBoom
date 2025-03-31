@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.InputSystem.LowLevel;
 
 public class GameStateManager : BaseGameStateManager
 {
@@ -10,20 +11,13 @@ public class GameStateManager : BaseGameStateManager
         if (gameState == GameState.GameEnded) return;
 
         await Task.Delay(delayToChange);
-        SetGameState(gameState);
+        SetGameStateServerRpc(gameState);
 
     }
 
     public override void ConnectionLostHostAndClient()
     {
         TriggerOnLostConnectionInHost();
-    }
-
-    public override void HandleOnGameOver()
-    {
-        if (!IsServer) return;
-
-        ChangeGameState(GameState.GameEnded);
     }
 
     public override void HandleOnGameStateValueChanged(GameState newValue)
@@ -89,11 +83,6 @@ public class GameStateManager : BaseGameStateManager
         //Player died, Game Over.
 
         ChangeGameState(GameState.GameEnded);
-    }
-
-    protected override void SetGameState(GameState newState)
-    {
-        SetGameStateServerRpc(newState);
     }
 
     [Rpc(SendTo.Server)]
