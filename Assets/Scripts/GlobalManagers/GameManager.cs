@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class GameManager : NetworkBehaviour
 {
-    public static GameManager Instance { get; private set; }
 
     [BetterHeader("References")]
     [SerializeField] private ItemsListSO itemsListSO;
@@ -21,10 +20,6 @@ public class GameManager : NetworkBehaviour
     private BaseGameOverManager gameOverManager;
     private BasePearlsManager pearlsManager;
 
-    private void Awake()
-    {
-        Instance = this;
-    }
 
     public override void OnNetworkSpawn()
     {
