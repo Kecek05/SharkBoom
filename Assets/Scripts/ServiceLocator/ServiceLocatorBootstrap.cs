@@ -13,6 +13,7 @@ public class ServiceLocatorBootstrap : MonoBehaviour
         BaseTurnManager turnManager = gameObject.AddComponent<TurnManager>();
         BaseTimerManager timerManager = gameObject.AddComponent<TimerManager>();
         BaseGameTimerManager gameTimerManager = gameObject.AddComponent<GameTimerManager>();
+
         BasePlayersPublicInfoManager playersPublicInfoManager = gameObject.AddComponent<PlayersPublicInfoManager>();
         playersPublicInfoManager.Initialize(itemsListSO);
         foreach (Transform spawnPoint in spawnPointsPos)
@@ -33,5 +34,7 @@ public class ServiceLocatorBootstrap : MonoBehaviour
         ServiceLocator.Register(gameStateManager);
         ServiceLocator.Register(gameOverManager);
         ServiceLocator.Register(pearlsManager);
+
     }
+
 }

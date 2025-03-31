@@ -9,7 +9,7 @@ public abstract class BasePlayersPublicInfoManager : MonoBehaviour
     public static int PLAYER_2_LAYER = 9;
 
     protected ItemsListSO itemsListSO;
-    protected List<Transform> spawnPointsPos;
+    protected List<Transform> spawnPointsPos = new();
 
     public abstract void Initialize(ItemsListSO itemsListSO);
 
