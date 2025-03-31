@@ -17,6 +17,8 @@ public class GameOverUI : MonoBehaviour
     private bool alreadyChanged = false; //Prevent double change when losting connection
 
     private BaseGameOverManager gameOverManager;
+    private BasePearlsManager pearlsManager;
+
     private void Awake()
     {
         Hide();
@@ -36,32 +38,19 @@ public class GameOverUI : MonoBehaviour
     private void Start()
     {
         gameOverManager = ServiceLocator.Get<BaseGameOverManager>();
+        pearlsManager = ServiceLocator.Get<BasePearlsManager>();
 
         gameOverManager.OnWin += GameStateManager_OnWin;
         gameOverManager.OnLose += GameStateManager_OnLose;
 
-        ////CalculatePearlsManager.OnPearlsDeltaChanged += CalculatePearlsManager_OnPearlsDeltaChanged;
-        gameOverManager.OnCanShowPearls += GameStateManager_OnCanShowPearls;
-        //GameFlowManager.Instance.GameStateManager.OnGameOver += GameStateManager_OnGameOver;
+        pearlsManager.OnPearlsChanged += PearlsManager_OnPearlsChanged;
     }
 
-    private void GameStateManager_OnCanShowPearls(int pearlsToShow)
+    private void PearlsManager_OnPearlsChanged(int pearlsToShow)
     {
         SetupPearlsResult(pearlsToShow);
         Show();
     }
-
-    //private void GameStateManager_OnGameOver()
-    //{
-    //    Debug.Log("GameOverUI: GameStateManager_OnGameOver");
-    //    Show();
-    //}
-
-    //private void CalculatePearlsManager_OnPearlsDeltaChanged(int pearlsDelta)
-    //{
-    //    //Pearls value to show changed, show UI.
-    //    SetupPearlsResult(pearlsDelta);
-    //}
 
     private void SetupPearlsResult(int pearlsDelta)
     {
@@ -125,8 +114,6 @@ public class GameOverUI : MonoBehaviour
     {
         gameOverManager.OnWin -= GameStateManager_OnWin;
         gameOverManager.OnLose -= GameStateManager_OnLose;
-        gameOverManager.OnCanShowPearls -= GameStateManager_OnCanShowPearls;
-        //GameManager.Instance.GameStateManager.OnCanShowPearls -= GameStateManager_OnCanShowPearls;
-        ////CalculatePearlsManager.OnPearlsDeltaChanged -= CalculatePearlsManager_OnPearlsDeltaChanged;
+        pearlsManager.OnPearlsChanged -= PearlsManager_OnPearlsChanged;
     }
 }

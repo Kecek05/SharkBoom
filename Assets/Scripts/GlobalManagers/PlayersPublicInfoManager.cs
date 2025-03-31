@@ -63,7 +63,6 @@ public class PlayersPublicInfoManager : BasePlayersPublicInfoManager
 
     public override void AddRandomSpawnPoint(Transform transformToAdd)
     {
-        Debug.Log($"Adding to spawn point: {transformToAdd.gameObject.name}");
         spawnPointsPos.Add(transformToAdd);
     }
 }

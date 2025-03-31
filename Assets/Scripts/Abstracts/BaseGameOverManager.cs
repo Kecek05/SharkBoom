@@ -4,7 +4,6 @@ using Unity.Netcode;
 public abstract class BaseGameOverManager : NetworkBehaviour
 {
     //Events
-    public event Action<int> OnCanShowPearls;
     public event Action OnWin;
     public event Action OnLose;
 

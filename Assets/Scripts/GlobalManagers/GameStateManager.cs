@@ -8,7 +8,7 @@ public class GameStateManager : BaseGameStateManager
 
     public override async void ChangeGameState(GameState gameState, int delayToChange = 0)
     {
-        if (gameState == GameState.GameEnded) return;
+        if (CurrentGameState.Value == GameState.GameEnded) return;
 
         await Task.Delay(delayToChange);
         SetGameStateServerRpc(gameState);
@@ -32,14 +32,10 @@ public class GameStateManager : BaseGameStateManager
 
                 break;
             case GameState.CalculatingResults:
-                if (IsServer && !IsHost) //DS
+                if(IsServer)
                 {
-                    //REFACTOR
-                    CalculatePearls.CalculatePossibleResults(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0], NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1]);
-                    ChangeGameState(GameState.ShowingPlayersInfo);
-                }
-                else if (IsHost)
-                {
+                    if(!IsHost)  //REFACTOR
+                        CalculatePearls.CalculatePossibleResults(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0], NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1]);
                     ChangeGameState(GameState.ShowingPlayersInfo);
                 }
                 break;
