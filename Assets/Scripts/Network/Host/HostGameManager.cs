@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
-using Unity.Services.Authentication;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
 using Unity.Services.Relay;
@@ -102,12 +101,16 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
 
         NetworkManager.Singleton.StartHost();
 
-        //GameStateManager.OnCanCloseServer += GameStateManager_OnCanCloseServer;
+        NetworkManager.Singleton.OnServerStarted += NetworkManager_OnServerStarted;
+        PearlsManager.OnFinishedCalculationsOnServer += PearlsManager_OnFinishedCalculationsOnServer;
 
         networkServer.OnClientLeft += HandleClientLeft;
 
-        Loader.LoadHostNetwork(Loader.Scene.GameNetCodeTest);
+    }
 
+    private void NetworkManager_OnServerStarted()
+    {
+        Loader.LoadHostNetwork(Loader.Scene.GameNetCodeTest);
     }
 
     private async void HandleClientLeft(string authId)
@@ -121,16 +124,8 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
             Debug.LogException(lobbyEx);
         }
 
-        if (GameManager.Instance != null)
-        {
-            //Client Left, Cancel Game
-            ServiceLocator.Get<BaseGameStateManager>().ConnectionLostHostAndClient();
-        }
-        else
-        {
-            //Not in game, shutdown
-            ShutdownAsync();
-        }
+        ServiceLocator.Get<BaseGameStateManager>().ConnectionLostHostAndClient();
+        ShutdownAsync();
     }
 
     private IEnumerator HeartbeatLobby(float delayHeartbeatSeconds)
@@ -165,15 +160,15 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
         }
         lobbyId = string.Empty;
 
-
+        NetworkManager.Singleton.OnServerStarted -= NetworkManager_OnServerStarted;
         networkServer.OnClientLeft -= HandleClientLeft;
 
-        //GameStateManager.OnCanCloseServer -= GameStateManager_OnCanCloseServer;
+        PearlsManager.OnFinishedCalculationsOnServer -= PearlsManager_OnFinishedCalculationsOnServer;
 
         networkServer?.Dispose();
     }
 
-    private void GameStateManager_OnCanCloseServer()
+    private void PearlsManager_OnFinishedCalculationsOnServer()
     {
         Debug.Log("OnCanCloseServer on Host");
         ShutdownAsync();

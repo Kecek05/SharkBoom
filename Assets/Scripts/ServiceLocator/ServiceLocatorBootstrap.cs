@@ -1,8 +1,11 @@
+using Sortify;
 using UnityEngine;
 
 
 public class ServiceLocatorBootstrap : MonoBehaviour
 {
+    [BetterHeader("References")]
+    [SerializeField] private ItemsListSO itemsListSO;
 
     private void Awake()
     {
@@ -11,6 +14,7 @@ public class ServiceLocatorBootstrap : MonoBehaviour
         BaseTimerManager timerManager = gameObject.AddComponent<TimerManager>();
         BaseGameTimerManager gameTimerManager = gameObject.AddComponent<GameTimerManager>();
         BasePlayersPublicInfoManager playersPublicInfoManager = gameObject.AddComponent<PlayersPublicInfoManager>();
+        playersPublicInfoManager.Initialize(itemsListSO);
         BaseItemActivableManager itemActivableManager = gameObject.AddComponent<ItemActivableManager>();
         BaseGameStateManager gameStateManager = gameObject.AddComponent<GameStateManager>();
         BaseGameOverManager gameOverManager = gameObject.AddComponent<GameOverManager>();

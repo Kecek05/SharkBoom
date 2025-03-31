@@ -4,15 +4,10 @@ using UnityEngine;
 
 public class GameStateManager : BaseGameStateManager
 {
-    private BaseGameOverManager gameOverManager;
-    private void Start()
-    {
-        gameOverManager = ServiceLocator.Get<BaseGameOverManager>();
-    }
 
     public override async void ChangeGameState(GameState gameState, int delayToChange = 0)
     {
-        if (gameOverManager.GameOver) return;
+        if (gameState == GameState.GameEnded) return;
 
         await Task.Delay(delayToChange);
         SetGameState(gameState);
@@ -57,7 +52,7 @@ public class GameStateManager : BaseGameStateManager
             case GameState.ShowingPlayersInfo:
                 if (IsServer)
                 {
-                    GameManager.Instance.RandomizePlayerItems();
+                    ServiceLocator.Get<BasePlayersPublicInfoManager>().RandomizePlayerItems();
                     ChangeGameState(GameState.GameStarted, delayClosePlayersInfo); //Show Players Info delay
                 }
                 break;
@@ -89,6 +84,12 @@ public class GameStateManager : BaseGameStateManager
         }
     }
 
+    public override void HandeOnPlayerDie()
+    {
+        //Player died, Game Over.
+
+        ChangeGameState(GameState.GameEnded);
+    }
 
     protected override void SetGameState(GameState newState)
     {
@@ -100,4 +101,5 @@ public class GameStateManager : BaseGameStateManager
     {
         gameState.Value = newState;
     }
+
 }

@@ -28,7 +28,7 @@ public class ServerGameManager : IDisposable
         multiplayAllocationService = new MultiplayAllocationService();
 #endif
 
-        //GameStateManager.OnCanCloseServer += GameStateManager_OnCanCloseServer;
+        PearlsManager.OnFinishedCalculationsOnServer += Pearls_OnFinishedCalculationsOnServer;
     }
 
     public async Task StartGameServerAsync()
@@ -120,7 +120,7 @@ public class ServerGameManager : IDisposable
 
 #endif
 
-    private void GameStateManager_OnCanCloseServer()
+    private void Pearls_OnFinishedCalculationsOnServer()
     {
         ShutdownServer();
     }
@@ -145,7 +145,7 @@ public class ServerGameManager : IDisposable
 #if UNITY_SERVER
         multiplayAllocationService?.Dispose();
 #endif
-        //GameStateManager.OnCanCloseServer -= GameStateManager_OnCanCloseServer;
+        PearlsManager.OnFinishedCalculationsOnServer -= Pearls_OnFinishedCalculationsOnServer;
         networkServer?.Dispose();
     }
 

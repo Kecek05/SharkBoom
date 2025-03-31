@@ -16,7 +16,7 @@ public class PlayerHealth : Health
     /// <summary>
     /// Server is who calls this event.
     /// </summary>
-    public static event Action<PlayableState> OnPlayerDie;
+    public static event Action OnPlayerDie;
 
     private float selectedMultiplier; //cache
     [SerializeField] private PlayerThrower player;

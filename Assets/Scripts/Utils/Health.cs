@@ -14,6 +14,8 @@ public class Health : NetworkBehaviour
 
     protected bool isDead = false;
 
+    public NetworkVariable<float> CurrentHealth => currentHealth;
+
     public override void OnNetworkSpawn()
     {
         if (!IsServer) return; // Only the server should be able to change the health

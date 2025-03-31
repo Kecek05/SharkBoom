@@ -1,6 +1,4 @@
-using System.Runtime.CompilerServices;
 using Unity.Netcode;
-using UnityEngine;
 
 public class PearlsManager : BasePearlsManager
 {
@@ -9,15 +7,15 @@ public class PearlsManager : BasePearlsManager
     {
         if (newValue == GameState.GameEnded)
         {
-            CheckForTheWinner(ServiceLocator.Get<BaseGameOverManager>().LosedPlayer.Value);
+            //ChangePearls(GetTheWinner());
         }
     }
 
-    protected override async void CheckForTheWinner(PlayableState losedPlayerState)
+    protected override async void ChangePearls(PlayableState losedPlayerState)
     {
-        //Code to check if both players have the same health, if so, tie, otherwise check who has the most health and declare the winner.
-
         if (!IsServer) return;
+
+
 
         if (losedPlayerState == PlayableState.None)
         {
@@ -36,7 +34,7 @@ public class PearlsManager : BasePearlsManager
 
             SendGameResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId, NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].calculatedPearls.PearlsToLose);
 
-            //TriggerCanCloseServerRpc();
+            TriggerOnFinishedCalculationsOnServer();
 
             return;
         }
@@ -76,11 +74,8 @@ public class PearlsManager : BasePearlsManager
 
         }
 
-        //TriggerCanCloseServerRpc();
+        TriggerOnFinishedCalculationsOnServer();
     }
-
-
-
 
     protected override void SendGameResultsToClient(string authId, int valueToShow)
     {

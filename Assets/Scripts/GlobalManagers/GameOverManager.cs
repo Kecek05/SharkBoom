@@ -4,10 +4,12 @@ public class GameOverManager : BaseGameOverManager
 {
     
     private BaseTurnManager turnManager;
+    private BasePlayersPublicInfoManager playersPublicInfoManager;
 
     private void Start()
     {
         turnManager = ServiceLocator.Get<BaseTurnManager>();
+        playersPublicInfoManager = ServiceLocator.Get<BasePlayersPublicInfoManager>();
     }
 
     public override void GameOverClient()
@@ -37,19 +39,47 @@ public class GameOverManager : BaseGameOverManager
         }
     }
 
-    public override void LoseGame(PlayableState playerLosedPlayableState)
+    [Rpc(SendTo.ClientsAndHost)]
+    public void GameOverClientRpc()
     {
-        losedPlayer.Value = playerLosedPlayableState;
+        GameOverClient();
     }
 
-    public override void HandleOnLosedPlayerValueChanged(PlayableState previousValue, PlayableState newValue)
+    public override void DefineTheWinner()
     {
-        TriggerOnGameOver();
+        // Calculate the winner of the game
+        //Code to check if both players have the same health, if so, tie, otherwise check who has the most health and declare the winner.
 
-        if (IsClient)
+        if (!IsServer) return;
+
+        PlayerHealth player1Health = playersPublicInfoManager.GetPlayerObjectByPlayableState(PlayableState.Player1Playing).GetComponent<PlayerHealth>();
+
+        PlayerHealth player2Health = playersPublicInfoManager.GetPlayerObjectByPlayableState(PlayableState.Player2Playing).GetComponent<PlayerHealth>();
+
+        if (player1Health.CurrentHealth.Value == player2Health.CurrentHealth.Value)
         {
-            GameOverClient();
+            //Tie
+            losedPlayer.Value = PlayableState.None;
         }
+        else if (player1Health.CurrentHealth.Value > player2Health.CurrentHealth.Value)
+        {
+            //Player 2 loses
+            losedPlayer.Value = PlayableState.Player2Playing;
+        }
+        else
+        {
+            //Player 1 loses
+            losedPlayer.Value = PlayableState.Player1Playing;
+        }
+
+        GameOverClientRpc();
+    }
+
+    public override void LoseGame()
+    {
+        DefineTheWinner();
+
+        TriggerOnGameOver();
 
         gameOver = true;
     }

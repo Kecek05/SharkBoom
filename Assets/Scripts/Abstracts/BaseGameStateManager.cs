@@ -10,11 +10,6 @@ public abstract class BaseGameStateManager : NetworkBehaviour
     /// </summary>
     public event Action OnLostConnectionInHost;
 
-    /// <summary>
-    /// Called when the server should be closed.
-    /// </summary>
-    public event Action OnCanCloseServer;
-
 
     //Variables
     protected int delayClosePlayersInfo = 3000; //in ms
@@ -50,10 +45,6 @@ public abstract class BaseGameStateManager : NetworkBehaviour
 
     public abstract void HandleOnGameOver();
 
-    /// <summary>
-    /// Trigger event to close the server
-    /// </summary>
-    protected void TriggerCanCloseServer() => OnCanCloseServer?.Invoke();
 
     protected void TriggerOnLostConnectionInHost() => OnLostConnectionInHost?.Invoke();
 
@@ -76,6 +67,8 @@ public abstract class BaseGameStateManager : NetworkBehaviour
     /// Called when any player lost connection in Host.
     /// </summary>
     public abstract void ConnectionLostHostAndClient();
+
+    public abstract void HandeOnPlayerDie();
 
 }
 

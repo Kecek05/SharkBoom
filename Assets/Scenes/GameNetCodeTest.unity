@@ -2768,6 +2768,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60cd56e744eb20a4481f76d39860c281, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemsListSO: {fileID: 11400000, guid: 0512cb21a29af2e4b88962e2cb6a1605, type: 2}
 --- !u!114 &703122851
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4541,10 +4542,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  itemsListSO: {fileID: 11400000, guid: 0512cb21a29af2e4b88962e2cb6a1605, type: 2}
-  spawnPointsPos:
-  - {fileID: 1671551940}
-  - {fileID: 1658826650}
 --- !u!4 &1229163762
 Transform:
   m_ObjectHideFlags: 0
@@ -5341,7 +5338,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4845276930943762971, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000045776367
+      value: -0.000061035156
       objectReference: {fileID: 0}
     - target: {fileID: 4845637959249703711, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchorMax.y
@@ -5890,7 +5887,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerText: {fileID: 1581069107}
-  timerManager: {fileID: 0}
 --- !u!114 &1455302047
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5920,7 +5916,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerText: {fileID: 290092681}
-  gameTimerManager: {fileID: 0}
 --- !u!1 &1489485622
 GameObject:
   m_ObjectHideFlags: 0
@@ -6950,6 +6945,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1658826650}
+  - component: {fileID: 1658826651}
   m_Layer: 0
   m_Name: SpawnPoint2
   m_TagString: Untagged
@@ -6972,6 +6968,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1489485623}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!114 &1658826651
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1658826649}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f65ea27953b35ff4a96ebba1a99c457b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1671551939
 GameObject:
   m_ObjectHideFlags: 0
@@ -6981,6 +6989,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1671551940}
+  - component: {fileID: 1671551941}
   m_Layer: 0
   m_Name: SpawnPoint1
   m_TagString: Untagged
@@ -7003,6 +7012,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1489485623}
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
+--- !u!114 &1671551941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1671551939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f65ea27953b35ff4a96ebba1a99c457b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1681911115
 GameObject:
   m_ObjectHideFlags: 0
