@@ -101,15 +101,11 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
 
         NetworkManager.Singleton.StartHost();
 
-        NetworkManager.Singleton.OnServerStarted += NetworkManager_OnServerStarted;
+
         PearlsManager.OnFinishedCalculationsOnServer += PearlsManager_OnFinishedCalculationsOnServer;
 
         networkServer.OnClientLeft += HandleClientLeft;
 
-    }
-
-    private void NetworkManager_OnServerStarted()
-    {
         Loader.LoadHostNetwork(Loader.Scene.GameNetCodeTest);
     }
 
@@ -160,7 +156,6 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
         }
         lobbyId = string.Empty;
 
-        NetworkManager.Singleton.OnServerStarted -= NetworkManager_OnServerStarted;
         networkServer.OnClientLeft -= HandleClientLeft;
 
         PearlsManager.OnFinishedCalculationsOnServer -= PearlsManager_OnFinishedCalculationsOnServer;

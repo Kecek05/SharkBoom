@@ -1,11 +1,11 @@
 using Sortify;
 using UnityEngine;
 
-
 public class ServiceLocatorBootstrap : MonoBehaviour
 {
     [BetterHeader("References")]
-    [SerializeField] private ItemsListSO itemsListSO;
+    [SerializeField] private ItemsListSO itemsListSO; //REFACTOR
+    [SerializeField] private Transform[] spawnPointsPos; //REFACTOR
 
     private void Awake()
     {
@@ -15,6 +15,11 @@ public class ServiceLocatorBootstrap : MonoBehaviour
         BaseGameTimerManager gameTimerManager = gameObject.AddComponent<GameTimerManager>();
         BasePlayersPublicInfoManager playersPublicInfoManager = gameObject.AddComponent<PlayersPublicInfoManager>();
         playersPublicInfoManager.Initialize(itemsListSO);
+        foreach (Transform spawnPoint in spawnPointsPos)
+        {
+            playersPublicInfoManager.AddRandomSpawnPoint(spawnPoint);
+        }
+
         BaseItemActivableManager itemActivableManager = gameObject.AddComponent<ItemActivableManager>();
         BaseGameStateManager gameStateManager = gameObject.AddComponent<GameStateManager>();
         BaseGameOverManager gameOverManager = gameObject.AddComponent<GameOverManager>();

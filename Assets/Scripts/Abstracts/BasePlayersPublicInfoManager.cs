@@ -35,7 +35,7 @@ public abstract class BasePlayersPublicInfoManager : MonoBehaviour
     /// Add a spawnpoint to the List
     /// </summary>
     /// <param name="transformToAdd"></param>
-    public abstract void SetRandomSpawnPoint(Transform transformToAdd);
+    public abstract void AddRandomSpawnPoint(Transform transformToAdd);
 }
 
 
