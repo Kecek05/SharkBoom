@@ -76,6 +76,8 @@ public class NetworkServer : IDisposable
 
         UserData userData = JsonUtility.FromJson<UserData>(payload); //Deserialize the payload to UserData
 
+        Debug.Log($"ApprovalCheck, UserData: {userData.userName}, Pearls: {userData.UserPearls}, AuthId: {userData.userAuthId} ");
+
         PlayerData newPlayerData = new PlayerData()
         {
             userData = userData,

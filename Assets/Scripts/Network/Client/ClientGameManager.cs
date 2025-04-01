@@ -131,11 +131,11 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         string payload = JsonUtility.ToJson(userData); //serialize the payload to json
         byte[] payloadBytes = System.Text.Encoding.UTF8.GetBytes(payload); //serialize the payload to bytes
 
+        Debug.Log($"ConnectClient, UserData: {userData.userName}, Pearls: {userData.UserPearls}, AuthId: {userData.userAuthId} ");
+
         NetworkManager.Singleton.NetworkConfig.ConnectionData = payloadBytes;
 
         NetworkManager.Singleton.StartClient();
-
-        Debug.Log("Started Client!");
     }
 
     public async Task QuickJoinLobbyAsync()
