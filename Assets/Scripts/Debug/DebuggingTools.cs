@@ -11,8 +11,6 @@ public class DebuggingTools : NetworkBehaviour
 {
 
     [BetterHeader("References")]
-    public TextMeshProUGUI debugGameStateText;
-    public TextMeshProUGUI debugPlayableStateText;
     public TextMeshProUGUI debugPingText;
 
     //Ping
@@ -59,12 +57,12 @@ public class DebuggingTools : NetworkBehaviour
         }
     }
 
-    private void Update()
+    [Command("printGameState")]
+    private void PrintGameState()
     {
-        debugGameStateText.text = stateManager.CurrentGameState.Value.ToString();
-        debugPlayableStateText.text = turnManager.CurrentPlayableState.Value.ToString();
+        Debug.Log(stateManager.CurrentGameState.Value.ToString());
+        Debug.Log(turnManager.CurrentPlayableState.Value.ToString());
     }
-
 
 
     [Command("shutDownDebug")]

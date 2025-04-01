@@ -1,6 +1,7 @@
 using Sortify;
 using UnityEngine;
 
+[DefaultExecutionOrder(-1)]
 public class ServiceLocatorBootstrap : MonoBehaviour
 {
     [BetterHeader("References")]
