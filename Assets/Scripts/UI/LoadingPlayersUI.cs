@@ -1,4 +1,5 @@
 using Sortify;
+using System;
 using TMPro;
 using Unity.Collections;
 using Unity.Netcode;
@@ -21,6 +22,9 @@ public class LoadingPlayersUI : NetworkBehaviour
 
     private BaseGameStateManager gameStateManager;
 
+    private int updatedPlayersInfoOnClient = 0;
+
+
     public override void OnNetworkSpawn()
     {
         gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
@@ -28,25 +32,26 @@ public class LoadingPlayersUI : NetworkBehaviour
         HidePlayersInfo();
         ShowWaitingForPlayers();
 
-
-        if(IsClient)
-        {
-            gameStateManager.CurrentGameState.OnValueChanged += GameState_OnValueChanged;
-        }
-
-        if(IsServer)
-        {
-            PlayerThrower.OnPlayerSpawned += Player_OnPlayerSpawned;
-        }
+        gameStateManager.CurrentGameState.OnValueChanged += GameState_OnValueChanged;
     }
 
     private void GameState_OnValueChanged(GameState previousValue, GameState newValue)
     {
-
-        if(newValue == GameState.ShowingPlayersInfo)
+        if(newValue == GameState.CalculatingResults)
         {
-            //All Connected and Spawned
-
+            //All Connected
+            if (IsServer)
+            {
+                //Send to clients
+                foreach (PlayerData playerData in NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas)
+                {
+                    PlayerSpawnedClientRpc(playerData.userData.userName, playerData.userData.UserPearls, playerData.playableState);
+                }
+            }
+        }
+        else if(newValue == GameState.ShowingPlayersInfo)
+        {
+            //Show UI
             ShowPlayersInfo();
             HideWaitingForPlayers();
         } else if (newValue == GameState.GameStarted)
@@ -56,46 +61,22 @@ public class LoadingPlayersUI : NetworkBehaviour
         }
     }
 
-
-    private void Player_OnPlayerSpawned(PlayerThrower player)
-    {
-        if(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.RegisteredClientCount == 2) //Only call if the second player is spawned
-            PlayerSpawnedServerRpc();
-    }
-
-    [Rpc(SendTo.Server)]
-    private void PlayerSpawnedServerRpc()
-    {
-        //Send to server to send to all clients
-        int playerCount = 0; //IMPROVE THIS
-
-        foreach (ulong connectedClientId in NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.AuthToClientIdValues)
-        {
-            PlayerData playerData = NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.GetPlayerDataByClientId(connectedClientId);
-
-            PlayerSpawnedClientRpc(playerData.userData.userName, playerData.userData.UserPearls, playerCount);
-
-            playerCount++;
-        }
-    }
-
     [Rpc(SendTo.ClientsAndHost)]
-    private void PlayerSpawnedClientRpc(FixedString32Bytes playerName, int playerPearls, int playerCount)
+    private void PlayerSpawnedClientRpc(FixedString32Bytes playerName, int playerPearls, PlayableState playableState)
     {
-        Debug.Log($"Name: {playerName} Pearls: {playerPearls} Player Count: {playerCount}");
+        Debug.Log($"Name: {playerName} Pearls: {playerPearls} Player Count: {updatedPlayersInfoOnClient}");
 
         //All clients listen to this
-        if (playerCount == 0)
+        switch(playableState)
         {
-            //Player 1
-            player1NameText.text = playerName.Value.ToString();
-            player1PearlsText.text = playerPearls.ToString();
-        }
-        else
-        {
-            //Player 2
-            player2NameText.text = playerName.Value.ToString();
-            player2PearlsText.text = playerPearls.ToString();
+            case PlayableState.Player1Playing:
+                player1NameText.text = playerName.ToString();
+                player1PearlsText.text = playerPearls.ToString();
+                break;
+            case PlayableState.Player2Playing:
+                player2NameText.text = playerName.ToString();
+                player2PearlsText.text = playerPearls.ToString();
+                break;
         }
     }
 
@@ -122,15 +103,7 @@ public class LoadingPlayersUI : NetworkBehaviour
 
     public override void OnNetworkDespawn()
     {
-        if (!IsServer)
-        {
-            gameStateManager.CurrentGameState.OnValueChanged -= GameState_OnValueChanged;
-        }
-
-        if (IsServer)
-        {
-            PlayerThrower.OnPlayerSpawned -= Player_OnPlayerSpawned;
-        }
+        gameStateManager.CurrentGameState.OnValueChanged -= GameState_OnValueChanged;
     }
 
 }

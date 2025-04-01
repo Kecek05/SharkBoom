@@ -87,8 +87,6 @@ public class NetworkServer : IDisposable
 
         serverAuthenticationService.RegisterClient(newPlayerData);
 
-
-
         OnUserJoined?.Invoke(newPlayerData);
 
         response.Approved = true; //Connection is approved

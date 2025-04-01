@@ -121,7 +121,7 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
         }
 
         ServiceLocator.Get<BaseGameStateManager>().ConnectionLostHostAndClient();
-        //ShutdownAsync();
+        ShutdownAsync();
     }
 
     private IEnumerator HeartbeatLobby(float delayHeartbeatSeconds)
