@@ -135,6 +135,7 @@ public static class AuthenticationWrapper
 
             AuthState = AuthState.Authenticated;
             Debug.Log($"AUTHENTICATED WITH GOOGLE PLAY GAMES UNITY, CODE: {GooglePlayToken}");
+            return;
         }
         catch (AuthenticationException ex)
         {
@@ -144,6 +145,8 @@ public static class AuthenticationWrapper
         {
             Debug.LogException(ex);
         }
+
+        OnSignInFail?.Invoke();
     }
 
 #endif
@@ -235,7 +238,7 @@ public static class AuthenticationWrapper
 
             AuthState = AuthState.Authenticated;
 
-
+            return;
         }
         catch (AuthenticationException ex)
         {
@@ -245,6 +248,7 @@ public static class AuthenticationWrapper
         {
             Debug.LogException(ex);
         }
+        OnSignInFail?.Invoke();
     }
 
     private static async Task SignInAnonymouslyAsync(int maxTries = 5)
@@ -290,6 +294,7 @@ public static class AuthenticationWrapper
         {
             Debug.LogWarning($"Player could not authenticate after {tries} tries.");
             AuthState = AuthState.TimeOut;
+            OnSignInFail?.Invoke();
         }
     }
 
