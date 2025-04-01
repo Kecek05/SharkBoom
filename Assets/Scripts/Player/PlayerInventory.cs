@@ -262,4 +262,14 @@ public class PlayerInventory : NetworkBehaviour
             player.PlayerLauncher.OnItemLaunched -= PlayerLauncher_OnItemLaunched;
         }
     }
+
+    public override void OnGainedOwnership()
+    {
+        Debug.Log($"Gained Ownership: {OwnerClientId}");
+    }
+
+    public override void OnLostOwnership()
+    {
+        Debug.Log($"Lost Ownership: {OwnerClientId}");
+    }
 }

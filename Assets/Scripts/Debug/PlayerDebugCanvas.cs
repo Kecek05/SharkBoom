@@ -1,5 +1,4 @@
 using Sortify;
-using System;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -19,7 +18,7 @@ public class PlayerDebugCanvas : NetworkBehaviour
     {
         if (!IsOwner)
         {
-            gameObject.SetActive(false);
+            Destroy(gameObject);
             return;
         }
 

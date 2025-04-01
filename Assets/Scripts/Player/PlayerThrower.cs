@@ -38,6 +38,8 @@ public class PlayerThrower : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
+        turnManager = ServiceLocator.Get<BaseTurnManager>();
 
         if (IsServer)
         {
@@ -57,9 +59,6 @@ public class PlayerThrower : NetworkBehaviour
 
         if (IsOwner)
         {
-            gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
-            turnManager = ServiceLocator.Get<BaseTurnManager>();
-
             turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
 
             turnManager.OnMyTurnEnded += GameFlowManager_OnMyTurnEnded;
