@@ -42,17 +42,10 @@ public class LoadingPlayersUI : NetworkBehaviour
             //All Connected
             if (IsServer)
             {
-                //Debug
-                Debug.Log("Before UpdatePlayersInfoClientRpc, List of all players Data in NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas");
-                foreach (PlayerData playerData in NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas)
-                {
-                    Debug.Log($"UpdatePlayersInfoClientRpc, Name: {playerData.userData.userName} Pearls: {playerData.userData.UserPearls} AuthId: {playerData.userData.userAuthId}");
-                }
-
                 //Send to clients
                 foreach (PlayerData playerData in NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas)
                 {
-                    UpdatePlayersInfoClientRpc(playerData.userData.userName, playerData.userData.UserPearls, playerData.playableState);
+                    UpdatePlayersInfoClientRpc(playerData.userData.userName, playerData.userData.userPearls, playerData.playableState);
                 }
             }
         }

@@ -79,7 +79,7 @@ public class MainMenuController : MonoBehaviour
         //DEBUG
         if(ClientSingleton.Instance != null)
         {
-            lobbyCodeInputField.text = ClientSingleton.Instance.GameManager.UserData.UserPearls.ToString();
+            lobbyCodeInputField.text = ClientSingleton.Instance.GameManager.UserData.userPearls.ToString();
         }
     }
 

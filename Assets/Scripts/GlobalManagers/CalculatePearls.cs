@@ -21,9 +21,9 @@ public static class CalculatePearls
     {
         //Not calculate in relay
 
-        (int player1CalculatedPearlsToWin, int player2CalculatedPearlsToLose) = CalculateDelta(player1Data.userData.UserPearls, player2Data.userData.UserPearls);
+        (int player1CalculatedPearlsToWin, int player2CalculatedPearlsToLose) = CalculateDelta(player1Data.userData.userPearls, player2Data.userData.userPearls);
 
-        (int player2CalculatedPearlsToWin, int player1CalculatedPearlsToLose) = CalculateDelta(player2Data.userData.UserPearls, player1Data.userData.UserPearls);
+        (int player2CalculatedPearlsToWin, int player1CalculatedPearlsToLose) = CalculateDelta(player2Data.userData.userPearls, player1Data.userData.userPearls);
 
         player1Data.calculatedPearls = new CalculatedPearls
         {
