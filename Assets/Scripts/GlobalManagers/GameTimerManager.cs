@@ -56,6 +56,7 @@ public class GameTimerManager : BaseGameTimerManager
         {
             StopCoroutine(gameTimerCoroutine);
             gameTimerCoroutine = null;
+            TriggerOnGameTimerEnd();
         }
     }
 

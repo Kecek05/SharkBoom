@@ -32,9 +32,24 @@ public static class Save
             { ADD_PEARLS_ARGUMENT_PEARLS, PlayerPearlsToAdd },
             { ADD_PEARLS_ARGUMENT_PLAYERID, userAuthId }
         };
-        await CloudCodeService.Instance.CallEndpointAsync(ADD_PEARLS_ENDPOINT, arguments);
-        Debug.Log($"AddSavePlayerPearls");
-        OnPlayerPearlsChanged?.Invoke();
+
+        bool saved = false;
+
+        while(!saved)
+        {
+            try
+            {
+                await CloudCodeService.Instance.CallEndpointAsync(ADD_PEARLS_ENDPOINT, arguments);
+                saved = true;
+                Debug.Log($"AddSavePlayerPearls");
+                OnPlayerPearlsChanged?.Invoke();
+            }
+            catch (CloudCodeException e)
+            {
+                Debug.LogError($"Error saving pearls: {e.Message}, trying again");
+                await Task.Delay(100);
+            }
+        }
     }
 
     public static async Task<int> LoadPlayerPearls(string userAuthId)
@@ -45,11 +60,18 @@ public static class Save
             { ADD_PEARLS_ARGUMENT_PLAYERID, userAuthId }
         };
 
-        int loadPearls = await CloudCodeService.Instance.CallEndpointAsync<int>(GET_PEARLS_ENDPOINT, arguments);
+        try
+        {
+            int loadPearls = await CloudCodeService.Instance.CallEndpointAsync<int>(GET_PEARLS_ENDPOINT, arguments);
 
-        Debug.Log($"Player Pearls: {loadPearls}");
-        return loadPearls;
+            Debug.Log($"Player Pearls: {loadPearls}");
+            return loadPearls;
 
-
+        } catch (CloudCodeException e)
+        {
+            Debug.LogError($"Error loading pearls: {e.Message}, Closing Game");
+            Application.Quit();
+            return 0;
+        }
     }
 }
