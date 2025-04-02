@@ -82,15 +82,6 @@ public class ServerGameManager : IDisposable
     private void UserJoined(PlayerData playerData)
     {
         multiplayAllocationService.AddPlayer();
-
-        SetReconnectValues(playerData);
-    }
-
-    private async void SetReconnectValues(PlayerData playerData)
-    {
-        await Reconnect.SetIsInMatch(playerData.userData.userAuthId, true);
-
-        await Reconnect.SetPlayerMatchConnection(playerData.userData.userAuthId, serverIP, serverPort);
     }
 
     private void UserLeft(PlayerData playerData)

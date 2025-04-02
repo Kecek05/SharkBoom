@@ -98,7 +98,6 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         Loader.LoadClient();
     }
 
-
     public async Task StartRelayClientAsync(string joinCode)
     {
         if (joinCode == null || joinCode == string.Empty) return;
@@ -191,10 +190,20 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         if(matchmakingResult.result == MatchmakerPollingResult.Success)
         {
             Debug.Log("Match Found!");
+            //Set values to possible reconnect
+            await SetReconnectValues(userData, matchmakingResult.ip, matchmakingResult.port);
+
             StartMatchmakingClient(matchmakingResult.ip, matchmakingResult.port);
         }
 
         return matchmakingResult.result;
+    }
+
+    private async Task SetReconnectValues(UserData userData, string serverIP, int serverPort)
+    {
+        await Reconnect.SetIsInMatch(userData.userAuthId, true);
+
+        await Reconnect.SetPlayerMatchConnection(userData.userAuthId, serverIP, serverPort);
     }
 
     public async Task CancelMatchmakingAsync()

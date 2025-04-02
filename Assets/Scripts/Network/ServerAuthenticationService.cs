@@ -24,13 +24,19 @@ public class ServerAuthenticationService : IServerAuthenticationService
 
     public void RegisterClient(PlayerData playerData)
     {
-        //if dont exist, add
-        clientIdToAuth[playerData.clientId] = playerData.userData.userAuthId;
+        if (!authToClientId.ContainsKey(playerData.userData.userAuthId))
+        {
+            //New client
+            Debug.Log("RegisterClient, New Client");
+            playerDatas.Add(playerData);
+        }
+
+        clientIdToPlayerData[playerData.clientId] = playerData;
         authToClientId[playerData.userData.userAuthId] = playerData.clientId;
+        clientIdToAuth[playerData.clientId] = playerData.userData.userAuthId;
         authIdToPlayerData[playerData.userData.userAuthId] = playerData;
 
-        playerDatas.Add(playerData);
-        clientIdToPlayerData[playerData.clientId] = playerData;
+        Debug.Log($"RegisterClient, AuthId: {playerData.userData.userAuthId} ClientId: {playerData.clientId} ");
     }
 
     public void RegisterPlayableClient(PlayerData playerData)
