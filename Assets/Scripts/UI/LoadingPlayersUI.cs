@@ -33,6 +33,13 @@ public class LoadingPlayersUI : NetworkBehaviour
         ShowWaitingForPlayers();
 
         gameStateManager.CurrentGameState.OnValueChanged += GameState_OnValueChanged;
+
+        if(gameStateManager.CurrentGameState.Value != GameState.CalculatingResults && gameStateManager.CurrentGameState.Value != GameState.WaitingForPlayers && gameStateManager.CurrentGameState.Value != GameState.SpawningPlayers)
+        {
+            //Game already started, reconnected, hide all
+            HidePlayersInfo();
+            HideWaitingForPlayers();
+        }
     }
 
     private void GameState_OnValueChanged(GameState previousValue, GameState newValue)
