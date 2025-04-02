@@ -1,3 +1,4 @@
+using QFSW.QC;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -74,6 +75,7 @@ public static class Loader
         NetworkManager.Singleton.SceneManager.LoadScene(Scene.Loading.ToString(), LoadSceneMode.Single);
     }
 
+    [Command("loadScene")]
     public static void LoadNoLoadingScreen(Scene scene)
     {
         loadType = LoadType.None;

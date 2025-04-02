@@ -82,6 +82,15 @@ public class ServerGameManager : IDisposable
     private void UserJoined(PlayerData playerData)
     {
         multiplayAllocationService.AddPlayer();
+
+        SetReconnectValues(playerData);
+    }
+
+    private async void SetReconnectValues(PlayerData playerData)
+    {
+        await Reconnect.SetIsInMatch(playerData.userData.userAuthId, true);
+
+        await Reconnect.SetPlayerMatchConnection(playerData.userData.userAuthId, serverIP, serverPort);
     }
 
     private void UserLeft(PlayerData playerData)
@@ -90,38 +99,17 @@ public class ServerGameManager : IDisposable
 
         Debug.Log($"User Left: {playerData.userData.userName}");
 
-        //if (GameFlowManager.Instance != null)
-        //{
-        //    if (GameFlowManager.Instance.GameStateManager == null)
-        //    {
-        //        ServerSingleton.Instance.GameManager.ShutdownServer();
-        //        return;
-        //    }
-
-        //    //In Game Scene
-
-        //    if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.None || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.WaitingForPlayers || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.SpawningPlayers || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.CalculatingResults)
-        //    {
-        //        //Game not started yet, Shutdown Server
-        //        ServerSingleton.Instance.GameManager.ShutdownServer();
-        //    }
-        //    else if (GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.ShowingPlayersInfo || GameFlowManager.Instance.GameStateManager.CurrentGameState.Value == GameState.GameStarted)
-        //    {
-        //        //Game Started
-        //        Debug.Log("Client remaining win");
-        //        GameFlowManager.Instance.GameStateManager.ClientRemaningWinRpc();
-        //    }
-        //} else
-        //{
-        //    //Not in Game Scene
-        //    ServerSingleton.Instance.GameManager.ShutdownServer();
-        //}
     }
 
 #endif
 
-    private void Pearls_OnFinishedCalculationsOnServer()
+    private async void Pearls_OnFinishedCalculationsOnServer()
     {
+        foreach(PlayerData playerData in NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas)
+        {
+            await Reconnect.SetIsInMatch(playerData.userData.userAuthId, false);
+        }
+
         ShutdownServer();
     }
 

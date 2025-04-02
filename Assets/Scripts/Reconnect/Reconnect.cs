@@ -5,36 +5,16 @@ using UnityEngine;
 
 public static class Reconnect
 {
-    //Is In Match
-    private const string GET_ISINMATCH_ENDPOINT = "GetIsInMatch";
-    private const string SET_ISINMATCH_ENDPOINT = "SetIsInMatch";
-    private const string ARGUMENT_ISINMATCH = "isInMatch";
-
-    //Player Match Connection
-    private const string SET_PLAYER_MATCH_CONNECTION_ENDPOINT = "SetPlayerMatchConnection";
-    private const string ARGUMENT_IP = "ipServer";
-    private const string ARGUMENT_PORT = "portServer";
-
-    //Get Match Connection
-    private const string GET_PLAYER_PORT_SERVER_ENDPOINT = "GetPlayerPortServer";
-    private const string GET_PLAYER_IP_SERVER_ENDPOINT = "GetPlayerIpServer";
-
-    //Generic
-    private const string ARGUMENT_PLAYERID = "playerId";
-    private const string ARGUMENT_PROJECT_ID = "gameProjectId";
-    private const string PROJECT_ID = "01563be5-25e2-47ed-b519-012967e3d8e3";
-
-
     public static async Task<bool> GetIsInMatch(string userAuthId)
     {
         var arguments = new Dictionary<string, object>
         {
-            { ARGUMENT_PROJECT_ID, PROJECT_ID },
-            { ARGUMENT_PLAYERID, userAuthId }
+            { CloudCodeRefs.ARGUMENT_PROJECT_ID, CloudCodeRefs.PROJECT_ID },
+            { CloudCodeRefs.ARGUMENT_PLAYERID, userAuthId }
         };
         try
         {
-            bool isInMatch = await CloudCodeService.Instance.CallEndpointAsync<bool>(GET_ISINMATCH_ENDPOINT, arguments);
+            bool isInMatch = await CloudCodeService.Instance.CallEndpointAsync<bool>(CloudCodeRefs.GET_ISINMATCH_ENDPOINT, arguments);
             Debug.Log($"Is In Match: {isInMatch}");
             return isInMatch;
         }
@@ -52,9 +32,9 @@ public static class Reconnect
 
         var arguments = new Dictionary<string, object>
         {
-            { ARGUMENT_PROJECT_ID, PROJECT_ID },
-            { ARGUMENT_ISINMATCH, isInMatch },
-            { ARGUMENT_PLAYERID, userAuthId }
+            { CloudCodeRefs.ARGUMENT_PROJECT_ID, CloudCodeRefs.PROJECT_ID },
+            { CloudCodeRefs.ARGUMENT_ISINMATCH, isInMatch },
+            { CloudCodeRefs.ARGUMENT_PLAYERID, userAuthId }
         };
 
         bool setted = false;
@@ -63,7 +43,7 @@ public static class Reconnect
         {
             try
             {
-                await CloudCodeService.Instance.CallEndpointAsync(SET_ISINMATCH_ENDPOINT, arguments);
+                await CloudCodeService.Instance.CallEndpointAsync(CloudCodeRefs.SET_ISINMATCH_ENDPOINT, arguments);
                 setted = true;
                 Debug.Log($"Setted is in game");
             }
@@ -81,10 +61,10 @@ public static class Reconnect
 
         var arguments = new Dictionary<string, object>
         {
-            { ARGUMENT_PROJECT_ID, PROJECT_ID },
-            { ARGUMENT_IP, ip },
-            { ARGUMENT_PLAYERID, userAuthId },
-            { ARGUMENT_PORT, port }
+            { CloudCodeRefs.ARGUMENT_PROJECT_ID, CloudCodeRefs.PROJECT_ID },
+            { CloudCodeRefs.ARGUMENT_IP, ip },
+            { CloudCodeRefs.ARGUMENT_PLAYERID, userAuthId },
+            { CloudCodeRefs.ARGUMENT_PORT, port }
         };
 
         bool setted = false;
@@ -93,9 +73,9 @@ public static class Reconnect
         {
             try
             {
-                await CloudCodeService.Instance.CallEndpointAsync(SET_PLAYER_MATCH_CONNECTION_ENDPOINT, arguments);
+                await CloudCodeService.Instance.CallEndpointAsync(CloudCodeRefs.SET_PLAYER_MATCH_CONNECTION_ENDPOINT, arguments);
                 setted = true;
-                Debug.Log($"Setted is in game");
+                Debug.Log($"Setted Match Connection: IP: {ip} - PORT: {port}");
             }
             catch (CloudCodeException e)
             {
@@ -109,12 +89,12 @@ public static class Reconnect
     {
         var arguments = new Dictionary<string, object>
         {
-            { ARGUMENT_PROJECT_ID, PROJECT_ID },
-            { ARGUMENT_PLAYERID, userAuthId }
+            { CloudCodeRefs.ARGUMENT_PROJECT_ID, CloudCodeRefs.PROJECT_ID },
+            { CloudCodeRefs.ARGUMENT_PLAYERID, userAuthId }
         };
         try
         {
-            string ipMatch = await CloudCodeService.Instance.CallEndpointAsync<string>(GET_PLAYER_IP_SERVER_ENDPOINT, arguments);
+            string ipMatch = await CloudCodeService.Instance.CallEndpointAsync<string>(CloudCodeRefs.GET_PLAYER_IP_SERVER_ENDPOINT, arguments);
             Debug.Log($"Ip Match: {ipMatch}");
             return ipMatch;
         }
@@ -130,12 +110,12 @@ public static class Reconnect
     {
         var arguments = new Dictionary<string, object>
         {
-            { ARGUMENT_PROJECT_ID, PROJECT_ID },
-            { ARGUMENT_PLAYERID, userAuthId }
+            { CloudCodeRefs.ARGUMENT_PROJECT_ID, CloudCodeRefs.PROJECT_ID },
+            { CloudCodeRefs.ARGUMENT_PLAYERID, userAuthId }
         };
         try
         {
-            int portMatch = await CloudCodeService.Instance.CallEndpointAsync<int>(GET_PLAYER_PORT_SERVER_ENDPOINT, arguments);
+            int portMatch = await CloudCodeService.Instance.CallEndpointAsync<int>(CloudCodeRefs.GET_PLAYER_PORT_SERVER_ENDPOINT, arguments);
             Debug.Log($"Port Match: {portMatch}");
             return portMatch;
         }

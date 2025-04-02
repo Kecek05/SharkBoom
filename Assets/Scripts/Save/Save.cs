@@ -7,15 +7,6 @@ using Unity.Services.CloudCode;
 
 public static class Save
 {
-    //ONLY SERVER
-
-    private const string ADD_PEARLS_ENDPOINT = "AddSavePlayerPearls";
-    private const string GET_PEARLS_ENDPOINT = "GetPlayerPearls";
-
-    private const string ADD_PEARLS_ARGUMENT_PLAYERID = "playerId";
-    private const string ADD_PEARLS_ARGUMENT_PEARLS = "pearls";
-    private const string ARGUMENT_PROJECT_ID = "gameProjectId";
-    private const string PROJECT_ID = "01563be5-25e2-47ed-b519-012967e3d8e3";
 
     public static event Action OnPlayerPearlsChanged;
 
@@ -26,9 +17,9 @@ public static class Save
 
         var arguments = new Dictionary<string, object>
         {
-            { ARGUMENT_PROJECT_ID, PROJECT_ID },
-            { ADD_PEARLS_ARGUMENT_PEARLS, PlayerPearlsToAdd },
-            { ADD_PEARLS_ARGUMENT_PLAYERID, userAuthId }
+            { CloudCodeRefs.ARGUMENT_PROJECT_ID, CloudCodeRefs.PROJECT_ID },
+            { CloudCodeRefs.ADD_PEARLS_ARGUMENT_PEARLS, PlayerPearlsToAdd },
+            { CloudCodeRefs.ARGUMENT_PLAYERID, userAuthId }
         };
 
         bool saved = false;
@@ -37,7 +28,7 @@ public static class Save
         {
             try
             {
-                await CloudCodeService.Instance.CallEndpointAsync(ADD_PEARLS_ENDPOINT, arguments);
+                await CloudCodeService.Instance.CallEndpointAsync(CloudCodeRefs.ADD_PEARLS_ENDPOINT, arguments);
                 saved = true;
                 Debug.Log($"AddSavePlayerPearls");
                 OnPlayerPearlsChanged?.Invoke();
@@ -54,8 +45,8 @@ public static class Save
     {
         var arguments = new Dictionary<string, object>
         {
-            { ARGUMENT_PROJECT_ID, PROJECT_ID },
-            { ADD_PEARLS_ARGUMENT_PLAYERID, userAuthId }
+            { CloudCodeRefs.ARGUMENT_PROJECT_ID, CloudCodeRefs.PROJECT_ID },
+            { CloudCodeRefs.ARGUMENT_PLAYERID, userAuthId }
         };
 
         try

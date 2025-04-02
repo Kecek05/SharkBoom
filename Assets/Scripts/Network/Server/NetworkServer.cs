@@ -66,8 +66,6 @@ public class NetworkServer : IDisposable
 
         OnUserLeft?.Invoke(serverAuthenticationService.GetPlayerDataByClientId(clientId));
         OnClientLeft?.Invoke(serverAuthenticationService.GetAuthIdByClientId(clientId));
-        serverAuthenticationService.UnregisterClient(clientId);
-
     }
 
     private void ApprovalCheck(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
