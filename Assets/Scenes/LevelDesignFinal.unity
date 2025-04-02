@@ -23,10 +23,10 @@ RenderSettings:
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
-  m_AmbientIntensity: 1
+  m_AmbientIntensity: 1.5
   m_AmbientMode: 0
-  m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SubtractiveShadowColor: {r: 0.07807048, g: 0.7895378, b: 0.8113208, a: 1}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 31f136e69e928194b8be841d77cdc655, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -7142,7 +7142,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc82d5c544728a54fa734a69951a590d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
   connectionLostBackground: {fileID: 858212715}
   returnButton: {fileID: 1320018066}
 --- !u!114 &995668864
@@ -8559,8 +8558,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  gameStateManager: {fileID: 1229163764}
-  turnManager: {fileID: 1229163765}
   itemsListSO: {fileID: 11400000, guid: 0512cb21a29af2e4b88962e2cb6a1605, type: 2}
   spawnPointsPos:
   - {fileID: 1671551940}
@@ -8618,7 +8615,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  delayClosePlayersInfo: 3000
 --- !u!114 &1229163765
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9584,7 +9580,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4845276930943762971, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000015258789
+      value: -0.000038146973
       objectReference: {fileID: 0}
     - target: {fileID: 4845637959249703711, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchorMax.y
@@ -10699,7 +10695,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerText: {fileID: 1581069107}
-  timerManager: {fileID: 404177170}
 --- !u!114 &1455302047
 MonoBehaviour:
   m_ObjectHideFlags: 0
