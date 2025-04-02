@@ -51,7 +51,7 @@ public static class Save
 
         try
         {
-            int loadPearls = await CloudCodeService.Instance.CallEndpointAsync<int>(GET_PEARLS_ENDPOINT, arguments);
+            int loadPearls = await CloudCodeService.Instance.CallEndpointAsync<int>(CloudCodeRefs.GET_PEARLS_ENDPOINT, arguments);
 
             Debug.Log($"Player Pearls: {loadPearls}");
             return loadPearls;
