@@ -59,7 +59,7 @@ public class ApplicationController : MonoBehaviour //Responsable of launching th
             clientSingleton.CreateClient();
 
             //Go to main menu
-            Loader.Load(Loader.Scene.AuthBootstrap);
+            Loader.LoadNoLoadingScreen(Loader.Scene.AuthBootstrap);
 
         }
     }

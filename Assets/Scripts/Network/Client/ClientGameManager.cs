@@ -82,7 +82,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
 
             userData.SetUserPearls(await Save.LoadPlayerPearls(AuthenticationService.Instance.PlayerId));
 
-             Loader.Load(Loader.Scene.SaveBootstrap);
+             Loader.LoadNoLoadingScreen(Loader.Scene.SaveBootstrap);
 
             return true;
         }

@@ -147,28 +147,4 @@ public static class Reconnect
         }
     }
 
-
-    //public static async Task<int> LoadPlayerPearls(string userAuthId)
-    //{
-    //    var arguments = new Dictionary<string, object>
-    //    {
-    //        { ARGUMENT_PROJECT_ID, PROJECT_ID },
-    //        { ADD_PEARLS_ARGUMENT_PLAYERID, userAuthId }
-    //    };
-
-    //    try
-    //    {
-    //        int loadPearls = await CloudCodeService.Instance.CallEndpointAsync<int>(GET_PEARLS_ENDPOINT, arguments);
-
-    //        Debug.Log($"Player Pearls: {loadPearls}");
-    //        return loadPearls;
-
-    //    }
-    //    catch (CloudCodeException e)
-    //    {
-    //        Debug.LogError($"Error loading pearls: {e.Message}, Closing Game");
-    //        Application.Quit();
-    //        return 0;
-    //    }
-    //}
 }

@@ -30,7 +30,7 @@ public class SaveBootstrap : MonoBehaviour
         } else
         {
             //Not in match, go to menu
-            Loader.Load(Loader.Scene.MainMenu);
+            Loader.LoadNoLoadingScreen(Loader.Scene.MainMenu);
         }
     }
 }

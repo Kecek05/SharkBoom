@@ -74,6 +74,12 @@ public static class Loader
         NetworkManager.Singleton.SceneManager.LoadScene(Scene.Loading.ToString(), LoadSceneMode.Single);
     }
 
+    public static void LoadNoLoadingScreen(Scene scene)
+    {
+        loadType = LoadType.None;
+        SceneManager.LoadScene(scene.ToString());
+    }
+
     public static void LoadCallback()
     {
         switch(loadType)
