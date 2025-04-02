@@ -20,6 +20,7 @@ public class ServerAuthenticationService : IServerAuthenticationService
     public Dictionary<ulong, PlayerData> ClientIdToPlayerData => clientIdToPlayerData;
     public int RegisteredClientCount => clientIdToAuth.Count;
 
+    public Dictionary<ulong, string> ClientIdToAuth => clientIdToAuth;
     public Dictionary<string, ulong>.ValueCollection AuthToClientIdValues => authToClientId.Values;
 
     public void RegisterClient(PlayerData playerData)

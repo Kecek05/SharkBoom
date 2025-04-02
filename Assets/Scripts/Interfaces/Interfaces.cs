@@ -49,6 +49,7 @@ public interface IServerAuthenticationService //Decopling of the Authentication 
     public List<PlayerData> PlayerDatas { get; }
     public Dictionary<ulong, PlayerData> ClientIdToPlayerData { get; }
     public Dictionary<string, ulong>.ValueCollection AuthToClientIdValues { get; }
+    public Dictionary<ulong, string> ClientIdToAuth { get; }
     PlayerData GetPlayerDataByClientId(ulong clientId);
     public string GetAuthIdByClientId(ulong clientId);
     public ulong GetClientIdByAuthId(string authId);

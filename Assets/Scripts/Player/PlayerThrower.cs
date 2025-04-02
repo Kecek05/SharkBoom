@@ -26,6 +26,11 @@ public class PlayerThrower : NetworkBehaviour
     private BaseTurnManager turnManager;
     private BaseGameStateManager gameStateManager;
 
+    /// <summary>
+    /// AuthId of the owner of this player, only server knows it.
+    /// </summary>
+    private string myAuthId;
+
     //Publics
     public PlayerStateMachine PlayerStateMachine => playerStateMachine;
     public PlayerInventory PlayerInventory => playerInventory;
@@ -34,7 +39,7 @@ public class PlayerThrower : NetworkBehaviour
     public PlayerDragController PlayerDragController => playerDragController;
     public PlayerLauncher PlayerLauncher => playerLauncher;
     public NetworkVariable<PlayableState> ThisPlayableState => thisPlayableState;
-
+    public string MyAuthId => myAuthId;
 
     public override void OnNetworkSpawn()
     {
@@ -89,10 +94,13 @@ public class PlayerThrower : NetworkBehaviour
     }
 
     [Rpc(SendTo.Server)]
-    public void InitializePlayerRpc(PlayableState playableState, Quaternion GFXRotation)
+    public void InitializePlayerRpc(PlayableState playableState, Quaternion GFXRotation, string authId)
     {
         // Cant be OnnetworkSpawn because it needs to be called by NetworkServer
         thisPlayableState.Value = playableState;
+
+        myAuthId = authId;
+        Debug.Log($"My AuthId: {myAuthId}");
 
         InitializeGFXRotationRpc(GFXRotation);
     }
