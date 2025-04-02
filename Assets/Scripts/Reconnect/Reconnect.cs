@@ -46,36 +46,106 @@ public static class Reconnect
         }
     }
 
-    //public static async Task AddSavePlayerPearls(string userAuthId, int PlayerPearlsToAdd)
-    //{
-    //    //Save to cloud
+    public static async Task SetIsInMatch(string userAuthId, bool isInMatch)
+    {
+        //Save to cloud
 
-    //    var arguments = new Dictionary<string, object>
-    //    {
-    //        { ARGUMENT_PROJECT_ID, PROJECT_ID },
-    //        { ADD_PEARLS_ARGUMENT_PEARLS, PlayerPearlsToAdd },
-    //        { ADD_PEARLS_ARGUMENT_PLAYERID, userAuthId }
-    //    };
+        var arguments = new Dictionary<string, object>
+        {
+            { ARGUMENT_PROJECT_ID, PROJECT_ID },
+            { ARGUMENT_ISINMATCH, isInMatch },
+            { ARGUMENT_PLAYERID, userAuthId }
+        };
 
-    //    bool saved = false;
+        bool setted = false;
 
-    //    while (!saved)
-    //    {
-    //        try
-    //        {
-    //            await CloudCodeService.Instance.CallEndpointAsync(ADD_PEARLS_ENDPOINT, arguments);
-    //            saved = true;
-    //            Debug.Log($"AddSavePlayerPearls");
-    //            OnPlayerPearlsChanged?.Invoke();
-    //        }
-    //        catch (CloudCodeException e)
-    //        {
-    //            Debug.LogError($"Error saving pearls: {e.Message}, trying again");
-    //            await Task.Delay(100);
-    //        }
-    //    }
-    //}
+        while (!setted)
+        {
+            try
+            {
+                await CloudCodeService.Instance.CallEndpointAsync(SET_ISINMATCH_ENDPOINT, arguments);
+                setted = true;
+                Debug.Log($"Setted is in game");
+            }
+            catch (CloudCodeException e)
+            {
+                Debug.LogError($"Error saving pearls: {e.Message}, trying again");
+                await Task.Delay(100);
+            }
+        }
+    }
 
+    public static async Task SetPlayerMatchConnection(string userAuthId, string ip, int port)
+    {
+        //Save to cloud
+
+        var arguments = new Dictionary<string, object>
+        {
+            { ARGUMENT_PROJECT_ID, PROJECT_ID },
+            { ARGUMENT_IP, ip },
+            { ARGUMENT_PLAYERID, userAuthId },
+            { ARGUMENT_PORT, port }
+        };
+
+        bool setted = false;
+
+        while (!setted)
+        {
+            try
+            {
+                await CloudCodeService.Instance.CallEndpointAsync(SET_PLAYER_MATCH_CONNECTION_ENDPOINT, arguments);
+                setted = true;
+                Debug.Log($"Setted is in game");
+            }
+            catch (CloudCodeException e)
+            {
+                Debug.LogError($"Error saving pearls: {e.Message}, trying again");
+                await Task.Delay(100);
+            }
+        }
+    }
+
+    public static async Task<string> GetIpMatch(string userAuthId)
+    {
+        var arguments = new Dictionary<string, object>
+        {
+            { ARGUMENT_PROJECT_ID, PROJECT_ID },
+            { ARGUMENT_PLAYERID, userAuthId }
+        };
+        try
+        {
+            string ipMatch = await CloudCodeService.Instance.CallEndpointAsync<string>(GET_PLAYER_IP_SERVER_ENDPOINT, arguments);
+            Debug.Log($"Ip Match: {ipMatch}");
+            return ipMatch;
+        }
+        catch (CloudCodeException e)
+        {
+            Debug.LogError($"Error getting Ip Match: {e.Message}, Closing Game");
+            Application.Quit();
+            return "NoIp";
+        }
+    }
+
+    public static async Task<int> GetPortMatch(string userAuthId)
+    {
+        var arguments = new Dictionary<string, object>
+        {
+            { ARGUMENT_PROJECT_ID, PROJECT_ID },
+            { ARGUMENT_PLAYERID, userAuthId }
+        };
+        try
+        {
+            int portMatch = await CloudCodeService.Instance.CallEndpointAsync<int>(GET_PLAYER_PORT_SERVER_ENDPOINT, arguments);
+            Debug.Log($"Port Match: {portMatch}");
+            return portMatch;
+        }
+        catch (CloudCodeException e)
+        {
+            Debug.LogError($"Error getting IsInMatch: {e.Message}, Closing Game");
+            Application.Quit();
+            return 0;
+        }
+    }
 
 
     //public static async Task<int> LoadPlayerPearls(string userAuthId)

@@ -14,6 +14,7 @@ public static class Loader
         GameNetCodeTest,
         MainMenu,
         AuthBootstrap,
+        SaveBootstrap,
     }
 
     public enum LoadType
