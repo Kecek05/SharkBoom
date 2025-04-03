@@ -29,6 +29,8 @@ public class UserData
 
     public void SetUserPearls(int userPearls) => this.userPearls = userPearls;
 
+    public void SetPlayerName(string playerName) => this.userName = playerName;
+
     public GameInfo userGamePreferences = new();
 }
 
