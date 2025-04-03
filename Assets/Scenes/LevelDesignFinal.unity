@@ -3092,7 +3092,7 @@ GameObject:
   m_Component:
   - component: {fileID: 315210671}
   m_Layer: 0
-  m_Name: Plano
+  m_Name: Clouds
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9676,7 +9676,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4845276930943762971, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000038146973
+      value: -0.000015258789
       objectReference: {fileID: 0}
     - target: {fileID: 4845637959249703711, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchorMax.y
@@ -10434,7 +10434,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1393617012
 Transform:
   m_ObjectHideFlags: 0
@@ -10444,8 +10444,8 @@ Transform:
   m_GameObject: {fileID: 1393617011}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.7071068, z: -0.7071068, w: 0}
-  m_LocalPosition: {x: 7.7, y: 11.5, z: 24.5}
-  m_LocalScale: {x: -12.6, y: 2.06, z: 4.69}
+  m_LocalPosition: {x: 7.7, y: 33.7, z: 61.4}
+  m_LocalScale: {x: 20, y: 2.06, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 315210671}
@@ -10495,7 +10495,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 173b9353a17f4cb4696f97a221b989ff, type: 2}
+  - {fileID: 2100000, guid: d0ba413b60da97a4aafd937b3c5af2c3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
