@@ -27,4 +27,8 @@ public static class CloudCodeRefs
     public const string GET_PEARLS_ENDPOINT = "GetPlayerPearls";
     public const string ADD_PEARLS_ARGUMENT_PEARLS = "pearls";
 
+    //Player Name
+    public const string SET_PLAYER_NAME_ENDPOINT = "SetPlayerName";
+    public const string GET_PLAYER_NAME_ENDPOINT = "GetPlayerName";
+    public const string SET_PLAYER_NAME_ARGUMENT_NAME = "playerName";
 }

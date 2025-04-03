@@ -77,22 +77,38 @@ public class MultiplayAllocationService : IDisposable
         MatchmakingResults payloadAllocation = await MultiplayService.Instance.GetPayloadAllocationFromJsonAs<MatchmakingResults>();
         string modelAsJson = JsonConvert.SerializeObject(payloadAllocation, Formatting.Indented);
         Debug.Log(nameof(GetMatchmakerAllocationPayloadAsync) + ":" + Environment.NewLine + modelAsJson);
+        
+        
 
         foreach (Player player in payloadAllocation.MatchProperties.Players)
         {
-            //MatchmakingPlayerData matchmakingPlayerData = player.CustomData.GetAs<MatchmakingPlayerData>();
-            Dictionary<string, int> dictionary = player.CustomData.GetAs<Dictionary<string, int>>();
-            foreach (var keys in dictionary.Keys)
-            {
-                if (dictionary.TryGetValue(keys, out int pearlsToPrint))
-                {
-                    Debug.Log($"Dictionary Debug, custom data - Key: {keys} - Value: {pearlsToPrint}");
+            //Debug.Log($"PlayerId: {player.Id} - CustomData: {player.CustomData.ToString()}");
 
-                }
+            //MatchmakingPlayerData matchmakingPlayerData = player.CustomData.GetAs<MatchmakingPlayerData>();
+            Dictionary<string, int> customDataDictionary = player.CustomData.GetAs<Dictionary<string, int>>();
+
+            customDataDictionary.TryGetValue("pearls", out int pearls);
+
+            Debug.Log($"PlayerId: {player.Id} - Pearls: {pearls}");
+
+            Debug.Log($"Keys Count: {customDataDictionary.Keys.Count} - Values Count: {customDataDictionary.Values.Count}");
+
+            foreach (string key in customDataDictionary.Keys)
+            {
+                Debug.Log($"dictionary player id: {player.Id} - Key: {key}");
             }
 
-            if(dictionary.TryGetValue(player.Id, out int pearls))
-                Debug.Log($"Player: {player.Id} - Pearls: {pearls.ToString()}");
+            //foreach (var keys in dictionary.Keys)
+            //{
+            //    if (dictionary.TryGetValue(keys, out int pearlsToPrint))
+            //    {
+            //        Debug.Log($"Dictionary Debug, custom data - Key: {keys} - Value: {pearlsToPrint}");
+
+            //    }
+            //}
+
+            //if(dictionary.TryGetValue(player.Id, out int pearls))
+            //    Debug.Log($"Player: {player.Id} - Pearls: {pearls.ToString()}");
         }
 
         return payloadAllocation;

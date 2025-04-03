@@ -71,11 +71,15 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         if (authState == AuthState.Authenticated)
         {
 
-            Debug.Log(AuthenticationWrapper.PlayerName + authState);
+
+            string playerName = await Save.LoadPlayerName(AuthenticationService.Instance.PlayerId);
+
+            Debug.Log($" AuthWrapper Player Name: {playerName} - {authState}");
+
 
             userData = new UserData
             {
-                userName = AuthenticationWrapper.PlayerName,
+                userName = playerName,
                 userAuthId = AuthenticationService.Instance.PlayerId,
             };
 

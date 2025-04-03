@@ -63,4 +63,54 @@ public static class Save
             return 0;
         }
     }
+
+    public static async Task<string> LoadPlayerName(string userAuthId)
+    {
+        var arguments = new Dictionary<string, object>
+        {
+            { CloudCodeRefs.ARGUMENT_PROJECT_ID, CloudCodeRefs.PROJECT_ID },
+            { CloudCodeRefs.ARGUMENT_PLAYERID, userAuthId }
+        };
+        try
+        {
+            string playerName = await CloudCodeService.Instance.CallEndpointAsync<string>(CloudCodeRefs.GET_PLAYER_NAME_ENDPOINT, arguments);
+            Debug.Log($"Player Name: {playerName}");
+            return playerName;
+        }
+        catch (CloudCodeException e)
+        {
+            Debug.LogError($"Error loading player name: {e.Message}, Closing Game");
+            Application.Quit();
+            return "";
+        }
+    }
+
+    [Command("save-setPlayerName")]
+    public static async Task SavePlayerName(string userAuthId, string playerName)
+    {
+        var arguments = new Dictionary<string, object>
+        {
+            { CloudCodeRefs.ARGUMENT_PROJECT_ID, CloudCodeRefs.PROJECT_ID },
+            { CloudCodeRefs.ARGUMENT_PLAYERID, userAuthId },
+            { CloudCodeRefs.SET_PLAYER_NAME_ARGUMENT_NAME, playerName }
+        };
+
+        bool saved = false;
+
+        while (!saved)
+        {
+            try
+            {
+                await CloudCodeService.Instance.CallEndpointAsync(CloudCodeRefs.SET_PLAYER_NAME_ENDPOINT, arguments);
+                saved = true;
+                Debug.Log($"Saved Player Name");
+            }
+            catch (CloudCodeException e)
+            {
+                Debug.LogError($"Error saving name: {e.Message}, trying again");
+                await Task.Delay(100);
+            }
+        }
+    }
+
 }
