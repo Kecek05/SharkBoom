@@ -1,3 +1,4 @@
+using QFSW.QC;
 using System;
 using Unity.Netcode;
 using UnityEngine;
@@ -29,6 +30,17 @@ public class PlayerInventory : NetworkBehaviour
     private bool canInteractWithInventory = false;
 
     public bool CanInteractWithInventory => canInteractWithInventory; //DEBUG
+
+    [Command("printInventory", MonoTargetType.All)]
+    private void PrintItemsInventory()
+    {
+        if (!IsOwner) return;
+
+        foreach(ItemInventoryData item in playerItemsInventory)
+        {
+            Debug.Log($"Item {GetItemSOByItemSOIndex(item.itemSOIndex).itemName} - Index: {item.itemInventoryIndex} | Item SO Index: {item.itemSOIndex} | Item Can Be Used: {item.itemCanBeUsed} | Item Cooldown Remaining: {item.itemCooldownRemaining}");
+        }
+    }
 
     public void InitializeOwner()
     {
@@ -235,6 +247,18 @@ public class PlayerInventory : NetworkBehaviour
 
         OnItemSelectedSO?.Invoke(GetItemSOByItemSOIndex(playerItemsInventory[selectedItemInventoryIndex].itemSOIndex));
         Debug.Log($"Selected item inventory index: {selectedItemInventoryIndex}");
+    }
+
+    public void ResyncReconnect()
+    {
+        foreach(ItemInventoryData item in playerItemsInventory)
+        {
+            OnItemAdded?.Invoke(item);
+        }
+
+        //Reselect an item
+        SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
+        Debug.Log("ResyncReconnect called");
     }
 
     public override void OnNetworkDespawn()

@@ -285,7 +285,7 @@ public class PlayerThrower : NetworkBehaviour
 
     public void ResyncReconnect()
     {
-
+        playerInventory.ResyncReconnect();
     }
 
 
