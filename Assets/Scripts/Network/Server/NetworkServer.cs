@@ -14,6 +14,7 @@ public class NetworkServer : IDisposable
     private IPlayerSpawner playerSpawner;
     private IServerAuthenticationService serverAuthenticationService;
 
+    private bool alreadyChangedToSpawningPlayers = false;
 
     public IPlayerSpawner PlayerSpawner => playerSpawner;
     public IServerAuthenticationService ServerAuthenticationService => serverAuthenticationService;
@@ -80,42 +81,55 @@ public class NetworkServer : IDisposable
         response.Approved = true; //Connection is approved
         response.CreatePlayerObject = false;
 
-        if(serverAuthenticationService.RegisteredClientCount == 2) //two clients in game
+        if(serverAuthenticationService.RegisteredClientCount == 2 && !alreadyChangedToSpawningPlayers)
+        {
+            //two clients in game and not changed to spawning players yet
+            alreadyChangedToSpawningPlayers = true;
             ServiceLocator.Get<BaseGameStateManager>().ChangeGameState(GameState.SpawningPlayers);
+        }
+        
         
     }
 
     private void CheckReconnect(UserData userData, ulong clientId)
     {
-        bool isReconnect = false;
-
-        foreach (string authId in ServerAuthenticationService.AuthIdToClientId.Keys)
+        
+        if(playerSpawner.PlayerCount >= 2)
         {
-            if (authId == userData.userAuthId)
-            {
-                //Reconnect client
-                isReconnect = true;
-                break;
-            }
-        }
-
-        if(isReconnect)
-        {
-            //Reconnect
-            Debug.Log("CheckReconnect, Reconnecting client");
+            //already spawned 2 players, this one is reconnecting
+            Debug.Log("CheckReconnect, Reconnecting client already spawned");
 
             //Change Ownership
+            
+            if(ServerAuthenticationService.AuthIdToPlayerData.TryGetValue(userData.userAuthId, out PlayerData playerData))
+            {
+                //Update clientId
+                playerData = ServerAuthenticationService.AuthIdToPlayerData[userData.userAuthId];
 
+                playerData.clientId = clientId;
+
+                //Change Onwership
+                ServiceLocator.Get<BasePlayersPublicInfoManager>().GetPlayerObjectByPlayableState(playerData.playableState).GetComponent<NetworkObject>().ChangeOwnership(clientId);
+
+                Debug.Log($"Changing the Ownership of the object: {ServiceLocator.Get<BasePlayersPublicInfoManager>().GetPlayerObjectByPlayableState(playerData.playableState).name} to ClientId: {clientId}");
+            } else
+            {
+                //Client is not registered, but already spawned
+                Debug.LogError("CheckReconnect, Client is not registered, but already spawned, this is a error!");
+            }
+
+        } else if (ServerAuthenticationService.AuthIdToPlayerData.TryGetValue(userData.userAuthId, out PlayerData playerData))
+        {
+            //Already registered but not spawned
+            Debug.Log("CheckReconnect, Already registered but not spawned");
             //Update clientId
-            PlayerData playerData = ServerAuthenticationService.AuthIdToPlayerData[userData.userAuthId];
-
             playerData.clientId = clientId;
 
 
         } else
         {
             //New client
-            Debug.Log("New client");
+            Debug.Log("CheckReconnect, New client");
 
             PlayerData newPlayerData = new PlayerData()
             {

@@ -28,13 +28,11 @@ public class PlayerSpawner : IPlayerSpawner
     /// <param name="playerNumber"> player playing state</param>
     public void SpawnPlayer(ulong clientId)
     {
-        if(playerSpawned > 2)
+        if(playerSpawned >= 2)
         {
-            Debug.Log("Already Spawned both players");
+            Debug.Log("SpawnPlayer, Already Spawned both players");
             return;
         }
-
-        playerSpawned++;
 
         Transform randomSpawnPointSelected = ServiceLocator.Get<BasePlayersPublicInfoManager>().GetRandomSpawnPoint();
 
@@ -50,15 +48,16 @@ public class PlayerSpawner : IPlayerSpawner
         playerData.gameObject = playerInstance.gameObject;
         playerData.playableState = GetPlayableStateByCount();
 
+        playerSpawned++;
+
         OnPlayerSpawned?.Invoke(playerSpawned);
 
-       
         Debug.Log($"Spawning Player, Client Id: {clientId} PlayableState: {GetPlayableStateByCount()} Selected Random SpawnPoint: {randomSpawnPointSelected.name}");
     }
 
     public PlayableState GetPlayableStateByCount()
     {
-        return PlayerCount == 1 ? PlayableState.Player1Playing : PlayableState.Player2Playing;
+        return PlayerCount == 0 ? PlayableState.Player1Playing : PlayableState.Player2Playing;
     }
 
 }
