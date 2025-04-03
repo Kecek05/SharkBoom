@@ -43,11 +43,11 @@ public class PlayerDragUi : DragListener
         ShowText();
     }
 
-    protected override void DoOnDragChange()
+    protected override void DoOnDragChange(float forcePercent, float angle)
     {
-        forceText.text = "Force: " + Mathf.RoundToInt(player.PlayerDragController.GetForcePercentage());
+        forceText.text = "Force: " + Mathf.RoundToInt(forcePercent);
 
-        directionText.text = "Direction: " + Mathf.RoundToInt(player.PlayerDragController.GetAngle());
+        directionText.text = "Direction: " + Mathf.RoundToInt(angle);
     }
 
     protected override void DoOnDragRelease()

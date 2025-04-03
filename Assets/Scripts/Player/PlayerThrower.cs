@@ -38,11 +38,6 @@ public class PlayerThrower : NetworkBehaviour
 
     //Publics
     public PlayerStateMachine PlayerStateMachine => playerStateMachine;
-    public PlayerInventory PlayerInventory => playerInventory;
-    public PlayerInventoryUI PlayerInventoryUI => playerInventoryUI;
-    public PlayerHealth PlayerHealth => playerHealth;
-    public PlayerDragController PlayerDragController => playerDragController;
-    public PlayerLauncher PlayerLauncher => playerLauncher;
     public NetworkVariable<PlayableState> ThisPlayableState => thisPlayableState;
     public string MyAuthId => myAuthId;
 
@@ -92,7 +87,7 @@ public class PlayerThrower : NetworkBehaviour
 
         gameStateManager.CurrentGameState.OnValueChanged += HandleOnGameStateChanged;
 
-        playerStateMachine = new PlayerStateMachine(this);
+        playerStateMachine = new PlayerStateMachine(this, playerDragController, playerInventory);
 
         playerStateMachine.Initialize(playerStateMachine.idleEnemyTurnState);
 
@@ -110,7 +105,7 @@ public class PlayerThrower : NetworkBehaviour
         playerInventory.OnItemSelected += HandleOnItemSelected;
         playerInventory.OnItemSelectedSO += HandleOnItemSelectedSO;
 
-        PlayerLauncher.OnItemLaunched += HandleOnItemLaunched;
+        playerLauncher.OnItemLaunched += HandleOnItemLaunched;
 
         playerStateMachine.OnStateChanged += HandleOnStateChanged;
 
@@ -129,7 +124,7 @@ public class PlayerThrower : NetworkBehaviour
         playerInventory.OnItemSelected -= HandleOnItemSelected;
         playerInventory.OnItemSelectedSO -= HandleOnItemSelectedSO;
 
-        PlayerLauncher.OnItemLaunched -= HandleOnItemLaunched;
+        playerLauncher.OnItemLaunched -= HandleOnItemLaunched;
 
         playerStateMachine.OnStateChanged -= HandleOnStateChanged;
 
@@ -160,9 +155,11 @@ public class PlayerThrower : NetworkBehaviour
         playerInventory.SelectItemDataByItemInventoryIndex(itemInventoryIndex);
     }
 
-    private void HandleOnDragChange()
+    private void HandleOnDragChange(float forcePercent, float angle)
     {
-        playerFlipGfx.HandleOnPlayerDragControllerDragChange();
+        playerFlipGfx.HandleOnPlayerDragControllerDragChange(forcePercent, angle);
+        playerDragUi.HandleOnPlayerDragControllerDragChange(forcePercent, angle);
+        playerRotateToAim.HandleOnPlayerDragControllerDragChange(forcePercent, angle);
     }
 
     private void HandleOnStateChanged(PlayerState state)
@@ -176,6 +173,7 @@ public class PlayerThrower : NetworkBehaviour
 
         playerRotateToAim.HandleOnPlayerStateMachineStateChanged(state);
         playerFlipGfx.HandleOnPlayerStateMachineStateChanged(state);
+        playerDragUi.HandleOnPlayerStateMachineStateChanged(state);
 
         playerInventoryUI.HandleOnPlayerStateMachineStateChanged(state);
     }

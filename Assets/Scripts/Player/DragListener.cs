@@ -9,10 +9,10 @@ public abstract class DragListener : NetworkBehaviour
         DoOnSpawn();
     }
 
-    public void HandleOnPlayerDragControllerDragChange()
+    public void HandleOnPlayerDragControllerDragChange(float forcePercent, float angle)
     {
         if(!IsOwner) return; //only owner
-        DoOnDragChange();
+        DoOnDragChange(forcePercent, angle);
     }
 
     public void HandleOnPlayerStateMachineStateChanged(PlayerState newState)
@@ -32,7 +32,7 @@ public abstract class DragListener : NetworkBehaviour
     /// <summary>
     /// Called when the finger changes position
     /// </summary>
-    protected abstract void DoOnDragChange();
+    protected abstract void DoOnDragChange(float forcePercent, float andlePercent);
 
     /// <summary>
     /// Called when the drag is released, the object is launched.

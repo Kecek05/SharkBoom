@@ -16,7 +16,7 @@ public class PlayerFlipGfx : DragListener
         startEulerAngles = playerGfxTransform.eulerAngles;
     }
 
-    protected override void DoOnDragChange()
+    protected override void DoOnDragChange(float forcePercent, float angle)
     {
         if (playerDragController.GetOpositeFingerPos().x > playerGfxTransform.position.x + angleOffset)
             transform.eulerAngles = new Vector3(transform.eulerAngles.x, -90f , transform.eulerAngles.z);

@@ -19,9 +19,9 @@ public class DragAndShoot : NetworkBehaviour
     public event Action OnDragStart;
 
     /// <summary>
-    /// Event that is called when the drag is changing position, finger changed pos
+    /// Event that is called when the drag is changing position, finger changed pos, pass Force percent and Angle
     /// </summary>
-    public event Action OnDragChange;
+    public event Action<float,float> OnDragChange;
 
     /// <summary>
     /// Event that is called when the drag is cancelable
@@ -203,7 +203,7 @@ public class DragAndShoot : NetworkBehaviour
 
             trajectory.UpdateDots(startTrajectoryPos.position, directionOfDrag * dragForce, selectedRb); // update the dots position 
 
-            OnDragChange?.Invoke();
+            OnDragChange?.Invoke(GetForcePercentage(), GetAngle());
 
             CheckCancelDrag();
 

@@ -13,7 +13,8 @@ public class PlayerDebugCanvas : NetworkBehaviour
     public TextMeshProUGUI playerStateText;
     public TextMeshProUGUI playerCanInteractWithInventoryText;
     public TextMeshProUGUI dragDistanceText;
-
+    public PlayerDragController playerDragController;
+    public PlayerInventory playerInventory;
     public override void OnNetworkSpawn()
     {
         if (!IsOwner)
@@ -26,27 +27,27 @@ public class PlayerDebugCanvas : NetworkBehaviour
 
     private void Update()
     {
-        if (player.PlayerDragController.SelectedRb == null)
+        if (playerDragController.SelectedRb == null)
         {
             selectedRbText.text = "null";
         }
         else
         {
-            selectedRbText.text = player.PlayerDragController.SelectedRb.ToString();
+            selectedRbText.text = playerDragController.SelectedRb.ToString();
 
         }
 
-        if(player.PlayerDragController != null) 
+        if(playerDragController != null) 
         {
-            dragDistanceText.text = $"Drag Distance: {Mathf.Abs(Mathf.RoundToInt(player.PlayerDragController.DragDistance))} Last Drag Distance: {Mathf.Abs(Mathf.RoundToInt(player.PlayerDragController.LastDragDistance))}";
+            dragDistanceText.text = $"Drag Distance: {Mathf.Abs(Mathf.RoundToInt(playerDragController.DragDistance))} Last Drag Distance: {Mathf.Abs(Mathf.RoundToInt(playerDragController.LastDragDistance))}";
         }
 
 
         playerStateText.text = player.PlayerStateMachine.CurrentState.ToString();
 
-        selectedItemIndexText.text = player.PlayerInventory.SelectedItemInventoryIndex.ToString();
+        selectedItemIndexText.text = playerInventory.SelectedItemInventoryIndex.ToString();
 
-        playerCanInteractWithInventoryText.text = player.PlayerInventory.CanInteractWithInventory.ToString();
+        playerCanInteractWithInventoryText.text = playerInventory.CanInteractWithInventory.ToString();
     }
 
 
