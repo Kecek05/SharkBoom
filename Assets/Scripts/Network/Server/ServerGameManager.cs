@@ -79,7 +79,7 @@ public class ServerGameManager : IDisposable
     }
 
 
-    private void UserJoined(PlayerData playerData)
+    private void UserJoined()
     {
         multiplayAllocationService.AddPlayer();
     }

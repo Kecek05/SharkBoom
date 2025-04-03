@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine;
@@ -10,7 +8,7 @@ public class NetworkServer : IDisposable
 
     public Action<string> OnClientLeft;
     public Action<PlayerData> OnUserLeft;
-    public Action<PlayerData> OnUserJoined;
+    public Action OnUserJoined;
 
     private NetworkManager networkManager;
     private IPlayerSpawner playerSpawner;
@@ -37,7 +35,6 @@ public class NetworkServer : IDisposable
         //Code to spawn players
 
         if(sceneName != Loader.Scene.GameNetCodeTest.ToString()) return; //Only Spawn players in Game Scene
-
 
         Debug.Log($"Client {clientId} / AuthId {serverAuthenticationService.GetAuthIdByClientId(clientId)} loaded scene {sceneName}");
 
@@ -76,18 +73,9 @@ public class NetworkServer : IDisposable
 
         Debug.Log($"ApprovalCheck, UserData: {userData.userName}, Pearls: {userData.userPearls}, AuthId: {userData.userAuthId} ");
 
-        PlayerData newPlayerData = new PlayerData()
-        {
-            userData = userData,
-            clientId = request.ClientNetworkId,
-            playableState = PlayableState.None, //None for now
-            calculatedPearls = new CalculatedPearls(),
-            gameObject = null
-        };
+        CheckReconnect(userData, request.ClientNetworkId);
 
-        serverAuthenticationService.RegisterClient(newPlayerData);
-
-        OnUserJoined?.Invoke(newPlayerData);
+        OnUserJoined?.Invoke();
 
         response.Approved = true; //Connection is approved
         response.CreatePlayerObject = false;
@@ -97,6 +85,51 @@ public class NetworkServer : IDisposable
         
     }
 
+    private void CheckReconnect(UserData userData, ulong clientId)
+    {
+        bool isReconnect = false;
+
+        foreach (string authId in ServerAuthenticationService.AuthIdToClientId.Keys)
+        {
+            if (authId == userData.userAuthId)
+            {
+                //Reconnect client
+                isReconnect = true;
+                break;
+            }
+        }
+
+        if(isReconnect)
+        {
+            //Reconnect
+            Debug.Log("CheckReconnect, Reconnecting client");
+
+            //Change Ownership
+
+            //Update clientId
+            PlayerData playerData = ServerAuthenticationService.AuthIdToPlayerData[userData.userAuthId];
+
+            playerData.clientId = clientId;
+
+
+        } else
+        {
+            //New client
+            Debug.Log("New client");
+
+            PlayerData newPlayerData = new PlayerData()
+            {
+                userData = userData,
+                clientId = clientId,
+                playableState = PlayableState.None, //None for now
+                calculatedPearls = new CalculatedPearls(),
+                gameObject = null
+            };
+
+            serverAuthenticationService.RegisterClient(newPlayerData);
+
+        }
+    }
 
     public void Dispose()
     {
