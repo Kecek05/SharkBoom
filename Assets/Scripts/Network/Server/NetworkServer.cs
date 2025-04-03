@@ -7,7 +7,7 @@ public class NetworkServer : IDisposable
 {
 
     public Action<string> OnClientLeft;
-    public Action<PlayerData> OnUserLeft;
+    public Action OnUserLeft;
     public Action OnUserJoined;
 
     private NetworkManager networkManager;
@@ -62,7 +62,7 @@ public class NetworkServer : IDisposable
     {
         Debug.Log($"Client {clientId} disconnected");
 
-        OnUserLeft?.Invoke(serverAuthenticationService.GetPlayerDataByClientId(clientId));
+        OnUserLeft?.Invoke();
         OnClientLeft?.Invoke(serverAuthenticationService.GetAuthIdByClientId(clientId));
     }
 

@@ -84,11 +84,11 @@ public class ServerGameManager : IDisposable
         multiplayAllocationService.AddPlayer();
     }
 
-    private void UserLeft(PlayerData playerData)
+    private void UserLeft()
     {
         multiplayAllocationService.RemovePlayer();
 
-        Debug.Log($"User Left: {playerData.userData.userName}");
+        Debug.Log($"User Left");
 
     }
 
