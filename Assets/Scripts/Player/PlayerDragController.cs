@@ -1,41 +1,21 @@
-using Sortify;
-using Unity.Netcode;
-using UnityEngine;
 
 public class PlayerDragController : DragAndShoot
 {
 
-    public override void OnNetworkSpawn()
+    public void HandleOnPlayerStateMachineStateChanged(PlayerState state)
     {
-        base.OnNetworkSpawn();
-
-        if (!IsOwner) return;
-
-        player.PlayerStateMachine.OnStateChanged += PlayerStateMachine_OnStateChanged;
-
-    }
-
-    private void PlayerStateMachine_OnStateChanged(IState state)
-    {
-        if(state == player.PlayerStateMachine.idleMyTurnState)
+        if(state == PlayerState.IdleMyTurn)
         {
             TurnOnDrag();
         } 
-        else if (state == player.PlayerStateMachine.dragReleaseJump || state == player.PlayerStateMachine.dragReleaseItem || state == player.PlayerStateMachine.idleEnemyTurnState)
+        else if (state == PlayerState.DragReleaseJump || state == PlayerState.DragReleaseItem || state == PlayerState.IdleEnemyTurn)
         {
             TurnOffDrag();
             ResetDrag();
-        } else if (state == player.PlayerStateMachine.playerGameOverState)
+        } else if (state == PlayerState.PlayerGameOver)
         {
             TurnOffDrag();
         }
     }
 
-
-    public override void OnNetworkDespawn()
-    {
-        if (!IsOwner) return;
-
-        player.PlayerStateMachine.OnStateChanged -= PlayerStateMachine_OnStateChanged;
-    }
 }

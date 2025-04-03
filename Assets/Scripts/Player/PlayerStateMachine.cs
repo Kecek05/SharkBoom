@@ -20,7 +20,7 @@ public class PlayerStateMachine
     public PlayerWatchingState playerWatchingState;
     public PlayerGameOverState playerGameOverState;
 
-    public event Action<IState> OnStateChanged;
+    public event Action<PlayerState> OnStateChanged;
 
 
     public PlayerStateMachine(PlayerThrower player)
@@ -43,7 +43,7 @@ public class PlayerStateMachine
         currentState = startingState;
         currentState.Enter();
 
-        OnStateChanged?.Invoke(startingState);
+        OnStateChanged?.Invoke(startingState.State);
     }
 
     public void TransitionTo(IState nextState)
@@ -55,7 +55,7 @@ public class PlayerStateMachine
         currentState = nextState;
         nextState.Enter();
 
-        OnStateChanged?.Invoke(nextState);
+        OnStateChanged?.Invoke(nextState.State);
 
     }
 
@@ -66,4 +66,18 @@ public class PlayerStateMachine
             currentState.Execute();
         }
     }
+}
+
+public enum PlayerState
+{
+    MyTurnStarted,
+    IdleMyTurn,
+    DraggingJump,
+    DraggingItem,
+    DragReleaseJump,
+    DragReleaseItem,
+    MyTurnEnded,
+    IdleEnemyTurn,
+    PlayerWatching,
+    PlayerGameOver
 }

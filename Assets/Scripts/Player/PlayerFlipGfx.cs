@@ -5,6 +5,7 @@ public class PlayerFlipGfx : DragListener
 {
     [BetterHeader("References")]
     [SerializeField] private Transform playerGfxTransform;
+    [SerializeField] private PlayerDragController playerDragController;
 
     [Tooltip("Value to be add to not rotate the object to close to the 90 degrees")]
     [SerializeField] private float angleOffset = 0.5f;
@@ -17,9 +18,9 @@ public class PlayerFlipGfx : DragListener
 
     protected override void DoOnDragChange()
     {
-        if (player.PlayerDragController.GetOpositeFingerPos().x > playerGfxTransform.position.x + angleOffset)
+        if (playerDragController.GetOpositeFingerPos().x > playerGfxTransform.position.x + angleOffset)
             transform.eulerAngles = new Vector3(transform.eulerAngles.x, -90f , transform.eulerAngles.z);
-        else if (player.PlayerDragController.GetOpositeFingerPos().x < playerGfxTransform.position.x - angleOffset)
+        else if (playerDragController.GetOpositeFingerPos().x < playerGfxTransform.position.x - angleOffset)
             transform.eulerAngles = new Vector3(transform.eulerAngles.x, 90f, transform.eulerAngles.z);
     }
 

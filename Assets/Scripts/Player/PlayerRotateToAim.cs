@@ -9,6 +9,7 @@ public class PlayerRotateToAim : DragListener
     [BetterHeader("References")]
     [SerializeField] private Transform aimTransform;
     [SerializeField] private Transform aimDefaultPosition;
+    [SerializeField] private PlayerDragController playerDragController;
 
     protected override void DoOnSpawn()
     {
@@ -17,7 +18,7 @@ public class PlayerRotateToAim : DragListener
 
     protected override void DoOnDragChange()
     {
-        aimTransform.position = player.PlayerDragController.GetOpositeFingerPos();
+        aimTransform.position = playerDragController.GetOpositeFingerPos();
     }
 
     protected override void DoOnDragRelease()

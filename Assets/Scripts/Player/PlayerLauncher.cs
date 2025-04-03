@@ -16,7 +16,8 @@ public class PlayerLauncher : NetworkBehaviour
     [BetterHeader("References")]
     [SerializeField] private InputReader inputReader;
     [SerializeField] private Transform spawnItemPos;
-    [SerializeField] private PlayerThrower player;
+    [SerializeField] private PlayerDragController playerDragController;
+    [SerializeField] private PlayerInventory playerInventory;
 
     //private BaseItemThrowableActivable itemThrowableActivableClient;
     //private BaseItemThrowableActivable itemThrowableActivableServer;
@@ -26,17 +27,19 @@ public class PlayerLauncher : NetworkBehaviour
     {
         if (IsOwner)
         {
-            player.PlayerStateMachine.OnStateChanged += PlayerStateMachine_OnStateChanged;
-
             inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
-
-            itemActivableManager = ServiceLocator.Get<BaseItemActivableManager>();
         }
+    }
+
+    public void InitializeOwner()
+    {
+        if (!IsOwner) return;
+
+        itemActivableManager = ServiceLocator.Get<BaseItemActivableManager>();
     }
 
     private void InputReader_OnTouchPressEvent(InputAction.CallbackContext context)
     {
-        //Debug.Log($"Debug Touch itemActivated: {itemActivated} ItemActivable: {itemActivable}");
 
         if(context.started && (itemActivableManager.ItemThrowableActivableClient != null || itemActivableManager.ItemThrowableActivableServer != null))
         {
@@ -44,10 +47,10 @@ public class PlayerLauncher : NetworkBehaviour
         }
     }
 
-    private void PlayerStateMachine_OnStateChanged(IState state)
+    public void HandleOnPlayerStateMachineStateChanged(PlayerState state)
     {
 
-        if (state == player.PlayerStateMachine.dragReleaseJump || state == player.PlayerStateMachine.dragReleaseItem)
+        if (state == PlayerState.DragReleaseJump || state == PlayerState.DragReleaseItem)
         {
             Launch();
         }
@@ -61,9 +64,9 @@ public class PlayerLauncher : NetworkBehaviour
 
         ItemLauncherData itemLauncherData = new ItemLauncherData
         {
-            dragForce = player.PlayerDragController.DragForce, 
-            dragDirection = player.PlayerDragController.DirectionOfDrag,
-            selectedItemSOIndex = player.PlayerInventory.GetSelectedItemSOIndex(), 
+            dragForce = playerDragController.DragForce, 
+            dragDirection = playerDragController.DirectionOfDrag,
+            selectedItemSOIndex = playerInventory.GetSelectedItemSOIndex(), 
             ownerPlayableState = ServiceLocator.Get<BaseTurnManager>().LocalPlayableState,
         };
 
@@ -71,7 +74,7 @@ public class PlayerLauncher : NetworkBehaviour
 
         SpawnDummyProjectile(itemLauncherData); //Spawn fake projectile on client
     
-        OnItemLaunched?.Invoke(player.PlayerInventory.SelectedItemInventoryIndex); //pass itemInventoryIndex
+        OnItemLaunched?.Invoke(playerInventory.SelectedItemInventoryIndex); //pass itemInventoryIndex
     }
 
 
@@ -79,14 +82,14 @@ public class PlayerLauncher : NetworkBehaviour
     [Rpc(SendTo.Server)]
     private void SpawnProjectileServerRpc(ItemLauncherData launcherData) // on server, need to pass the prefab for the other clients instantiate it
     {
-        if(player.PlayerInventory.GetItemSOByItemSOIndex(launcherData.selectedItemSOIndex).itemServerPrefab == null)
+        if(playerInventory.GetItemSOByItemSOIndex(launcherData.selectedItemSOIndex).itemServerPrefab == null)
         {
             Debug.LogWarning($"ItemSOIndex: {launcherData.selectedItemSOIndex} has no server prefab");
             return;
         }
         
         
-        GameObject projetctile = Instantiate(player.PlayerInventory.GetItemSOByItemSOIndex(launcherData.selectedItemSOIndex).itemServerPrefab, spawnItemPos.position, Quaternion.identity);
+        GameObject projetctile = Instantiate(playerInventory.GetItemSOByItemSOIndex(launcherData.selectedItemSOIndex).itemServerPrefab, spawnItemPos.position, Quaternion.identity);
 
 
         if (projetctile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
@@ -116,14 +119,14 @@ public class PlayerLauncher : NetworkBehaviour
 
     private void SpawnDummyProjectile(ItemLauncherData launcherData) // on client, need to pass the prefab for the other clients instantiate it
     {
-        if (player.PlayerInventory.GetItemSOByItemSOIndex(launcherData.selectedItemSOIndex).itemClientPrefab == null)
+        if (playerInventory.GetItemSOByItemSOIndex(launcherData.selectedItemSOIndex).itemClientPrefab == null)
         {
             Debug.LogWarning($"ItemSOIndex: {launcherData.selectedItemSOIndex} has no client prefab");
             return;
         }
 
 
-        GameObject projetctile = Instantiate(player.PlayerInventory.GetItemSOByItemSOIndex(launcherData.selectedItemSOIndex).itemClientPrefab, spawnItemPos.position, Quaternion.identity);
+        GameObject projetctile = Instantiate(playerInventory.GetItemSOByItemSOIndex(launcherData.selectedItemSOIndex).itemClientPrefab, spawnItemPos.position, Quaternion.identity);
 
 
         if (projetctile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
@@ -143,8 +146,6 @@ public class PlayerLauncher : NetworkBehaviour
     {
         if(IsOwner)
         {
-            player.PlayerStateMachine.OnStateChanged -= PlayerStateMachine_OnStateChanged;
-
             inputReader.OnTouchPressEvent -= InputReader_OnTouchPressEvent;
         }
     }

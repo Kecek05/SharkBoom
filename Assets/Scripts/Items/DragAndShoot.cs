@@ -108,16 +108,24 @@ public class DragAndShoot : NetworkBehaviour
     private int roundedDragDistance = 0; //cache
 
 
-    public override void OnNetworkSpawn()
+    public void InitializeOwner(Rigidbody2D rb)
     {
-        if (!IsOwner) return;
+        if(!IsOwner) return;
 
+        //Owner initialize code
         inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
         inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
 
         trajectory.Initialize(startTrajectoryPos);
+
+        SetDragRb(rb); //get jump's rb, default value
+
     }
 
+    /// <summary>
+    /// Set the rigidbody of the item that will be launched
+    /// </summary>
+    /// <param name="rb"></param>
     public void SetDragRb(Rigidbody2D rb)
     {
         selectedRb = rb;

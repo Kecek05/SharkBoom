@@ -24,7 +24,6 @@ public class CameraManager : NetworkBehaviour
     {
         if (IsOwner)
         {
-            player.PlayerStateMachine.OnStateChanged += PlayerStateMachine_OnStateChanged;
             cameraObjectToFollow = new GameObject("CameraObjectToFollow").transform;
             cameraObjectToFollow.position = new Vector3(0, 0, 0);
 
@@ -36,35 +35,41 @@ public class CameraManager : NetworkBehaviour
         }
     }
 
-    private void PlayerStateMachine_OnStateChanged(IState playerState)
+    public void HandleOnPlayerStateMachineStateChanged(PlayerState playerState)
     {
-        if (playerState == player.PlayerStateMachine.idleEnemyTurnState)
+        if(!IsOwner) return;
+
+        switch(playerState)
         {
-            CameraMove();
-        }
-        else if (playerState == player.PlayerStateMachine.idleMyTurnState)
-        {
-            CameraMove();
-        }
-        else if (playerState == player.PlayerStateMachine.draggingJump || playerState == player.PlayerStateMachine.draggingItem)
-        {
-            Dragging();
-        }
-        else if (playerState == player.PlayerStateMachine.dragReleaseJump || playerState == player.PlayerStateMachine.dragReleaseItem)
-        {
-            Following();
-        }
-        else if (playerState == player.PlayerStateMachine.playerGameOverState)
-        {
-            CameraReset();
-        }
-        else if (playerState == player.PlayerStateMachine.playerWatchingState)
-        {
-            // when enemy realase the item
-        } else if (playerState == player.PlayerStateMachine.playerGameOverState)
-        {
-            //turn off camera and focus on the dead player
-            CameraTurnOff();
+            case PlayerState.IdleEnemyTurn:
+                CameraMove();
+                break;
+            case PlayerState.IdleMyTurn:
+                CameraMove();
+                break;
+            case PlayerState.DraggingJump:
+                Dragging();
+                break;
+            case PlayerState.DraggingItem:
+                Dragging();
+                break;
+            case
+                PlayerState.DragReleaseJump:
+                Following();
+                break;
+            case PlayerState.DragReleaseItem:
+                Following();
+                break;
+            case PlayerState.MyTurnEnded:
+                CameraReset();
+                break;
+            case PlayerState.PlayerWatching:
+                // when enemy realase the item
+                break;
+            case PlayerState.PlayerGameOver:
+                //turn off camera and focus on the dead player
+                CameraTurnOff();
+                break;
         }
     }
 
@@ -99,11 +104,4 @@ public class CameraManager : NetworkBehaviour
         cameraFollowing.enabled = true;
     }
 
-    public override void OnNetworkDespawn()
-    {
-        if(IsOwner)
-        {
-            player.PlayerStateMachine.OnStateChanged -= PlayerStateMachine_OnStateChanged;
-        }
-    }
 }

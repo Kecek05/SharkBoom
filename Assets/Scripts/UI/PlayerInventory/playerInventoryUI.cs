@@ -8,10 +8,15 @@ using UnityEngine.UI;
 
 public class PlayerInventoryUI : NetworkBehaviour
 {
+    /// <summary>
+    /// Pass the index of the itemInventoryIndex
+    /// </summary>
+    public event Action<int> OnItemSelectedByUI;
+
 
     [BetterHeader("References")]
     [SerializeField] private GameObject playerInventoryUIBackground;
-    [SerializeField] private PlayerThrower player;
+    //[SerializeField] private PlayerThrower player;
     [SerializeField] private Transform inventoryItemHolder;
     [SerializeField] private GameObject playerItemSingleUIPrefab;
     [SerializeField] private Button jumpButton;
@@ -26,7 +31,9 @@ public class PlayerInventoryUI : NetworkBehaviour
 
         jumpButton.onClick.AddListener(() =>
         {
-            player.PlayerInventory.SelectItemDataByItemInventoryIndex(0); //Jump Index
+            SelecItem(0); //Jump Index
+
+            //player.PlayerInventory.SelectItemDataByItemInventoryIndex(0); //Jump Index
         });
 
         openInventoryButton.onClick.AddListener(ToggleInventory);
@@ -43,17 +50,19 @@ public class PlayerInventoryUI : NetworkBehaviour
 
         //Owner Code below
 
-        player.PlayerInventory.OnItemAdded += PlayerInventory_OnItemAdded;
-        player.PlayerInventory.OnItemChanged += PlayerInventory_OnItemChanged;
-        player.PlayerInventory.OnItemSelected += PlayerInventory_OnItemSelected;
+        //player.PlayerInventory.OnItemAdded += PlayerInventory_OnItemAdded;
+        //player.PlayerInventory.OnItemChanged += PlayerInventory_OnItemChanged;
+        //player.PlayerInventory.OnItemSelected += PlayerInventory_OnItemSelected;
 
-        player.PlayerStateMachine.OnStateChanged += PlayerStateMachine_OnStateChanged;
+        //player.PlayerStateMachine.OnStateChanged += PlayerStateMachine_OnStateChanged;
 
     }
 
-    private void PlayerStateMachine_OnStateChanged(IState state)
+    public void HandleOnPlayerStateMachineStateChanged(PlayerState state)
     {
-        if (state == player.PlayerStateMachine.draggingItem || state == player.PlayerStateMachine.draggingJump)
+        if(!IsOwner) return;
+
+        if (state == PlayerState.DraggingItem || state == PlayerState.DraggingJump)
         {
             HideInventory();
             HideInventoryButton();
@@ -63,8 +72,10 @@ public class PlayerInventoryUI : NetworkBehaviour
         }
     }
 
-    private void PlayerInventory_OnItemSelected(int itemInventoryIndex)
+    public void HandleOnPlayerInventoryItemSelected(int itemInventoryIndex)
     {
+        if (!IsOwner) return;
+
         //Update item on list
         foreach (PlayerItemSingleUI playerItemSingleUI in playerItemSingleUIs)
         {
@@ -77,11 +88,13 @@ public class PlayerInventoryUI : NetworkBehaviour
             }
         }
 
-        UpdateOpenInventoryButton();
+        //UpdateOpenInventoryButton();
     }
 
-    private void PlayerInventory_OnItemChanged(ItemInventoryData itemData)
+    public void HandleOnPlayerInventoryItemChanged(ItemInventoryData itemData)
     {
+        if (!IsOwner) return;
+
         //Update item on list
         foreach (PlayerItemSingleUI playerItemSingleUI in playerItemSingleUIs)
         {
@@ -94,27 +107,31 @@ public class PlayerInventoryUI : NetworkBehaviour
         }
     }
 
-    private void PlayerInventory_OnItemAdded(ItemInventoryData itemData)
+    public void HandleOnPlayerInventoryItemAdded(ItemInventoryData itemData)
     {
+        if (!IsOwner) return;
+
         //Add item on list
         PlayerItemSingleUI playerItemSingleUI = Instantiate(playerItemSingleUIPrefab, inventoryItemHolder).GetComponent<PlayerItemSingleUI>();
         playerItemSingleUI.Setup(itemsListSO.allItemsSOList[itemData.itemSOIndex].itemName, itemsListSO.allItemsSOList[itemData.itemSOIndex].itemIcon, itemData.itemCooldownRemaining.ToString(), itemData.itemCanBeUsed, itemData.itemInventoryIndex, this);
         playerItemSingleUIs.Add(playerItemSingleUI);
 
-        UpdateOpenInventoryButton();
+        //UpdateOpenInventoryButton();
     }
 
     public void SelecItem(int itemInventoryIndex)
     {
-        player.PlayerInventory.SelectItemDataByItemInventoryIndex(itemInventoryIndex);
+        OnItemSelectedByUI?.Invoke(itemInventoryIndex); //Notify the player that an item was selected by UI
 
-        UpdateOpenInventoryButton();
+        //UpdateOpenInventoryButton();
         HideInventory(); //hide only when selecting an item
     }
 
-    private void UpdateOpenInventoryButton()
+    public void UpdateOpenInventoryButton(Sprite itemIcon)
     {
-        openInventoryButton.image.sprite = player.PlayerInventory.GetSelectedItemSO().itemIcon; //Show Icon of selected item
+        if(!IsOwner) return;
+
+        openInventoryButton.image.sprite = itemIcon; //Show Icon of selected item
     }
 
     private void ToggleInventory()
@@ -147,17 +164,6 @@ public class PlayerInventoryUI : NetworkBehaviour
     private void ShowInventoryButton()
     {
         openInventoryBackground.SetActive(true);
-    }
-
-    public override void OnNetworkDespawn()
-    {
-        if (!IsOwner) return;
-
-
-        player.PlayerInventory.OnItemAdded -= PlayerInventory_OnItemAdded;
-        player.PlayerInventory.OnItemChanged -= PlayerInventory_OnItemChanged;
-
-        player.PlayerStateMachine.OnStateChanged -= PlayerStateMachine_OnStateChanged;
     }
 
 }

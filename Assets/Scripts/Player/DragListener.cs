@@ -1,31 +1,24 @@
-using Sortify;
 using Unity.Netcode;
-using UnityEngine;
 
 public abstract class DragListener : NetworkBehaviour
 {
-    [BetterHeader("DragListener References")]
-    [SerializeField] protected PlayerThrower player;
 
-    public override void OnNetworkSpawn()
+    public void InitializeOwner()
     {
-        if (IsOwner)
-        {
-            player.PlayerStateMachine.OnStateChanged += PlayerStateMachine_OnStateChanged;
-            player.PlayerDragController.OnDragChange += PlayerDragController_OnDragChange;
-
-            DoOnSpawn();
-        }
+        if (!IsOwner) return;
+        DoOnSpawn();
     }
 
-    private void PlayerDragController_OnDragChange()
+    public void HandleOnPlayerDragControllerDragChange()
     {
+        if(!IsOwner) return; //only owner
         DoOnDragChange();
     }
 
-    private void PlayerStateMachine_OnStateChanged(IState newState)
+    public void HandleOnPlayerStateMachineStateChanged(PlayerState newState)
     {
-        if (newState == player.PlayerStateMachine.dragReleaseItem && newState == player.PlayerStateMachine.dragReleaseJump)
+        if (!IsOwner) return; //only owner
+        if (newState == PlayerState.DragReleaseItem && newState == PlayerState.DraggingJump)
         {
             DoOnDragRelease();
         }
@@ -46,13 +39,4 @@ public abstract class DragListener : NetworkBehaviour
     /// </summary>
     protected abstract void DoOnDragRelease();
 
-
-    public override void OnNetworkDespawn()
-    {
-        if (IsOwner)
-        {
-            player.PlayerStateMachine.OnStateChanged -= PlayerStateMachine_OnStateChanged;
-            player.PlayerDragController.OnDragChange -= PlayerDragController_OnDragChange;
-        }
-    }
 }

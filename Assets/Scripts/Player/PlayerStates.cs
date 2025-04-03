@@ -10,6 +10,9 @@ public class MyTurnStartedState : IState
 
     //My Turn started, set up only
     private PlayerThrower player;
+    private PlayerState state = PlayerState.MyTurnStarted;
+
+    public PlayerState State => state;
 
     public MyTurnStartedState(PlayerThrower player)
     {
@@ -50,6 +53,9 @@ public class IdleMyTurnState : IState
     //Change to Dragging if start dragging
 
     private PlayerThrower player;
+    private PlayerState state = PlayerState.IdleMyTurn;
+
+    public PlayerState State => state;
 
     public IdleMyTurnState(PlayerThrower player)
     {
@@ -97,7 +103,9 @@ public class DraggingJump : IState
     //Change to Release Jump if release the jump
 
     private PlayerThrower player;
+    private PlayerState state = PlayerState.DraggingJump;
 
+    public PlayerState State => state;
 
     public DraggingJump(PlayerThrower player) {
         //our builder
@@ -136,6 +144,9 @@ public class DraggingItem : IState
     //Change to Release Item if release the item
 
     private PlayerThrower player;
+    private PlayerState state = PlayerState.DraggingItem;
+
+    public PlayerState State => state;
 
     public DraggingItem(PlayerThrower player)
     {
@@ -177,6 +188,9 @@ public class DragReleaseJump : IState
     //Change to the IdleMyTurn after the item Callback
 
     private PlayerThrower player;
+    private PlayerState state = PlayerState.DragReleaseJump;
+
+    public PlayerState State => state;
 
     public DragReleaseJump(PlayerThrower player)
     {
@@ -210,6 +224,9 @@ public class DragReleaseItem : IState
     //Change to the MyTurnEnded after the item Callback
 
     private PlayerThrower player;
+    private PlayerState state = PlayerState.DragReleaseItem;
+
+    public PlayerState State => state;
 
     public DragReleaseItem(PlayerThrower player)
     {
@@ -240,6 +257,9 @@ public class MyTurnEndedState : IState
 
     private PlayerThrower player;
     private BaseTurnManager turnManager;
+    private PlayerState state = PlayerState.MyTurnEnded;
+
+    public PlayerState State => state;
 
     public MyTurnEndedState(PlayerThrower player)
     {
@@ -278,7 +298,9 @@ public class IdleEnemyTurnState : IState
 {
     //Idle in enemy turn
     //Can select items, move camera
+    private PlayerState state = PlayerState.IdleEnemyTurn;
 
+    public PlayerState State => state;
     public IdleEnemyTurnState()
     {
         //our builder
@@ -301,7 +323,9 @@ public class PlayerWatchingState : IState
 {
     //Player is watching the enemy turn
     //Cant do anything
+    private PlayerState state = PlayerState.PlayerWatching;
 
+    public PlayerState State => state;
 
     public PlayerWatchingState()
     {
@@ -325,6 +349,10 @@ public class PlayerWatchingState : IState
 public class PlayerGameOverState : IState
 {
     //Cant do anything
+    private PlayerState state = PlayerState.PlayerGameOver;
+
+    public PlayerState State => state;
+
     public PlayerGameOverState()
     {
         //our builder

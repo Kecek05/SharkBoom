@@ -7,21 +7,19 @@ public class PlayerDragUi : DragListener
     [BetterHeader("References")]
     [SerializeField] private TextMeshProUGUI forceText;
     [SerializeField] private TextMeshProUGUI directionText;
-
+    [SerializeField] private PlayerThrower player;
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
 
-        if (IsOwner)
-        {
-            player.PlayerDragController.OnDragCancelable += PlayerDragController_OnDragCancelable;
-        }
         HideText(); //hide enemy ui
     }
 
-    private void PlayerDragController_OnDragCancelable(bool isCancelable)
+    public void HandleOnPlayerDragControllerDragCancelable(bool isCancelable)
     {
-        if(isCancelable)
+        if(!IsOwner) return; //only owner
+
+        if (isCancelable)
         {
             HideText();
         } else if(!isCancelable && player.PlayerStateMachine.CurrentState == player.PlayerStateMachine.draggingItem || player.PlayerStateMachine.CurrentState == player.PlayerStateMachine.draggingJump)
@@ -35,12 +33,13 @@ public class PlayerDragUi : DragListener
     protected override void DoOnSpawn()
     {
         HideText();
-        player.PlayerDragController.OnDragStart += PlayerDragController_OnDragStart;
     }
 
 
-    private void PlayerDragController_OnDragStart()
+    public void HandleOnPlayerDragControllerDragStart()
     {
+        if (!IsOwner) return; //only owner
+
         ShowText();
     }
 
@@ -68,15 +67,4 @@ public class PlayerDragUi : DragListener
         directionText.enabled = false;
     }
 
-
-    public override void OnNetworkDespawn()
-    {
-        base.OnNetworkDespawn();
-
-        if(IsOwner)
-        {
-            player.PlayerDragController.OnDragStart -= PlayerDragController_OnDragStart;
-            player.PlayerDragController.OnDragCancelable -= PlayerDragController_OnDragCancelable;
-        }
-    }
 }

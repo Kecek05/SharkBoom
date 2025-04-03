@@ -12,6 +12,11 @@ public class PlayerThrower : NetworkBehaviour
 
     [BetterHeader("References")]
     [SerializeField] private GameObject playerGFX;
+    [SerializeField] private PlayerDragUi playerDragUi;
+    [SerializeField] private CameraManager cameraManager;
+    [SerializeField] private PlayerFlipGfx playerFlipGfx;
+    [SerializeField] private PlayerRotateToAim playerRotateToAim;
+    [SerializeField] private PlayerAnimator playerAnimator;
     [SerializeField] private PlayerInventory playerInventory;
     [SerializeField] private PlayerInventoryUI playerInventoryUI;
     [SerializeField] private PlayerHealth playerHealth;
@@ -64,17 +69,7 @@ public class PlayerThrower : NetworkBehaviour
 
         if (IsOwner)
         {
-            turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
-
-            turnManager.OnMyTurnEnded += GameFlowManager_OnMyTurnEnded;
-
-            turnManager.OnMyTurnJumped += GameFlowManager_OnMyTurnJumped;
-
-            gameStateManager.CurrentGameState.OnValueChanged += HandleOnGameStateChanged;
-
-            playerStateMachine = new PlayerStateMachine(this);
-
-            playerStateMachine.Initialize(playerStateMachine.idleEnemyTurnState);
+            InitializeOwner();
 
         } else
         {
@@ -83,7 +78,131 @@ public class PlayerThrower : NetworkBehaviour
 
         }
 
+        HandleEvents();
     }
+
+    private void InitializeOwner()
+    {
+        //Owner initialize code
+        turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
+
+        turnManager.OnMyTurnEnded += GameFlowManager_OnMyTurnEnded;
+
+        turnManager.OnMyTurnJumped += GameFlowManager_OnMyTurnJumped;
+
+        gameStateManager.CurrentGameState.OnValueChanged += HandleOnGameStateChanged;
+
+        playerStateMachine = new PlayerStateMachine(this);
+
+        playerStateMachine.Initialize(playerStateMachine.idleEnemyTurnState);
+
+        playerFlipGfx.InitializeOwner();
+        playerRotateToAim.InitializeOwner();
+        playerInventory.InitializeOwner();
+        playerLauncher.InitializeOwner();
+        playerDragController.InitializeOwner(playerInventory.GetItemSOByItemSOIndex(0).rb);
+    }
+
+    private void HandleEvents()
+    {
+        playerInventory.OnItemAdded += HandleOnItemAdded;
+        playerInventory.OnItemChanged += HandleOnItemChanged;
+        playerInventory.OnItemSelected += HandleOnItemSelected;
+        playerInventory.OnItemSelectedSO += HandleOnItemSelectedSO;
+
+        PlayerLauncher.OnItemLaunched += HandleOnItemLaunched;
+
+        playerStateMachine.OnStateChanged += HandleOnStateChanged;
+
+        playerDragController.OnDragStart += HandleOnDragStart;
+        playerDragController.OnDragChange += HandleOnDragChange;
+        playerDragController.OnDragCancelable += HandleOnDragCancelable;
+
+        playerInventoryUI.OnItemSelectedByUI += HandleOnItemSelectedByUI;
+    }
+
+
+    private void UnHandleEvents()
+    {
+        playerInventory.OnItemAdded -= HandleOnItemAdded;
+        playerInventory.OnItemChanged -= HandleOnItemChanged;
+        playerInventory.OnItemSelected -= HandleOnItemSelected;
+        playerInventory.OnItemSelectedSO -= HandleOnItemSelectedSO;
+
+        PlayerLauncher.OnItemLaunched -= HandleOnItemLaunched;
+
+        playerStateMachine.OnStateChanged -= HandleOnStateChanged;
+
+        playerDragController.OnDragStart -= HandleOnDragStart;
+        playerDragController.OnDragChange -= HandleOnDragChange;
+        playerDragController.OnDragCancelable -= HandleOnDragCancelable;
+
+        playerInventoryUI.OnItemSelectedByUI -= HandleOnItemSelectedByUI;
+    }
+
+    private void HandleOnDragStart()
+    {
+        playerDragUi.HandleOnPlayerDragControllerDragStart();
+    }
+
+    private void HandleOnDragCancelable(bool cancelable)
+    {
+        playerDragUi.HandleOnPlayerDragControllerDragCancelable(cancelable);
+    }
+
+    private void HandleOnItemSelectedSO(ItemSO itemSOSelected)
+    {
+        playerInventoryUI.UpdateOpenInventoryButton(itemSOSelected.itemIcon);
+    }
+
+    private void HandleOnItemSelectedByUI(int itemInventoryIndex)
+    {
+        playerInventory.SelectItemDataByItemInventoryIndex(itemInventoryIndex);
+    }
+
+    private void HandleOnDragChange()
+    {
+        playerFlipGfx.HandleOnPlayerDragControllerDragChange();
+    }
+
+    private void HandleOnStateChanged(PlayerState state)
+    {
+        cameraManager.HandleOnPlayerStateMachineStateChanged(state);
+        playerInventory.HandleOnPlayerStateMachineStateChanged(state);
+
+        playerLauncher.HandleOnPlayerStateMachineStateChanged(state);
+        playerDragController.HandleOnPlayerStateMachineStateChanged(state);
+        playerAnimator.HandleOnPlayerStateMachineStateChanged(state);
+
+        playerRotateToAim.HandleOnPlayerStateMachineStateChanged(state);
+        playerFlipGfx.HandleOnPlayerStateMachineStateChanged(state);
+
+        playerInventoryUI.HandleOnPlayerStateMachineStateChanged(state);
+    }
+
+    private void HandleOnItemLaunched(int itemInventoryIndex)
+    {
+        playerInventory.HandleOnPlayerLauncherItemLaunched(itemInventoryIndex);
+    }
+
+    private void HandleOnItemSelected(int selectedItemInventoryIndex)
+    {
+        playerDragController.SetDragRb(playerInventory.GetSelectedItemSO().rb);
+
+        playerInventoryUI.HandleOnPlayerInventoryItemSelected(selectedItemInventoryIndex);
+    }
+
+    private void HandleOnItemChanged(ItemInventoryData itemChanged)
+    {
+        playerInventoryUI.HandleOnPlayerInventoryItemChanged(itemChanged);
+    }
+
+    private void HandleOnItemAdded(ItemInventoryData itemAdded)
+    {
+        playerInventoryUI.HandleOnPlayerInventoryItemAdded(itemAdded);
+    }
+
+
 
     private void HandleOnGameStateChanged(GameState previousValue, GameState newValue)
     {
@@ -188,6 +307,17 @@ public class PlayerThrower : NetworkBehaviour
 
             gameStateManager.CurrentGameState.OnValueChanged -= HandleOnGameStateChanged;
         }
+        UnHandleEvents();
+
     }
 
+    public override void OnGainedOwnership()
+    {
+        Debug.Log($"Gained Ownership: {OwnerClientId}");
+    }
+
+    public override void OnLostOwnership()
+    {
+        Debug.Log($"Lost Ownership: {OwnerClientId}");
+    }
 }

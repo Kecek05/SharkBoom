@@ -19,34 +19,27 @@ public class PlayerAnimator : NetworkBehaviour
 
     private Animations currentAnimation;
 
-
-    public override void OnNetworkSpawn()
+    public void HandleOnPlayerStateMachineStateChanged(PlayerState newState)
     {
-        if(IsOwner)
-        {
-            player.PlayerStateMachine.OnStateChanged += PlayerStateMachine_OnStateChanged;
-        }
-    }
+        if(!IsOwner) return; //only owner
 
-    private void PlayerStateMachine_OnStateChanged(IState newState)
-    {
-        if(newState == player.PlayerStateMachine.idleMyTurnState || newState == player.PlayerStateMachine.idleEnemyTurnState || newState == player.PlayerStateMachine.myTurnEndedState)
+        if (newState == PlayerState.IdleMyTurn || newState == PlayerState.IdleEnemyTurn || newState == PlayerState.MyTurnEnded)
         {
             PlayAnimation(Animations.Idle);
         } 
-        else if (newState == player.PlayerStateMachine.draggingItem)
+        else if (newState == PlayerState.DraggingItem)
         {
             PlayAnimation(Animations.Aim);
         }
-        else if (newState == player.PlayerStateMachine.draggingJump)
+        else if (newState == PlayerState.DraggingJump)
         {
             PlayAnimation(Animations.AimJump, 0);
         }
-        else if (newState == player.PlayerStateMachine.dragReleaseItem)
+        else if (newState == PlayerState.DragReleaseItem)
         {
             PlayAnimation(Animations.Shoot);
         }
-        else if (newState == player.PlayerStateMachine.dragReleaseJump)
+        else if (newState == PlayerState.DragReleaseJump)
         {
             PlayAnimation(Animations.Jump);
         }
@@ -62,14 +55,6 @@ public class PlayerAnimator : NetworkBehaviour
 
         animator.CrossFade(animations[(int)currentAnimation], crossFade);
 
-    }
-
-    public override void OnNetworkDespawn()
-    {
-        if (IsOwner)
-        {
-            player.PlayerStateMachine.OnStateChanged -= PlayerStateMachine_OnStateChanged;
-        }
     }
 }
 
