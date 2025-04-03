@@ -23,7 +23,7 @@ public class PlayersPublicInfoManager : BasePlayersPublicInfoManager
         }
         else
         {
-            Debug.LogError("Player not found in dictionary");
+            Debug.LogWarning("Player not found in dictionary");
             return null;
         }
     }

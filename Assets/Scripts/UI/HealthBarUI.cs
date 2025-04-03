@@ -24,12 +24,14 @@ public class HealthBarUI : MonoBehaviour
     {
         //Needed to resync reconnected player
 
-        PlayerHealth player1Health = ServiceLocator.Get<PlayersPublicInfoManager>().GetPlayerObjectByPlayableState(PlayableState.Player1Playing).GetComponent<PlayerHealth>();
+        GameObject player1Obj = ServiceLocator.Get<BasePlayersPublicInfoManager>().GetPlayerObjectByPlayableState(PlayableState.Player1Playing);
 
-        PlayerHealth player2Health = ServiceLocator.Get<PlayersPublicInfoManager>().GetPlayerObjectByPlayableState(PlayableState.Player2Playing).GetComponent<PlayerHealth>();
+        GameObject player2Obj = ServiceLocator.Get<BasePlayersPublicInfoManager>().GetPlayerObjectByPlayableState(PlayableState.Player2Playing);
 
-        if(player1Health != null)
+        if(player1Obj != null)
         {
+            PlayerHealth player1Health = player1Obj.GetComponent<PlayerHealth>();
+
             PlayerHealth.OnPlayerTakeDamageArgs onPlayerTakeDamageArgsPlayer1 = new PlayerHealth.OnPlayerTakeDamageArgs
             {
                 playableState = PlayableState.Player1Playing,
@@ -39,8 +41,10 @@ public class HealthBarUI : MonoBehaviour
             PlayerHealth_OnPlayerTakeDamage(null, onPlayerTakeDamageArgsPlayer1);
         }
 
-        if(player2Health != null)
+        if(player2Obj != null)
         {
+            PlayerHealth player2Health = player2Obj.GetComponent<PlayerHealth>();
+
             PlayerHealth.OnPlayerTakeDamageArgs onPlayerTakeDamageArgsPlayer2 = new PlayerHealth.OnPlayerTakeDamageArgs
             {
                 playableState = PlayableState.Player2Playing,

@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class PlayerThrower : NetworkBehaviour
 {
-    public static event Action<PlayerThrower> OnPlayerSpawned;
+    public static event Action<PlayerThrower> OnPlayerThrowerSpawned;
 
 
     [BetterHeader("References")]
@@ -43,7 +43,7 @@ public class PlayerThrower : NetworkBehaviour
         {
             PlayerData playerData = NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.GetPlayerDataByClientId(OwnerClientId);
 
-            OnPlayerSpawned?.Invoke(this);
+            OnPlayerThrowerSpawned?.Invoke(this);
 
             gameObject.name = "Player " + playerData.userData.userName; //Debug
         }
@@ -100,7 +100,8 @@ public class PlayerThrower : NetworkBehaviour
 
         playerLauncher.OnItemLaunched += HandleOnItemLaunched;
 
-        playerStateMachine.OnStateChanged += HandleOnStateChanged;
+        if(IsOwner)
+            playerStateMachine.OnStateChanged += HandleOnStateChanged;
 
         playerDragController.OnDragStart += HandleOnDragStart;
         playerDragController.OnDragChange += HandleOnDragChange;
@@ -119,7 +120,8 @@ public class PlayerThrower : NetworkBehaviour
 
         playerLauncher.OnItemLaunched -= HandleOnItemLaunched;
 
-        playerStateMachine.OnStateChanged -= HandleOnStateChanged;
+        if (IsOwner)
+            playerStateMachine.OnStateChanged -= HandleOnStateChanged;
 
         playerDragController.OnDragStart -= HandleOnDragStart;
         playerDragController.OnDragChange -= HandleOnDragChange;
@@ -281,9 +283,9 @@ public class PlayerThrower : NetworkBehaviour
 
     }
 
-    public void Reconnect()
+    public void ResyncReconnect()
     {
-        
+
     }
 
 
@@ -301,6 +303,7 @@ public class PlayerThrower : NetworkBehaviour
 
             gameStateManager.CurrentGameState.OnValueChanged -= HandleOnGameStateChanged;
         }
+
         UnHandleEvents();
 
     }
