@@ -32,6 +32,8 @@ public class CameraManager : NetworkBehaviour
                 cinemachineCamera = Object.FindFirstObjectByType<CinemachineCamera>();
                 cinemachineCamera.Target.TrackingTarget = cameraObjectToFollow;
             }
+
+            CameraMove();
         }
     }
 

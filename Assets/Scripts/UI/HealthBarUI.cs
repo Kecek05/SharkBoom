@@ -16,6 +16,41 @@ public class HealthBarUI : MonoBehaviour
     private void Start()
     {
         PlayerHealth.OnPlayerTakeDamage += PlayerHealth_OnPlayerTakeDamage;
+
+        SyncAtStart();
+    }
+
+    private void SyncAtStart()
+    {
+        //Needed to resync reconnected player
+
+        PlayerHealth player1Health = ServiceLocator.Get<PlayersPublicInfoManager>().GetPlayerObjectByPlayableState(PlayableState.Player1Playing).GetComponent<PlayerHealth>();
+
+        PlayerHealth player2Health = ServiceLocator.Get<PlayersPublicInfoManager>().GetPlayerObjectByPlayableState(PlayableState.Player2Playing).GetComponent<PlayerHealth>();
+
+        if(player1Health != null)
+        {
+            PlayerHealth.OnPlayerTakeDamageArgs onPlayerTakeDamageArgsPlayer1 = new PlayerHealth.OnPlayerTakeDamageArgs
+            {
+                playableState = PlayableState.Player1Playing,
+                playerCurrentHealth = player1Health.CurrentHealth.Value,
+                playerMaxHealth = player1Health.MaxHealth
+            };
+            PlayerHealth_OnPlayerTakeDamage(null, onPlayerTakeDamageArgsPlayer1);
+        }
+
+        if(player2Health != null)
+        {
+            PlayerHealth.OnPlayerTakeDamageArgs onPlayerTakeDamageArgsPlayer2 = new PlayerHealth.OnPlayerTakeDamageArgs
+            {
+                playableState = PlayableState.Player2Playing,
+                playerCurrentHealth = player2Health.CurrentHealth.Value,
+                playerMaxHealth = player2Health.MaxHealth
+            };
+
+
+            PlayerHealth_OnPlayerTakeDamage(null, onPlayerTakeDamageArgsPlayer2);
+        }
     }
 
     private void PlayerHealth_OnPlayerTakeDamage(object playerSender, PlayerHealth.OnPlayerTakeDamageArgs e)

@@ -302,7 +302,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPart: 2
-  player: {fileID: 2871544100916734757}
+  playerHealth: {fileID: 4799874711576044224}
 --- !u!61 &846515009672868521
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -654,9 +654,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   playerGFX: {fileID: 8363574200510345622}
+  playerDragUi: {fileID: 2729088880330011738}
+  cameraManager: {fileID: 3009684404041675309}
+  playerFlipGfx: {fileID: 5874533860640660207}
+  playerRotateToAim: {fileID: 5182517899106838082}
+  playerAnimator: {fileID: 4517368665423685050}
   playerInventory: {fileID: 6377254783256832976}
   playerInventoryUI: {fileID: 5233387307745232000}
-  playerHealth: {fileID: 4799874711576044224}
   playerDragController: {fileID: 5120579722876303172}
   playerLauncher: {fileID: 1987240186612080187}
   playerTouchColl: {fileID: 1531988852306185639}
@@ -678,7 +682,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  player: {fileID: 2871544100916734757}
   itemsListSO: {fileID: 11400000, guid: 0512cb21a29af2e4b88962e2cb6a1605, type: 2}
 --- !u!114 &1987240186612080187
 MonoBehaviour:
@@ -695,7 +698,8 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
   spawnItemPos: {fileID: 5526197349071884733}
-  player: {fileID: 2871544100916734757}
+  playerDragController: {fileID: 5120579722876303172}
+  playerInventory: {fileID: 6377254783256832976}
 --- !u!114 &5120579722876303172
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -756,7 +760,6 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   maxHealth: 100
   player: {fileID: 2871544100916734757}
-  playerRb2D: {fileID: 3825023417696618736}
 --- !u!1 &1348648853730134369
 GameObject:
   m_ObjectHideFlags: 0
@@ -905,7 +908,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPart: 1
-  player: {fileID: 2871544100916734757}
+  playerHealth: {fileID: 4799874711576044224}
 --- !u!61 &3497297678960791332
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1706,7 +1709,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPart: 0
-  player: {fileID: 2871544100916734757}
+  playerHealth: {fileID: 4799874711576044224}
 --- !u!58 &8150056595308058653
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -2286,6 +2289,8 @@ MonoBehaviour:
   playerStateText: {fileID: 6773476030300152405}
   playerCanInteractWithInventoryText: {fileID: 5104973882560572610}
   dragDistanceText: {fileID: 6954761404739090485}
+  playerDragController: {fileID: 5120579722876303172}
+  playerInventory: {fileID: 6377254783256832976}
 --- !u!1 &4490644184409646491
 GameObject:
   m_ObjectHideFlags: 0
@@ -2338,7 +2343,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   playerInventoryUIBackground: {fileID: 8210345525591779225}
-  player: {fileID: 2871544100916734757}
   inventoryItemHolder: {fileID: 3048060028184846068}
   playerItemSingleUIPrefab: {fileID: 1455874116165048915, guid: fbe932c78e14f894abff59d22cff4bdd, type: 3}
   jumpButton: {fileID: 8101142939162384478}
@@ -2799,9 +2803,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  player: {fileID: 2871544100916734757}
   forceText: {fileID: 1986637986843361798}
   directionText: {fileID: 3866401291948903226}
+  player: {fileID: 2871544100916734757}
 --- !u!1 &8210345525591779225
 GameObject:
   m_ObjectHideFlags: 0
@@ -3050,9 +3054,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  player: {fileID: 2871544100916734757}
   aimTransform: {fileID: 2806491636382606881}
   aimDefaultPosition: {fileID: 1345439288451705463}
+  playerDragController: {fileID: 5120579722876303172}
 --- !u!114 &5874533860640660207
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3066,8 +3070,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  player: {fileID: 2871544100916734757}
   playerGfxTransform: {fileID: 2927350467601940059}
+  playerDragController: {fileID: 5120579722876303172}
   angleOffset: 0.5
 --- !u!114 &4836813870748371602
 MonoBehaviour:

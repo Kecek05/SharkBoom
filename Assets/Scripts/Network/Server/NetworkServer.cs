@@ -109,7 +109,11 @@ public class NetworkServer : IDisposable
                 playerData.clientId = clientId;
 
                 //Change Onwership
-                ServiceLocator.Get<BasePlayersPublicInfoManager>().GetPlayerObjectByPlayableState(playerData.playableState).GetComponent<NetworkObject>().ChangeOwnership(clientId);
+                GameObject reconnectedPlayerObj = ServiceLocator.Get<BasePlayersPublicInfoManager>().GetPlayerObjectByPlayableState(playerData.playableState);
+
+                reconnectedPlayerObj.GetComponent<NetworkObject>().ChangeOwnership(clientId);
+
+                reconnectedPlayerObj.GetComponent<PlayerThrower>().Reconnect();
 
                 Debug.Log($"Changing the Ownership of the object: {ServiceLocator.Get<BasePlayersPublicInfoManager>().GetPlayerObjectByPlayableState(playerData.playableState).name} to ClientId: {clientId}");
             } else

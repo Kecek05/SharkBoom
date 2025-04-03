@@ -53,50 +53,39 @@ public class PlayerInventory : NetworkBehaviour
     {
         if(!IsOwner) return;
 
-        if (state == PlayerState.MyTurnStarted)
+        switch (state)
         {
-            SetCanInteractWithInventory(true);
+            case PlayerState.MyTurnStarted:
+                SetCanInteractWithInventory(true);
+                if (!ItemCanBeUsed(selectedItemInventoryIndex)) // If selected item can't be used, select another one
+                    SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
+                break;
+            case PlayerState.IdleMyTurn:
+            case PlayerState.IdleEnemyTurn:
+                SetCanInteractWithInventory(true);
+                break;
+            case PlayerState.DraggingJump:
+            case PlayerState.DraggingItem:
+            case PlayerState.DragReleaseItem:
+            case PlayerState.DragReleaseJump:
+                SetCanInteractWithInventory(false);
+                if (state == PlayerState.DragReleaseJump)
+                {
+                    // Jumped, can shoot
+                    SetPlayerCanJumpRpc(false);
+                }
+                break;
+            case PlayerState.MyTurnEnded:
+                SetCanInteractWithInventory(false);
+                DecreaseAllItemsCooldownRpc();
+                UseItemByInventoryIndexRpc(selectedItemInventoryIndex);
+                SetPlayerCanJumpRpc(true); // Can jump, set before next round to be able to select
+                break;
+            case PlayerState.PlayerGameOver:
+                SetCanInteractWithInventory(false);
+                break;
+        }
 
-            if(!ItemCanBeUsed(selectedItemInventoryIndex)) // If selected item can't be used, select other one
-                SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
-        }
-        else if (state == PlayerState.IdleMyTurn)
-        {
-            SetCanInteractWithInventory(true);
-        }
-        else if (state == PlayerState.IdleEnemyTurn)
-        {
-            SetCanInteractWithInventory(true);
-        }
-        else if (state == PlayerState.DraggingJump || state == PlayerState.DraggingItem)
-        {
-            SetCanInteractWithInventory(false);
-        }
-        else if (state == PlayerState.DragReleaseItem)
-        {
-            SetCanInteractWithInventory(false);
-
-        }
-        else if (state == PlayerState.DragReleaseJump)
-        {
-            SetCanInteractWithInventory(false);
-
-            //Jumped, can shoot
-            SetPlayerCanJumpRpc(false);
-        }
-        else if (state == PlayerState.MyTurnEnded)
-        {
-            SetCanInteractWithInventory(false);
-
-            DecreaseAllItemsCooldownRpc();
-            UseItemByInventoryIndexRpc(selectedItemInventoryIndex);
-
-            SetPlayerCanJumpRpc(true); //can jump, set before next round to be able to select
-        } else if (state == PlayerState.PlayerGameOver)
-        {
-            SetCanInteractWithInventory(false);
-
-        }
 
     }
 

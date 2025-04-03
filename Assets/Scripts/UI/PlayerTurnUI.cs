@@ -20,9 +20,12 @@ public class PlayerTurnUI : MonoBehaviour
         turnManager = ServiceLocator.Get<BaseTurnManager>();
 
         turnManager.OnLocalPlayableStateChanged += GameFlowManager_OnLocalPlayableStateChanged;
-        GameFlowManager_OnLocalPlayableStateChanged(); //check at start
 
         turnManager.CurrentPlayableState.OnValueChanged += CurrentPlayableState_OnValueChanged;
+
+        GameFlowManager_OnLocalPlayableStateChanged(); //check at start
+        CurrentPlayableState_OnValueChanged(PlayableState.None, turnManager.CurrentPlayableState.Value); //check at start
+
     }
 
     private void GameFlowManager_OnLocalPlayableStateChanged()

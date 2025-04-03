@@ -16,6 +16,7 @@ public class Health : NetworkBehaviour
 
     public NetworkVariable<float> CurrentHealth => currentHealth;
 
+    public float MaxHealth => maxHealth;
     public override void OnNetworkSpawn()
     {
         if (!IsServer) return; // Only the server should be able to change the health

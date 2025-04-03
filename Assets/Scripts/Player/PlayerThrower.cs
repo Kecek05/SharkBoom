@@ -281,6 +281,12 @@ public class PlayerThrower : NetworkBehaviour
 
     }
 
+    public void Reconnect()
+    {
+        
+    }
+
+
     public override void OnNetworkDespawn()
     {
         thisPlayableState.OnValueChanged -= PlayableStateInitialize;
