@@ -34,9 +34,12 @@ public class PlayerInventory : NetworkBehaviour
     {
         if(!IsOwner) return;
 
+        SetCanInteractWithInventory(true);
+
         OnItemSelected?.Invoke(selectedItemInventoryIndex);
 
         playerItemsInventory.OnListChanged += PlayerInventory_OnListChanged; //Local event
+
     }
 
     public void HandleOnPlayerLauncherItemLaunched(int itemInventoryIndex)
