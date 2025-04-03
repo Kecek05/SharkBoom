@@ -2,8 +2,10 @@
 
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Unity.Android.Gradle.Manifest;
 using Unity.Services.Matchmaker.Models;
 using Unity.Services.Multiplay;
 using UnityEngine;
@@ -76,6 +78,14 @@ public class MultiplayAllocationService : IDisposable
         MatchmakingResults payloadAllocation = await MultiplayService.Instance.GetPayloadAllocationFromJsonAs<MatchmakingResults>();
         string modelAsJson = JsonConvert.SerializeObject(payloadAllocation, Formatting.Indented);
         Debug.Log(nameof(GetMatchmakerAllocationPayloadAsync) + ":" + Environment.NewLine + modelAsJson);
+
+        foreach(Player player in payloadAllocation.MatchProperties.Players)
+        {
+            MatchmakingPlayerData matchmakingPlayerData = player.CustomData.GetAs<MatchmakingPlayerData>();
+
+            Debug.Log($"Player: {player.Id} - Pearls: {matchmakingPlayerData.pearls.ToString()}");
+        }
+
         return payloadAllocation;
     }
 

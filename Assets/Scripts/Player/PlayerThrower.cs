@@ -254,7 +254,7 @@ public class PlayerThrower : NetworkBehaviour
 
     }
 
-    
+
 
     private void PlayableStateInitialize(PlayableState previousValue, PlayableState newValue)
     {
@@ -266,7 +266,7 @@ public class PlayerThrower : NetworkBehaviour
         if (thisPlayableState.Value == PlayableState.Player1Playing)
         {
 
-            foreach(GameObject playerCollider in playerColliders)
+            foreach (GameObject playerCollider in playerColliders)
             {
                 playerCollider.layer = PlayersPublicInfoManager.PLAYER_1_LAYER;
             }
@@ -282,12 +282,6 @@ public class PlayerThrower : NetworkBehaviour
         ServiceLocator.Get<BasePlayersPublicInfoManager>().AddPlayerToPlayersDictionary(thisPlayableState.Value, gameObject);
 
     }
-
-    public void ResyncReconnect()
-    {
-        playerInventory.ResyncReconnect();
-    }
-
 
     public override void OnNetworkDespawn()
     {

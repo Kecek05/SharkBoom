@@ -42,6 +42,19 @@ public class PlayerInventory : NetworkBehaviour
         }
     }
 
+    public override void OnNetworkSpawn()
+    {
+        //Reconnect Resync
+        if (IsOwner)
+        {
+            if(playerItemsInventory.Count > 0)
+            {
+                Debug.Log("PlayerInventory: OnNetworkSpawn, Player has items in inventory");
+                ResyncReconnect();
+            }
+        }
+    }
+
     public void InitializeOwner()
     {
         if(!IsOwner) return;
@@ -251,9 +264,10 @@ public class PlayerInventory : NetworkBehaviour
 
     public void ResyncReconnect()
     {
-        foreach(ItemInventoryData item in playerItemsInventory)
+        for(int i = 1; i < playerItemsInventory.Count; i++)
         {
-            OnItemAdded?.Invoke(item);
+            //Need to be a for to start from index 1, index 0 is Jump
+            OnItemAdded?.Invoke(playerItemsInventory[i]);
         }
 
         //Reselect an item
