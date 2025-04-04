@@ -73,31 +73,31 @@ public class NetworkServer : IDisposable
 
         UserData userData = JsonUtility.FromJson<UserData>(payload); //Deserialize the payload to UserData
 
-        Debug.Log($"ApprovalCheck, UserData: {userData.userName}, Pearls: {userData.userPearls}, AuthId: {userData.userAuthId} ");
+        Debug.Log($"ApprovalCheck, Name: {userData.userName}, Pearls: {userData.userPearls}, AuthId: {userData.userAuthId} ");
 
-        if(OwnershipHandler.IsReconnecting(request.ClientNetworkId))
-        {
-            OwnershipHandler.HandleOwnership(userData, request.ClientNetworkId);
-        } else
-        {
-            //New client
-            Debug.Log("CheckReconnect, New client");
+        //if(OwnershipHandler.IsReconnecting(request.ClientNetworkId))
+        //{
+        //    OwnershipHandler.HandleOwnership(userData, request.ClientNetworkId);
+        //} else
+        //{
+        //    //New client
+        //    Debug.Log("CheckReconnect, New client");
 
-            PlayerData newPlayerData = new PlayerData()
-            {
-                userData = userData,
-                clientId = request.ClientNetworkId,
-                playableState = GetPlayableStateByCount(),
-                calculatedPearls = new CalculatedPearls(),
-                gameObject = null
-            };
+        //    PlayerData newPlayerData = new PlayerData()
+        //    {
+        //        userData = userData,
+        //        clientId = request.ClientNetworkId,
+        //        playableState = GetPlayableStateByCount(),
+        //        calculatedPearls = new CalculatedPearls(),
+        //        gameObject = null
+        //    };
 
-            serverAuthenticationService.RegisterClient(newPlayerData);
+        //    serverAuthenticationService.RegisterClient(newPlayerData);
 
-            OwnershipHandler.HandleClientJoinPlayerOwnership(newPlayerData);
+        //    OwnershipHandler.HandleClientJoinPlayerOwnership(newPlayerData);
 
-            approvedClients++;
-        }
+        //    approvedClients++;
+        //}
 
         OnUserJoined?.Invoke();
 
