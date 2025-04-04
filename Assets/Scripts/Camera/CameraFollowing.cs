@@ -39,8 +39,6 @@ public class CameraFollowing : NetworkBehaviour
         if(itemLaunched == null) return;
 
         cameraManager.CinemachineCamera.Target.TrackingTarget = itemLaunched;
-        cameraManager.CinemachineFollowComponent.FollowOffset.z = cameraManager.CameraObjectToFollow.transform.position.z;
-
         Debug.Log("z field" + cameraManager.CinemachineFollowComponent.FollowOffset.z);
 
     }
@@ -54,7 +52,11 @@ public class CameraFollowing : NetworkBehaviour
 
     public void ResetCamAfterFollow()
     {
-       cameraManager.CinemachineCamera.Target.TrackingTarget = cameraManager.CameraObjectToFollow;
+        // -15 object to follow 1 - -22 cinemachine camera -6
+        // We need to move the camera back to objct to follow and
+
+
+        cameraManager.CinemachineCamera.Target.TrackingTarget = cameraManager.CameraObjectToFollow;
     }
 
 
