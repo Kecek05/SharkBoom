@@ -13,6 +13,8 @@ public class PlayersPublicInfoManager : BasePlayersPublicInfoManager
 
         playerStateToGameObject.TryAdd(playerPlayableState, playerGameObject);
 
+        Debug.Log($"Added player to playersDictionary, PlayableState: {playerPlayableState} - GameObject: {playerGameObject.name}");
+
     }
 
     public override GameObject GetPlayerObjectByPlayableState(PlayableState playerPlayableState)

@@ -211,6 +211,8 @@ public class PlayerThrower : NetworkBehaviour
         // Cant be OnnetworkSpawn because it needs to be called by NetworkServer
         thisPlayableState.Value = playableState;
 
+        PlayableStateInitialize(playableState, playableState);
+
         InitializeGFXRotationRpc(GFXRotation);
     }
 
@@ -290,6 +292,7 @@ public class PlayerThrower : NetworkBehaviour
                 playerCollider.layer = PlayersPublicInfoManager.PLAYER_2_LAYER;
             }
         }
+
 
         ServiceLocator.Get<BasePlayersPublicInfoManager>().AddPlayerToPlayersDictionary(thisPlayableState.Value, gameObject);
 
