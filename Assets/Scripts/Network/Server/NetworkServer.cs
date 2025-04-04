@@ -1,6 +1,7 @@
 using System;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class NetworkServer : IDisposable
@@ -74,7 +75,26 @@ public class NetworkServer : IDisposable
 
         Debug.Log($"ApprovalCheck, UserData: {userData.userName}, Pearls: {userData.userPearls}, AuthId: {userData.userAuthId} ");
 
-        CheckReconnect(userData, request.ClientNetworkId);
+        if(OwnershipHandler.IsReconnecting(request.ClientNetworkId))
+        {
+            OwnershipHandler.HandleOwnership(userData, request.ClientNetworkId);
+
+        } else
+        {
+            //New client
+            Debug.Log("CheckReconnect, New client");
+
+            PlayerData newPlayerData = new PlayerData()
+            {
+                userData = userData,
+                clientId = request.ClientNetworkId,
+                playableState = PlayableState.None, //None for now
+                calculatedPearls = new CalculatedPearls(),
+                gameObject = null
+            };
+
+            serverAuthenticationService.RegisterClient(newPlayerData);
+        }
 
         OnUserJoined?.Invoke();
 
@@ -86,62 +106,6 @@ public class NetworkServer : IDisposable
             //two clients in game and not changed to spawning players yet
             alreadyChangedToSpawningPlayers = true;
             ServiceLocator.Get<BaseGameStateManager>().ChangeGameState(GameState.SpawningPlayers);
-        }
-        
-        
-    }
-
-    private void CheckReconnect(UserData userData, ulong clientId)
-    {
-        
-        if(playerSpawner.PlayerCount >= 2)
-        {
-            //already spawned 2 players, this one is reconnecting
-            Debug.Log("CheckReconnect, Reconnecting client already spawned");
-
-            //Change Ownership
-            
-            if(ServerAuthenticationService.AuthIdToPlayerData.TryGetValue(userData.userAuthId, out PlayerData playerData))
-            {
-                //Update clientId
-                playerData = ServerAuthenticationService.AuthIdToPlayerData[userData.userAuthId];
-
-                playerData.clientId = clientId;
-
-                //Change Onwership
-                ServiceLocator.Get<BasePlayersPublicInfoManager>().GetPlayerObjectByPlayableState(playerData.playableState).GetComponent<NetworkObject>().ChangeOwnership(clientId);
-
-                Debug.Log($"Changing the Ownership of the object: {ServiceLocator.Get<BasePlayersPublicInfoManager>().GetPlayerObjectByPlayableState(playerData.playableState).name} to ClientId: {clientId}");
-            } else
-            {
-                //Client is not registered, but already spawned
-                Debug.LogError("CheckReconnect, Client is not registered, but already spawned, this is a error!");
-            }
-
-        } else if (ServerAuthenticationService.AuthIdToPlayerData.TryGetValue(userData.userAuthId, out PlayerData playerData))
-        {
-            //Already registered but not spawned
-            Debug.Log("CheckReconnect, Already registered but not spawned");
-            //Update clientId
-            playerData.clientId = clientId;
-
-
-        } else
-        {
-            //New client
-            Debug.Log("CheckReconnect, New client");
-
-            PlayerData newPlayerData = new PlayerData()
-            {
-                userData = userData,
-                clientId = clientId,
-                playableState = PlayableState.None, //None for now
-                calculatedPearls = new CalculatedPearls(),
-                gameObject = null
-            };
-
-            serverAuthenticationService.RegisterClient(newPlayerData);
-
         }
     }
 

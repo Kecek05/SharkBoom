@@ -65,21 +65,3 @@ public interface IPlayerSpawner
 
     PlayableState GetPlayableStateByCount();
 }
-
-public interface IOwnershipHandler
-{
-    /// <summary>
-    /// Check if the player is reconnecting to the game.
-    /// </summary>
-    bool IsReconnecting(UserData userData, ulong clientId);
-
-    /// <summary>
-    /// Handle the ownership of the player object when reconnected.
-    /// </summary>
-    void HandleOwnership(ulong clientId, ulong newOwnerClientId);
-
-    /// <summary>
-    /// Handle the ownership of the player object when a new player joins.
-    /// </summary>
-    void HandlePlayerObjectOwnership(ulong clientId, ulong newOwnerClientId);
-}
