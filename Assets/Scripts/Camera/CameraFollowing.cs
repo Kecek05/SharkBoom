@@ -6,8 +6,8 @@ using UnityEngine;
 public class CameraFollowing : NetworkBehaviour
 {
     [SerializeField] private CameraManager cameraManager;
-    [SerializeField] private float timeToAwait = 300f;
-    private IEnumerator resetCam;
+    [SerializeField] private float timeToAwait = 3f;
+    private Coroutine resetCam;
 
     public override void OnNetworkSpawn()
     {
@@ -26,13 +26,12 @@ public class CameraFollowing : NetworkBehaviour
 
     private void BaseItemThrowable_OnItemFinishedAction()
     {
-        if (resetCam != null)
-        {
-            StartCoroutine(resetCam);
-        }
+        
 
-        resetCam = ResetCam();
-        StartCoroutine(resetCam);
+        if (resetCam == null)
+        {
+            resetCam = StartCoroutine(ResetCam());
+        }
     }
 
     public void SetTarget(Transform itemLaunched)
@@ -40,7 +39,9 @@ public class CameraFollowing : NetworkBehaviour
         if(itemLaunched == null) return;
 
         cameraManager.CinemachineCamera.Target.TrackingTarget = itemLaunched;
-        cameraManager.CinemachineFollowComponent.FollowOffset.z = cameraManager.CameraObjectToFollow.position.z;
+        cameraManager.CinemachineFollowComponent.FollowOffset.z = cameraManager.CameraObjectToFollow.transform.position.z;
+
+        Debug.Log("z field" + cameraManager.CinemachineFollowComponent.FollowOffset.z);
 
     }
 
@@ -48,6 +49,7 @@ public class CameraFollowing : NetworkBehaviour
     {
         yield return new WaitForSeconds(timeToAwait);
         ResetCamAfterFollow();
+        resetCam = null;
     }
 
     public void ResetCamAfterFollow()

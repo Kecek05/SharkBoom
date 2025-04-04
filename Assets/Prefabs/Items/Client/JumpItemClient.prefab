@@ -54,7 +54,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1605454544280285762, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: lifeTime
-      value: 1.5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_Name
@@ -125,7 +125,7 @@ MonoBehaviour:
   cinemachineFollow: {fileID: 2061251337206000038}
   collidersToChangeLayer:
   - {fileID: 4139059953487484834}
-  followingTime: 1.5
+  followingTime: 3
 --- !u!70 &6816123078317435289
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

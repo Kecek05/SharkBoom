@@ -14,7 +14,6 @@ public class BaseItemThrowable : MonoBehaviour
     [SerializeField] protected bool isServerObject;
     [SerializeField] protected ItemSO itemSO;
     [SerializeField] protected Rigidbody2D rb;
-    [SerializeField] protected CinemachineFollow cinemachineFollow;
     [SerializeField] protected GameObject[] collidersToChangeLayer;
     protected ItemLauncherData thisItemLaucherData;
 
@@ -61,6 +60,7 @@ public class BaseItemThrowable : MonoBehaviour
 
     protected void OnDestroy()
     {
+        
         OnItemFinishedAction?.Invoke();
         ItemCallbackAction();
     }
