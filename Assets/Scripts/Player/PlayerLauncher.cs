@@ -76,11 +76,6 @@ public class PlayerLauncher : NetworkBehaviour
         SpawnDummyProjectile(itemLauncherData); //Spawn fake projectile on client
     
         OnItemLaunched?.Invoke(playerInventory.SelectedItemInventoryIndex); //pass itemInventoryIndex
-
-        if(CameraManager.Instance != null)
-        {
-           // CameraManager.Instance.CameraFollowing.SetTarget(itemLauncherData); //set the camera to follow the item that was launched
-        }
          
     }
 

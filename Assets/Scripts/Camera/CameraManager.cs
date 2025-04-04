@@ -6,8 +6,6 @@ using static UnityEngine.CullingGroup;
 public class CameraManager : NetworkBehaviour
 {
 
-    public static CameraManager Instance { get; private set; }
-
     [SerializeField] private CameraMovement cameraMovement;
     [SerializeField] private CameraZoom cameraZoom;
     [SerializeField] private CameraFollowing cameraFollowing;
@@ -28,7 +26,6 @@ public class CameraManager : NetworkBehaviour
     {
         if (IsOwner)
         {
-            Instance = this;
             
             cameraObjectToFollow = new GameObject("CameraObjectToFollow").transform;
             cameraObjectToFollow.position = new Vector3(0, 0, 0);
