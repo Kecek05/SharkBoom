@@ -1,7 +1,4 @@
-using System;
-using System.Collections;
-using System.Security.Cryptography;
-using Unity.Cinemachine;
+
 using Unity.Netcode;
 using UnityEngine;
 
@@ -9,13 +6,13 @@ public class CameraFollowing : NetworkBehaviour
 {
     [SerializeField] private CameraManager cameraManager;
 
-    private CinemachineFollow cinemachineFollowCamera;
-    private Coroutine followingCourotine;
-
     public override void OnNetworkSpawn()
     {
-        BaseItemThrowable.OnItemReleasedAction += BaseItemThrowable_OnItemReleasedAction;
-        BaseItemThrowable.OnItemFinishedAction += BaseItemThrowable_OnItemFinishedAction;
+        if(IsOwner)
+        {
+            BaseItemThrowable.OnItemReleasedAction += BaseItemThrowable_OnItemReleasedAction;
+            BaseItemThrowable.OnItemFinishedAction += BaseItemThrowable_OnItemFinishedAction;
+        }
     }
 
 
@@ -31,20 +28,28 @@ public class CameraFollowing : NetworkBehaviour
 
     public void SetTarget(Transform itemLaunched)
     {
+        if(itemLaunched == null) return;
+
         cameraManager.CinemachineCamera.Target.TrackingTarget = itemLaunched;
-        cinemachineFollowCamera.FollowOffset.z = cameraManager.CameraObjectToFollow.position.z;
+        cameraManager.CinemachineFollowComponent.FollowOffset.z = cameraManager.CameraObjectToFollow.position.z;
+
+        //cameraManager.CinemachineCamera.FollowOffset = cinemachineFollowCamera.FollowOffset;
+        //cinemachineFollowCamera.FollowOffset.z = cameraManager.CameraObjectToFollow.position.z;
     }
 
     public void ResetCamAfterFollow()
     {
-        cameraManager.CinemachineCamera.Target.TrackingTarget = cameraManager.CameraObjectToFollow;
+      //  cameraManager.CinemachineCamera.Target.TrackingTarget = cameraManager.CameraObjectToFollow;
     }
 
 
     public override void OnNetworkDespawn()
     {
-        BaseItemThrowable.OnItemReleasedAction -= BaseItemThrowable_OnItemReleasedAction;
-        BaseItemThrowable.OnItemFinishedAction -= BaseItemThrowable_OnItemFinishedAction;
+        if(IsOwner)
+        {
+            BaseItemThrowable.OnItemReleasedAction -= BaseItemThrowable_OnItemReleasedAction;
+            BaseItemThrowable.OnItemFinishedAction -= BaseItemThrowable_OnItemFinishedAction;
+        }
     }
 
 }

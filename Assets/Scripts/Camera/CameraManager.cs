@@ -9,6 +9,7 @@ public class CameraManager : NetworkBehaviour
     [SerializeField] private CameraMovement cameraMovement;
     [SerializeField] private CameraZoom cameraZoom;
     [SerializeField] private CameraFollowing cameraFollowing;
+    [SerializeField] private CinemachineFollow cinemachineFollowComponent;
     [SerializeField] private PlayerThrower player;
     
 
@@ -19,6 +20,7 @@ public class CameraManager : NetworkBehaviour
     public CameraFollowing CameraFollowing => cameraFollowing;
     public CameraMovement CameraMovement => cameraMovement;
     public CinemachineCamera CinemachineCamera => cinemachineCamera;
+    public CinemachineFollow CinemachineFollowComponent => cinemachineFollowComponent;
 
     [SerializeField] private CameraState cameraState;
 
@@ -33,6 +35,7 @@ public class CameraManager : NetworkBehaviour
             if (cinemachineCamera == null)
             {
                 cinemachineCamera = Object.FindFirstObjectByType<CinemachineCamera>();
+                cinemachineFollowComponent = cinemachineCamera.GetComponent<CinemachineFollow>();
                 cinemachineCamera.Target.TrackingTarget = cameraObjectToFollow;
             }
 

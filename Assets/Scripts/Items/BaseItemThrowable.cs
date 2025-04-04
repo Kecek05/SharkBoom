@@ -47,10 +47,9 @@ public class BaseItemThrowable : MonoBehaviour
 
     protected virtual void ItemReleased(float force, Vector2 direction)
     {
-        //CameraManager.Instance.CameraFollowing.SetTheValuesOfCinemachine(cinemachineFollow);
-
-        rb.AddForce(direction * force, ForceMode2D.Impulse);
         OnItemReleasedAction?.Invoke(this.transform);
+        rb.AddForce(direction * force, ForceMode2D.Impulse);
+        
     }
 
     protected virtual void ItemCallbackAction()
@@ -62,7 +61,7 @@ public class BaseItemThrowable : MonoBehaviour
 
     protected void OnDestroy()
     {
-        ItemCallbackAction();
         OnItemFinishedAction?.Invoke();
+        ItemCallbackAction();
     }
 }
