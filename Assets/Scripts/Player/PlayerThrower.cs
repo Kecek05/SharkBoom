@@ -254,7 +254,19 @@ public class PlayerThrower : NetworkBehaviour
 
     }
 
+    //DEBUG
+    [Command("checkImOwner", MonoTargetType.All)]
+    private void CheckImOwner()
+    {
+        Debug.Log($"Server is the Owner? {IsOwnedByServer}");
 
+        if (!IsOwner)
+        {
+            return;
+        }
+
+        transform.position = new Vector3(transform.position.x, transform.position.y + 5f, transform.position.z);
+    }
 
     private void PlayableStateInitialize(PlayableState previousValue, PlayableState newValue)
     {
@@ -304,11 +316,11 @@ public class PlayerThrower : NetworkBehaviour
 
     public override void OnGainedOwnership()
     {
-        Debug.Log($"Gained Ownership: {OwnerClientId}");
+        Debug.Log($"Gained Ownership, new owner is: {OwnerClientId}");
     }
 
     public override void OnLostOwnership()
     {
-        Debug.Log($"Lost Ownership: {OwnerClientId}");
+        Debug.Log($"Lost Ownership");
     }
 }

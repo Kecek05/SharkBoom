@@ -81,7 +81,7 @@ public class ServerGameManager : IDisposable
             Debug.Log($"PlayerId: {player.Id} - Pearls: {pearls}");
         }
 
-        await Task.Delay(1000);
+        await Task.Delay(3000);
 
         Debug.Log("Spawning Players by server");
 
@@ -89,12 +89,6 @@ public class ServerGameManager : IDisposable
 
         networkServer.PlayerSpawner.SpawnPlayer(0);
 
-        BaseGameStateManager baseGameStateManager = ServiceLocator.Get<BaseGameStateManager>();
-
-        if(baseGameStateManager.CurrentGameState.Value == GameState.WaitingForPlayers)
-        {
-            baseGameStateManager.ChangeGameState(GameState.SpawningPlayers);
-        }
     }
 
     private async Task<MatchmakingResults> GetMatchmakerPayload()

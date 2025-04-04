@@ -79,7 +79,6 @@ public class NetworkServer : IDisposable
         if(OwnershipHandler.IsReconnecting(request.ClientNetworkId))
         {
             OwnershipHandler.HandleOwnership(userData, request.ClientNetworkId);
-
         } else
         {
             //New client
@@ -110,7 +109,7 @@ public class NetworkServer : IDisposable
         {
             //two clients in game and not changed to spawning players yet
             alreadyChangedToSpawningPlayers = true;
-            ServiceLocator.Get<BaseGameStateManager>().ChangeGameState(GameState.SpawningPlayers);
+            //ServiceLocator.Get<BaseGameStateManager>().ChangeGameState(GameState.SpawningPlayers);
         }
     }
 
