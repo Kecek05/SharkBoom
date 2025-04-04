@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.Netcode;
+using Unity.Services.Authentication.Server;
 using Unity.Services.Matchmaker.Models;
 using UnityEngine;
 
@@ -69,18 +70,31 @@ public class ServerGameManager : IDisposable
 
  #if UNITY_SERVER
 
-    private void HandleMatchmakerPayload(MatchmakingResults matchmakerPayload)
+    private async void HandleMatchmakerPayload(MatchmakingResults matchmakerPayload)
     {
+        Dictionary<string, int> authIdToPearlsPayload = new Dictionary<string, int>();
+
         foreach (Player player in matchmakerPayload.MatchProperties.Players)
         {
             Dictionary<string, int> customDataDictionary = player.CustomData.GetAs<Dictionary<string, int>>();
 
             customDataDictionary.TryGetValue("pearls", out int pearls);
 
+            authIdToPearlsPayload[player.Id] = pearls;
+
             Debug.Log($"PlayerId: {player.Id} - Pearls: {pearls}");
+
         }
 
-        //await Task.Delay(3000);
+        string player1AuthId = matchmakerPayload.MatchProperties.Players[0].Id;
+        string player2AuthId = matchmakerPayload.MatchProperties.Players[1].Id;
+
+        int player1Pearls = authIdToPearlsPayload[player1AuthId];
+        int player2Pearls = authIdToPearlsPayload[player2AuthId];
+
+        CalculatePearls.CalculatePossibleResultsWihAllocation(player1AuthId, player2AuthId, player1Pearls, player2Pearls);
+
+        await Task.Delay(3000);
 
         Debug.Log("Spawning Players by server");
 

@@ -32,7 +32,7 @@ public class GameManager : NetworkBehaviour
 
     private void HandleEvents()
     {
-        Debug.Log("HandleEvents");
+        Debug.Log("HandleEvents Game manager");
 
         gameStateManager.CurrentGameState.OnValueChanged += HandleOnGameStateChanged;
 
@@ -106,7 +106,7 @@ public class GameManager : NetworkBehaviour
 
     private void UnHandleEvents()
     {
-        Debug.Log("UnHandleEvents");
+        Debug.Log("UnHandleEvents Game Manager");
 
         gameStateManager.CurrentGameState.OnValueChanged -= HandleOnGameStateChanged;
 

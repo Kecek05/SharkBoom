@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -17,30 +18,60 @@ public static class CalculatePearls
     /// </summary>
     public static event Action OnFinishedChangingPearls;
 
+    private static Dictionary<string, CalculatedPearls> authIdToCalculatedPearls = new Dictionary<string, CalculatedPearls>();
+
+    public static Dictionary<string, CalculatedPearls> AuthIdToCalculatedPearls => authIdToCalculatedPearls;
+
+
     public static void CalculatePossibleResults(PlayerData player1Data, PlayerData player2Data)
     {
         //Not calculate in relay
 
-        (int player1CalculatedPearlsToWin, int player2CalculatedPearlsToLose) = CalculateDelta(player1Data.userData.userPearls, player2Data.userData.userPearls);
+        //(int player1CalculatedPearlsToWin, int player2CalculatedPearlsToLose) = CalculateDelta(player1Data.userData.userPearls, player2Data.userData.userPearls);
 
-        (int player2CalculatedPearlsToWin, int player1CalculatedPearlsToLose) = CalculateDelta(player2Data.userData.userPearls, player1Data.userData.userPearls);
+        //(int player2CalculatedPearlsToWin, int player1CalculatedPearlsToLose) = CalculateDelta(player2Data.userData.userPearls, player1Data.userData.userPearls);
 
-        player1Data.calculatedPearls = new CalculatedPearls
-        {
-            PearlsToWin = player1CalculatedPearlsToWin,
-            PearlsToLose = player1CalculatedPearlsToLose,
-        };
+        //player1Data.calculatedPearls = new CalculatedPearls
+        //{
+        //    PearlsToWin = player1CalculatedPearlsToWin,
+        //    PearlsToLose = player1CalculatedPearlsToLose,
+        //};
 
-        player2Data.calculatedPearls = new CalculatedPearls
-        {
-            PearlsToWin = player2CalculatedPearlsToWin,
-            PearlsToLose = player2CalculatedPearlsToLose,
-        };
+        //player2Data.calculatedPearls = new CalculatedPearls
+        //{
+        //    PearlsToWin = player2CalculatedPearlsToWin,
+        //    PearlsToLose = player2CalculatedPearlsToLose,
+        //};
 
         OnFinishedCalculatePossibleResults?.Invoke();
     }
 
-    private static (int pearlsToWin, int pearlsToLose) CalculateDelta(int winnerPearls, int loserPearls)
+    public static void CalculatePossibleResultsWihAllocation(string player1AuthId, string player2AuthId, int player1Pearls, int player2Pearls)
+    {
+        //Not calculate in relay
+
+        CalculatedPearls player1Win = CalculateDelta(player1Pearls, player2Pearls);
+
+        CalculatedPearls player2Win = CalculateDelta(player2Pearls, player1Pearls);
+
+        authIdToCalculatedPearls[player1AuthId] = new()
+        {
+            PearlsToWin = player1Win.PearlsToWin,
+            PearlsToLose = player2Win.PearlsToLose,
+        };
+
+        authIdToCalculatedPearls[player2AuthId] = new()
+        {
+            PearlsToWin = player2Win.PearlsToWin,
+            PearlsToLose = player1Win.PearlsToLose,
+        };
+
+        Debug.Log($"Possible Results calculated. Player 1: {player1AuthId} - Pearls to Win: {player1Win.PearlsToWin} - Pearls to Lose: {player2Win.PearlsToLose} Player 2: {player2AuthId} - Pearls to Win: {player2Win.PearlsToWin} - Pearls to Lose: {player1Win.PearlsToLose}");
+    }
+
+
+
+    private static CalculatedPearls CalculateDelta(int winnerPearls, int loserPearls)
     {
 
         int basePearlsToWin = 100;
@@ -62,7 +93,12 @@ public static class CalculatePearls
 
         Debug.Log($"Win: {pearlsToWin} - Lose: {pearlsToLose}");
 
-        return (pearlsToWin, pearlsToLose);
+
+
+        return new(){
+            PearlsToWin = pearlsToWin,
+            PearlsToLose = pearlsToLose
+        };
 
     }
 
@@ -75,9 +111,9 @@ public static class CalculatePearls
     public static async Task ChangePearlsLoser(PlayerData loserPlayerData)
     {
 
-        await Save.AddSavePlayerPearls(loserPlayerData.userData.userAuthId, loserPlayerData.calculatedPearls.PearlsToLose);
+        await Save.AddSavePlayerPearls(loserPlayerData.userData.userAuthId, authIdToCalculatedPearls[loserPlayerData.userData.userAuthId].PearlsToLose);
 
-        Debug.Log($"Changing Pearls of players. Loser: {loserPlayerData.userData.userName} Loses Pearls: {loserPlayerData.calculatedPearls.PearlsToLose}");
+        Debug.Log($"Changing Pearls of players. Loser: {loserPlayerData.userData.userName} Loses Pearls: {authIdToCalculatedPearls[loserPlayerData.userData.userAuthId].PearlsToLose}");
 
         OnFinishedChangingPearls?.Invoke();
     }
@@ -91,9 +127,9 @@ public static class CalculatePearls
     public static async Task ChangePearlsWinner(PlayerData winnerPlayerData)
     {
 
-        await Save.AddSavePlayerPearls(winnerPlayerData.userData.userAuthId, winnerPlayerData.calculatedPearls.PearlsToWin);
+        await Save.AddSavePlayerPearls(winnerPlayerData.userData.userAuthId, authIdToCalculatedPearls[winnerPlayerData.userData.userAuthId].PearlsToLose);
 
-        Debug.Log($"Changing Pearls of players. Winner: {winnerPlayerData.userData.userName} Wins Pearls: {winnerPlayerData.calculatedPearls.PearlsToWin}");
+        Debug.Log($"Changing Pearls of players. Winner: {winnerPlayerData.userData.userName} Wins Pearls: {authIdToCalculatedPearls[winnerPlayerData.userData.userAuthId].PearlsToLose}");
 
         OnFinishedChangingPearls?.Invoke();
     }
