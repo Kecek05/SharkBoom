@@ -15,6 +15,7 @@ public class PlayerDebugCanvas : NetworkBehaviour
     public TextMeshProUGUI dragDistanceText;
     public PlayerDragController playerDragController;
     public PlayerInventory playerInventory;
+
     public override void OnNetworkSpawn()
     {
         if (!IsOwner)

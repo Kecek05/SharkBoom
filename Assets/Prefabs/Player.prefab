@@ -1006,7 +1006,6 @@ MonoBehaviour:
   cameraMovement: {fileID: 8450544055641021374}
   cameraZoom: {fileID: 2903552973942911587}
   cameraFollowing: {fileID: 1764359340906761994}
-  cameraWatching: {fileID: 0}
   player: {fileID: 2871544100916734757}
 --- !u!114 &1764359340906761994
 MonoBehaviour:
@@ -1034,6 +1033,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee20daabf706ed944b3266a70d973d81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   cameraManager: {fileID: 3009684404041675309}
   inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
   dragMoveSpeed: 1
@@ -1053,6 +1053,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a54a885f28cc13244857cbe2c9d9d1cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
   cameraManager: {fileID: 3009684404041675309}
   minZoom: -15
@@ -2194,7 +2195,6 @@ GameObject:
   - component: {fileID: 8799811711083758960}
   - component: {fileID: 1991366623507089675}
   - component: {fileID: 3501556867693320141}
-  - component: {fileID: 3739942992448591662}
   m_Layer: 0
   m_Name: PlayerDebugCanvas
   m_TagString: Untagged
@@ -2272,27 +2272,6 @@ MonoBehaviour:
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
   m_PresetInfoIsWorld: 0
---- !u!114 &3739942992448591662
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3864910162504227967}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5558fcb3189e0ae4e84caf081ca6ebf9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  player: {fileID: 2871544100916734757}
-  selectedItemIndexText: {fileID: 8740863803064508621}
-  selectedRbText: {fileID: 4283063239054279799}
-  playerStateText: {fileID: 6773476030300152405}
-  playerCanInteractWithInventoryText: {fileID: 5104973882560572610}
-  dragDistanceText: {fileID: 6954761404739090485}
-  playerDragController: {fileID: 5120579722876303172}
-  playerInventory: {fileID: 6377254783256832976}
 --- !u!1 &4490644184409646491
 GameObject:
   m_ObjectHideFlags: 0
@@ -3216,19 +3195,19 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: f92172a1b3edbf84fbfd94be69d76f44, type: 2}
     - target: {fileID: 6294978504487740898, guid: 3a3e12dc36871bd4c8b48c7675073369, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.87634015
+      value: 0.83749145
       objectReference: {fileID: 0}
     - target: {fileID: 6294978504487740898, guid: 3a3e12dc36871bd4c8b48c7675073369, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.000000057961408
+      value: 0.000000073039324
       objectReference: {fileID: 0}
     - target: {fileID: 6294978504487740898, guid: 3a3e12dc36871bd4c8b48c7675073369, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.00000019408881
+      value: -0.00000018807592
       objectReference: {fileID: 0}
     - target: {fileID: 6294978504487740898, guid: 3a3e12dc36871bd4c8b48c7675073369, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.4816928
+      value: -0.5464505
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5866666021909216657, guid: 3a3e12dc36871bd4c8b48c7675073369, type: 3}
