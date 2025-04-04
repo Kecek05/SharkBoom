@@ -2,10 +2,11 @@ using Sortify;
 using System;
 using System.Collections;
 using Unity.Cinemachine;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class CameraZoom : MonoBehaviour
+public class CameraZoom : NetworkBehaviour
 {
 
     [SerializeField] private InputReader inputReader;
@@ -27,13 +28,16 @@ public class CameraZoom : MonoBehaviour
     [SerializeField] private float minZoom = -15f;
     [Tooltip("Think like a scope of a sniper, max = more close of player")]
     [SerializeField] private float maxZoom = 1f;
-    
 
-    private void Start()
+
+    public override void OnNetworkSpawn()
     {
-        inputReader.OnSecondaryTouchContactEvent += InputReader_OnSecondaryTouchContactEvent;
-        inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
-        inputReader.OnSecondaryFingerPositionEvent += InputReader_OnSecondaryFingerPositionEvent;
+        if(IsOwner)
+        {
+            inputReader.OnSecondaryTouchContactEvent += InputReader_OnSecondaryTouchContactEvent;
+            inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
+            inputReader.OnSecondaryFingerPositionEvent += InputReader_OnSecondaryFingerPositionEvent;
+        }
     }
 
     private void InputReader_OnSecondaryTouchContactEvent(InputAction.CallbackContext context)
@@ -114,10 +118,13 @@ public class CameraZoom : MonoBehaviour
         Debug.Log($"Object to follow Z pos: {cameraObjectFollowPos.z}");
     }
 
-    private void OnDestroy()
+    public override void OnNetworkDespawn()
     {
-        inputReader.OnSecondaryTouchContactEvent -= InputReader_OnSecondaryTouchContactEvent;
-        inputReader.OnPrimaryFingerPositionEvent -= InputReader_OnPrimaryFingerPositionEvent;
-        inputReader.OnSecondaryFingerPositionEvent -= InputReader_OnSecondaryFingerPositionEvent;
+        if (IsOwner)
+        {
+            inputReader.OnSecondaryTouchContactEvent -= InputReader_OnSecondaryTouchContactEvent;
+            inputReader.OnPrimaryFingerPositionEvent -= InputReader_OnPrimaryFingerPositionEvent;
+            inputReader.OnSecondaryFingerPositionEvent -= InputReader_OnSecondaryFingerPositionEvent;
+        }
     }
 }

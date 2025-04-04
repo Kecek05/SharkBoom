@@ -3,10 +3,11 @@ using System;
 using System.Collections;
 using Unity.Cinemachine;
 using Unity.Mathematics;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class CameraMovement : MonoBehaviour
+public class CameraMovement : NetworkBehaviour
 {
     [SerializeField] private CameraManager cameraManager;
     [SerializeField] private InputReader inputReader;
@@ -32,17 +33,13 @@ public class CameraMovement : MonoBehaviour
     private bool dragMoveActive = false; // hold if the drag move is active
     private Vector2 lastTouchPosition;
 
-
-    private void Start()
+    public override void OnNetworkSpawn()
     {
-        inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
-        inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
-    }
-
-    private void OnDestroy()
-    {
-        inputReader.OnTouchPressEvent -= InputReader_OnTouchPressEvent;
-        inputReader.OnPrimaryFingerPositionEvent -= InputReader_OnPrimaryFingerPositionEvent;
+        if(IsOwner)
+        {
+            inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
+            inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
+        }
     }
 
     private void InputReader_OnTouchPressEvent(InputAction.CallbackContext context)
@@ -94,6 +91,12 @@ public class CameraMovement : MonoBehaviour
             Mathf.Clamp(cameraManager.CameraObjectToFollow.position.y + moveDir.y, minMovY, maxMovY),  
             cameraManager.CameraObjectToFollow.position.z 
         );  // Basically we get the pos of camera and add the movement direction of the camera, and clamp the values to the min and max values
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        inputReader.OnTouchPressEvent -= InputReader_OnTouchPressEvent;
+        inputReader.OnPrimaryFingerPositionEvent -= InputReader_OnPrimaryFingerPositionEvent;
     }
 }
 
