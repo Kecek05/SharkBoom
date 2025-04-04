@@ -1,13 +1,10 @@
 using QFSW.QC;
 using Sortify;
-using System;
-using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
 public class PlayerThrower : NetworkBehaviour
 {
-    public static event Action<PlayerThrower> OnPlayerThrowerSpawned;
 
 
     [BetterHeader("References")]
@@ -39,17 +36,6 @@ public class PlayerThrower : NetworkBehaviour
         gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
         turnManager = ServiceLocator.Get<BaseTurnManager>();
 
-        if (IsServer)
-        {
-            PlayerData playerData = NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.GetPlayerDataByClientId(OwnerClientId);
-
-            OnPlayerThrowerSpawned?.Invoke(this);
-
-            gameObject.name = "Player " + playerData.userData.userName; //Debug
-        }
-
-
-
         thisPlayableState.OnValueChanged += PlayableStateInitialize;
 
         if(!IsHost) // host will add itself twice
@@ -58,12 +44,10 @@ public class PlayerThrower : NetworkBehaviour
         if (IsOwner)
         {
             InitializeOwner();
-
         } else
         {
             //if not owner, turn off touch collider
             playerTouchColl.enabled = false;
-
         }
 
         HandleEvents();
@@ -195,8 +179,6 @@ public class PlayerThrower : NetworkBehaviour
         playerInventoryUI.HandleOnPlayerInventoryItemAdded(itemAdded);
     }
 
-
-
     private void HandleOnGameStateChanged(GameState previousValue, GameState newValue)
     {
         if(newValue == GameState.GameEnded)
@@ -210,8 +192,6 @@ public class PlayerThrower : NetworkBehaviour
     {
         // Cant be OnnetworkSpawn because it needs to be called by NetworkServer
         thisPlayableState.Value = playableState;
-
-        PlayableStateInitialize(playableState, playableState);
 
         InitializeGFXRotationRpc(GFXRotation);
     }
