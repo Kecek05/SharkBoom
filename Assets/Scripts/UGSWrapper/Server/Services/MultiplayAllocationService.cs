@@ -77,18 +77,6 @@ public class MultiplayAllocationService : IDisposable
         MatchmakingResults payloadAllocation = await MultiplayService.Instance.GetPayloadAllocationFromJsonAs<MatchmakingResults>();
         string modelAsJson = JsonConvert.SerializeObject(payloadAllocation, Formatting.Indented);
         Debug.Log(nameof(GetMatchmakerAllocationPayloadAsync) + ":" + Environment.NewLine + modelAsJson);
-        
-        
-
-        foreach (Player player in payloadAllocation.MatchProperties.Players)
-        {
-            Dictionary<string, int> customDataDictionary = player.CustomData.GetAs<Dictionary<string, int>>();
-
-            customDataDictionary.TryGetValue("pearls", out int pearls);
-
-            Debug.Log($"PlayerId: {player.Id} - Pearls: {pearls}");
-
-        }
 
         return payloadAllocation;
     }

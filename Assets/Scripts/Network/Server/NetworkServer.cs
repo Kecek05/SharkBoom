@@ -39,7 +39,7 @@ public class NetworkServer : IDisposable
 
         Debug.Log($"Client {clientId} / AuthId {serverAuthenticationService.GetAuthIdByClientId(clientId)} loaded scene {sceneName}");
 
-        playerSpawner.SpawnPlayer(clientId);
+        //playerSpawner.SpawnPlayer(clientId);
     }
 
     public bool OpenConnection(string ip, int port)

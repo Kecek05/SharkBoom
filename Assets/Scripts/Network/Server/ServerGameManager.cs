@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.Netcode;
 using Unity.Services.Matchmaker.Models;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class ServerGameManager : IDisposable
@@ -45,6 +47,8 @@ public class ServerGameManager : IDisposable
             {
                 networkServer.OnUserLeft += UserLeft;
                 networkServer.OnUserJoined += UserJoined;
+                HandleMatchmakerPayload(matchmakerPayload);
+
             } else
             {
                 Debug.LogError("Failed to get matchmaker payload. Timed out");
@@ -66,11 +70,31 @@ public class ServerGameManager : IDisposable
 
  #if UNITY_SERVER
 
+    private async void HandleMatchmakerPayload(MatchmakingResults matchmakerPayload)
+    {
+        foreach (Player player in matchmakerPayload.MatchProperties.Players)
+        {
+            Dictionary<string, int> customDataDictionary = player.CustomData.GetAs<Dictionary<string, int>>();
+
+            customDataDictionary.TryGetValue("pearls", out int pearls);
+
+            Debug.Log($"PlayerId: {player.Id} - Pearls: {pearls}");
+        }
+
+        await Task.Delay(1000);
+
+        Debug.Log("Spawning Players by server");
+
+        networkServer.PlayerSpawner.SpawnPlayer(0);
+
+        networkServer.PlayerSpawner.SpawnPlayer(0);
+    }
+
     private async Task<MatchmakingResults> GetMatchmakerPayload()
     {
         Task<MatchmakingResults> matchmakerPayloadTask = multiplayAllocationService.SubscribeAndAwaitMatchmakerAllocation();
 
-        if (await Task.WhenAny(matchmakerPayloadTask, Task.Delay(20000)) == matchmakerPayloadTask) //pass tasks, when any completes, do the code
+        if (await Task.WhenAny(matchmakerPayloadTask, Task.Delay(600000)) == matchmakerPayloadTask) //pass tasks, when any completes, do the code
         {
             //true if our task finishes before the delay
             return matchmakerPayloadTask.Result;

@@ -206,7 +206,7 @@ public class PlayerThrower : NetworkBehaviour
     }
 
     [Rpc(SendTo.Server)]
-    public void InitializePlayerRpc(PlayableState playableState, Quaternion GFXRotation, string authId)
+    public void InitializePlayerRpc(PlayableState playableState, Quaternion GFXRotation)
     {
         // Cant be OnnetworkSpawn because it needs to be called by NetworkServer
         thisPlayableState.Value = playableState;
