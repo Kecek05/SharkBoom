@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Security.Cryptography;
 using Unity.Cinemachine;
@@ -11,44 +12,39 @@ public class CameraFollowing : NetworkBehaviour
     private CinemachineFollow cinemachineFollowCamera;
     private Coroutine followingCourotine;
 
-
-    public void SetTarget(Transform target)
+    public override void OnNetworkSpawn()
     {
-        cameraManager.CinemachineCamera.Target.TrackingTarget = target;
-        cameraManager.CameraObjectToFollow.position = new Vector3(target.position.x, target.position.y, cameraManager.CameraObjectToFollow.position.z);
+        BaseItemThrowable.OnItemReleasedAction += BaseItemThrowable_OnItemReleasedAction;
+        BaseItemThrowable.OnItemFinishedAction += BaseItemThrowable_OnItemFinishedAction;
     }
 
-    public void SetTheValuesOfCinemachine(CinemachineFollow _cinemachineFollowCamera)
+
+    private void BaseItemThrowable_OnItemReleasedAction(Transform itemLaunched)
     {
-        cinemachineFollowCamera = _cinemachineFollowCamera;
-        FollowingStarted();
+        SetTarget(itemLaunched);
     }
 
-    private void FollowingStarted()
+    private void BaseItemThrowable_OnItemFinishedAction()
     {
-        if (followingCourotine == null)
-        {
-            followingCourotine = StartCoroutine(FollowingCourotine());
-        }
+        ResetCamAfterFollow();
     }
 
-    private IEnumerator FollowingCourotine()
+    public void SetTarget(Transform itemLaunched)
     {
-        while (cinemachineFollowCamera != null)
-        {
-            cinemachineFollowCamera.FollowOffset.z = cameraManager.CameraObjectToFollow.position.z;
-            yield return null;
-        }
-        FollowingEnded();
+        cameraManager.CinemachineCamera.Target.TrackingTarget = itemLaunched;
+        cinemachineFollowCamera.FollowOffset.z = cameraManager.CameraObjectToFollow.position.z;
     }
 
-    private void FollowingEnded()
+    public void ResetCamAfterFollow()
     {
-        if (followingCourotine != null)
-        {
-            StopCoroutine(followingCourotine);
-            followingCourotine = null;
-            cinemachineFollowCamera = null;
-        }
+        cameraManager.CinemachineCamera.Target.TrackingTarget = cameraManager.CameraObjectToFollow;
     }
+
+
+    public override void OnNetworkDespawn()
+    {
+        BaseItemThrowable.OnItemReleasedAction -= BaseItemThrowable_OnItemReleasedAction;
+        BaseItemThrowable.OnItemFinishedAction -= BaseItemThrowable_OnItemFinishedAction;
+    }
+
 }

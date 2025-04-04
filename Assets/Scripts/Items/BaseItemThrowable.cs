@@ -7,7 +7,9 @@ using UnityEngine;
 public class BaseItemThrowable : MonoBehaviour
 {
 
-    public event Action OnItemFinishedAction;
+    public static event Action OnItemFinishedAction;
+    public static event Action<Transform> OnItemReleasedAction;
+
     [BetterHeader("Base Item References")]
     [SerializeField] protected bool isServerObject;
     [SerializeField] protected ItemSO itemSO;
@@ -48,7 +50,7 @@ public class BaseItemThrowable : MonoBehaviour
         //CameraManager.Instance.CameraFollowing.SetTheValuesOfCinemachine(cinemachineFollow);
 
         rb.AddForce(direction * force, ForceMode2D.Impulse);
-
+        OnItemReleasedAction?.Invoke(this.transform);
     }
 
     protected virtual void ItemCallbackAction()
@@ -61,5 +63,6 @@ public class BaseItemThrowable : MonoBehaviour
     protected void OnDestroy()
     {
         ItemCallbackAction();
+        OnItemFinishedAction?.Invoke();
     }
 }
