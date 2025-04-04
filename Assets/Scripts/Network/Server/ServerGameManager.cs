@@ -69,7 +69,7 @@ public class ServerGameManager : IDisposable
 
  #if UNITY_SERVER
 
-    private async void HandleMatchmakerPayload(MatchmakingResults matchmakerPayload)
+    private void HandleMatchmakerPayload(MatchmakingResults matchmakerPayload)
     {
         foreach (Player player in matchmakerPayload.MatchProperties.Players)
         {
@@ -80,7 +80,7 @@ public class ServerGameManager : IDisposable
             Debug.Log($"PlayerId: {player.Id} - Pearls: {pearls}");
         }
 
-        await Task.Delay(3000);
+        //await Task.Delay(3000);
 
         Debug.Log("Spawning Players by server");
 

@@ -1,3 +1,4 @@
+using QFSW.QC;
 using System;
 using Unity.Netcode;
 using UnityEngine;
@@ -34,11 +35,13 @@ public class PlayerSpawner : IPlayerSpawner
             return;
         }
 
+        playerSpawned++;
+
         Transform randomSpawnPointSelected = ServiceLocator.Get<BasePlayersPublicInfoManager>().GetRandomSpawnPoint();
 
         NetworkObject playerInstance = GameObject.Instantiate(playerPrefab, randomSpawnPointSelected.position, Quaternion.identity);
 
-        playerInstance.SpawnAsPlayerObject(clientId);
+        //playerInstance.SpawnAsPlayerObject(clientId);
         playerInstance.DontDestroyWithOwner = true;
 
         playerInstance.GetComponent<PlayerThrower>().InitializePlayerRpc(GetPlayableStateByCount(), randomSpawnPointSelected.rotation);
@@ -48,16 +51,28 @@ public class PlayerSpawner : IPlayerSpawner
         //playerData.gameObject = playerInstance.gameObject;
         //playerData.playableState = GetPlayableStateByCount();
 
-        playerSpawned++;
+        Debug.Log($"Spawning Player, Client Id: {clientId} PlayableState: {GetPlayableStateByCount()} Selected Random SpawnPoint: {randomSpawnPointSelected.name} - Player Spawned: {PlayerCount}");
 
         OnPlayerSpawned?.Invoke(playerSpawned);
-
-        Debug.Log($"Spawning Player, Client Id: {clientId} PlayableState: {GetPlayableStateByCount()} Selected Random SpawnPoint: {randomSpawnPointSelected.name}");
     }
 
     public PlayableState GetPlayableStateByCount()
     {
-        return PlayerCount == 0 ? PlayableState.Player1Playing : PlayableState.Player2Playing;
+        Debug.Log($"GetPlayableStateByCount - {PlayerCount}");
+
+        if (PlayerCount == 1)
+        {
+            return PlayableState.Player1Playing;
+        }
+        else if (PlayerCount == 2)
+        {
+            return PlayableState.Player2Playing;
+        }
+        else
+        {
+            Debug.LogError($"GetPlayableStateByCount - PlayerCount is not 1 or 2 - it is {PlayerCount}");
+            return PlayableState.None;
+        }
     }
 
 }

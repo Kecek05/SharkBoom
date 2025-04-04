@@ -32,6 +32,8 @@ public class GameManager : NetworkBehaviour
 
     private void HandleEvents()
     {
+        Debug.Log("HandleEvents");
+
         gameStateManager.CurrentGameState.OnValueChanged += HandleOnGameStateChanged;
 
         gameTimerManager.OnGameTimerEnd += HandleOnGameTimerEnd;
@@ -104,6 +106,8 @@ public class GameManager : NetworkBehaviour
 
     private void UnHandleEvents()
     {
+        Debug.Log("UnHandleEvents");
+
         gameStateManager.CurrentGameState.OnValueChanged -= HandleOnGameStateChanged;
 
         gameTimerManager.OnGameTimerEnd -= HandleOnGameTimerEnd;

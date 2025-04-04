@@ -272,12 +272,12 @@ public class PlayerThrower : NetworkBehaviour
 
     private void PlayableStateInitialize(PlayableState previousValue, PlayableState newValue)
     {
-        if (IsOwner)
+        if (IsOwner && IsClient)
         {
-            ServiceLocator.Get<BaseTurnManager>().InitializeLocalStates(thisPlayableState.Value); //pass to GameFlow to know when its local turn
+            ServiceLocator.Get<BaseTurnManager>().InitializeLocalStates(newValue); //pass to GameFlow to know when its local turn
         }
 
-        if (thisPlayableState.Value == PlayableState.Player1Playing)
+        if (newValue == PlayableState.Player1Playing)
         {
 
             foreach (GameObject playerCollider in playerColliders)
@@ -294,7 +294,7 @@ public class PlayerThrower : NetworkBehaviour
         }
 
 
-        ServiceLocator.Get<BasePlayersPublicInfoManager>().AddPlayerToPlayersDictionary(thisPlayableState.Value, gameObject);
+        ServiceLocator.Get<BasePlayersPublicInfoManager>().AddPlayerToPlayersDictionary(newValue, gameObject);
 
     }
 
