@@ -88,6 +88,13 @@ public class ServerGameManager : IDisposable
         networkServer.PlayerSpawner.SpawnPlayer(0);
 
         networkServer.PlayerSpawner.SpawnPlayer(0);
+
+        BaseGameStateManager baseGameStateManager = ServiceLocator.Get<BaseGameStateManager>();
+
+        if(baseGameStateManager.CurrentGameState.Value == GameState.WaitingForPlayers)
+        {
+            baseGameStateManager.ChangeGameState(GameState.SpawningPlayers);
+        }
     }
 
     private async Task<MatchmakingResults> GetMatchmakerPayload()

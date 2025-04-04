@@ -32,6 +32,7 @@ public class ServerAuthenticationService : IServerAuthenticationService
             //New client
             Debug.Log("RegisterClient, New Client");
             playerDatas.Add(playerData);
+
         }
 
         clientIdToPlayerData[playerData.clientId] = playerData;

@@ -1,11 +1,16 @@
+using System;
 using Unity.Netcode;
 using UnityEngine;
 
-public class OwnershipHandler
+public static class OwnershipHandler
 {
+    /// <summary>
+    /// Called when the client gain ownership of the player object for the first time.
+    /// </summary>
+    public static event Action OnClientGainOwnership;
 
     /// <summary>
-    /// return if the player is reconnecting to the game.
+    /// return if the player is reconnecting to the game. Server Only!
     /// </summary>
     public static bool IsReconnecting(ulong clientId)
     {
@@ -22,7 +27,7 @@ public class OwnershipHandler
 
 
     /// <summary>
-    /// Handle the ownership of the player object when reconnected.
+    /// Handle the ownership of the player object when reconnected. Server Only!
     /// </summary>
     public static void HandleOwnership(UserData userData, ulong clientId)
     {
@@ -46,10 +51,16 @@ public class OwnershipHandler
     }
 
     /// <summary>
-    /// Handle the ownership of the player object when a new client joins.
+    /// Handle the ownership of the player object when a new client joins. Server Only!
     /// </summary>
-    public static void HandleClientJoinPlayerOwnership(UserData userData)
+    public static void HandleClientJoinPlayerOwnership(PlayerData playerData)
     {
-        
+        HandleOwnership(playerData.userData, playerData.clientId);
+
+        GameObject playerGameObject = ServiceLocator.Get<BasePlayersPublicInfoManager>().GetPlayerObjectByPlayableState(playerData.playableState);
+
+        playerData.gameObject = playerGameObject;
+
+        OnClientGainOwnership?.Invoke();
     }
 }

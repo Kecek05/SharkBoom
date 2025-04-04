@@ -16,6 +16,7 @@ public class NetworkServer : IDisposable
     private IServerAuthenticationService serverAuthenticationService;
 
     private bool alreadyChangedToSpawningPlayers = false;
+    private int approvedClients = 0;
 
     public IPlayerSpawner PlayerSpawner => playerSpawner;
     public IServerAuthenticationService ServerAuthenticationService => serverAuthenticationService;
@@ -88,12 +89,16 @@ public class NetworkServer : IDisposable
             {
                 userData = userData,
                 clientId = request.ClientNetworkId,
-                playableState = PlayableState.None, //None for now
+                playableState = GetPlayableStateByCount(),
                 calculatedPearls = new CalculatedPearls(),
                 gameObject = null
             };
 
             serverAuthenticationService.RegisterClient(newPlayerData);
+
+            OwnershipHandler.HandleClientJoinPlayerOwnership(newPlayerData);
+
+            approvedClients++;
         }
 
         OnUserJoined?.Invoke();
@@ -107,6 +112,11 @@ public class NetworkServer : IDisposable
             alreadyChangedToSpawningPlayers = true;
             ServiceLocator.Get<BaseGameStateManager>().ChangeGameState(GameState.SpawningPlayers);
         }
+    }
+
+    private PlayableState GetPlayableStateByCount()
+    {
+        return approvedClients == 0 ? PlayableState.Player1Playing : PlayableState.Player2Playing;
     }
 
     public void Dispose()

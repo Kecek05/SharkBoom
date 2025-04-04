@@ -43,10 +43,10 @@ public class PlayerSpawner : IPlayerSpawner
 
         playerInstance.GetComponent<PlayerThrower>().InitializePlayerRpc(GetPlayableStateByCount(), randomSpawnPointSelected.rotation);
 
-        PlayerData playerData = NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.ClientIdToPlayerData[clientId];
+        //PlayerData playerData = NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.ClientIdToPlayerData[clientId];
 
-        playerData.gameObject = playerInstance.gameObject;
-        playerData.playableState = GetPlayableStateByCount();
+        //playerData.gameObject = playerInstance.gameObject;
+        //playerData.playableState = GetPlayableStateByCount();
 
         playerSpawned++;
 
