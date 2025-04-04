@@ -6,7 +6,7 @@ using UnityEngine;
 public class Trajectory : MonoBehaviour
 {
     [BetterHeader("References")]
-    [SerializeField] private GameObject dotPrefab;
+    [SerializeField] private GameObject dotPrefab2D;
     [SerializeField] private DragAndShoot dragAndShoot;
 
     [BetterHeader("Settings")]
@@ -39,7 +39,7 @@ public class Trajectory : MonoBehaviour
         dotsList = new Transform[dotsNumber];
         for (int i = 0; i < dotsNumber; i++)
         {
-            dotsList[i] = Instantiate(dotPrefab, dotsParent.transform).transform; // Create dots based on the number of dots variable
+            dotsList[i] = Instantiate(dotPrefab2D, dotsParent.transform).transform; // Create dots based on the number of dots variable
             dotsList[i].position = dotsParent.transform.position; // set the dots position to the parent position (in player)
         }
     }
