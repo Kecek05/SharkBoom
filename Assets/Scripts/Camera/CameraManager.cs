@@ -6,10 +6,11 @@ using static UnityEngine.CullingGroup;
 public class CameraManager : NetworkBehaviour
 {
 
+    public static CameraManager Instance { get; private set; }
+
     [SerializeField] private CameraMovement cameraMovement;
     [SerializeField] private CameraZoom cameraZoom;
     [SerializeField] private CameraFollowing cameraFollowing;
-    [SerializeField] private CameraWatching cameraWatching;
     [SerializeField] private PlayerThrower player;
     
 
@@ -27,6 +28,8 @@ public class CameraManager : NetworkBehaviour
     {
         if (IsOwner)
         {
+            Instance = this;
+            
             cameraObjectToFollow = new GameObject("CameraObjectToFollow").transform;
             cameraObjectToFollow.position = new Vector3(0, 0, 0);
 
@@ -75,7 +78,7 @@ public class CameraManager : NetworkBehaviour
                 CameraReset();
                 break;
             case PlayerState.PlayerWatching:
-                CameraWatching();
+                Following();
                 break;
             case PlayerState.PlayerGameOver:
                 //turn off camera and focus on the dead player
@@ -100,12 +103,6 @@ public class CameraManager : NetworkBehaviour
         cameraFollowing.enabled = true;
     }
 
-    private void CameraWatching()
-    {
-        CameraTurnOff();
-        cameraWatching.enabled = true;
-    }
-
     private void CameraReset()
     {
         cameraMovement.enabled = true;
@@ -119,8 +116,4 @@ public class CameraManager : NetworkBehaviour
         cameraZoom.enabled = false;
         cameraFollowing.enabled = false;
     }
-
-    
-
-
 }

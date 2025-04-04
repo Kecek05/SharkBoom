@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class CameraWatching : NetworkBehaviour
 {
-    [SerializeField] private CinemachineCamera cinemachineCamera;
+    // [SerializeField] private CinemachineCamera cinemachineCamera;
 
 
-    public override void OnNetworkSpawn()
-    {
-        if(IsOwner)
-        {
+    //public override void OnNetworkSpawn()
+    //{
+    //    if(IsOwner)
+    //    {
             
-        }
-    }
+    //    }
+    //}
 }

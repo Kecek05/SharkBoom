@@ -741,7 +741,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf9c225c897875f48931fca03767c00f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dotPrefab: {fileID: 66968322209639492, guid: e513424720fa4e748a1a76b936898672, type: 3}
+  dotPrefab2D: {fileID: 66968322209639492, guid: e513424720fa4e748a1a76b936898672, type: 3}
   dragAndShoot: {fileID: 5120579722876303172}
   dotsNumber: 30
   dotSpacing: 0.01
@@ -1006,6 +1006,7 @@ MonoBehaviour:
   cameraMovement: {fileID: 8450544055641021374}
   cameraZoom: {fileID: 2903552973942911587}
   cameraFollowing: {fileID: 1764359340906761994}
+  cameraWatching: {fileID: 0}
   player: {fileID: 2871544100916734757}
 --- !u!114 &1764359340906761994
 MonoBehaviour:
@@ -1019,6 +1020,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f802b013fd1955043ac78bce19ab8d6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   cameraManager: {fileID: 3009684404041675309}
 --- !u!114 &8450544055641021374
 MonoBehaviour:
