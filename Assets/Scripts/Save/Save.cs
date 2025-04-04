@@ -7,7 +7,7 @@ using Unity.Services.CloudCode;
 
 public static class Save
 {
-
+    public static event Action OnPlayerPearlsLoaded;
     public static event Action OnPlayerPearlsChanged;
 
     [Command("save-addSavePlayerPearls")]
@@ -54,6 +54,7 @@ public static class Save
             int loadPearls = await CloudCodeService.Instance.CallEndpointAsync<int>(CloudCodeRefs.GET_PEARLS_ENDPOINT, arguments);
 
             Debug.Log($"Player Pearls: {loadPearls}");
+            OnPlayerPearlsLoaded?.Invoke();
             return loadPearls;
 
         } catch (CloudCodeException e)

@@ -29,8 +29,8 @@ public class SaveBootstrap : MonoBehaviour
 
         } else
         {
-            //Not in match, go to menu
-            Loader.LoadNoLoadingScreen(Loader.Scene.MainMenu);
+            //Not in match, go to Name Bootstrap
+            Loader.LoadNoLoadingScreen(Loader.Scene.NameBootstrap);
         }
     }
 }

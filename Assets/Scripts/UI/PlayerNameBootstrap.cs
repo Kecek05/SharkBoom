@@ -3,7 +3,7 @@ using Unity.Services.Authentication;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerNameHandler : MonoBehaviour
+public class PlayerNameBootstrap : MonoBehaviour
 {
     [SerializeField] private GameObject renameScreen;
     [SerializeField] private Button confirmButton;
@@ -12,6 +12,7 @@ public class PlayerNameHandler : MonoBehaviour
     private async void Awake()
     {
         renameScreen.SetActive(false);
+        confirmButton.interactable = false;
 
         confirmButton.onClick.AddListener(async () =>
         {
@@ -23,11 +24,32 @@ public class PlayerNameHandler : MonoBehaviour
             ClientSingleton.Instance.GameManager.UserData.SetPlayerName(await Save.LoadPlayerName(AuthenticationService.Instance.PlayerId));
             renameScreen.SetActive(false);
 
+            Loader.LoadNoLoadingScreen(Loader.Scene.MainMenu);
         });
 
+        playerNameInputField.onValueChanged.AddListener(HandlePlayerName);
+    }
+
+    private void Start()
+    {
         if (ClientSingleton.Instance.GameManager.UserData.userName == "")
         {
             renameScreen.SetActive(true);
+        } else
+        {
+            Loader.LoadNoLoadingScreen(Loader.Scene.MainMenu);
+        }
+    }
+
+    private void HandlePlayerName(string playerName)
+    {
+        if(string.IsNullOrEmpty(playerName) || playerName.Length > 20 || playerName.Length < 5)
+        {
+            confirmButton.interactable = false;
+        }
+        else
+        {
+            confirmButton.interactable = true;
         }
     }
 }

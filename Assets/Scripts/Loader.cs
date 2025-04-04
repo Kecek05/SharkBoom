@@ -16,6 +16,7 @@ public static class Loader
         MainMenu,
         AuthBootstrap,
         SaveBootstrap,
+        NameBootstrap,
     }
 
     public enum LoadType

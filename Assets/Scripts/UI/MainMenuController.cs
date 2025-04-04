@@ -74,15 +74,6 @@ public class MainMenuController : MonoBehaviour
         OnLoadMainMenu?.Invoke();
     }
 
-    private void Update()
-    {
-        //DEBUG
-        if(ClientSingleton.Instance != null)
-        {
-            lobbyCodeInputField.text = ClientSingleton.Instance.GameManager.UserData.userPearls.ToString();
-        }
-    }
-
     private void OnMatchMade(MatchmakerPollingResult result)
     {
         switch(result)
