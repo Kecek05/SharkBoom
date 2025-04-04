@@ -6,9 +6,16 @@ using UnityEngine;
 public class CameraFollowing : MonoBehaviour
 {
     [SerializeField] private CameraManager cameraManager;
+    
     private CinemachineFollow cinemachineFollowCamera;
     private Coroutine followingCourotine;
 
+    
+    //public void SetTarget(Transform target)
+    //{
+    //    cameraManager.CinemachineCamera.Target.TrackingTarget = target;
+    //    cameraManager.CameraObjectToFollow.position = new Vector3(target.position.x, target.position.y, cameraManager.CameraObjectToFollow.position.z);
+    //}
     
     public void SetTheValuesOfCinemachine(CinemachineFollow _cinemachineFollowCamera)
     {

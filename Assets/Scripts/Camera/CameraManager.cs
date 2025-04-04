@@ -9,7 +9,9 @@ public class CameraManager : NetworkBehaviour
     [SerializeField] private CameraMovement cameraMovement;
     [SerializeField] private CameraZoom cameraZoom;
     [SerializeField] private CameraFollowing cameraFollowing;
+    [SerializeField] private CameraWatching cameraWatching;
     [SerializeField] private PlayerThrower player;
+    
 
     private CinemachineCamera cinemachineCamera;
     private Transform cameraObjectToFollow;
@@ -17,6 +19,7 @@ public class CameraManager : NetworkBehaviour
     public CameraZoom CameraZoom => cameraZoom;
     public CameraFollowing CameraFollowing => cameraFollowing;
     public CameraMovement CameraMovement => cameraMovement;
+    public CinemachineCamera CinemachineCamera => cinemachineCamera;
 
     [SerializeField] private CameraState cameraState;
 
@@ -43,6 +46,12 @@ public class CameraManager : NetworkBehaviour
 
         switch(playerState)
         {
+            default:
+                CameraMove();
+                break;
+            case PlayerState.MyTurnStarted:
+                CameraMove();
+                break;
             case PlayerState.IdleEnemyTurn:
                 CameraMove();
                 break;
@@ -66,7 +75,7 @@ public class CameraManager : NetworkBehaviour
                 CameraReset();
                 break;
             case PlayerState.PlayerWatching:
-                // when enemy realase the item
+                CameraWatching();
                 break;
             case PlayerState.PlayerGameOver:
                 //turn off camera and focus on the dead player
@@ -86,6 +95,16 @@ public class CameraManager : NetworkBehaviour
         cameraZoom.enabled = true;
         cameraMovement.enabled = false;
     }
+    private void Following()
+    {
+        cameraFollowing.enabled = true;
+    }
+
+    private void CameraWatching()
+    {
+        CameraTurnOff();
+        cameraWatching.enabled = true;
+    }
 
     private void CameraReset()
     {
@@ -101,9 +120,7 @@ public class CameraManager : NetworkBehaviour
         cameraFollowing.enabled = false;
     }
 
-    private void Following()
-    {
-        cameraFollowing.enabled = true;
-    }
+    
+
 
 }
