@@ -87,14 +87,11 @@ public class ServerGameManager : IDisposable
 
             await Reconnect.SetIsInMatch(player.Id, true);
 
+            await Reconnect.SetPlayerMatchConnection(player.Id, multiplayAllocationService.GetMultiplayService.ServerConfig.IpAddress, multiplayAllocationService.GetMultiplayService.ServerConfig.Port);
+
             Debug.Log($"PlayerId: {player.Id} - Pearls: {pearls}");
 
         }
-
-
-        Debug.Log($"Values in multiplayAllocationService.GetMultiplayService.ServerConfig - IP: {multiplayAllocationService.GetMultiplayService.ServerConfig.IpAddress} - Port: {multiplayAllocationService.GetMultiplayService.ServerConfig.Port} - QPort: {multiplayAllocationService.GetMultiplayService.ServerConfig.QueryPort}");
-        Debug.Log($"Values in ServerGameManager - IP: {serverIP} - Port: {serverPort} - QPort: {serverQPort}");
-
 
         string player1AuthId = matchmakerPayload.MatchProperties.Players[0].Id;
         string player2AuthId = matchmakerPayload.MatchProperties.Players[1].Id;
