@@ -71,6 +71,15 @@ public class ServerAuthenticationService : IServerAuthenticationService
         return null;
     }
 
+    public PlayerData GetPlayerDataByAuthId(string authId)
+    {
+        if (authIdToPlayerData.TryGetValue(authId, out PlayerData playerData))
+        {
+            return playerData;
+        }
+        return null;
+    }
+
     public string GetAuthIdByClientId(ulong clientId)
     {
         if (clientIdToAuth.TryGetValue(clientId, out string authId))

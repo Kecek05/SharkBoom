@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -12,9 +13,9 @@ public static class OwnershipHandler
     /// <summary>
     /// return if the player is reconnecting to the game. Server Only!
     /// </summary>
-    public static bool IsReconnecting(ulong clientId)
+    public static bool IsReconnecting(string authId)
     {
-        if(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.GetAuthIdByClientId(clientId) != null)
+        if(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.GetPlayerDataByAuthId(authId) != null)
         {
             //Player already registered
             return true;
@@ -53,8 +54,15 @@ public static class OwnershipHandler
     /// <summary>
     /// Handle the ownership of the player object when a new client joins. Server Only!
     /// </summary>
-    public static void HandleClientJoinPlayerOwnership(PlayerData playerData)
+    public static async void HandleClientJoinPlayerOwnership(PlayerData playerData)
     {
+        Debug.Log($"HandleClientJoinPlayerOwnership, Called");
+        while(NetworkServerProvider.Instance.CurrentNetworkServer.PlayerSpawner.PlayerCount < 2)
+        {
+            await Task.Delay(100);
+        }
+        Debug.Log("HandleClientJoinPlayerOwnership, Player Count is 2, changing ownership");
+
         HandleOwnership(playerData.userData, playerData.clientId);
 
         GameObject playerGameObject = ServiceLocator.Get<BasePlayersPublicInfoManager>().GetPlayerObjectByPlayableState(playerData.playableState);

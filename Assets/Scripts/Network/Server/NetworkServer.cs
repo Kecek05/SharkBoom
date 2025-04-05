@@ -75,29 +75,29 @@ public class NetworkServer : IDisposable
 
         Debug.Log($"ApprovalCheck, Name: {userData.userName}, Pearls: {userData.userPearls}, AuthId: {userData.userAuthId} ");
 
-        //if(OwnershipHandler.IsReconnecting(request.ClientNetworkId))
-        //{
-        //    OwnershipHandler.HandleOwnership(userData, request.ClientNetworkId);
-        //} else
-        //{
-        //    //New client
-        //    Debug.Log("CheckReconnect, New client");
+        if (OwnershipHandler.IsReconnecting(userData.userAuthId))
+        {
+            OwnershipHandler.HandleOwnership(userData, request.ClientNetworkId);
+        }
+        else
+        {
+            //New client
+            approvedClients++;
 
-        //    PlayerData newPlayerData = new PlayerData()
-        //    {
-        //        userData = userData,
-        //        clientId = request.ClientNetworkId,
-        //        playableState = GetPlayableStateByCount(),
-        //        calculatedPearls = new CalculatedPearls(),
-        //        gameObject = null
-        //    };
+            PlayerData newPlayerData = new PlayerData()
+            {
+                userData = userData,
+                clientId = request.ClientNetworkId,
+                playableState = GetPlayableStateByApprovedClients(),
+                gameObject = null
+            };
 
-        //    serverAuthenticationService.RegisterClient(newPlayerData);
+            serverAuthenticationService.RegisterClient(newPlayerData);
 
-        //    OwnershipHandler.HandleClientJoinPlayerOwnership(newPlayerData);
+            OwnershipHandler.HandleClientJoinPlayerOwnership(newPlayerData);
 
-        //    approvedClients++;
-        //}
+            Debug.Log($"ApprovalCheck, New client - Player Data - userData Auth Id {newPlayerData.userData.userAuthId} - clientId {newPlayerData.clientId} - PlayableState {newPlayerData.playableState} - GameObject {newPlayerData.gameObject}");
+        }
 
         OnUserJoined?.Invoke();
 
@@ -108,13 +108,29 @@ public class NetworkServer : IDisposable
         {
             //two clients in game and not changed to spawning players yet
             alreadyChangedToSpawningPlayers = true;
+
+            Debug.Log("Both players registered in approval check");
             //ServiceLocator.Get<BaseGameStateManager>().ChangeGameState(GameState.SpawningPlayers);
         }
     }
 
-    private PlayableState GetPlayableStateByCount()
+    public PlayableState GetPlayableStateByApprovedClients()
     {
-        return approvedClients == 0 ? PlayableState.Player1Playing : PlayableState.Player2Playing;
+        Debug.Log($"GetPlayableStateByApprovedClients - {approvedClients}");
+
+        if (approvedClients == 1)
+        {
+            return PlayableState.Player1Playing;
+        }
+        else if (approvedClients == 2)
+        {
+            return PlayableState.Player2Playing;
+        }
+        else
+        {
+            Debug.LogError($"GetPlayableStateByApprovedClients - PlayerCount is not 1 or 2 - it is {approvedClients}");
+            return PlayableState.None;
+        }
     }
 
     public void Dispose()

@@ -25,9 +25,7 @@ public class PlayerSpawner : IPlayerSpawner
     /// <summary>
     /// Call this to spawn a player.
     /// </summary>
-    /// <param name="clientId"> Id of the player</param>
-    /// <param name="playerNumber"> player playing state</param>
-    public void SpawnPlayer(ulong clientId)
+    public void SpawnPlayer()
     {
         if(playerSpawned >= 2)
         {
@@ -52,7 +50,7 @@ public class PlayerSpawner : IPlayerSpawner
         //playerData.gameObject = playerInstance.gameObject;
         //playerData.playableState = GetPlayableStateByCount();
 
-        Debug.Log($"Spawning Player, Client Id: {clientId} PlayableState: {GetPlayableStateByCount()} Selected Random SpawnPoint: {randomSpawnPointSelected.name} - Player Spawned: {PlayerCount}");
+        Debug.Log($"Spawning Player, PlayableState: {GetPlayableStateByCount()} Selected Random SpawnPoint: {randomSpawnPointSelected.name} - Player Spawned: {PlayerCount}");
 
         OnPlayerSpawned?.Invoke(playerSpawned);
     }

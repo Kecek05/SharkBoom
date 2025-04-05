@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.Netcode;
-using Unity.Services.Authentication.Server;
 using Unity.Services.Matchmaker.Models;
 using UnityEngine;
 
@@ -31,7 +30,11 @@ public class ServerGameManager : IDisposable
 #endif
 
         PearlsManager.OnFinishedCalculationsOnServer += Pearls_OnFinishedCalculationsOnServer;
+
+        ServiceLocatorBootstrap.OnServiceLocatorInitialized += ServiceLocatorBootstrap_OnServiceLocatorInitialized;
     }
+
+
 
     public async Task StartGameServerAsync()
     {
@@ -94,14 +97,22 @@ public class ServerGameManager : IDisposable
 
         CalculatePearls.CalculatePossibleResultsWihAllocation(player1AuthId, player2AuthId, player1Pearls, player2Pearls);
 
-        await Task.Delay(3000);
 
-        Debug.Log("Spawning Players by server");
+        await Task.Delay(2000); //change to wait for some callback, I think might be an OnServerStarted 
+        Debug.Log("Waited Delay to spawn players");
 
-        networkServer.PlayerSpawner.SpawnPlayer(0);
+        networkServer.PlayerSpawner.SpawnPlayer();
 
-        networkServer.PlayerSpawner.SpawnPlayer(0);
+        networkServer.PlayerSpawner.SpawnPlayer();
+    }
 
+    private void ServiceLocatorBootstrap_OnServiceLocatorInitialized()
+    {
+        Debug.Log("ServiceLocatorBootstrap_OnServiceLocatorInitialized, Spawning Players by server");
+
+        //networkServer.PlayerSpawner.SpawnPlayer();
+
+        //networkServer.PlayerSpawner.SpawnPlayer();
     }
 
     private async Task<MatchmakingResults> GetMatchmakerPayload()
@@ -163,6 +174,7 @@ public class ServerGameManager : IDisposable
         multiplayAllocationService?.Dispose();
 #endif
         PearlsManager.OnFinishedCalculationsOnServer -= Pearls_OnFinishedCalculationsOnServer;
+        ServiceLocatorBootstrap.OnServiceLocatorInitialized -= ServiceLocatorBootstrap_OnServiceLocatorInitialized;
         networkServer?.Dispose();
     }
 
