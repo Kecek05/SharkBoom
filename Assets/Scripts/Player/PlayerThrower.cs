@@ -302,6 +302,7 @@ public class PlayerThrower : NetworkBehaviour
 
     public override void OnGainedOwnership()
     {
+        playerInventory.ResyncReconnect();
         Debug.Log($"Gained Ownership, new owner is: {OwnerClientId}");
     }
 

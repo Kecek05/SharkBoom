@@ -85,9 +85,16 @@ public class ServerGameManager : IDisposable
 
             authIdToPearlsPayload[player.Id] = pearls;
 
+            await Reconnect.SetIsInMatch(player.Id, true);
+
             Debug.Log($"PlayerId: {player.Id} - Pearls: {pearls}");
 
         }
+
+
+        Debug.Log($"Values in multiplayAllocationService.GetMultiplayService.ServerConfig - IP: {multiplayAllocationService.GetMultiplayService.ServerConfig.IpAddress} - Port: {multiplayAllocationService.GetMultiplayService.ServerConfig.Port} - QPort: {multiplayAllocationService.GetMultiplayService.ServerConfig.QueryPort}");
+        Debug.Log($"Values in ServerGameManager - IP: {serverIP} - Port: {serverPort} - QPort: {serverQPort}");
+
 
         string player1AuthId = matchmakerPayload.MatchProperties.Players[0].Id;
         string player2AuthId = matchmakerPayload.MatchProperties.Players[1].Id;
@@ -98,12 +105,14 @@ public class ServerGameManager : IDisposable
         CalculatePearls.CalculatePossibleResultsWihAllocation(player1AuthId, player2AuthId, player1Pearls, player2Pearls);
 
 
-        await Task.Delay(2000); //change to wait for some callback, I think might be an OnServerStarted 
+        await Task.Delay(2000); //change to wait for some callback, I think might be an OnServerStarted | need to wait the server loads de scene and the Game Manager Handle Events
         Debug.Log("Waited Delay to spawn players");
 
         networkServer.PlayerSpawner.SpawnPlayer();
 
         networkServer.PlayerSpawner.SpawnPlayer();
+
+        networkServer.SetCanChangeOwnership(true);
     }
 
     private void ServiceLocatorBootstrap_OnServiceLocatorInitialized()

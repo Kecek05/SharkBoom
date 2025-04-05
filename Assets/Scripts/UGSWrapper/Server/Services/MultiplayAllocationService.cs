@@ -18,6 +18,8 @@ public class MultiplayAllocationService : IDisposable
     private CancellationTokenSource serverCheckCancel;
     string allocationId;
 
+    public IMultiplayService GetMultiplayService => multiplayService;
+
     public MultiplayAllocationService()
     {
         try
@@ -53,6 +55,7 @@ public class MultiplayAllocationService : IDisposable
             $"-ServerID: {config.ServerId}\n" +
             $"-AllocationID: {config.AllocationId}\n" +
             $"-Port: {config.Port}\n" +
+            $"-Ip: {config.IpAddress}\n" +
             $"-QPort: {config.QueryPort}\n" +
             $"-logs: {config.ServerLogDirectory}");
 

@@ -57,11 +57,11 @@ public static class OwnershipHandler
     public static async void HandleClientJoinPlayerOwnership(PlayerData playerData)
     {
         Debug.Log($"HandleClientJoinPlayerOwnership, Called");
-        while(NetworkServerProvider.Instance.CurrentNetworkServer.PlayerSpawner.PlayerCount < 2)
+        while(!NetworkServerProvider.Instance.CurrentNetworkServer.CanChangeOwnership)
         {
             await Task.Delay(100);
         }
-        Debug.Log("HandleClientJoinPlayerOwnership, Player Count is 2, changing ownership");
+        Debug.Log($"HandleClientJoinPlayerOwnership, Can change ownership, player count is: {NetworkServerProvider.Instance.CurrentNetworkServer.PlayerSpawner.PlayerCount}, changing ownership");
 
         HandleOwnership(playerData.userData, playerData.clientId);
 

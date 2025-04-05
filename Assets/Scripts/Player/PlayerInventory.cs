@@ -42,19 +42,6 @@ public class PlayerInventory : NetworkBehaviour
         }
     }
 
-    public override void OnNetworkSpawn()
-    {
-        //Reconnect Resync
-        if (IsOwner)
-        {
-            if(playerItemsInventory.Count > 0)
-            {
-                Debug.Log("PlayerInventory: OnNetworkSpawn, Player has items in inventory");
-                ResyncReconnect();
-            }
-        }
-    }
-
     public void InitializeOwner()
     {
         if(!IsOwner) return;

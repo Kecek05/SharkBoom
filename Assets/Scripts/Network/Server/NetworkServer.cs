@@ -17,6 +17,9 @@ public class NetworkServer : IDisposable
     private bool alreadyChangedToSpawningPlayers = false;
     private int approvedClients = 0;
 
+    private bool canChangeOwnership = false;
+
+    public bool CanChangeOwnership => canChangeOwnership;
     public IPlayerSpawner PlayerSpawner => playerSpawner;
     public IServerAuthenticationService ServerAuthenticationService => serverAuthenticationService;
 
@@ -131,6 +134,12 @@ public class NetworkServer : IDisposable
             Debug.LogError($"GetPlayableStateByApprovedClients - PlayerCount is not 1 or 2 - it is {approvedClients}");
             return PlayableState.None;
         }
+    }
+
+    public void SetCanChangeOwnership(bool canChange)
+    {
+        Debug.Log("SetCanChangeOwnership");
+        canChangeOwnership = canChange;
     }
 
     public void Dispose()
