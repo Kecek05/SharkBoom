@@ -26,8 +26,6 @@ public class CameraFollowing : NetworkBehaviour
 
     private void BaseItemThrowable_OnItemFinishedAction()
     {
-        
-
         if (resetCam == null)
         {
             resetCam = StartCoroutine(ResetCam());
@@ -39,7 +37,7 @@ public class CameraFollowing : NetworkBehaviour
         if(itemLaunched == null) return;
 
         cameraManager.CinemachineCamera.Target.TrackingTarget = itemLaunched;
-        Debug.Log("z field" + cameraManager.CinemachineFollowComponent.FollowOffset.z);
+        // the problem is that we cant modify the cinemachine camera position
 
     }
 
@@ -52,10 +50,6 @@ public class CameraFollowing : NetworkBehaviour
 
     public void ResetCamAfterFollow()
     {
-        // -15 object to follow 1 - -22 cinemachine camera -6
-        // We need to move the camera back to objct to follow and
-
-
         cameraManager.CinemachineCamera.Target.TrackingTarget = cameraManager.CameraObjectToFollow;
     }
 
