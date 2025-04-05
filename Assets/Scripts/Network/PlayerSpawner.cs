@@ -41,7 +41,8 @@ public class PlayerSpawner : IPlayerSpawner
 
         NetworkObject playerInstance = GameObject.Instantiate(playerPrefab, randomSpawnPointSelected.position, Quaternion.identity);
 
-        //playerInstance.SpawnAsPlayerObject(clientId);
+
+        playerInstance.Spawn(true);
         playerInstance.DontDestroyWithOwner = true;
 
         playerInstance.GetComponent<PlayerThrower>().InitializePlayerRpc(GetPlayableStateByCount(), randomSpawnPointSelected.rotation);
