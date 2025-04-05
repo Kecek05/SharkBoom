@@ -259,7 +259,7 @@ public class PlayerInventory : NetworkBehaviour
 
         //Reselect an item
         SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
-        Debug.Log("ResyncReconnect called");
+        Debug.Log($"ResyncReconnect called - Items in inventory: {playerItemsInventory.Count}");
     }
 
     public override void OnNetworkDespawn()

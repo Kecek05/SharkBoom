@@ -1,4 +1,5 @@
 using NUnit.Framework.Interfaces;
+using QFSW.QC;
 using Sortify;
 using System;
 using System.Collections.Generic;
@@ -109,13 +110,18 @@ public class PlayerInventoryUI : NetworkBehaviour
 
     public void HandleOnPlayerInventoryItemAdded(ItemInventoryData itemData)
     {
-        if (!IsOwner) return;
+        if (!IsOwner)
+        {
+            Debug.Log("PlayerInventoryUI: HandleOnPlayerInventoryItemAdded - Not Owner");
+            return;
+        }
 
         //Add item on list
         PlayerItemSingleUI playerItemSingleUI = Instantiate(playerItemSingleUIPrefab, inventoryItemHolder).GetComponent<PlayerItemSingleUI>();
         playerItemSingleUI.Setup(itemsListSO.allItemsSOList[itemData.itemSOIndex].itemName, itemsListSO.allItemsSOList[itemData.itemSOIndex].itemIcon, itemData.itemCooldownRemaining.ToString(), itemData.itemCanBeUsed, itemData.itemInventoryIndex, this);
         playerItemSingleUIs.Add(playerItemSingleUI);
 
+        Debug.Log($"Added Item {itemsListSO.allItemsSOList[itemData.itemSOIndex].itemName} - Index: {itemData.itemInventoryIndex} | Item SO Index: {itemData.itemSOIndex} | Item Can Be Used: {itemData.itemCanBeUsed} | Item Cooldown Remaining: {itemData.itemCooldownRemaining}");
         //UpdateOpenInventoryButton();
     }
 
@@ -164,6 +170,21 @@ public class PlayerInventoryUI : NetworkBehaviour
     private void ShowInventoryButton()
     {
         openInventoryBackground.SetActive(true);
+    }
+
+
+    //DEBUG
+    [Command("checkImOwnerInventoryUI", MonoTargetType.All)]
+    private void CheckImOwnerInventoryUI()
+    {
+        Debug.Log($"Server is the Owner of InventoryUI? {IsOwnedByServer} - OwnerId: {OwnerClientId}");
+
+        if (!IsOwner)
+        {
+            return;
+        }
+
+        transform.position = new Vector3(transform.position.x, transform.position.y + 5f, transform.position.z);
     }
 
 }

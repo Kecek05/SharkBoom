@@ -243,7 +243,7 @@ public class PlayerThrower : NetworkBehaviour
     [Command("checkImOwner", MonoTargetType.All)]
     private void CheckImOwner()
     {
-        Debug.Log($"Server is the Owner? {IsOwnedByServer}");
+        Debug.Log($"Server is the Owner? {IsOwnedByServer} - OwnerId: {OwnerClientId}");
 
         if (!IsOwner)
         {
@@ -302,8 +302,8 @@ public class PlayerThrower : NetworkBehaviour
 
     public override void OnGainedOwnership()
     {
-        playerInventory.ResyncReconnect();
         Debug.Log($"Gained Ownership, new owner is: {OwnerClientId}");
+        playerInventory.ResyncReconnect();
     }
 
     public override void OnLostOwnership()
