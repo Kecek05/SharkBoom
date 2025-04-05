@@ -38,19 +38,22 @@ public class PlayerThrower : NetworkBehaviour
 
         thisPlayableState.OnValueChanged += PlayableStateInitialize;
 
-        //if(!IsHost) // host will add itself twice
-        //    PlayableStateInitialize(thisPlayableState.Value, thisPlayableState.Value);
+        if (!IsHost) // host will add itself twice
+            PlayableStateInitialize(thisPlayableState.Value, thisPlayableState.Value);
 
-        //if (IsOwner)
-        //{
-        //    InitializeOwner();
-        //} else
-        //{
-        //    //if not owner, turn off touch collider
-        //    playerTouchColl.enabled = false;
-        //}
+        if (IsOwner)
+        {
+            InitializeOwner();
+        }
+        else
+        {
+            //if not owner, turn off touch collider
+            playerTouchColl.enabled = false;
+        }
 
-        //HandleEvents();
+        HandleEvents();
+
+        Debug.Log($"OnNetworkSpawn of PlayerThrower - Im owner? {IsOwner} - OwnerId: {OwnerClientId}");
     }
 
     private void InitializeOwner()
