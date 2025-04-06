@@ -37,9 +37,4 @@ public class LookAtCamera : NetworkBehaviour
             }
         }
     }
-
-    public void EnableLookAt()
-    {
-
-    }
 }

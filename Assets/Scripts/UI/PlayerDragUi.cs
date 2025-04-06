@@ -26,7 +26,6 @@ public class PlayerDragUi : DragListener
         } else if(!isCancelable && player.PlayerStateMachine.CurrentState == player.PlayerStateMachine.draggingItem || player.PlayerStateMachine.CurrentState == player.PlayerStateMachine.draggingJump)
         {
             //cant cancell and its dragging
-
             ShowText();
         }
 
@@ -61,12 +60,14 @@ public class PlayerDragUi : DragListener
     {
         forceText.enabled = true;
         directionText.enabled = true;
+        lookAtCamera.enabled = true; // we enable and disable because this script work on LateUpdate
     }
 
     private void HideText()
     {
         forceText.enabled = false;
         directionText.enabled = false;
+        lookAtCamera.enabled = false;
     }
 
 }
