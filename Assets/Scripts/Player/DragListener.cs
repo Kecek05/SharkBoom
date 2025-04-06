@@ -22,6 +22,11 @@ public abstract class DragListener : NetworkBehaviour
         {
             DoOnDragRelease();
         }
+
+        if(newState == PlayerState.IdleMyTurn || newState == PlayerState.IdleEnemyTurn) // for dont show the infos of drag when we are not dragging
+        {
+            DoOnDragRelease();
+        }
     }
 
     /// <summary>
