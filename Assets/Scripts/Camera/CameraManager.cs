@@ -15,27 +15,25 @@ public class CameraManager : NetworkBehaviour
 
     private CinemachineCamera cinemachineCamera;
     private Transform cameraObjectToFollow;
+
     public Transform CameraObjectToFollow => cameraObjectToFollow;
     public CameraZoom CameraZoom => cameraZoom;
-    public CameraFollowing CameraFollowing => cameraFollowing;
     public CameraMovement CameraMovement => cameraMovement;
     public CinemachineCamera CinemachineCamera => cinemachineCamera;
-    public CinemachineFollow CinemachineFollowComponent => cinemachineFollowComponent;
 
     [SerializeField] private CameraState cameraState;
+
 
     public override void OnNetworkSpawn()
     {
         if (IsOwner)
         {
-            
             cameraObjectToFollow = new GameObject("CameraObjectToFollow").transform;
             cameraObjectToFollow.position = new Vector3(0, 0, 0);
 
             if (cinemachineCamera == null)
             {
                 cinemachineCamera = Object.FindFirstObjectByType<CinemachineCamera>();
-                cinemachineFollowComponent = cinemachineCamera.GetComponent<CinemachineFollow>();
                 cinemachineCamera.Target.TrackingTarget = cameraObjectToFollow;
             }
 
