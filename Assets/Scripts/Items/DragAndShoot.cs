@@ -223,15 +223,12 @@ public class DragAndShoot : NetworkBehaviour
                 {
                     //Force is increasing
                     cameraManager.CameraZoom.ChangeZoom(-zoomAmountToChange, zoomDragSpeed);
-                    Debug.Log("Force is increasing");
                 }
                 else if (roundedDragDistance < roundedLastDragDistance)
                 {
                     //Force is decreasing
 
                     cameraManager.CameraZoom.ChangeZoom(zoomAmountToChange, zoomDragSpeed);
-
-                    Debug.Log("Force is decreasing");
                 }
 
 
@@ -306,7 +303,9 @@ public class DragAndShoot : NetworkBehaviour
 
     public float GetAngle()
     {
-        return Mathf.Atan2(directionOfDrag.y, directionOfDrag.x) * Mathf.Rad2Deg;
+        float angleRadians = Mathf.Atan2(directionOfDrag.y, directionOfDrag.x);
+        float angleDegrees = angleRadians * Mathf.Rad2Deg;
+        return Math.Abs(angleDegrees);
     }
 
     public float GetForcePercentage()

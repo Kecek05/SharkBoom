@@ -46,15 +46,13 @@ public class PlayerDragUi : DragListener
 
     protected override void DoOnDragChange(float forcePercent, float angle)
     {
-        forceText.text = "Force: " + Mathf.RoundToInt(forcePercent);
-
-        directionText.text = "Direction: " + Mathf.RoundToInt(angle);
+        forceText.text = $"Force: {Mathf.RoundToInt(forcePercent)}";
+        directionText.text = $"Direction: {Mathf.RoundToInt(angle)}°";
     }
 
     protected override void DoOnDragRelease()
     {
         HideText();
-        Debug.Log("Pediu para esconder quando solta");
     }
 
     private void ShowText()
@@ -62,7 +60,6 @@ public class PlayerDragUi : DragListener
         forceText.enabled = true;
         directionText.enabled = true;
         lookAtCamera.enabled = true; // we enable and disable because this script work on LateUpdate
-        Debug.Log("Showou");
     }
 
     private void HideText()
@@ -70,7 +67,6 @@ public class PlayerDragUi : DragListener
         forceText.enabled = false;
         directionText.enabled = false;
         lookAtCamera.enabled = false;
-        Debug.Log("Hidou");
     }
 
 }

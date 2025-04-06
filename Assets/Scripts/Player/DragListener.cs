@@ -18,12 +18,13 @@ public abstract class DragListener : NetworkBehaviour
     public void HandleOnPlayerStateMachineStateChanged(PlayerState newState)
     {
         if (!IsOwner) return; //only owner
+
         if (newState == PlayerState.DragReleaseItem && newState == PlayerState.DraggingJump)
         {
             DoOnDragRelease();
         }
 
-        if(newState == PlayerState.IdleMyTurn || newState == PlayerState.IdleEnemyTurn) // for dont show the infos of drag when we are not dragging
+        if (newState == PlayerState.IdleMyTurn || newState == PlayerState.IdleEnemyTurn) // for dont show the infos of drag when we are not dragging
         {
             DoOnDragRelease();
         }
