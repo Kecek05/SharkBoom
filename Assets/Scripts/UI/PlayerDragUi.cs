@@ -8,10 +8,11 @@ public class PlayerDragUi : DragListener
     [SerializeField] private TextMeshProUGUI forceText;
     [SerializeField] private TextMeshProUGUI directionText;
     [SerializeField] private PlayerThrower player;
+    [SerializeField] private LookAtCamera lookAtCamera;
+
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-
         HideText(); //hide enemy ui
     }
 
@@ -25,6 +26,7 @@ public class PlayerDragUi : DragListener
         } else if(!isCancelable && player.PlayerStateMachine.CurrentState == player.PlayerStateMachine.draggingItem || player.PlayerStateMachine.CurrentState == player.PlayerStateMachine.draggingJump)
         {
             //cant cancell and its dragging
+
             ShowText();
         }
 
