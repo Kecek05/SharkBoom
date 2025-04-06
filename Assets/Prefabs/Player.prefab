@@ -2921,8 +2921,8 @@ GameObject:
   - component: {fileID: 2630504228789789074}
   - component: {fileID: 5182517899106838082}
   - component: {fileID: 5874533860640660207}
-  - component: {fileID: 4836813870748371602}
   - component: {fileID: 986320667569291317}
+  - component: {fileID: 4836813870748371602}
   m_Layer: 0
   m_Name: GFX
   m_TagString: Untagged
@@ -3096,6 +3096,23 @@ MonoBehaviour:
   playerGfxTransform: {fileID: 2927350467601940059}
   playerDragController: {fileID: 5120579722876303172}
   angleOffset: 0.5
+--- !u!114 &986320667569291317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8363574200510345622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c1accf26a5743b469cd4ae68665eea1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  boneRenderes: {fileID: 2630504228789789074}
+  boneTransforms: []
+  boneInitialPosition: []
+  boneInitialRotation: []
 --- !u!114 &4836813870748371602
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3132,21 +3149,6 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 0
   SlerpPosition: 0
---- !u!114 &986320667569291317
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8363574200510345622}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c1accf26a5743b469cd4ae68665eea1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  boneRenderes: {fileID: 2630504228789789074}
-  boneTransforms: []
 --- !u!1 &9159321432021852501
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,6 +10,7 @@ public class PlayerRigReset : NetworkBehaviour
     [SerializeField] private Transform[] boneTransforms;
     [SerializeField] private Vector3[] boneInitialPosition;
     [SerializeField] private Quaternion[] boneInitialRotation;
+    
 
     public override void OnNetworkSpawn()
     {
@@ -31,8 +32,7 @@ public class PlayerRigReset : NetworkBehaviour
     [Command("player-ResetRig", MonoTargetType.All)]
     public void ResetPose()
     {
-        Debug.Log("Testing reset rig");
-
+        Debug.Log("reseting pose");
         for (int i = 0; i < boneTransforms.Length; i++)
         {
             boneTransforms[i].localPosition = boneInitialPosition[i];
@@ -45,4 +45,5 @@ public class PlayerRigReset : NetworkBehaviour
     {
         ResetPose();
     }
+
 }
