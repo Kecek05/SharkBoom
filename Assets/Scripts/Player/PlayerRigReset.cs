@@ -3,19 +3,29 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
-public class PlayerRigReset : NetworkBehaviour
+public class PlayerRigReset : DragListener
 {
     [SerializeField] private BoneRenderer boneRenderes;
 
     [SerializeField] private Transform[] boneTransforms;
     [SerializeField] private Vector3[] boneInitialPosition;
     [SerializeField] private Quaternion[] boneInitialRotation;
-    
 
-    public override void OnNetworkSpawn()
+    public void ResetPose()
     {
-        if(IsOwner)
+        Debug.Log("reseting pose");
+        for (int i = 0; i < boneTransforms.Length; i++)
         {
+            boneTransforms[i].localPosition = boneInitialPosition[i];
+            boneTransforms[i].localRotation = boneInitialRotation[i];
+        }
+    }
+
+    protected override void DoOnSpawn()
+    {
+        if (IsOwner)
+        {
+            Debug.Log("Testing Spawn");
             boneTransforms = boneRenderes.transforms;
 
             boneInitialPosition = new Vector3[boneTransforms.Length];
@@ -29,21 +39,17 @@ public class PlayerRigReset : NetworkBehaviour
         }
     }
 
-    [Command("player-ResetRig", MonoTargetType.All)]
-    public void ResetPose()
+    protected override void DoOnDragChange(float forcePercent, float andlePercent)
     {
-        Debug.Log("reseting pose");
-        for (int i = 0; i < boneTransforms.Length; i++)
-        {
-            boneTransforms[i].localPosition = boneInitialPosition[i];
-            boneTransforms[i].localRotation = boneInitialRotation[i];
-        }
+        
+        Debug.Log("Testing reset");
     }
 
-    [ClientRpc]
-    public void ResetPoseClientRpc()
+    protected override void DoOnDragRelease()
     {
+        Debug.Log("testing release");
         ResetPose();
     }
 
+    
 }
