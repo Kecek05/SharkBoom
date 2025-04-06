@@ -60,11 +60,7 @@ public class CameraFollowing : NetworkBehaviour
     {
         while (itemLaunched != null)
         {
-            cameraObjectToFollowPos = cameraManager.CameraObjectToFollow.position;
-            cameraObjectToFollowPos.x = itemLaunched.position.x;
-            cameraObjectToFollowPos.y = itemLaunched.position.y;
-
-            cameraManager.CameraObjectToFollow.position = cameraObjectToFollowPos;
+            cameraManager.CameraObjectToFollow.position = new Vector3(itemLaunched.position.x, itemLaunched.position.y, cameraManager.CameraObjectToFollow.position.z);
             yield return null;
         }
 
@@ -80,7 +76,7 @@ public class CameraFollowing : NetworkBehaviour
 
     public void ResetCamAfterFollow()
     {
-       // cameraManager.CameraObjectToFollow.position = lastCameraObjectToFollowPos;
+       cameraManager.CameraObjectToFollow.position = lastCameraObjectToFollowPos;
     }
 
 
