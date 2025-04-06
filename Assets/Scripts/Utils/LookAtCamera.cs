@@ -18,7 +18,7 @@ public class LookAtCamera : NetworkBehaviour
 
     private void LateUpdate() // we put in late update for performance reasons
     {
-        if(IsOwner)
+        if (IsOwner)
         {
             switch (mode)
             {
