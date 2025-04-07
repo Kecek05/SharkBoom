@@ -23,7 +23,7 @@ RenderSettings:
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
-  m_AmbientIntensity: 1.5
+  m_AmbientIntensity: 1.2
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.07807048, g: 0.7895378, b: 0.8113208, a: 1}
   m_SkyboxMaterial: {fileID: 2100000, guid: 31f136e69e928194b8be841d77cdc655, type: 2}
@@ -1241,7 +1241,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!23 &98120532
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -8731,11 +8731,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 984804e7cf629c1408d5e9ca9f98dc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  itemsListSO: {fileID: 11400000, guid: 0512cb21a29af2e4b88962e2cb6a1605, type: 2}
-  spawnPointsPos:
-  - {fileID: 1671551940}
-  - {fileID: 1658826650}
 --- !u!4 &1229163762
 Transform:
   m_ObjectHideFlags: 0
@@ -8956,7 +8951,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!23 &1249785454
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -10212,7 +10207,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!23 &1370147617
 MeshRenderer:
   m_ObjectHideFlags: 0
