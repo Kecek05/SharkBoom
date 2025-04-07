@@ -81,14 +81,6 @@ public class PlayerLauncher : NetworkBehaviour
          
     }
 
-    [Command("launch", MonoTargetType.All)]
-    private void LaunchDebug()
-    {
-        if (!IsOwner) return;
-
-        Launch();
-    }
-
 
 
     [Rpc(SendTo.Server)]

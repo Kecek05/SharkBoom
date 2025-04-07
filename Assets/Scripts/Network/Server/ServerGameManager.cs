@@ -27,11 +27,11 @@ public class ServerGameManager : IDisposable
         networkServer = new NetworkServer(networkManager, playerPrefab);
 #if UNITY_SERVER
         multiplayAllocationService = new MultiplayAllocationService();
+        ServiceLocatorBootstrap.OnServiceLocatorInitialized += ServiceLocatorBootstrap_OnServiceLocatorInitialized;
 #endif
 
         PearlsManager.OnFinishedCalculationsOnServer += Pearls_OnFinishedCalculationsOnServer;
 
-        ServiceLocatorBootstrap.OnServiceLocatorInitialized += ServiceLocatorBootstrap_OnServiceLocatorInitialized;
     }
 
 
@@ -178,9 +178,9 @@ public class ServerGameManager : IDisposable
     {
 #if UNITY_SERVER
         multiplayAllocationService?.Dispose();
+        ServiceLocatorBootstrap.OnServiceLocatorInitialized -= ServiceLocatorBootstrap_OnServiceLocatorInitialized;
 #endif
         PearlsManager.OnFinishedCalculationsOnServer -= Pearls_OnFinishedCalculationsOnServer;
-        ServiceLocatorBootstrap.OnServiceLocatorInitialized -= ServiceLocatorBootstrap_OnServiceLocatorInitialized;
         networkServer?.Dispose();
     }
 

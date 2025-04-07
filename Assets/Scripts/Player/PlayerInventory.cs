@@ -16,7 +16,6 @@ public class PlayerInventory : NetworkBehaviour
     public event Action<ItemSO> OnItemSelectedSO;
 
     [SerializeField] private ItemsListSO itemsListSO;
-    [SerializeField] private PlayerThrower playerThrower;
 
     private NetworkList<ItemInventoryData> playerItemsInventory = new();
 
@@ -79,7 +78,12 @@ public class PlayerInventory : NetworkBehaviour
 
     public void HandleOnPlayerStateMachineStateChanged(PlayerState state)
     {
-        if(!IsOwner) return;
+
+        if (!IsOwner)
+        {
+            Debug.Log($"HandleOnPlayerStateMachineStateChanged in PlayerInventory called and not the owner");
+            return;
+        }
 
         switch (state)
         {
@@ -114,7 +118,7 @@ public class PlayerInventory : NetworkBehaviour
                 break;
         }
 
-
+        Debug.Log($"HandleOnPlayerStateMachineStateChanged in PlayerInventory called and its owner");
     }
 
     [Rpc(SendTo.Server)]
@@ -189,8 +193,9 @@ public class PlayerInventory : NetworkBehaviour
 
     public void SelectItemDataByItemInventoryIndex(int itemInventoryIndex = 0) // Select a item to use, UI will call this, default (0) its Jump
     {
+        Debug.Log($"SelectItemDataByItemInventoryIndex called - Item Inventory Index Selected: {itemInventoryIndex} - can interact with inventory? {canInteractWithInventory}");
 
-        if(!canInteractWithInventory) return;
+        if (!canInteractWithInventory) return;
 
 
         if (!ItemCanBeUsed(itemInventoryIndex))
@@ -250,6 +255,7 @@ public class PlayerInventory : NetworkBehaviour
     private void SetCanInteractWithInventory(bool canInteract)
     {
         canInteractWithInventory = canInteract;
+        Debug.Log($"SetCanInteractWithInventory - {canInteractWithInventory}");
     }
 
     private void SetSelectedItemInventoryIndex(int newItemInventoryIndex)
@@ -271,7 +277,7 @@ public class PlayerInventory : NetworkBehaviour
         //}
 
         //Reselect an item
-        HandleOnPlayerStateMachineStateChanged(playerThrower.PlayerStateMachine.CurrentState.State);
+
         SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
         Debug.Log($"ResyncReconnect called - Items in inventory: {playerItemsInventory.Count} - OwnerId: {OwnerClientId}");
     }
@@ -283,6 +289,7 @@ public class PlayerInventory : NetworkBehaviour
             //Need to be a for to start from index 1, index 0 is Jump
             OnItemAdded?.Invoke(playerItemsInventory[i]);
         }
+        SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
     }
 
     public override void OnNetworkDespawn()

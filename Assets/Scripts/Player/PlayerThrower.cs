@@ -51,7 +51,7 @@ public class PlayerThrower : NetworkBehaviour
             playerTouchColl.enabled = false;
         }
 
-        HandleEvents();
+        //HandleEvents();
 
         Debug.Log($"OnNetworkSpawn of PlayerThrower - Im owner? {IsOwner} - OwnerId: {OwnerClientId}");
     }
@@ -59,6 +59,10 @@ public class PlayerThrower : NetworkBehaviour
     private void InitializeOwner()
     {
         //Owner initialize code
+        Debug.Log("InitializeOwner called");
+
+        PlayableStateInitialize(thisPlayableState.Value, thisPlayableState.Value);
+
         turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
 
         turnManager.OnMyTurnEnded += GameFlowManager_OnMyTurnEnded;
@@ -121,6 +125,7 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleOnPlayerInventoryUIPlayerInventoryGainOwnership()
     {
+        //HandleOnStateChanged(playerStateMachine.CurrentState.State);
         playerInventory.HandleOnPlayerInventoryUIGainOwnership();
     }
 
@@ -301,15 +306,26 @@ public class PlayerThrower : NetworkBehaviour
             turnManager.OnMyTurnJumped -= GameFlowManager_OnMyTurnJumped;
 
             gameStateManager.CurrentGameState.OnValueChanged -= HandleOnGameStateChanged;
+
+            UnHandleEvents();
         }
 
-        UnHandleEvents();
+
 
     }
 
     public override void OnGainedOwnership()
     {
+        if(IsOwner)
+        {
+            InitializeOwner();
+            HandleEvents();
+            playerTouchColl.enabled = true;
+        }
+
+        //HandleOnStateChanged(playerStateMachine.CurrentState.State);
         Debug.Log($"PlayerThrower Gained Ownership, new owner is: {OwnerClientId}");
+        Debug.Log($"Player State machine exist? {playerStateMachine != null}");
         //playerInventory.ResyncReconnect();
     }
 
