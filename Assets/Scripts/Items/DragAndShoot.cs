@@ -71,11 +71,6 @@ public class DragAndShoot : NetworkBehaviour
 
 
     private Transform startZoomPos; // store the original zoom position
-    private float zoomForce; // current force of zoom
-    private bool isZoomIncreasing; // bool for check if the force is decreasing or increasing and allow the zoom
-    private float lastZoomForce = 0f; // Store the last zoom force
-    private float checkMovementInterval = 0.001f; // control the time between checks of the zoom force, turn the difference bigger
-    private float lastCheckTime = 0f; // control the time between checks
 
     private Plane plane; // Cache for the clicks
     private float outDistancePlane; // store the distance of the plane and screen
@@ -138,7 +133,7 @@ public class DragAndShoot : NetworkBehaviour
 
         if (context.started) // capture the first frame when the touch is pressed
         {
-            Ray rayStart = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Ray rayStart = cameraManager.CameraMain.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
             if (Physics.Raycast(rayStart, out hit, Mathf.Infinity, touchLayer)) // compare if the touch hit on the object
@@ -187,7 +182,7 @@ public class DragAndShoot : NetworkBehaviour
 
         if (!canDrag || !isDragging || selectedRb == null) return;
 
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //CHANGE TO CONTEXT
+        Ray ray = cameraManager.CameraMain.ScreenPointToRay(Input.mousePosition); //CHANGE TO CONTEXT
 
 
         if (plane.Raycast(ray, out outDistancePlane) && Input.touchCount == 1) // this input touch count is a check for avoid the player bug if accidentally touch the screen with two fingers

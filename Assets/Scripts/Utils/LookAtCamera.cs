@@ -6,7 +6,8 @@ public class LookAtCamera : NetworkBehaviour
 
     [SerializeField] private Mode mode;
     [SerializeField] private Transform canvasTransform;
-     
+    [SerializeField] private CameraManager cameraManager;
+
 
     private enum Mode
     {
@@ -23,17 +24,17 @@ public class LookAtCamera : NetworkBehaviour
             switch (mode)
             {
                 case Mode.LookAt:
-                    canvasTransform.LookAt(Camera.main.transform);
+                    canvasTransform.LookAt(cameraManager.CameraMain.transform);
                     break;
                 case Mode.LateAtInverted:
-                    Vector3 dirFromCamera = canvasTransform.position - Camera.main.transform.position;
+                    Vector3 dirFromCamera = canvasTransform.position - cameraManager.CameraMain.transform.position;
                     canvasTransform.LookAt(canvasTransform.position + dirFromCamera);
                     break;
                 case Mode.CameraForward:
-                    canvasTransform.forward = Camera.main.transform.forward;
+                    canvasTransform.forward = cameraManager.CameraMain.transform.forward;
                     break;
                 case Mode.CameraForwardInverted:
-                    canvasTransform.forward = -Camera.main.transform.forward;
+                    canvasTransform.forward = -cameraManager.CameraMain.transform.forward;
                     break;
             }
         }

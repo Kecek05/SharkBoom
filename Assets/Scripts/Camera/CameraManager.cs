@@ -13,13 +13,16 @@ public class CameraManager : NetworkBehaviour
     [SerializeField] private PlayerThrower player;
     
 
+
     private CinemachineCamera cinemachineCamera;
+    private Camera cameraMain; // Cache camera main for all scripts that need it
     private Transform cameraObjectToFollow;
 
     public Transform CameraObjectToFollow => cameraObjectToFollow;
     public CameraZoom CameraZoom => cameraZoom;
     public CameraMovement CameraMovement => cameraMovement;
     public CinemachineCamera CinemachineCamera => cinemachineCamera;
+    public Camera CameraMain => cameraMain;
 
     [SerializeField] private CameraState cameraState;
 
@@ -34,6 +37,7 @@ public class CameraManager : NetworkBehaviour
             if (cinemachineCamera == null)
             {
                 cinemachineCamera = Object.FindFirstObjectByType<CinemachineCamera>();
+                cameraMain = Object.FindFirstObjectByType<Camera>();
                 cinemachineCamera.Target.TrackingTarget = cameraObjectToFollow;
             }
 
