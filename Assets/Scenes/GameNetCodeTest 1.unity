@@ -4547,12 +4547,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  gameStateManager: {fileID: 1229163764}
-  turnManager: {fileID: 1229163765}
-  itemsListSO: {fileID: 11400000, guid: 0512cb21a29af2e4b88962e2cb6a1605, type: 2}
-  spawnPointsPos:
-  - {fileID: 1671551940}
-  - {fileID: 1658826650}
+  debugHitKillDamageableSO: {fileID: 0}
 --- !u!4 &1229163762
 Transform:
   m_ObjectHideFlags: 0
@@ -5376,7 +5371,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4845276930943762971, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.00005340576
+      value: -0.000015258789
       objectReference: {fileID: 0}
     - target: {fileID: 4845637959249703711, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchorMax.y
@@ -5991,7 +5986,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1506362362
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6680,8 +6675,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  debugGameStateText: {fileID: 2058618713}
-  debugPlayableStateText: {fileID: 546110013}
   debugPingText: {fileID: 631623872}
 --- !u!4 &1593195153
 Transform:
