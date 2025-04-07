@@ -133,14 +133,16 @@ public class DragAndShoot : NetworkBehaviour
 
         if (context.started) // capture the first frame when the touch is pressed
         {
-            Ray rayStart = cameraManager.CameraMain.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
+            // Ray rayStart = cameraManager.CameraMain.ScreenPointToRay(Input.mousePosition);
+            Vector2 worldPoint = cameraManager.CameraMain.ScreenToWorldPoint(Input.mousePosition);
+            Collider2D hit2D = Physics2D.OverlapPoint(worldPoint, touchLayer);
 
-            if (Physics.Raycast(rayStart, out hit, Mathf.Infinity, touchLayer)) // compare if the touch hit on the object
+            if (hit2D != null)
             {
-                if (hit.collider.gameObject == areaOfStartDrag)
+                if (hit2D.gameObject == areaOfStartDrag)
                 {
                     //Start Dragging
+                    Debug.Log("First logic is okay");
                     SetCanCancelDrag(false);
                     trajectory.SetSimulation(true);
                     startZoomPos = cameraManager.CameraObjectToFollow;
