@@ -44,7 +44,7 @@ public class PlayerInventoryUI : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         HideInventory();
-        openInventoryBackground.SetActive(false);
+        HideInventoryButton();
 
         //if (!IsOwner)
         //{
@@ -196,7 +196,7 @@ public class PlayerInventoryUI : NetworkBehaviour
     public void HandleOnGainOwnership()
     {
         ShowInventory();
-        openInventoryBackground.SetActive(true);
+        ShowInventoryButton();
     }
 
     //DEBUG

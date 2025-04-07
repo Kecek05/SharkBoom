@@ -41,6 +41,8 @@ public class PlayerThrower : NetworkBehaviour
 
         thisPlayableState.OnValueChanged += PlayableStateInitialize;
 
+        PlayableStateInitialize(thisPlayableState.Value, thisPlayableState.Value);
+
         //if (!IsHost) // host will add itself twice
         //    PlayableStateInitialize(thisPlayableState.Value, thisPlayableState.Value);
 
@@ -51,10 +53,13 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleOnClientOwnershipChanged(ulong newOwnerClientId)
     {
+        if (!IsOwner) return;
+
+        Debug.Log($"HandleOnClientOwnershipChanged - new owner by event: {newOwnerClientId} - new owner obj: {OwnerClientId}");
+
         if(newOwnerClientId == OwnerClientId)
         {
-            //Im the new owner
-            Debug.Log($"PlayerThrower Gained Ownership, new owner is: {OwnerClientId} - Im {NetworkManager.LocalClientId}");
+            Debug.Log($"PlayerThrower Gained Ownership, new owner is: {newOwnerClientId} - Im {NetworkManager.LocalClientId}");
 
             InitializeOwner();
             HandleEvents();

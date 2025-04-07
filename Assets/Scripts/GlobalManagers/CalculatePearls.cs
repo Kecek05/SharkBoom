@@ -127,9 +127,9 @@ public static class CalculatePearls
     public static async Task ChangePearlsWinner(PlayerData winnerPlayerData)
     {
 
-        await Save.AddSavePlayerPearls(winnerPlayerData.userData.userAuthId, authIdToCalculatedPearls[winnerPlayerData.userData.userAuthId].PearlsToLose);
+        await Save.AddSavePlayerPearls(winnerPlayerData.userData.userAuthId, authIdToCalculatedPearls[winnerPlayerData.userData.userAuthId].PearlsToWin);
 
-        Debug.Log($"Changing Pearls of players. Winner: {winnerPlayerData.userData.userName} Wins Pearls: {authIdToCalculatedPearls[winnerPlayerData.userData.userAuthId].PearlsToLose}");
+        Debug.Log($"Changing Pearls of players. Winner: {winnerPlayerData.userData.userName} Wins Pearls: {authIdToCalculatedPearls[winnerPlayerData.userData.userAuthId].PearlsToWin}");
 
         OnFinishedChangingPearls?.Invoke();
     }
