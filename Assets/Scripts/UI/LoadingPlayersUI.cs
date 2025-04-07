@@ -1,3 +1,4 @@
+using QFSW.QC;
 using Sortify;
 using System;
 using TMPro;
@@ -47,30 +48,36 @@ public class LoadingPlayersUI : NetworkBehaviour
         if(newValue == GameState.CalculatingResults)
         {
             //All Connected
+
+        }
+        else if(newValue == GameState.ShowingPlayersInfo)
+        {
+            //Show UI
             if (IsServer)
             {
                 //Send to clients
                 foreach (PlayerData playerData in NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas)
                 {
+                    Debug.Log($"GameState_OnValueChanged on Loading Players UI - Player Data: {playerData.userData.userAuthId} - Client Id: {playerData.clientId}");
                     UpdatePlayersInfoClientRpc(playerData.userData.userName, playerData.userData.userPearls, playerData.playableState);
                 }
             }
-        }
-        else if(newValue == GameState.ShowingPlayersInfo)
-        {
-            //Show UI
-            ShowPlayersInfo();
-            HideWaitingForPlayers();
+
+            //ShowPlayersInfo();
+            //HideWaitingForPlayers();
         } else if (newValue == GameState.GameStarted)
         {
             //Game Started
             HidePlayersInfo();
+            HideWaitingForPlayers();
         }
     }
 
     [Rpc(SendTo.ClientsAndHost)]
     private void UpdatePlayersInfoClientRpc(FixedString32Bytes playerName, int playerPearls, PlayableState playableState)
     {
+        updatedPlayersInfoOnClient++;
+
         Debug.Log($"Name: {playerName} Pearls: {playerPearls} Player Count: {updatedPlayersInfoOnClient}");
 
         //All clients listen to this
@@ -85,13 +92,21 @@ public class LoadingPlayersUI : NetworkBehaviour
                 player2PearlsText.text = playerPearls.ToString();
                 break;
         }
+
+        if(updatedPlayersInfoOnClient >= 2)
+        {
+            ShowPlayersInfo();
+            HideWaitingForPlayers();
+        }
     }
 
+    [Command("hidePlayersInfo")]
     private void HidePlayersInfo()
     {
         backgroundPlayersInfo.SetActive(false);
     }
 
+    [Command("showPlayersInfo")]
     private void ShowPlayersInfo()
     {
         backgroundPlayersInfo.SetActive(true);

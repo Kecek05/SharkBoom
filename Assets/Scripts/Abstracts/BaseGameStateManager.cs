@@ -13,7 +13,7 @@ public abstract class BaseGameStateManager : NetworkBehaviour
 
     //Variables
     protected const int DELAY_CLOSE_PLAYERSINFO = 3000; //in ms
-    protected const int DELAY_DS_STARTGAME = 3000; //in ms
+    protected const int DELAY_STARTGAME = 3000; //in ms
     protected NetworkVariable<GameState> gameState = new(GameState.WaitingForPlayers);
     protected int clientsGainedOwnership = 0;
 

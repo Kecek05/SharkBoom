@@ -43,6 +43,13 @@ public class GameStateManager : BaseGameStateManager
                     //if(!IsHost)  //REFACTOR
                     //CalculatePearls.CalculatePossibleResults(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0], NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1]);
                     ServiceLocator.Get<BasePlayersPublicInfoManager>().RandomizePlayerItems();
+
+                    if (!IsHost)
+                    {
+                        //Is DS, wait for a bit and then change state
+                        ChangeGameState(GameState.ShowingPlayersInfo, DELAY_STARTGAME);
+                    }
+
                 }
                 break;
             case GameState.ShowingPlayersInfo:
@@ -77,12 +84,6 @@ public class GameStateManager : BaseGameStateManager
         if (playerCount == 2)
         {
             ChangeGameState(GameState.CalculatingResults); // All players Spawned, calculating Results
-
-            if(!IsHost)
-            {
-                //Is DS, wait for a bit and then change state
-                ChangeGameState(GameState.ShowingPlayersInfo, DELAY_DS_STARTGAME);
-            }
         }
     }
 
@@ -93,10 +94,11 @@ public class GameStateManager : BaseGameStateManager
         if(!IsHost) return; //DS should not change state
 
         clientsGainedOwnership++;
+        Debug.Log($"Client {clientId} Gained Ownership, Total: {clientsGainedOwnership}");
 
-        if(clientsGainedOwnership >= 2)
+        if (clientsGainedOwnership >= 2)
         {
-            ChangeGameState(GameState.ShowingPlayersInfo); // All clients with ownership, relay can start game
+            ChangeGameState(GameState.ShowingPlayersInfo, DELAY_STARTGAME); // All clients with ownership, relay can start game
         }
     }
 

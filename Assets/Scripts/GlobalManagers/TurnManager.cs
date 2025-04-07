@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Unity.Netcode;
+using UnityEngine;
 
 public class TurnManager : BaseTurnManager
 {
@@ -58,7 +59,7 @@ public class TurnManager : BaseTurnManager
         }
 
         TriggerOnLocalPlayableStateChanged();
-
+        Debug.Log($"InitializeLocalStates, Local Playing State {playingState}");
     }
 
 
