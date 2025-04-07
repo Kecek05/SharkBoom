@@ -12,13 +12,12 @@ public abstract class BaseGameStateManager : NetworkBehaviour
 
 
     //Variables
-    protected int delayClosePlayersInfo = 3000; //in ms
+    protected const int DELAY_CLOSE_PLAYERSINFO = 3000; //in ms
+    protected const int DELAY_DS_STARTGAME = 3000; //in ms
     protected NetworkVariable<GameState> gameState = new(GameState.WaitingForPlayers);
-
+    protected int clientsGainedOwnership = 0;
 
     //Publics
-
-    public int DelayClosePlayersInfo => delayClosePlayersInfo;
     public NetworkVariable<GameState> CurrentGameState => gameState;
 
     //Methods
@@ -61,6 +60,8 @@ public abstract class BaseGameStateManager : NetworkBehaviour
     public abstract void ConnectionLostHostAndClient();
 
     public abstract void HandeOnPlayerDie();
+
+    public abstract void HandleOnPlayerGainOwnership(ulong clientId);
 
 }
 

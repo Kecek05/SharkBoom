@@ -288,7 +288,7 @@ public class PlayerInventory : NetworkBehaviour
             //Need to be a for to start from index 1, index 0 is Jump
             OnItemAdded?.Invoke(playerItemsInventory[i]);
         }
-        SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
+
         SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
         Debug.Log($"ResyncReconnect called - Items in inventory: {playerItemsInventory.Count} - OwnerId: {OwnerClientId}");
     }

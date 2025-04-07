@@ -60,6 +60,7 @@ public class GameManager : NetworkBehaviour
     private void HandleOnOwnershipHandlerClientGainOwnership(ulong clientId)
     {
         HandleOnOwnershipHandlerClientGainOwnershipToClientRpc(clientId);
+        gameStateManager.HandleOnPlayerGainOwnership(clientId);
     }
 
     [Rpc(SendTo.ClientsAndHost)]

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Unity.Netcode;
 using Unity.Services.Matchmaker.Models;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ServerGameManager : IDisposable
 {
@@ -102,12 +103,25 @@ public class ServerGameManager : IDisposable
         CalculatePearls.CalculatePossibleResultsWihAllocation(player1AuthId, player2AuthId, player1Pearls, player2Pearls);
 
 
+
+        while (SceneManager.GetActiveScene().name != Loader.Scene.GameNetCodeTest.ToString())
+        {
+            //Not in game
+            Debug.Log("Not in game scene");
+            await Task.Delay(100);
+        }
+
+        Debug.Log("Loaded game scene");
+
         await Task.Delay(2000); //change to wait for some callback, I think might be an OnServerStarted | need to wait the server loads de scene and the Game Manager Handle Events
+        
         Debug.Log("Waited Delay to spawn players");
 
         networkServer.PlayerSpawner.SpawnPlayer();
 
         networkServer.PlayerSpawner.SpawnPlayer();
+
+        await Task.Delay(1000); //Wait for a bit until can change ownership to prevent some bugs
 
         networkServer.SetCanChangeOwnership(true);
     }

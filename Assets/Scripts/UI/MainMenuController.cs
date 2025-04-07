@@ -25,7 +25,6 @@ public class MainMenuController : MonoBehaviour
         {
             hostButton.interactable = false;
             await HostSingleton.Instance.GameManager.StartHostAsync();
-            hostButton.interactable = true;
         });
 
         exitButton.onClick.AddListener(() =>
@@ -33,7 +32,7 @@ public class MainMenuController : MonoBehaviour
             Application.Quit();
         });
 
-        //clientButton.onClick.AddListener(async() =>
+        //clientButton.onClick.AddListener(async () =>
         //{
         //    clientButton.interactable = false;
         //    await ClientSingleton.Instance.GameManager.StartRelayClientAsync(lobbyCodeInputField.text);
@@ -72,6 +71,14 @@ public class MainMenuController : MonoBehaviour
     private void Start()
     {
         OnLoadMainMenu?.Invoke();
+
+        HostGameManager.OnFailToStartHost += HostGameManager_OnFailToStartHost;
+
+    }
+
+    private void HostGameManager_OnFailToStartHost()
+    {
+        hostButton.interactable = true;
     }
 
     private void OnMatchMade(MatchmakerPollingResult result)
@@ -94,5 +101,10 @@ public class MainMenuController : MonoBehaviour
                 Debug.Log("TicketCancellationError Error!");
                 break;
         }
+    }
+
+    private void OnDestroy()
+    {
+        HostGameManager.OnFailToStartHost -= HostGameManager_OnFailToStartHost;
     }
 }
