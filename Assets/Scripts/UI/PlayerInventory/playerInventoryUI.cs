@@ -24,6 +24,7 @@ public class PlayerInventoryUI : NetworkBehaviour
     [SerializeField] private Button openInventoryButton;
     [SerializeField] private GameObject openInventoryBackground;
     [SerializeField] private ItemsListSO itemsListSO;
+    [SerializeField] private PlayerInventory playerInventory;
 
     private List<PlayerItemSingleUI> playerItemSingleUIs = new();
 
@@ -112,9 +113,10 @@ public class PlayerInventoryUI : NetworkBehaviour
     {
         if (!IsOwner)
         {
-            Debug.Log("PlayerInventoryUI: HandleOnPlayerInventoryItemAdded - Not Owner");
+            Debug.Log($"PlayerInventoryUI: HandleOnPlayerInventoryItemAdded - Not Owner - The owner is: {OwnerClientId} - and I am: {NetworkManager.LocalClientId}");
             return;
         }
+
 
         //Add item on list
         PlayerItemSingleUI playerItemSingleUI = Instantiate(playerItemSingleUIPrefab, inventoryItemHolder).GetComponent<PlayerItemSingleUI>();
@@ -172,6 +174,11 @@ public class PlayerInventoryUI : NetworkBehaviour
         openInventoryBackground.SetActive(true);
     }
 
+    public override void OnGainedOwnership()
+    {
+        Debug.Log($"PlayerInventoryUI Gained Ownership, new owner is: {OwnerClientId}");
+        playerInventory.ResyncReconnect();
+    }
 
     //DEBUG
     [Command("checkImOwnerInventoryUI", MonoTargetType.All)]

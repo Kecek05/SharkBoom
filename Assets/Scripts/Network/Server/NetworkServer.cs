@@ -44,6 +44,38 @@ public class NetworkServer : IDisposable
         Debug.Log($"Client {clientId} / AuthId {serverAuthenticationService.GetAuthIdByClientId(clientId)} loaded scene {sceneName}");
 
         //playerSpawner.SpawnPlayer(clientId);
+
+        Debug.Log("SceneManager_OnLoadComplete, Handling Reconnection");
+
+        if (OwnershipHandler.IsReconnecting(serverAuthenticationService.ClientIdToUserData[clientId].userAuthId))
+        {
+            OwnershipHandler.HandleOwnership(serverAuthenticationService.ClientIdToUserData[clientId].userAuthId, clientId);
+            Debug.Log("SceneManager_OnLoadComplete, Player Reconnecting");
+        }
+        else
+        {
+            //New client
+            approvedClients++;
+
+            PlayerData newPlayerData = new PlayerData()
+            {
+                userData = serverAuthenticationService.ClientIdToUserData[clientId],
+                clientId = clientId,
+                playableState = GetPlayableStateByApprovedClients(),
+                gameObject = null
+            };
+
+            serverAuthenticationService.RegisterClient(newPlayerData);
+
+            OwnershipHandler.HandleClientJoinPlayerOwnership(newPlayerData);
+
+            Debug.Log($"SceneManager_OnLoadComplete, New client - Player Data - userData Auth Id {newPlayerData.userData.userAuthId} - clientId {newPlayerData.clientId} - PlayableState {newPlayerData.playableState} - GameObject {newPlayerData.gameObject}");
+        }
+
+        OnUserJoined?.Invoke();
+
+
+        Debug.Log("SceneManager_OnLoadComplete, Finished Handling Reconnection");
     }
 
     public bool OpenConnection(string ip, int port)
@@ -78,31 +110,33 @@ public class NetworkServer : IDisposable
 
         Debug.Log($"ApprovalCheck, Name: {userData.userName}, Pearls: {userData.userPearls}, AuthId: {userData.userAuthId} ");
 
-        if (OwnershipHandler.IsReconnecting(userData.userAuthId))
-        {
-            OwnershipHandler.HandleOwnership(userData, request.ClientNetworkId);
-        }
-        else
-        {
-            //New client
-            approvedClients++;
+        serverAuthenticationService.RegisterUserData(userData, request.ClientNetworkId);
 
-            PlayerData newPlayerData = new PlayerData()
-            {
-                userData = userData,
-                clientId = request.ClientNetworkId,
-                playableState = GetPlayableStateByApprovedClients(),
-                gameObject = null
-            };
+        //if (OwnershipHandler.IsReconnecting(userData.userAuthId))
+        //{
+        //    OwnershipHandler.HandleOwnership(userData, request.ClientNetworkId);
+        //}
+        //else
+        //{
+        //    //New client
+        //    approvedClients++;
 
-            serverAuthenticationService.RegisterClient(newPlayerData);
+        //    PlayerData newPlayerData = new PlayerData()
+        //    {
+        //        userData = userData,
+        //        clientId = request.ClientNetworkId,
+        //        playableState = GetPlayableStateByApprovedClients(),
+        //        gameObject = null
+        //    };
 
-            OwnershipHandler.HandleClientJoinPlayerOwnership(newPlayerData);
+        //    serverAuthenticationService.RegisterClient(newPlayerData);
 
-            Debug.Log($"ApprovalCheck, New client - Player Data - userData Auth Id {newPlayerData.userData.userAuthId} - clientId {newPlayerData.clientId} - PlayableState {newPlayerData.playableState} - GameObject {newPlayerData.gameObject}");
-        }
+        //    OwnershipHandler.HandleClientJoinPlayerOwnership(newPlayerData);
 
-        OnUserJoined?.Invoke();
+        //    Debug.Log($"ApprovalCheck, New client - Player Data - userData Auth Id {newPlayerData.userData.userAuthId} - clientId {newPlayerData.clientId} - PlayableState {newPlayerData.playableState} - GameObject {newPlayerData.gameObject}");
+        //}
+
+        //OnUserJoined?.Invoke();
 
         response.Approved = true; //Connection is approved
         response.CreatePlayerObject = false;

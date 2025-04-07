@@ -16,6 +16,15 @@ public class ServerAuthenticationService : IServerAuthenticationService
 
     private Dictionary<ulong, PlayerData> clientIdToPlayerData = new Dictionary<ulong, PlayerData>();
 
+    /// <summary>
+    /// Used to register the user data to the client ID in ApprovalCheck
+    /// </summary>
+    private Dictionary<ulong, UserData> clientIdToUserData = new Dictionary<ulong, UserData>();
+
+    /// <summary>
+    /// Used to register the user data to the client ID in ApprovalCheck
+    /// </summary>
+    public Dictionary<ulong, UserData> ClientIdToUserData => clientIdToUserData;
     public List<PlayerData> PlayerDatas => playerDatas;
     public Dictionary<ulong, PlayerData> ClientIdToPlayerData => clientIdToPlayerData;
     public int RegisteredClientCount => clientIdToAuth.Count;
@@ -41,6 +50,11 @@ public class ServerAuthenticationService : IServerAuthenticationService
         authIdToPlayerData[playerData.userData.userAuthId] = playerData;
 
         Debug.Log($"RegisterClient, AuthId: {playerData.userData.userAuthId} ClientId: {playerData.clientId} ");
+    }
+
+    public void RegisterUserData(UserData userData, ulong clientId)
+    {
+        clientIdToUserData[clientId] = userData;
     }
 
     public void RegisterPlayableClient(PlayerData playerData)

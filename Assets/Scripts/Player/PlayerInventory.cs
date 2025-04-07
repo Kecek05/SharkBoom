@@ -42,6 +42,18 @@ public class PlayerInventory : NetworkBehaviour
         }
     }
 
+    public override void OnNetworkSpawn()
+    {
+        if(IsOwner)
+        {
+            if(playerItemsInventory.Count > 0)
+            {
+                ResyncReconnect();
+                Debug.Log("ResyncReconnect called in OnNetworkSpawn");
+            }
+        }
+    }
+
     public void InitializeOwner()
     {
         if(!IsOwner) return;
@@ -259,7 +271,7 @@ public class PlayerInventory : NetworkBehaviour
 
         //Reselect an item
         SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
-        Debug.Log($"ResyncReconnect called - Items in inventory: {playerItemsInventory.Count}");
+        Debug.Log($"ResyncReconnect called - Items in inventory: {playerItemsInventory.Count} - OwnerId: {OwnerClientId}");
     }
 
     public override void OnNetworkDespawn()

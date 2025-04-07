@@ -30,12 +30,13 @@ public static class OwnershipHandler
     /// <summary>
     /// Handle the ownership of the player object when reconnected. Server Only!
     /// </summary>
-    public static void HandleOwnership(UserData userData, ulong clientId)
+    /// <param name="clientId"> New client Id of the player</param>
+    public static void HandleOwnership(string authId, ulong clientId)
     {
-        if (NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.AuthIdToPlayerData.TryGetValue(userData.userAuthId, out PlayerData playerData))
+        if (NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.AuthIdToPlayerData.TryGetValue(authId, out PlayerData playerData))
         {
             //Update clientId
-            playerData = NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.AuthIdToPlayerData[userData.userAuthId];
+            playerData = NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.AuthIdToPlayerData[authId];
 
             playerData.clientId = clientId;
 
@@ -63,7 +64,7 @@ public static class OwnershipHandler
         }
         Debug.Log($"HandleClientJoinPlayerOwnership, Can change ownership, player count is: {NetworkServerProvider.Instance.CurrentNetworkServer.PlayerSpawner.PlayerCount}, changing ownership");
 
-        HandleOwnership(playerData.userData, playerData.clientId);
+        HandleOwnership(playerData.userData.userAuthId, playerData.clientId);
 
         GameObject playerGameObject = ServiceLocator.Get<BasePlayersPublicInfoManager>().GetPlayerObjectByPlayableState(playerData.playableState);
 
