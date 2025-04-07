@@ -1,3 +1,4 @@
+using QFSW.QC;
 using System.Threading.Tasks;
 using Unity.Netcode;
 using UnityEngine;
@@ -140,6 +141,11 @@ public class TurnManager : BaseTurnManager
         }
     }
 
+    [Command("printLocalPlayableState")]
+    private void PrintLocalPlayableState() //DEBUG
+    {
+        Debug.Log($"Local Playable State: {localPlayableState}");
+    }
 
     protected override void SetPlayableStateServer(PlayableState newState)
     {
