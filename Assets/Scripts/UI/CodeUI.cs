@@ -35,7 +35,7 @@ public class CodeUI : MonoBehaviour
 
     private void GameState_OnValueChanged(GameState previousValue, GameState newValue)
     {
-        if (newValue == GameState.GameStarted)
+        if (newValue == GameState.ShowingPlayersInfo)
         {
             StopCoroutine(updateCodeTextUICoroutine);
 

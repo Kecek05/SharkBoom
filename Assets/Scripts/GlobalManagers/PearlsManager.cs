@@ -26,20 +26,25 @@ public class PearlsManager : BasePearlsManager
 
                 await CalculatePearls.ChangePearlsLoser(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1]);
 
+                SendGameResultsToClient
+                    (
+                    NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId,
+                    CalculatePearls.AuthIdToCalculatedPearls[NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId].PearlsToLose
+                    );
+
+                SendGameResultsToClient
+                    (
+                    NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId,
+                    CalculatePearls.AuthIdToCalculatedPearls[NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId].PearlsToLose
+                    );
+
+
+            } else
+            {
+                SendGameResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId, 0);
+
+                SendGameResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId, 0);
             }
-
-
-            SendGameResultsToClient
-                (
-                NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId, 
-                CalculatePearls.AuthIdToCalculatedPearls[NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId].PearlsToLose
-                );
-
-            SendGameResultsToClient
-                (
-                NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId,
-                CalculatePearls.AuthIdToCalculatedPearls[NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId].PearlsToLose
-                );
 
             TriggerOnFinishedCalculationsOnServer();
 
@@ -57,19 +62,29 @@ public class PearlsManager : BasePearlsManager
                 await CalculatePearls.ChangePearlsWinner(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1]);
 
                 await CalculatePearls.ChangePearlsLoser(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0]);
+
+
+                SendGameResultsToClient
+                    (
+                    NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId,
+                    CalculatePearls.AuthIdToCalculatedPearls[NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId].PearlsToLose
+                    );
+
+                SendGameResultsToClient
+                    (
+                    NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId,
+                    CalculatePearls.AuthIdToCalculatedPearls[NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId].PearlsToWin
+                    );
+
+            } else
+            {
+                SendGameResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId, 0);
+
+                SendGameResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId, 0);
             }
 
-            SendGameResultsToClient
-                (
-                NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId,
-                CalculatePearls.AuthIdToCalculatedPearls[NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId].PearlsToLose
-                );
 
-            SendGameResultsToClient
-                (
-                NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId,
-                CalculatePearls.AuthIdToCalculatedPearls[NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId].PearlsToWin
-                );
+
 
             Debug.Log($"Player {NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userName} Winner");
         }
@@ -83,21 +98,28 @@ public class PearlsManager : BasePearlsManager
                 await CalculatePearls.ChangePearlsWinner(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0]);
 
                 await CalculatePearls.ChangePearlsLoser(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1]);
+
+                SendGameResultsToClient
+                    (
+                    NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId,
+                    CalculatePearls.AuthIdToCalculatedPearls[NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId].PearlsToWin
+                    );
+
+                SendGameResultsToClient
+                    (
+                    NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId,
+                    CalculatePearls.AuthIdToCalculatedPearls[NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId].PearlsToLose
+                    );
+            } else
+            {
+                SendGameResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId, 0);
+
+                SendGameResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId, 0);
             }
 
-            SendGameResultsToClient
-                (
-                NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId,
-                CalculatePearls.AuthIdToCalculatedPearls[NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId].PearlsToWin
-                );
 
-            SendGameResultsToClient
-                (
-                NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId,
-                CalculatePearls.AuthIdToCalculatedPearls[NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId].PearlsToLose
-                );
 
-            Debug.Log($"Player {NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userName} Winner");
+                Debug.Log($"Player {NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userName} Winner");
         }
 
         TriggerOnFinishedCalculationsOnServer();

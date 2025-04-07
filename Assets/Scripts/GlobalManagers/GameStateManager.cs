@@ -55,6 +55,7 @@ public class GameStateManager : BaseGameStateManager
             case GameState.ShowingPlayersInfo:
                 if (IsServer)
                 {
+
                     //ServiceLocator.Get<BasePlayersPublicInfoManager>().RandomizePlayerItems();
                     ChangeGameState(GameState.GameStarted, DELAY_CLOSE_PLAYERSINFO); //Show Players Info delay
                 }

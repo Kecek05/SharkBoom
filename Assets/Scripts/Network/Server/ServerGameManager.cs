@@ -100,7 +100,7 @@ public class ServerGameManager : IDisposable
         int player1Pearls = authIdToPearlsPayload[player1AuthId];
         int player2Pearls = authIdToPearlsPayload[player2AuthId];
 
-        CalculatePearls.CalculatePossibleResultsWihAllocation(player1AuthId, player2AuthId, player1Pearls, player2Pearls);
+        CalculatePearls.CalculatePossibleResults(player1AuthId, player2AuthId, player1Pearls, player2Pearls);
 
 
 

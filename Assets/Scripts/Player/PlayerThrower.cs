@@ -41,6 +41,7 @@ public class PlayerThrower : NetworkBehaviour
 
         thisPlayableState.OnValueChanged += PlayableStateInitialize;
 
+
         PlayableStateInitialize(thisPlayableState.Value, thisPlayableState.Value);
 
         //if (!IsHost) // host will add itself twice
@@ -276,7 +277,17 @@ public class PlayerThrower : NetworkBehaviour
     {
         if (IsOwner && IsClient)
         {
-            ServiceLocator.Get<BaseTurnManager>().InitializeLocalStates(newValue); //pass to GameFlow to know when its local turn
+            if(IsHost)
+            {
+                //Host always is Player1Playing
+                ServiceLocator.Get<BaseTurnManager>().InitializeLocalStates(PlayableState.Player1Playing);
+
+            } else
+            {
+                ServiceLocator.Get<BaseTurnManager>().InitializeLocalStates(newValue); //pass to GameFlow to know when its local turn
+            }
+
+           
         }
 
         if (newValue == PlayableState.Player1Playing)
