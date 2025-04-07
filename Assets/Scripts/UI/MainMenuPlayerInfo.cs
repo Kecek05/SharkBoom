@@ -8,7 +8,6 @@ public class MainMenuPlayerInfo : MonoBehaviour
 
     void Start()
     {
-        Save.OnPlayerPearlsLoaded += HandlePearlsChanged;
         Save.OnPlayerPearlsChanged += HandlePearlsChanged;
 
 
@@ -22,14 +21,15 @@ public class MainMenuPlayerInfo : MonoBehaviour
         UpdatePlayerValues();
     }
 
-    private void UpdatePlayerValues()
+    private async void UpdatePlayerValues()
     {
-        playerPearlsText.text = ClientSingleton.Instance.GameManager.UserData.userPearls.ToString();
+
+        int pearls = await Save.LoadPlayerPearls(ClientSingleton.Instance.GameManager.UserData.userAuthId);
+        playerPearlsText.text = pearls.ToString();
     }
 
     private void OnDestroy()
     {
-        Save.OnPlayerPearlsLoaded -= HandlePearlsChanged;
         Save.OnPlayerPearlsChanged -= HandlePearlsChanged;
     }
 }
