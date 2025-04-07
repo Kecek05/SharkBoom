@@ -55,7 +55,7 @@ public class DragAndShoot : NetworkBehaviour
     [SerializeField] private float zoomDragSpeed;
 
     [Tooltip("Amount of zoom to change")]
-    [SerializeField] private float zoomAmountToChange = 5f;
+    [SerializeField] private float zoomAmountToChange = 7f;
 
     [Tooltip("Will only detect the distance if exceeds threshold")]
     [SerializeField] private int detectDistanceThreshold = 2;

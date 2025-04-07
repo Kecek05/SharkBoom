@@ -9,7 +9,6 @@ public class CameraManager : NetworkBehaviour
     [SerializeField] private CameraMovement cameraMovement;
     [SerializeField] private CameraZoom cameraZoom;
     [SerializeField] private CameraFollowing cameraFollowing;
-    [SerializeField] private CinemachineFollow cinemachineFollowComponent;
     [SerializeField] private PlayerThrower player;
     
 

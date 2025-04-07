@@ -82,6 +82,7 @@ public class CameraZoom : NetworkBehaviour
             if (currentDistance > previousDistance) // zoom in
             {
                 ChangeZoom(0.5f);
+                Debug.Log("zoom in");
             }
             else if (currentDistance < previousDistance) // zoom out
             {
