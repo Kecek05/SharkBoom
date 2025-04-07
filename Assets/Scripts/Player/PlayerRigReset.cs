@@ -11,15 +11,7 @@ public class PlayerRigReset : DragListener
     [SerializeField] private Vector3[] boneInitialPosition;
     [SerializeField] private Quaternion[] boneInitialRotation;
 
-    public void ResetPose()
-    {
-        Debug.Log("reseting pose");
-        for (int i = 0; i < boneTransforms.Length; i++)
-        {
-            boneTransforms[i].localPosition = boneInitialPosition[i];
-            boneTransforms[i].localRotation = boneInitialRotation[i];
-        }
-    }
+    
 
     protected override void DoOnSpawn()
     {
@@ -31,7 +23,7 @@ public class PlayerRigReset : DragListener
             boneInitialPosition = new Vector3[boneTransforms.Length];
             boneInitialRotation = new Quaternion[boneTransforms.Length];
 
-            for (int i = 0; i < boneTransforms.Length; i++)
+            for (int i = 0; i < boneTransforms.Length; i++) // Using the for because we need to save the initial position and rotation for all bones
             {
                 boneInitialPosition[i] = boneTransforms[i].localPosition;
                 boneInitialRotation[i] = boneTransforms[i].localRotation;
@@ -47,9 +39,18 @@ public class PlayerRigReset : DragListener
 
     protected override void DoOnDragRelease()
     {
-        Debug.Log("testing release");
+        Debug.Log("Testing release");
         ResetPose();
     }
 
-    
+    public void ResetPose()
+    {
+        Debug.Log("reseting pose");
+        for (int i = 0; i < boneTransforms.Length; i++) // Reset the pose of all bones
+        {
+            boneTransforms[i].localPosition = boneInitialPosition[i]; 
+            boneTransforms[i].localRotation = boneInitialRotation[i];
+        }
+    }
+
 }
