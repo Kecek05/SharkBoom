@@ -19,12 +19,12 @@ public class PlayerInventoryUI : NetworkBehaviour
     [SerializeField] private GameObject playerInventoryUIBackground;
     //[SerializeField] private PlayerThrower player;
     [SerializeField] private Transform inventoryItemHolder;
-    [SerializeField] private GameObject playerItemSingleUIPrefab;
+    [SerializeField] private NetworkObject playerItemSingleUIPrefab;
     [SerializeField] private Button jumpButton;
     [SerializeField] private Button openInventoryButton;
     [SerializeField] private GameObject openInventoryBackground;
     [SerializeField] private ItemsListSO itemsListSO;
-    [SerializeField] private PlayerInventory playerInventory;
+    //[SerializeField] private PlayerInventory playerInventory;
 
     private List<PlayerItemSingleUI> playerItemSingleUIs = new();
 
@@ -117,15 +117,25 @@ public class PlayerInventoryUI : NetworkBehaviour
             return;
         }
 
-
         //Add item on list
-        PlayerItemSingleUI playerItemSingleUI = Instantiate(playerItemSingleUIPrefab, inventoryItemHolder).GetComponent<PlayerItemSingleUI>();
+        SpawnPlayerItemSingleUIServerRpc(itemData);
+
+        //UpdateOpenInventoryButton();
+    }
+
+    [Rpc(SendTo.Server)]
+    private void SpawnPlayerItemSingleUIServerRpc(ItemInventoryData itemData)
+    {
+        NetworkObject playerItemSingle = Instantiate(playerItemSingleUIPrefab, inventoryItemHolder);
+        playerItemSingle.Spawn(true);
+
+        PlayerItemSingleUI playerItemSingleUI = playerItemSingle.GetComponent<PlayerItemSingleUI>();
         playerItemSingleUI.Setup(itemsListSO.allItemsSOList[itemData.itemSOIndex].itemName, itemsListSO.allItemsSOList[itemData.itemSOIndex].itemIcon, itemData.itemCooldownRemaining.ToString(), itemData.itemCanBeUsed, itemData.itemInventoryIndex, this);
         playerItemSingleUIs.Add(playerItemSingleUI);
 
-        Debug.Log($"Added Item {itemsListSO.allItemsSOList[itemData.itemSOIndex].itemName} - Index: {itemData.itemInventoryIndex} | Item SO Index: {itemData.itemSOIndex} | Item Can Be Used: {itemData.itemCanBeUsed} | Item Cooldown Remaining: {itemData.itemCooldownRemaining}");
-        //UpdateOpenInventoryButton();
+        Debug.Log($"Spawned Item in network: {itemsListSO.allItemsSOList[itemData.itemSOIndex].itemName} - Index: {itemData.itemInventoryIndex} | Item SO Index: {itemData.itemSOIndex} | Item Can Be Used: {itemData.itemCanBeUsed} | Item Cooldown Remaining: {itemData.itemCooldownRemaining}");
     }
+
 
     public void SelecItem(int itemInventoryIndex)
     {
@@ -150,7 +160,7 @@ public class PlayerInventoryUI : NetworkBehaviour
         }
         else
         {
-            ShoInventory();
+            ShowInventory();
         }
     }
 
@@ -159,7 +169,7 @@ public class PlayerInventoryUI : NetworkBehaviour
         playerInventoryUIBackground.SetActive(false);
     }
 
-    private void ShoInventory()
+    private void ShowInventory()
     {
         playerInventoryUIBackground.SetActive(true);
     }
@@ -177,7 +187,9 @@ public class PlayerInventoryUI : NetworkBehaviour
     public override void OnGainedOwnership()
     {
         Debug.Log($"PlayerInventoryUI Gained Ownership, new owner is: {OwnerClientId}");
-        playerInventory.ResyncReconnect();
+        //playerInventory.ResyncReconnect();
+        ShowInventory();
+        openInventoryBackground.SetActive(true);
     }
 
     //DEBUG

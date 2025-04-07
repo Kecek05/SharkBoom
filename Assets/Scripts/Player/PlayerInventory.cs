@@ -263,11 +263,11 @@ public class PlayerInventory : NetworkBehaviour
 
     public void ResyncReconnect()
     {
-        for(int i = 1; i < playerItemsInventory.Count; i++)
-        {
-            //Need to be a for to start from index 1, index 0 is Jump
-            OnItemAdded?.Invoke(playerItemsInventory[i]);
-        }
+        //for(int i = 1; i < playerItemsInventory.Count; i++)
+        //{
+        //    //Need to be a for to start from index 1, index 0 is Jump
+        //    OnItemAdded?.Invoke(playerItemsInventory[i]);
+        //}
 
         //Reselect an item
         SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());

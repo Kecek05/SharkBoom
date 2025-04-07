@@ -160,6 +160,7 @@ public class PlayerThrower : NetworkBehaviour
         playerInventoryUI.HandleOnPlayerStateMachineStateChanged(state);
     }
 
+    [Command("handleOnItemLaunched", MonoTargetType.All)]
     private void HandleOnItemLaunched(int itemInventoryIndex)
     {
         playerInventory.HandleOnPlayerLauncherItemLaunched(itemInventoryIndex);
