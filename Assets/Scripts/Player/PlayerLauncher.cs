@@ -1,3 +1,4 @@
+using QFSW.QC;
 using Sortify;
 using System;
 using Unity.Netcode;
@@ -57,6 +58,7 @@ public class PlayerLauncher : NetworkBehaviour
         }
     }
 
+
     private void Launch()
     {
 
@@ -77,6 +79,14 @@ public class PlayerLauncher : NetworkBehaviour
     
         OnItemLaunched?.Invoke(playerInventory.SelectedItemInventoryIndex); //pass itemInventoryIndex
          
+    }
+
+    [Command("launch", MonoTargetType.All)]
+    private void LaunchDebug()
+    {
+        if (!IsOwner) return;
+
+        Launch();
     }
 
 

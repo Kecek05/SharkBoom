@@ -13,9 +13,9 @@ public class PlayerItemSingleUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI itemNameText;
     [SerializeField] private Image itemImageIcon;
     [SerializeField] private TextMeshProUGUI itemCooldownText;
-    [SerializeField] private TextMeshProUGUI itemCanBeUsedText;
+    //[SerializeField] private TextMeshProUGUI itemCanBeUsedText;
     [SerializeField] private Button selectThisItemButton;
-    [SerializeField] private TextMeshProUGUI itemInventoryIndexText;
+    //[SerializeField] private TextMeshProUGUI itemInventoryIndexText;
     [SerializeField] private Image backgroundImage;
     private PlayerInventoryUI playerInventoryUI;
 
@@ -40,23 +40,23 @@ public class PlayerItemSingleUI : MonoBehaviour
         itemImageIcon.sprite = itemIcon;
         itemCooldownText.text = itemCooldown;
 
-        itemCanBeUsedText.text = itemCanBeUsed.ToString();
+        //itemCanBeUsedText.text = itemCanBeUsed.ToString();
 
         myIndexItemInventory = indexItemInventory;
 
-        itemInventoryIndexText.text = indexItemInventory.ToString();
+        //itemInventoryIndexText.text = indexItemInventory.ToString();
 
         playerInventoryUI = _playerInventoryUI;
     }
 
-    public void UpdateCooldown(string newCooldown)
+    public void UpdateCooldown(int newCooldown)
     {
-        itemCooldownText.text = newCooldown;
+        itemCooldownText.text = newCooldown.ToString();
     }
 
     public void UpdateCanBeUsed(bool itemCanBeUsed)
     {
-        itemCanBeUsedText.text = itemCanBeUsed.ToString();
+        //itemCanBeUsedText.text = itemCanBeUsed.ToString();
     }
 
     public void SelectedThisItem()
@@ -68,4 +68,14 @@ public class PlayerItemSingleUI : MonoBehaviour
     {
         backgroundImage.color = unSelectedColor;
     }
+
+    public string GetItemName() { return itemNameText.text; } 
+
+    public Sprite GetItemIcon() { return itemImageIcon.sprite; }
+
+    public string GetItemCooldown() { return itemCooldownText.text; }
+
+    public int GetIndexItemInventory() { return myIndexItemInventory; }
+    public PlayerInventoryUI GetPlayerInventoryUI() {  return playerInventoryUI; }
+
 }

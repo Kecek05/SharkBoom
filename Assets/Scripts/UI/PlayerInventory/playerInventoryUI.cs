@@ -13,13 +13,13 @@ public class PlayerInventoryUI : NetworkBehaviour
     /// Pass the index of the itemInventoryIndex
     /// </summary>
     public event Action<int> OnItemSelectedByUI;
-
+    public event Action OnPlayerInventoryGainOwnership;
 
     [BetterHeader("References")]
     [SerializeField] private GameObject playerInventoryUIBackground;
     //[SerializeField] private PlayerThrower player;
     [SerializeField] private Transform inventoryItemHolder;
-    [SerializeField] private NetworkObject playerItemSingleUIPrefab;
+    [SerializeField] private GameObject playerItemSingleUIPrefab;
     [SerializeField] private Button jumpButton;
     [SerializeField] private Button openInventoryButton;
     [SerializeField] private GameObject openInventoryBackground;
@@ -27,6 +27,7 @@ public class PlayerInventoryUI : NetworkBehaviour
     //[SerializeField] private PlayerInventory playerInventory;
 
     private List<PlayerItemSingleUI> playerItemSingleUIs = new();
+    //private NetworkList<ItemInventoryData> playerItemInventoryData = new();
 
     private void Awake()
     {
@@ -102,7 +103,7 @@ public class PlayerInventoryUI : NetworkBehaviour
         {
             if (playerItemSingleUI.ItemIndex == itemData.itemInventoryIndex)
             {
-                playerItemSingleUI.UpdateCooldown(itemData.itemCooldownRemaining.ToString());
+                playerItemSingleUI.UpdateCooldown(itemData.itemCooldownRemaining);
                 playerItemSingleUI.UpdateCanBeUsed(itemData.itemCanBeUsed);
                 return;
             }
@@ -118,22 +119,12 @@ public class PlayerInventoryUI : NetworkBehaviour
         }
 
         //Add item on list
-        SpawnPlayerItemSingleUIServerRpc(itemData);
-
-        //UpdateOpenInventoryButton();
-    }
-
-    [Rpc(SendTo.Server)]
-    private void SpawnPlayerItemSingleUIServerRpc(ItemInventoryData itemData)
-    {
-        NetworkObject playerItemSingle = Instantiate(playerItemSingleUIPrefab, inventoryItemHolder);
-        playerItemSingle.Spawn(true);
-
-        PlayerItemSingleUI playerItemSingleUI = playerItemSingle.GetComponent<PlayerItemSingleUI>();
+        PlayerItemSingleUI playerItemSingleUI = Instantiate(playerItemSingleUIPrefab, inventoryItemHolder).GetComponent<PlayerItemSingleUI>();
         playerItemSingleUI.Setup(itemsListSO.allItemsSOList[itemData.itemSOIndex].itemName, itemsListSO.allItemsSOList[itemData.itemSOIndex].itemIcon, itemData.itemCooldownRemaining.ToString(), itemData.itemCanBeUsed, itemData.itemInventoryIndex, this);
         playerItemSingleUIs.Add(playerItemSingleUI);
 
-        Debug.Log($"Spawned Item in network: {itemsListSO.allItemsSOList[itemData.itemSOIndex].itemName} - Index: {itemData.itemInventoryIndex} | Item SO Index: {itemData.itemSOIndex} | Item Can Be Used: {itemData.itemCanBeUsed} | Item Cooldown Remaining: {itemData.itemCooldownRemaining}");
+        Debug.Log($"Spawned Item: {playerItemSingleUI.gameObject.name} - {itemsListSO.allItemsSOList[itemData.itemSOIndex].itemName} - Index: {itemData.itemInventoryIndex} | Item SO Index: {itemData.itemSOIndex} | Item Can Be Used: {itemData.itemCanBeUsed} | Item Cooldown Remaining: {itemData.itemCooldownRemaining}");
+        //UpdateOpenInventoryButton();
     }
 
 
@@ -188,6 +179,16 @@ public class PlayerInventoryUI : NetworkBehaviour
     {
         Debug.Log($"PlayerInventoryUI Gained Ownership, new owner is: {OwnerClientId}");
         //playerInventory.ResyncReconnect();
+        //foreach(PlayerItemSingleUI playerItemSingleUI in playerItemSingleUIs)
+        //{
+        //    PlayerItemSingleUI updatedPlayerItemSingle = Instantiate(playerItemSingleUIPrefab, inventoryItemHolder).GetComponent<PlayerItemSingleUI>();
+        //    updatedPlayerItemSingle.Setup(playerItemSingleUI.GetItemName(), playerItemSingleUI.GetItemIcon(), playerItemSingleUI.GetItemCooldown(), false, playerItemSingleUI.GetIndexItemInventory(), this);
+        //    Debug.Log($"Updated Item: {updatedPlayerItemSingle.gameObject.name} - {updatedPlayerItemSingle.GetItemName()} - Index: {updatedPlayerItemSingle.GetIndexItemInventory()} | Item Cooldown Remaining: {updatedPlayerItemSingle.GetItemCooldown()}");
+
+        //}
+
+        OnPlayerInventoryGainOwnership?.Invoke();
+
         ShowInventory();
         openInventoryBackground.SetActive(true);
     }

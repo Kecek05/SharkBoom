@@ -16,6 +16,7 @@ public class PlayerInventory : NetworkBehaviour
     public event Action<ItemSO> OnItemSelectedSO;
 
     [SerializeField] private ItemsListSO itemsListSO;
+    [SerializeField] private PlayerThrower playerThrower;
 
     private NetworkList<ItemInventoryData> playerItemsInventory = new();
 
@@ -42,17 +43,17 @@ public class PlayerInventory : NetworkBehaviour
         }
     }
 
-    public override void OnNetworkSpawn()
-    {
-        if(IsOwner)
-        {
-            if(playerItemsInventory.Count > 0)
-            {
-                ResyncReconnect();
-                Debug.Log("ResyncReconnect called in OnNetworkSpawn");
-            }
-        }
-    }
+    //public override void OnNetworkSpawn()
+    //{
+    //    if(IsOwner)
+    //    {
+    //        if(playerItemsInventory.Count > 0)
+    //        {
+    //            ResyncReconnect();
+    //            Debug.Log("ResyncReconnect called in OnNetworkSpawn");
+    //        }
+    //    }
+    //}
 
     public void InitializeOwner()
     {
@@ -261,7 +262,7 @@ public class PlayerInventory : NetworkBehaviour
         Debug.Log($"Selected item inventory index: {selectedItemInventoryIndex}");
     }
 
-    public void ResyncReconnect()
+    public override void OnGainedOwnership()
     {
         //for(int i = 1; i < playerItemsInventory.Count; i++)
         //{
@@ -270,8 +271,18 @@ public class PlayerInventory : NetworkBehaviour
         //}
 
         //Reselect an item
+        HandleOnPlayerStateMachineStateChanged(playerThrower.PlayerStateMachine.CurrentState.State);
         SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
         Debug.Log($"ResyncReconnect called - Items in inventory: {playerItemsInventory.Count} - OwnerId: {OwnerClientId}");
+    }
+
+    public void HandleOnPlayerInventoryUIGainOwnership()
+    {
+        for (int i = 1; i < playerItemsInventory.Count; i++)
+        {
+            //Need to be a for to start from index 1, index 0 is Jump
+            OnItemAdded?.Invoke(playerItemsInventory[i]);
+        }
     }
 
     public override void OnNetworkDespawn()

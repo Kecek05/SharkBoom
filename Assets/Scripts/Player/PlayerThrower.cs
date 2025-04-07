@@ -95,6 +95,7 @@ public class PlayerThrower : NetworkBehaviour
         playerDragController.OnDragCancelable += HandleOnDragCancelable;
 
         playerInventoryUI.OnItemSelectedByUI += HandleOnItemSelectedByUI;
+        playerInventoryUI.OnPlayerInventoryGainOwnership += HandleOnPlayerInventoryUIPlayerInventoryGainOwnership;
     }
 
 
@@ -115,6 +116,12 @@ public class PlayerThrower : NetworkBehaviour
         playerDragController.OnDragCancelable -= HandleOnDragCancelable;
 
         playerInventoryUI.OnItemSelectedByUI -= HandleOnItemSelectedByUI;
+        playerInventoryUI.OnPlayerInventoryGainOwnership -= HandleOnPlayerInventoryUIPlayerInventoryGainOwnership;
+    }
+
+    private void HandleOnPlayerInventoryUIPlayerInventoryGainOwnership()
+    {
+        playerInventory.HandleOnPlayerInventoryUIGainOwnership();
     }
 
     private void HandleOnDragStart()
@@ -158,9 +165,8 @@ public class PlayerThrower : NetworkBehaviour
         playerDragUi.HandleOnPlayerStateMachineStateChanged(state);
 
         playerInventoryUI.HandleOnPlayerStateMachineStateChanged(state);
-    }
 
-    [Command("handleOnItemLaunched", MonoTargetType.All)]
+    }
     private void HandleOnItemLaunched(int itemInventoryIndex)
     {
         playerInventory.HandleOnPlayerLauncherItemLaunched(itemInventoryIndex);
@@ -303,8 +309,8 @@ public class PlayerThrower : NetworkBehaviour
 
     public override void OnGainedOwnership()
     {
-        Debug.Log($"Gained Ownership, new owner is: {OwnerClientId}");
-        playerInventory.ResyncReconnect();
+        Debug.Log($"PlayerThrower Gained Ownership, new owner is: {OwnerClientId}");
+        //playerInventory.ResyncReconnect();
     }
 
     public override void OnLostOwnership()
