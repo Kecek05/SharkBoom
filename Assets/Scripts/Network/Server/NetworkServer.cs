@@ -43,6 +43,8 @@ public class NetworkServer : IDisposable
 
         Debug.Log($"Client {clientId} / AuthId {serverAuthenticationService.GetAuthIdByClientId(clientId)} loaded scene {sceneName}");
 
+        
+
         //playerSpawner.SpawnPlayer(clientId);
 
         Debug.Log("SceneManager_OnLoadComplete, Handling Reconnection");

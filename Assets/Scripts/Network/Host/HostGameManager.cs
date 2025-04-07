@@ -10,6 +10,7 @@ using Unity.Services.Lobbies.Models;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class HostGameManager : IDisposable //Actual Logic to interact with UGS (Relay, Lobby, etc)
 {
@@ -101,12 +102,22 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
 
         NetworkManager.Singleton.StartHost();
 
-
         PearlsManager.OnFinishedCalculationsOnServer += PearlsManager_OnFinishedCalculationsOnServer;
 
         networkServer.OnClientLeft += HandleClientLeft;
 
         Loader.LoadHostNetwork(Loader.Scene.GameNetCodeTest);
+
+        while(SceneManager.GetActiveScene().name != Loader.Scene.GameNetCodeTest.ToString())
+        {
+            //Not in game
+            Debug.Log("Not in game scene");
+            await Task.Delay(100);
+        }
+
+        Debug.Log("Loaded game scene");
+        ServiceLocator.Get<Base>
+
     }
 
     private async void HandleClientLeft(string authId)
