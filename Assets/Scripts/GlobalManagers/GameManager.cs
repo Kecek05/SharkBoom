@@ -1,9 +1,14 @@
 using QFSW.QC;
+using System;
 using Unity.Netcode;
 using UnityEngine;
 
 public class GameManager : NetworkBehaviour
 {
+    /// <summary>
+    /// Called when the client gain ownership of the player object. Pass the new owner clientId
+    /// </summary>
+    public static event Action<ulong> OnClientOwnershipChanged;
 
     private BaseTurnManager turnManager;
     private BaseTimerManager timerManager;
@@ -47,6 +52,20 @@ public class GameManager : NetworkBehaviour
         gameOverManager.LosedPlayer.OnValueChanged += HandleOnLosedPlayerChanged;
 
         timerManager.OnTurnTimesUp += HandleOnTurnTimesUp;
+
+        if(IsServer)
+            OwnershipHandler.OnClientGainOwnership += HandleOnOwnershipHandlerClientGainOwnership;
+    }
+
+    private void HandleOnOwnershipHandlerClientGainOwnership(ulong clientId)
+    {
+        HandleOnOwnershipHandlerClientGainOwnershipToClientRpc(clientId);
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void HandleOnOwnershipHandlerClientGainOwnershipToClientRpc(ulong clientId)
+    {
+        OnClientOwnershipChanged?.Invoke(clientId);
     }
 
     // Times up
@@ -121,6 +140,9 @@ public class GameManager : NetworkBehaviour
         gameOverManager.LosedPlayer.OnValueChanged -= HandleOnLosedPlayerChanged;
 
         timerManager.OnTurnTimesUp -= HandleOnTurnTimesUp;
+
+        if (IsServer)
+            OwnershipHandler.OnClientGainOwnership -= HandleOnOwnershipHandlerClientGainOwnership;
     }
 
     public override void OnNetworkDespawn()

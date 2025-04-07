@@ -1,5 +1,6 @@
 using QFSW.QC;
 using Sortify;
+using System;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -33,27 +34,35 @@ public class PlayerThrower : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        GameManager.OnClientOwnershipChanged += HandleOnClientOwnershipChanged;
+
         gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
         turnManager = ServiceLocator.Get<BaseTurnManager>();
 
         thisPlayableState.OnValueChanged += PlayableStateInitialize;
 
-        if (!IsHost) // host will add itself twice
-            PlayableStateInitialize(thisPlayableState.Value, thisPlayableState.Value);
+        //if (!IsHost) // host will add itself twice
+        //    PlayableStateInitialize(thisPlayableState.Value, thisPlayableState.Value);
 
-        if (IsOwner)
-        {
-            InitializeOwner();
-        }
-        else
-        {
-            //if not owner, turn off touch collider
-            playerTouchColl.enabled = false;
-        }
-
-        //HandleEvents();
+        playerTouchColl.enabled = false;
 
         Debug.Log($"OnNetworkSpawn of PlayerThrower - Im owner? {IsOwner} - OwnerId: {OwnerClientId}");
+    }
+
+    private void HandleOnClientOwnershipChanged(ulong newOwnerClientId)
+    {
+        if(newOwnerClientId == OwnerClientId)
+        {
+            //Im the new owner
+            Debug.Log($"PlayerThrower Gained Ownership, new owner is: {OwnerClientId} - Im {NetworkManager.LocalClientId}");
+
+            InitializeOwner();
+            HandleEvents();
+            playerTouchColl.enabled = true;
+
+            playerInventory.HandleOnGainOwnership();
+            playerInventoryUI.HandleOnGainOwnership();
+        }
     }
 
     private void InitializeOwner()
@@ -99,7 +108,6 @@ public class PlayerThrower : NetworkBehaviour
         playerDragController.OnDragCancelable += HandleOnDragCancelable;
 
         playerInventoryUI.OnItemSelectedByUI += HandleOnItemSelectedByUI;
-        playerInventoryUI.OnPlayerInventoryGainOwnership += HandleOnPlayerInventoryUIPlayerInventoryGainOwnership;
     }
 
 
@@ -120,14 +128,8 @@ public class PlayerThrower : NetworkBehaviour
         playerDragController.OnDragCancelable -= HandleOnDragCancelable;
 
         playerInventoryUI.OnItemSelectedByUI -= HandleOnItemSelectedByUI;
-        playerInventoryUI.OnPlayerInventoryGainOwnership -= HandleOnPlayerInventoryUIPlayerInventoryGainOwnership;
     }
 
-    private void HandleOnPlayerInventoryUIPlayerInventoryGainOwnership()
-    {
-        //HandleOnStateChanged(playerStateMachine.CurrentState.State);
-        playerInventory.HandleOnPlayerInventoryUIGainOwnership();
-    }
 
     private void HandleOnDragStart()
     {
@@ -295,6 +297,7 @@ public class PlayerThrower : NetworkBehaviour
 
     public override void OnNetworkDespawn()
     {
+        GameManager.OnClientOwnershipChanged -= HandleOnClientOwnershipChanged;
         thisPlayableState.OnValueChanged -= PlayableStateInitialize;
 
         if (IsOwner)
@@ -316,17 +319,17 @@ public class PlayerThrower : NetworkBehaviour
 
     public override void OnGainedOwnership()
     {
-        if(IsOwner)
-        {
-            InitializeOwner();
-            HandleEvents();
-            playerTouchColl.enabled = true;
-        }
+        //if(IsOwner)
+        //{
+        //    InitializeOwner();
+        //    HandleEvents();
+        //    playerTouchColl.enabled = true;
+        //}
 
-        //HandleOnStateChanged(playerStateMachine.CurrentState.State);
-        Debug.Log($"PlayerThrower Gained Ownership, new owner is: {OwnerClientId}");
-        Debug.Log($"Player State machine exist? {playerStateMachine != null}");
-        //playerInventory.ResyncReconnect();
+        ////HandleOnStateChanged(playerStateMachine.CurrentState.State);
+        //Debug.Log($"PlayerThrower Gained Ownership, new owner is: {OwnerClientId}");
+        //Debug.Log($"Player State machine exist? {playerStateMachine != null}");
+        ////playerInventory.ResyncReconnect();
     }
 
     public override void OnLostOwnership()

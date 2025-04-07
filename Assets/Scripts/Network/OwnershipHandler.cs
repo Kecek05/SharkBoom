@@ -6,9 +6,9 @@ using UnityEngine;
 public static class OwnershipHandler
 {
     /// <summary>
-    /// Called when the client gain ownership of the player object for the first time.
+    /// Called when the client gain ownership of the player object. Pass the new owner clientId
     /// </summary>
-    public static event Action OnClientGainOwnership;
+    public static event Action<ulong> OnClientGainOwnership;
 
     /// <summary>
     /// return if the player is reconnecting to the game. Server Only!
@@ -44,6 +44,8 @@ public static class OwnershipHandler
             ServiceLocator.Get<BasePlayersPublicInfoManager>().GetPlayerObjectByPlayableState(playerData.playableState).GetComponent<NetworkObject>().ChangeOwnership(clientId);
 
             Debug.Log($"Changing the Ownership of the object: {ServiceLocator.Get<BasePlayersPublicInfoManager>().GetPlayerObjectByPlayableState(playerData.playableState).name} to ClientId: {clientId}");
+
+            OnClientGainOwnership?.Invoke(clientId);
         }
         else
         {
@@ -70,6 +72,5 @@ public static class OwnershipHandler
 
         playerData.gameObject = playerGameObject;
 
-        OnClientGainOwnership?.Invoke();
     }
 }

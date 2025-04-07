@@ -268,21 +268,20 @@ public class PlayerInventory : NetworkBehaviour
         Debug.Log($"Selected item inventory index: {selectedItemInventoryIndex}");
     }
 
-    public override void OnGainedOwnership()
-    {
-        //for(int i = 1; i < playerItemsInventory.Count; i++)
-        //{
-        //    //Need to be a for to start from index 1, index 0 is Jump
-        //    OnItemAdded?.Invoke(playerItemsInventory[i]);
-        //}
+    //public override void OnGainedOwnership()
+    //{
+    //    //for(int i = 1; i < playerItemsInventory.Count; i++)
+    //    //{
+    //    //    //Need to be a for to start from index 1, index 0 is Jump
+    //    //    OnItemAdded?.Invoke(playerItemsInventory[i]);
+    //    //}
 
-        //Reselect an item
+    //    //Reselect an item
 
-        SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
-        Debug.Log($"ResyncReconnect called - Items in inventory: {playerItemsInventory.Count} - OwnerId: {OwnerClientId}");
-    }
 
-    public void HandleOnPlayerInventoryUIGainOwnership()
+    //}
+
+    public void HandleOnGainOwnership()
     {
         for (int i = 1; i < playerItemsInventory.Count; i++)
         {
@@ -290,6 +289,8 @@ public class PlayerInventory : NetworkBehaviour
             OnItemAdded?.Invoke(playerItemsInventory[i]);
         }
         SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
+        SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
+        Debug.Log($"ResyncReconnect called - Items in inventory: {playerItemsInventory.Count} - OwnerId: {OwnerClientId}");
     }
 
     public override void OnNetworkDespawn()

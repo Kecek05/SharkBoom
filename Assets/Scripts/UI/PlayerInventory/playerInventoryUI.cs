@@ -13,7 +13,6 @@ public class PlayerInventoryUI : NetworkBehaviour
     /// Pass the index of the itemInventoryIndex
     /// </summary>
     public event Action<int> OnItemSelectedByUI;
-    public event Action OnPlayerInventoryGainOwnership;
 
     [BetterHeader("References")]
     [SerializeField] private GameObject playerInventoryUIBackground;
@@ -44,12 +43,14 @@ public class PlayerInventoryUI : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        if (!IsOwner)
-        {
-            HideInventory();
-            openInventoryBackground.SetActive(false);
-            return;
-        }
+        HideInventory();
+        openInventoryBackground.SetActive(false);
+
+        //if (!IsOwner)
+        //{
+
+        //    return;
+        //}
 
         //Owner Code below
 
@@ -175,20 +176,25 @@ public class PlayerInventoryUI : NetworkBehaviour
         openInventoryBackground.SetActive(true);
     }
 
-    public override void OnGainedOwnership()
+    //public override void OnGainedOwnership()
+    //{
+    //    Debug.Log($"PlayerInventoryUI Gained Ownership, new owner is: {OwnerClientId}");
+    //    //playerInventory.ResyncReconnect();
+    //    //foreach(PlayerItemSingleUI playerItemSingleUI in playerItemSingleUIs)
+    //    //{
+    //    //    PlayerItemSingleUI updatedPlayerItemSingle = Instantiate(playerItemSingleUIPrefab, inventoryItemHolder).GetComponent<PlayerItemSingleUI>();
+    //    //    updatedPlayerItemSingle.Setup(playerItemSingleUI.GetItemName(), playerItemSingleUI.GetItemIcon(), playerItemSingleUI.GetItemCooldown(), false, playerItemSingleUI.GetIndexItemInventory(), this);
+    //    //    Debug.Log($"Updated Item: {updatedPlayerItemSingle.gameObject.name} - {updatedPlayerItemSingle.GetItemName()} - Index: {updatedPlayerItemSingle.GetIndexItemInventory()} | Item Cooldown Remaining: {updatedPlayerItemSingle.GetItemCooldown()}");
+
+    //    //}
+
+    //    OnPlayerInventoryGainOwnership?.Invoke();
+
+
+    //}
+
+    public void HandleOnGainOwnership()
     {
-        Debug.Log($"PlayerInventoryUI Gained Ownership, new owner is: {OwnerClientId}");
-        //playerInventory.ResyncReconnect();
-        //foreach(PlayerItemSingleUI playerItemSingleUI in playerItemSingleUIs)
-        //{
-        //    PlayerItemSingleUI updatedPlayerItemSingle = Instantiate(playerItemSingleUIPrefab, inventoryItemHolder).GetComponent<PlayerItemSingleUI>();
-        //    updatedPlayerItemSingle.Setup(playerItemSingleUI.GetItemName(), playerItemSingleUI.GetItemIcon(), playerItemSingleUI.GetItemCooldown(), false, playerItemSingleUI.GetIndexItemInventory(), this);
-        //    Debug.Log($"Updated Item: {updatedPlayerItemSingle.gameObject.name} - {updatedPlayerItemSingle.GetItemName()} - Index: {updatedPlayerItemSingle.GetIndexItemInventory()} | Item Cooldown Remaining: {updatedPlayerItemSingle.GetItemCooldown()}");
-
-        //}
-
-        OnPlayerInventoryGainOwnership?.Invoke();
-
         ShowInventory();
         openInventoryBackground.SetActive(true);
     }
