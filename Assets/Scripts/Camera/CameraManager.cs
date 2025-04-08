@@ -9,7 +9,6 @@ public class CameraManager : NetworkBehaviour
     [SerializeField] private CameraMovement cameraMovement;
     [SerializeField] private CameraZoom cameraZoom;
     [SerializeField] private CameraFollowing cameraFollowing;
-    [SerializeField] private PlayerThrower player;
     
 
 
@@ -25,23 +24,19 @@ public class CameraManager : NetworkBehaviour
 
     [SerializeField] private CameraState cameraState;
 
-
-    public override void OnNetworkSpawn()
+    public void InitializeOwner()
     {
-        if (IsOwner)
+        cameraObjectToFollow = new GameObject("CameraObjectToFollow").transform;
+        cameraObjectToFollow.position = new Vector3(0, 0, 0);
+
+        if (cinemachineCamera == null)
         {
-            cameraObjectToFollow = new GameObject("CameraObjectToFollow").transform;
-            cameraObjectToFollow.position = new Vector3(0, 0, 0);
-
-            if (cinemachineCamera == null)
-            {
-                cinemachineCamera = Object.FindFirstObjectByType<CinemachineCamera>();
-                cameraMain = Object.FindFirstObjectByType<Camera>();
-                cinemachineCamera.Target.TrackingTarget = cameraObjectToFollow;
-            }
-
-            CameraMove();
+            cinemachineCamera = Object.FindFirstObjectByType<CinemachineCamera>();
+            cameraMain = Object.FindFirstObjectByType<Camera>();
+            cinemachineCamera.Target.TrackingTarget = cameraObjectToFollow;
         }
+
+        CameraMove();
     }
 
     public void HandleOnPlayerStateMachineStateChanged(PlayerState playerState)
@@ -54,32 +49,21 @@ public class CameraManager : NetworkBehaviour
                 CameraMove();
                 break;
             case PlayerState.MyTurnStarted:
-                CameraMove();
-                break;
             case PlayerState.IdleEnemyTurn:
-                CameraMove();
-                break;
             case PlayerState.IdleMyTurn:
                 CameraMove();
                 break;
             case PlayerState.DraggingJump:
-                Dragging();
-                break;
             case PlayerState.DraggingItem:
                 Dragging();
                 break;
-            case
-                PlayerState.DragReleaseJump:
-                Following();
-                break;
+            case PlayerState.DragReleaseJump:
             case PlayerState.DragReleaseItem:
+            case PlayerState.PlayerWatching:
                 Following();
                 break;
             case PlayerState.MyTurnEnded:
                 CameraReset();
-                break;
-            case PlayerState.PlayerWatching:
-                Following();
                 break;
             case PlayerState.PlayerGameOver:
                 //turn off camera and focus on the dead player

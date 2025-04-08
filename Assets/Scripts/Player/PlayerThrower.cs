@@ -19,7 +19,7 @@ public class PlayerThrower : NetworkBehaviour
     [SerializeField] private PlayerInventoryUI playerInventoryUI;
     [SerializeField] private PlayerDragController playerDragController;
     [SerializeField] private PlayerLauncher playerLauncher;
-    [SerializeField] private BoxCollider playerTouchColl;
+    [SerializeField] private Collider2D playerTouchColl;
     [SerializeField] private GameObject[] playerColliders;
     private PlayerStateMachine playerStateMachine;
 
@@ -90,6 +90,7 @@ public class PlayerThrower : NetworkBehaviour
 
         playerStateMachine.Initialize(playerStateMachine.idleEnemyTurnState);
 
+        cameraManager.InitializeOwner();
         playerFlipGfx.InitializeOwner();
         playerRotateToAim.InitializeOwner();
         playerInventory.InitializeOwner();
