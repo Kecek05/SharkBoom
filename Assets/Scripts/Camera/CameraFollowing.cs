@@ -17,16 +17,13 @@ public class CameraFollowing : NetworkBehaviour
     private Coroutine followObject;
     private Coroutine resetCam;
 
-
-    public override void OnNetworkSpawn()
+    public void InitializeOwner()
     {
-        if(IsOwner)
-        {
-            BaseItemThrowable.OnItemReleasedAction += BaseItemThrowable_OnItemReleasedAction;
-            BaseItemThrowable.OnItemFinishedAction += BaseItemThrowable_OnItemFinishedAction;
-        }
-    }
+        if(!IsOwner) return;
 
+        BaseItemThrowable.OnItemReleasedAction += BaseItemThrowable_OnItemReleasedAction;
+        BaseItemThrowable.OnItemFinishedAction += BaseItemThrowable_OnItemFinishedAction;
+    }
 
     private void BaseItemThrowable_OnItemReleasedAction(Transform itemLaunched)
     {
@@ -82,14 +79,11 @@ public class CameraFollowing : NetworkBehaviour
        cameraManager.CameraObjectToFollow.position = lastCameraObjectToFollowPos; // we send the camera for last position before the item was launched
     }
 
-
-    public override void OnNetworkDespawn()
+    public void UnInitializeOwner()
     {
-        if(IsOwner)
-        {
-            BaseItemThrowable.OnItemReleasedAction -= BaseItemThrowable_OnItemReleasedAction;
-            BaseItemThrowable.OnItemFinishedAction -= BaseItemThrowable_OnItemFinishedAction;
-        }
+        if (!IsOwner) return;
+        BaseItemThrowable.OnItemReleasedAction -= BaseItemThrowable_OnItemReleasedAction;
+        BaseItemThrowable.OnItemFinishedAction -= BaseItemThrowable_OnItemFinishedAction;
     }
 
 }

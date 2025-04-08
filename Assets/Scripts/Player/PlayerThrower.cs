@@ -135,6 +135,8 @@ public class PlayerThrower : NetworkBehaviour
         playerDragController.OnDragCancelable -= HandleOnDragCancelable;
 
         playerInventoryUI.OnItemSelectedByUI -= HandleOnItemSelectedByUI;
+
+        cameraManager.UnInitializeOwner();
     }
 
 
@@ -332,21 +334,6 @@ public class PlayerThrower : NetworkBehaviour
 
 
 
-    }
-
-    public override void OnGainedOwnership()
-    {
-        //if(IsOwner)
-        //{
-        //    InitializeOwner();
-        //    HandleEvents();
-        //    playerTouchColl.enabled = true;
-        //}
-
-        ////HandleOnStateChanged(playerStateMachine.CurrentState.State);
-        //Debug.Log($"PlayerThrower Gained Ownership, new owner is: {OwnerClientId}");
-        //Debug.Log($"Player State machine exist? {playerStateMachine != null}");
-        ////playerInventory.ResyncReconnect();
     }
 
     public override void OnLostOwnership()

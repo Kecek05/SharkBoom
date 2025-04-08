@@ -26,6 +26,8 @@ public class CameraManager : NetworkBehaviour
 
     public void InitializeOwner()
     {
+        if(!IsOwner) return;
+
         cameraObjectToFollow = new GameObject("CameraObjectToFollow").transform;
         cameraObjectToFollow.position = new Vector3(0, 0, 0);
 
@@ -35,6 +37,10 @@ public class CameraManager : NetworkBehaviour
             cameraMain = Object.FindFirstObjectByType<Camera>();
             cinemachineCamera.Target.TrackingTarget = cameraObjectToFollow;
         }
+
+        cameraMovement.InitializeOwner();
+        cameraZoom.InitializeOwner();
+        cameraFollowing.InitializeOwner();
 
         CameraMove();
     }
@@ -100,5 +106,12 @@ public class CameraManager : NetworkBehaviour
         cameraMovement.enabled = false;
         cameraZoom.enabled = false;
         cameraFollowing.enabled = false;
+    }
+
+    public void UnInitializeOwner()
+    {
+        cameraMovement.UnInitializeOwner();
+        cameraZoom.UnInitializeOwner();
+        cameraFollowing.UnInitializeOwner();
     }
 }

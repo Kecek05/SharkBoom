@@ -29,15 +29,14 @@ public class CameraZoom : NetworkBehaviour
     [Tooltip("Think like a scope of a sniper, max = more close of player")]
     [SerializeField] private float maxZoom = 1f;
 
-
-    public override void OnNetworkSpawn()
+    public void InitializeOwner()
     {
-        if(IsOwner)
-        {
-            inputReader.OnSecondaryTouchContactEvent += InputReader_OnSecondaryTouchContactEvent;
-            inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
-            inputReader.OnSecondaryFingerPositionEvent += InputReader_OnSecondaryFingerPositionEvent;
-        }
+        if (!IsOwner) return;
+
+        inputReader.OnSecondaryTouchContactEvent += InputReader_OnSecondaryTouchContactEvent;
+        inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
+        inputReader.OnSecondaryFingerPositionEvent += InputReader_OnSecondaryFingerPositionEvent;
+
     }
 
     private void InputReader_OnSecondaryTouchContactEvent(InputAction.CallbackContext context)
@@ -118,13 +117,12 @@ public class CameraZoom : NetworkBehaviour
         cameraManager.CameraObjectToFollow.position = Vector3.MoveTowards(cameraManager.CameraObjectToFollow.position, cameraObjectFollowPos, zoomSpeed * Time.deltaTime); // Move towards is better for movimentation
     }
 
-    public override void OnNetworkDespawn()
+    public void UnInitializeOwner()
     {
-        if (IsOwner)
-        {
-            inputReader.OnSecondaryTouchContactEvent -= InputReader_OnSecondaryTouchContactEvent;
-            inputReader.OnPrimaryFingerPositionEvent -= InputReader_OnPrimaryFingerPositionEvent;
-            inputReader.OnSecondaryFingerPositionEvent -= InputReader_OnSecondaryFingerPositionEvent;
-        }
+        if(!IsOwner) return;
+
+        inputReader.OnSecondaryTouchContactEvent -= InputReader_OnSecondaryTouchContactEvent;
+        inputReader.OnPrimaryFingerPositionEvent -= InputReader_OnPrimaryFingerPositionEvent;
+        inputReader.OnSecondaryFingerPositionEvent -= InputReader_OnSecondaryFingerPositionEvent;
     }
 }

@@ -33,13 +33,12 @@ public class CameraMovement : NetworkBehaviour
     private bool dragMoveActive = false; // hold if the drag move is active
     private Vector2 lastTouchPosition;
 
-    public override void OnNetworkSpawn()
+    public void InitializeOwner()
     {
-        if(IsOwner)
-        {
-            inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
-            inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
-        }
+        if (!IsOwner) return;
+
+        inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
+        inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
     }
 
     private void InputReader_OnTouchPressEvent(InputAction.CallbackContext context)
@@ -93,8 +92,9 @@ public class CameraMovement : NetworkBehaviour
         );  // Basically we get the pos of camera and add the movement direction of the camera, and clamp the values to the min and max values
     }
 
-    public override void OnNetworkDespawn()
+    public void UnInitializeOwner()
     {
+        if (!IsOwner) return;
         inputReader.OnTouchPressEvent -= InputReader_OnTouchPressEvent;
         inputReader.OnPrimaryFingerPositionEvent -= InputReader_OnPrimaryFingerPositionEvent;
     }
