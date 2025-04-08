@@ -8,6 +8,7 @@ public class MainMenuController : MonoBehaviour
 {
     public static event Action OnLoadMainMenu;
     public event Action OnMatchmakingSearchStarted;
+    public event Action OnMatchmakingCancelled;
 
     [BetterHeader("References")]
     [SerializeField] private Button openVsFriendsPanelBtn;
@@ -95,11 +96,11 @@ public class MainMenuController : MonoBehaviour
         //    return;
         //}
 
-        Debug.Log("Searching...");
-        ClientSingleton.Instance.GameManager.MatchmakeAsync(OnMatchMade); //We will pass and event to be trigger when the result is ready.
         isMatchMaking = true;
-
+        Debug.Log("Searching...");
         OnMatchmakingSearchStarted?.Invoke();
+        ClientSingleton.Instance.GameManager.MatchmakeAsync(OnMatchMade); //We will pass and event to be trigger when the result is ready.
+
 
         //matchmakingPanel.SetActive(true);
     }
@@ -112,8 +113,10 @@ public class MainMenuController : MonoBehaviour
         isCanceling = true;
         Debug.Log("Canceling...");
         await ClientSingleton.Instance.GameManager.CancelMatchmakingAsync(); //wait to cancel the matchmake
+        OnMatchmakingCancelled?.Invoke();
         isMatchMaking = false;
         isCanceling = false;
+
     }
 
     private void HostGameManager_OnFailToStartHost()

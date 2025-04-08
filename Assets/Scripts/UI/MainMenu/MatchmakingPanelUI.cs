@@ -7,7 +7,7 @@ public class MatchmakingPanelUI : MonoBehaviour
     [BetterHeader("References")]
     [SerializeField] private Button cancelMatchmakingBtn;
     [SerializeField] private GameObject matchmakingPanel;
-
+    [SerializeReference] private MainMenuController mainMenuController;
 
     private void Awake()
     {
@@ -16,8 +16,14 @@ public class MatchmakingPanelUI : MonoBehaviour
         cancelMatchmakingBtn.onClick.AddListener(() =>
         {
             //Cancel Matchmaking
-            Hide();
+            mainMenuController.CancelMatchmaking();
         });
+    }
+
+    private void Start()
+    {
+        mainMenuController.OnMatchmakingCancelled += Hide;
+        mainMenuController.OnMatchmakingSearchStarted += Show;
     }
 
 
