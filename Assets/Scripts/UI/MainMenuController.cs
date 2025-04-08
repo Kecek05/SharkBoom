@@ -9,63 +9,90 @@ public class MainMenuController : MonoBehaviour
     public static event Action OnLoadMainMenu;
 
     [BetterHeader("References")]
-    [SerializeField] private Button clientButton;
-    [SerializeField] private Button hostButton;
-    [SerializeField] private Button lobbiesButton;
-    [SerializeField] private Button exitButton;
+    [SerializeField] private Button openVsFriendsPanelBtn;
+    [SerializeField] private Button closeVsFriendsPanelBtn;
+    [SerializeField] private Button joinGameBtn;
+    [SerializeField] private Button createGameBtn;
+    [SerializeField] private Button searchMatchmakingBtn;
+    [SerializeField] private Button cancelMatchmakingBtn;
     [SerializeField] private TMP_InputField lobbyCodeInputField;
-    [SerializeField] private Button quickJoinButton;
+    [SerializeField] private Button quickJoinBtn;
+    
+    [SerializeField] private GameObject vsFriendsPanel;
+    [SerializeField] private GameObject matchmakingPanel;
 
     private bool isMatchMaking = false;
     private bool isCanceling = false;
 
     private async void Awake()
     {
-        hostButton.onClick.AddListener(async () =>
+        openVsFriendsPanelBtn.onClick.AddListener(() =>
         {
-            hostButton.interactable = false;
+            vsFriendsPanel.SetActive(true);
+        });
+
+        closeVsFriendsPanelBtn.onClick.AddListener(() =>
+        {
+            vsFriendsPanel.SetActive(false);
+        });
+
+        createGameBtn.onClick.AddListener(async () =>
+        {
+            createGameBtn.interactable = false;
             await HostSingleton.Instance.GameManager.StartHostAsync();
         });
 
-        exitButton.onClick.AddListener(() =>
+
+        joinGameBtn.onClick.AddListener(async () =>
         {
-            Application.Quit();
+            joinGameBtn.interactable = false;
+            await ClientSingleton.Instance.GameManager.StartRelayClientAsync(lobbyCodeInputField.text);
         });
 
-        //clientButton.onClick.AddListener(async () =>
-        //{
-        //    clientButton.interactable = false;
-        //    await ClientSingleton.Instance.GameManager.StartRelayClientAsync(lobbyCodeInputField.text);
-        //    clientButton.interactable = true;
-        //});
-
-        quickJoinButton.onClick.AddListener(async () =>
+        quickJoinBtn.onClick.AddListener(async () =>
         {
-            quickJoinButton.interactable = false;
+            quickJoinBtn.interactable = false;
             await ClientSingleton.Instance.GameManager.QuickJoinLobbyAsync();
-            quickJoinButton.interactable = true;
         });
 
         //CHANGE TO MACHMAKE LATER
-        clientButton.onClick.AddListener(async () =>
+        searchMatchmakingBtn.onClick.AddListener(async () =>
         {
             if (isCanceling) return;
 
-            if(isMatchMaking)
-            {
-                isCanceling = true;
-                Debug.Log("Canceling...");
-                await ClientSingleton.Instance.GameManager.CancelMatchmakingAsync(); //wait to cancel the matchmake
-                isMatchMaking = false;
-                isCanceling = false;
-                return;
-            }
+            if (isMatchMaking) return;
+
+            //if(isMatchMaking)
+            //{
+            //    isCanceling = true;
+            //    Debug.Log("Canceling...");
+            //    await ClientSingleton.Instance.GameManager.CancelMatchmakingAsync(); //wait to cancel the matchmake
+            //    isMatchMaking = false;
+            //    isCanceling = false;
+            //    return;
+            //}
 
             Debug.Log("Searching...");
             ClientSingleton.Instance.GameManager.MatchmakeAsync(OnMatchMade); //We will pass and event to be trigger when the result is ready.
             isMatchMaking = true;
 
+
+            matchmakingPanel.SetActive(true);
         });
+
+        cancelMatchmakingBtn.onClick.AddListener(async () =>
+        {
+            if (isCanceling) return;
+            isCanceling = true;
+            Debug.Log("Canceling...");
+            await ClientSingleton.Instance.GameManager.CancelMatchmakingAsync(); //wait to cancel the matchmake
+            isMatchMaking = false;
+            isCanceling = false;
+
+            matchmakingPanel.SetActive(false);
+        });
+
+
     }
 
     private void Start()
@@ -78,7 +105,7 @@ public class MainMenuController : MonoBehaviour
 
     private void HostGameManager_OnFailToStartHost()
     {
-        hostButton.interactable = true;
+        createGameBtn.interactable = true;
     }
 
     private void OnMatchMade(MatchmakerPollingResult result)
