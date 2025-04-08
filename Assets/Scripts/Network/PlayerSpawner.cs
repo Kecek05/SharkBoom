@@ -1,3 +1,4 @@
+using QFSW.QC;
 using System;
 using Unity.Netcode;
 using UnityEngine;
@@ -24,9 +25,7 @@ public class PlayerSpawner : IPlayerSpawner
     /// <summary>
     /// Call this to spawn a player.
     /// </summary>
-    /// <param name="clientId"> Id of the player</param>
-    /// <param name="playerNumber"> player playing state</param>
-    public void SpawnPlayer(ulong clientId)
+    public void SpawnPlayer()
     {
         if(playerSpawned >= 2)
         {
@@ -34,30 +33,45 @@ public class PlayerSpawner : IPlayerSpawner
             return;
         }
 
+        playerSpawned++;
+
         Transform randomSpawnPointSelected = ServiceLocator.Get<BasePlayersPublicInfoManager>().GetRandomSpawnPoint();
 
         NetworkObject playerInstance = GameObject.Instantiate(playerPrefab, randomSpawnPointSelected.position, Quaternion.identity);
 
-        playerInstance.SpawnAsPlayerObject(clientId);
+
+        playerInstance.Spawn(true);
         playerInstance.DontDestroyWithOwner = true;
 
-        playerInstance.GetComponent<PlayerThrower>().InitializePlayerRpc(GetPlayableStateByCount(), randomSpawnPointSelected.rotation, NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.ClientIdToAuth[clientId]);
+        playerInstance.GetComponent<PlayerThrower>().InitializePlayerRpc(GetPlayableStateByCount(), randomSpawnPointSelected.rotation);
 
-        PlayerData playerData = NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.ClientIdToPlayerData[clientId];
+        //PlayerData playerData = NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.ClientIdToPlayerData[clientId];
 
-        playerData.gameObject = playerInstance.gameObject;
-        playerData.playableState = GetPlayableStateByCount();
+        //playerData.gameObject = playerInstance.gameObject;
+        //playerData.playableState = GetPlayableStateByCount();
 
-        playerSpawned++;
+        Debug.Log($"Spawning Player, PlayableState: {GetPlayableStateByCount()} Selected Random SpawnPoint: {randomSpawnPointSelected.name} - Player Spawned: {PlayerCount}");
 
         OnPlayerSpawned?.Invoke(playerSpawned);
-
-        Debug.Log($"Spawning Player, Client Id: {clientId} PlayableState: {GetPlayableStateByCount()} Selected Random SpawnPoint: {randomSpawnPointSelected.name}");
     }
 
     public PlayableState GetPlayableStateByCount()
     {
-        return PlayerCount == 0 ? PlayableState.Player1Playing : PlayableState.Player2Playing;
+        Debug.Log($"GetPlayableStateByCount - {PlayerCount}");
+
+        if (PlayerCount == 1)
+        {
+            return PlayableState.Player1Playing;
+        }
+        else if (PlayerCount == 2)
+        {
+            return PlayableState.Player2Playing;
+        }
+        else
+        {
+            Debug.LogError($"GetPlayableStateByCount - PlayerCount is not 1 or 2 - it is {PlayerCount}");
+            return PlayableState.None;
+        }
     }
 
 }

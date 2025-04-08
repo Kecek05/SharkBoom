@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.Netcode;
 using Unity.Services.Matchmaker.Models;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ServerGameManager : IDisposable
 {
@@ -26,10 +28,14 @@ public class ServerGameManager : IDisposable
         networkServer = new NetworkServer(networkManager, playerPrefab);
 #if UNITY_SERVER
         multiplayAllocationService = new MultiplayAllocationService();
+        ServiceLocatorBootstrap.OnServiceLocatorInitialized += ServiceLocatorBootstrap_OnServiceLocatorInitialized;
 #endif
 
         PearlsManager.OnFinishedCalculationsOnServer += Pearls_OnFinishedCalculationsOnServer;
+
     }
+
+
 
     public async Task StartGameServerAsync()
     {
@@ -45,6 +51,8 @@ public class ServerGameManager : IDisposable
             {
                 networkServer.OnUserLeft += UserLeft;
                 networkServer.OnUserJoined += UserJoined;
+                HandleMatchmakerPayload(matchmakerPayload);
+
             } else
             {
                 Debug.LogError("Failed to get matchmaker payload. Timed out");
@@ -66,11 +74,72 @@ public class ServerGameManager : IDisposable
 
  #if UNITY_SERVER
 
+    private async void HandleMatchmakerPayload(MatchmakingResults matchmakerPayload)
+    {
+        Dictionary<string, int> authIdToPearlsPayload = new Dictionary<string, int>();
+
+        foreach (Player player in matchmakerPayload.MatchProperties.Players)
+        {
+            Dictionary<string, int> customDataDictionary = player.CustomData.GetAs<Dictionary<string, int>>();
+
+            customDataDictionary.TryGetValue("pearls", out int pearls);
+
+            authIdToPearlsPayload[player.Id] = pearls;
+
+            await Reconnect.SetIsInMatch(player.Id, true);
+
+            await Reconnect.SetPlayerMatchConnection(player.Id, multiplayAllocationService.GetMultiplayService.ServerConfig.IpAddress, multiplayAllocationService.GetMultiplayService.ServerConfig.Port);
+
+            Debug.Log($"PlayerId: {player.Id} - Pearls: {pearls}");
+
+        }
+
+        string player1AuthId = matchmakerPayload.MatchProperties.Players[0].Id;
+        string player2AuthId = matchmakerPayload.MatchProperties.Players[1].Id;
+
+        int player1Pearls = authIdToPearlsPayload[player1AuthId];
+        int player2Pearls = authIdToPearlsPayload[player2AuthId];
+
+        CalculatePearls.CalculatePossibleResults(player1AuthId, player2AuthId, player1Pearls, player2Pearls);
+
+
+
+        while (SceneManager.GetActiveScene().name != Loader.Scene.GameNetCodeTest.ToString())
+        {
+            //Not in game
+            Debug.Log("Not in game scene");
+            await Task.Delay(100);
+        }
+
+        Debug.Log("Loaded game scene");
+
+        await Task.Delay(2000); //change to wait for some callback, I think might be an OnServerStarted | need to wait the server loads de scene and the Game Manager Handle Events
+        
+        Debug.Log("Waited Delay to spawn players");
+
+        networkServer.PlayerSpawner.SpawnPlayer();
+
+        networkServer.PlayerSpawner.SpawnPlayer();
+
+        await Task.Delay(1000); //Wait for a bit until can change ownership to prevent some bugs
+
+        networkServer.SetCanChangeOwnership(true);
+    }
+
+    private void ServiceLocatorBootstrap_OnServiceLocatorInitialized()
+    {
+        Debug.Log("ServiceLocatorBootstrap_OnServiceLocatorInitialized, Spawning Players by server");
+
+        //networkServer.PlayerSpawner.SpawnPlayer();
+
+        //networkServer.PlayerSpawner.SpawnPlayer();
+    }
+
     private async Task<MatchmakingResults> GetMatchmakerPayload()
     {
         Task<MatchmakingResults> matchmakerPayloadTask = multiplayAllocationService.SubscribeAndAwaitMatchmakerAllocation();
 
-        if (await Task.WhenAny(matchmakerPayloadTask, Task.Delay(20000)) == matchmakerPayloadTask) //pass tasks, when any completes, do the code
+        if (await Task.WhenAny(matchmakerPayloadTask, Task.Delay(600000)) == matchmakerPayloadTask) //pass tasks, when any completes, do the code
         {
             //true if our task finishes before the delay
             return matchmakerPayloadTask.Result;
@@ -123,6 +192,7 @@ public class ServerGameManager : IDisposable
     {
 #if UNITY_SERVER
         multiplayAllocationService?.Dispose();
+        ServiceLocatorBootstrap.OnServiceLocatorInitialized -= ServiceLocatorBootstrap_OnServiceLocatorInitialized;
 #endif
         PearlsManager.OnFinishedCalculationsOnServer -= Pearls_OnFinishedCalculationsOnServer;
         networkServer?.Dispose();

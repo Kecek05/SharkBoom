@@ -1,9 +1,12 @@
 using Sortify;
+using System;
 using UnityEngine;
 
 [DefaultExecutionOrder(-1)]
 public class ServiceLocatorBootstrap : MonoBehaviour
 {
+    public static event Action OnServiceLocatorInitialized;
+
     [BetterHeader("References")]
     [SerializeField] private ItemsListSO itemsListSO; //REFACTOR
     [SerializeField] private Transform[] spawnPointsPos; //REFACTOR
@@ -36,6 +39,9 @@ public class ServiceLocatorBootstrap : MonoBehaviour
         ServiceLocator.Register(gameOverManager);
         ServiceLocator.Register(pearlsManager);
 
+
+
+        OnServiceLocatorInitialized?.Invoke();
     }
 
 }

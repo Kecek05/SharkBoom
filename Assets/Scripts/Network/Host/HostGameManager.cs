@@ -10,9 +10,12 @@ using Unity.Services.Lobbies.Models;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class HostGameManager : IDisposable //Actual Logic to interact with UGS (Relay, Lobby, etc)
 {
+    public static event Action OnFailToStartHost;
+
     private const int MAX_CONNECTIONS = 2;
 
     private NetworkServer networkServer;
@@ -38,6 +41,7 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
         } catch (Exception e)
         {
             Debug.LogException(e);
+            OnFailToStartHost?.Invoke();
             return;
         }
 
@@ -48,6 +52,7 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
         } catch (Exception e)
         {
             Debug.LogException(e);
+            OnFailToStartHost?.Invoke();
             return;
         }
 
@@ -80,6 +85,7 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
         } catch (LobbyServiceException lobbyEx)
         {
             Debug.LogException(lobbyEx);
+            OnFailToStartHost?.Invoke();
             return;
         }
 
@@ -101,12 +107,33 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
 
         NetworkManager.Singleton.StartHost();
 
-
         PearlsManager.OnFinishedCalculationsOnServer += PearlsManager_OnFinishedCalculationsOnServer;
 
         networkServer.OnClientLeft += HandleClientLeft;
 
         Loader.LoadHostNetwork(Loader.Scene.GameNetCodeTest);
+
+        while(SceneManager.GetActiveScene().name != Loader.Scene.GameNetCodeTest.ToString())
+        {
+            //Not in game
+            Debug.Log("Not in game scene");
+            await Task.Delay(100);
+        }
+
+        Debug.Log("Loaded game scene");
+        Debug.Log($"Loaded game scene, the game state is: {ServiceLocator.Get<BaseGameStateManager>().CurrentGameState.Value}");
+
+        await Task.Delay(2000);
+        Debug.Log("Waited to spawn players in host");
+
+        networkServer.PlayerSpawner.SpawnPlayer();
+
+        networkServer.PlayerSpawner.SpawnPlayer();
+
+        await Task.Delay(1000); //Wait for a bit until can change ownership to prevent some bugs | IDK if is needed
+
+        networkServer.SetCanChangeOwnership(true);
+
     }
 
     private async void HandleClientLeft(string authId)

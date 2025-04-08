@@ -5,11 +5,11 @@ using UnityEngine;
 public class GameStateManager : BaseGameStateManager
 {
 
-    public override async void ChangeGameState(GameState gameState, int delayToChange = 0)
+    public override async void ChangeGameState(GameState gameState, int delayToChangeMS = 0)
     {
         if (CurrentGameState.Value == GameState.GameEnded) return;
 
-        await Task.Delay(delayToChange);
+        await Task.Delay(delayToChangeMS);
         SetGameStateServerRpc(gameState);
 
     }
@@ -29,20 +29,35 @@ public class GameStateManager : BaseGameStateManager
                 //All players connected
                 Debug.Log("Start Spawning Players");
 
+                if(IsServer)
+                {
+                    //ServiceLocator.Get<BasePlayersPublicInfoManager>().RandomizePlayerItems();
+
+                    ChangeGameState(GameState.CalculatingResults);
+                }
+
                 break;
             case GameState.CalculatingResults:
                 if(IsServer)
                 {
-                    if(!IsHost)  //REFACTOR
-                        CalculatePearls.CalculatePossibleResults(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0], NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1]);
-                    ChangeGameState(GameState.ShowingPlayersInfo);
+                    //if(!IsHost)  //REFACTOR
+                    //CalculatePearls.CalculatePossibleResults(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0], NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1]);
+                    ServiceLocator.Get<BasePlayersPublicInfoManager>().RandomizePlayerItems();
+
+                    if (!IsHost)
+                    {
+                        //Is DS, wait for a bit and then change state
+                        ChangeGameState(GameState.ShowingPlayersInfo, DELAY_STARTGAME);
+                    }
+
                 }
                 break;
             case GameState.ShowingPlayersInfo:
                 if (IsServer)
                 {
-                    ServiceLocator.Get<BasePlayersPublicInfoManager>().RandomizePlayerItems();
-                    ChangeGameState(GameState.GameStarted, delayClosePlayersInfo); //Show Players Info delay
+
+                    //ServiceLocator.Get<BasePlayersPublicInfoManager>().RandomizePlayerItems();
+                    ChangeGameState(GameState.GameStarted, DELAY_CLOSE_PLAYERSINFO); //Show Players Info delay
                 }
                 break;
             case GameState.GameStarted:
@@ -70,6 +85,21 @@ public class GameStateManager : BaseGameStateManager
         if (playerCount == 2)
         {
             ChangeGameState(GameState.CalculatingResults); // All players Spawned, calculating Results
+        }
+    }
+
+    public override void HandleOnPlayerGainOwnership(ulong clientId)
+    {
+        if(!IsServer) return;
+
+        if(!IsHost) return; //DS should not change state
+
+        clientsGainedOwnership++;
+        Debug.Log($"Client {clientId} Gained Ownership, Total: {clientsGainedOwnership}");
+
+        if (clientsGainedOwnership >= 2)
+        {
+            ChangeGameState(GameState.ShowingPlayersInfo, DELAY_STARTGAME); // All clients with ownership, relay can start game
         }
     }
 

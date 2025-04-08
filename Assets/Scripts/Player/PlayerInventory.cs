@@ -42,18 +42,17 @@ public class PlayerInventory : NetworkBehaviour
         }
     }
 
-    public override void OnNetworkSpawn()
-    {
-        //Reconnect Resync
-        if (IsOwner)
-        {
-            if(playerItemsInventory.Count > 0)
-            {
-                Debug.Log("PlayerInventory: OnNetworkSpawn, Player has items in inventory");
-                ResyncReconnect();
-            }
-        }
-    }
+    //public override void OnNetworkSpawn()
+    //{
+    //    if(IsOwner)
+    //    {
+    //        if(playerItemsInventory.Count > 0)
+    //        {
+    //            ResyncReconnect();
+    //            Debug.Log("ResyncReconnect called in OnNetworkSpawn");
+    //        }
+    //    }
+    //}
 
     public void InitializeOwner()
     {
@@ -79,7 +78,12 @@ public class PlayerInventory : NetworkBehaviour
 
     public void HandleOnPlayerStateMachineStateChanged(PlayerState state)
     {
-        if(!IsOwner) return;
+
+        if (!IsOwner)
+        {
+            Debug.Log($"HandleOnPlayerStateMachineStateChanged in PlayerInventory called and not the owner");
+            return;
+        }
 
         switch (state)
         {
@@ -114,7 +118,7 @@ public class PlayerInventory : NetworkBehaviour
                 break;
         }
 
-
+        Debug.Log($"HandleOnPlayerStateMachineStateChanged in PlayerInventory called and its owner");
     }
 
     [Rpc(SendTo.Server)]
@@ -189,8 +193,9 @@ public class PlayerInventory : NetworkBehaviour
 
     public void SelectItemDataByItemInventoryIndex(int itemInventoryIndex = 0) // Select a item to use, UI will call this, default (0) its Jump
     {
+        Debug.Log($"SelectItemDataByItemInventoryIndex called - Item Inventory Index Selected: {itemInventoryIndex} - can interact with inventory? {canInteractWithInventory}");
 
-        if(!canInteractWithInventory) return;
+        if (!canInteractWithInventory) return;
 
 
         if (!ItemCanBeUsed(itemInventoryIndex))
@@ -250,6 +255,7 @@ public class PlayerInventory : NetworkBehaviour
     private void SetCanInteractWithInventory(bool canInteract)
     {
         canInteractWithInventory = canInteract;
+        Debug.Log($"SetCanInteractWithInventory - {canInteractWithInventory}");
     }
 
     private void SetSelectedItemInventoryIndex(int newItemInventoryIndex)
@@ -262,17 +268,29 @@ public class PlayerInventory : NetworkBehaviour
         Debug.Log($"Selected item inventory index: {selectedItemInventoryIndex}");
     }
 
-    public void ResyncReconnect()
+    //public override void OnGainedOwnership()
+    //{
+    //    //for(int i = 1; i < playerItemsInventory.Count; i++)
+    //    //{
+    //    //    //Need to be a for to start from index 1, index 0 is Jump
+    //    //    OnItemAdded?.Invoke(playerItemsInventory[i]);
+    //    //}
+
+    //    //Reselect an item
+
+
+    //}
+
+    public void HandleOnGainOwnership()
     {
-        for(int i = 1; i < playerItemsInventory.Count; i++)
+        for (int i = 1; i < playerItemsInventory.Count; i++)
         {
             //Need to be a for to start from index 1, index 0 is Jump
             OnItemAdded?.Invoke(playerItemsInventory[i]);
         }
 
-        //Reselect an item
         SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
-        Debug.Log("ResyncReconnect called");
+        Debug.Log($"ResyncReconnect called - Items in inventory: {playerItemsInventory.Count} - OwnerId: {OwnerClientId}");
     }
 
     public override void OnNetworkDespawn()

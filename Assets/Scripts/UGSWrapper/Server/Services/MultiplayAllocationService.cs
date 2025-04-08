@@ -18,6 +18,8 @@ public class MultiplayAllocationService : IDisposable
     private CancellationTokenSource serverCheckCancel;
     string allocationId;
 
+    public IMultiplayService GetMultiplayService => multiplayService;
+
     public MultiplayAllocationService()
     {
         try
@@ -53,6 +55,7 @@ public class MultiplayAllocationService : IDisposable
             $"-ServerID: {config.ServerId}\n" +
             $"-AllocationID: {config.AllocationId}\n" +
             $"-Port: {config.Port}\n" +
+            $"-Ip: {config.IpAddress}\n" +
             $"-QPort: {config.QueryPort}\n" +
             $"-logs: {config.ServerLogDirectory}");
 
@@ -77,18 +80,6 @@ public class MultiplayAllocationService : IDisposable
         MatchmakingResults payloadAllocation = await MultiplayService.Instance.GetPayloadAllocationFromJsonAs<MatchmakingResults>();
         string modelAsJson = JsonConvert.SerializeObject(payloadAllocation, Formatting.Indented);
         Debug.Log(nameof(GetMatchmakerAllocationPayloadAsync) + ":" + Environment.NewLine + modelAsJson);
-        
-        
-
-        foreach (Player player in payloadAllocation.MatchProperties.Players)
-        {
-            Dictionary<string, int> customDataDictionary = player.CustomData.GetAs<Dictionary<string, int>>();
-
-            customDataDictionary.TryGetValue("pearls", out int pearls);
-
-            Debug.Log($"PlayerId: {player.Id} - Pearls: {pearls}");
-
-        }
 
         return payloadAllocation;
     }

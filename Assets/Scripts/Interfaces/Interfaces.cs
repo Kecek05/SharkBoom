@@ -46,13 +46,15 @@ public interface IServerAuthenticationService //Decopling of the Authentication 
     void UnregisterClient(ulong clientId);
 
     void RegisterPlayableClient(PlayerData playerData);
-
+    void RegisterUserData(UserData userData, ulong clientId);
     public List<PlayerData> PlayerDatas { get; }
     public Dictionary<ulong, PlayerData> ClientIdToPlayerData { get; }
     public Dictionary<ulong, string> ClientIdToAuth { get; }
     public Dictionary<string, ulong> AuthIdToClientId { get; }
     public Dictionary<string, PlayerData> AuthIdToPlayerData { get; }
-    PlayerData GetPlayerDataByClientId(ulong clientId);
+    public Dictionary<ulong, UserData> ClientIdToUserData { get; }
+    public PlayerData GetPlayerDataByClientId(ulong clientId);
+    public PlayerData GetPlayerDataByAuthId(string authId);
     public string GetAuthIdByClientId(ulong clientId);
     public ulong GetClientIdByAuthId(string authId);
 }
@@ -61,7 +63,7 @@ public interface IPlayerSpawner
 {
     int PlayerCount { get; }
 
-    void SpawnPlayer(ulong clientId);
+    void SpawnPlayer();
 
     PlayableState GetPlayableStateByCount();
 }

@@ -1,13 +1,11 @@
 using QFSW.QC;
 using Sortify;
 using System;
-using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
 public class PlayerThrower : NetworkBehaviour
 {
-    public static event Action<PlayerThrower> OnPlayerThrowerSpawned;
 
 
     [BetterHeader("References")]
@@ -36,42 +34,50 @@ public class PlayerThrower : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        GameManager.OnClientOwnershipChanged += HandleOnClientOwnershipChanged;
+
         gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
         turnManager = ServiceLocator.Get<BaseTurnManager>();
 
-        if (IsServer)
-        {
-            PlayerData playerData = NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.GetPlayerDataByClientId(OwnerClientId);
-
-            OnPlayerThrowerSpawned?.Invoke(this);
-
-            gameObject.name = "Player " + playerData.userData.userName; //Debug
-        }
-
-
-
         thisPlayableState.OnValueChanged += PlayableStateInitialize;
 
-        if(!IsHost) // host will add itself twice
-            PlayableStateInitialize(thisPlayableState.Value, thisPlayableState.Value);
 
-        if (IsOwner)
+        PlayableStateInitialize(thisPlayableState.Value, thisPlayableState.Value);
+
+        //if (!IsHost) // host will add itself twice
+        //    PlayableStateInitialize(thisPlayableState.Value, thisPlayableState.Value);
+
+        playerTouchColl.enabled = false;
+
+        Debug.Log($"OnNetworkSpawn of PlayerThrower - Im owner? {IsOwner} - OwnerId: {OwnerClientId}");
+    }
+
+    private void HandleOnClientOwnershipChanged(ulong newOwnerClientId)
+    {
+        if (!IsOwner) return;
+
+        Debug.Log($"HandleOnClientOwnershipChanged - new owner by event: {newOwnerClientId} - new owner obj: {OwnerClientId}");
+
+        if(newOwnerClientId == OwnerClientId)
         {
+            Debug.Log($"PlayerThrower Gained Ownership, new owner is: {newOwnerClientId} - Im {NetworkManager.LocalClientId}");
+
             InitializeOwner();
+            HandleEvents();
+            playerTouchColl.enabled = true;
 
-        } else
-        {
-            //if not owner, turn off touch collider
-            playerTouchColl.enabled = false;
-
+            playerInventory.HandleOnGainOwnership();
+            playerInventoryUI.HandleOnGainOwnership();
         }
-
-        HandleEvents();
     }
 
     private void InitializeOwner()
     {
         //Owner initialize code
+        Debug.Log("InitializeOwner called");
+
+        PlayableStateInitialize(thisPlayableState.Value, thisPlayableState.Value);
+
         turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
 
         turnManager.OnMyTurnEnded += GameFlowManager_OnMyTurnEnded;
@@ -130,6 +136,7 @@ public class PlayerThrower : NetworkBehaviour
         playerInventoryUI.OnItemSelectedByUI -= HandleOnItemSelectedByUI;
     }
 
+
     private void HandleOnDragStart()
     {
         playerDragUi.HandleOnPlayerDragControllerDragStart();
@@ -171,8 +178,8 @@ public class PlayerThrower : NetworkBehaviour
         playerDragUi.HandleOnPlayerStateMachineStateChanged(state);
 
         playerInventoryUI.HandleOnPlayerStateMachineStateChanged(state);
-    }
 
+    }
     private void HandleOnItemLaunched(int itemInventoryIndex)
     {
         playerInventory.HandleOnPlayerLauncherItemLaunched(itemInventoryIndex);
@@ -195,8 +202,6 @@ public class PlayerThrower : NetworkBehaviour
         playerInventoryUI.HandleOnPlayerInventoryItemAdded(itemAdded);
     }
 
-
-
     private void HandleOnGameStateChanged(GameState previousValue, GameState newValue)
     {
         if(newValue == GameState.GameEnded)
@@ -206,7 +211,7 @@ public class PlayerThrower : NetworkBehaviour
     }
 
     [Rpc(SendTo.Server)]
-    public void InitializePlayerRpc(PlayableState playableState, Quaternion GFXRotation, string authId)
+    public void InitializePlayerRpc(PlayableState playableState, Quaternion GFXRotation)
     {
         // Cant be OnnetworkSpawn because it needs to be called by NetworkServer
         thisPlayableState.Value = playableState;
@@ -254,16 +259,38 @@ public class PlayerThrower : NetworkBehaviour
 
     }
 
+    //DEBUG
+    [Command("checkImOwner", MonoTargetType.All)]
+    private void CheckImOwner()
+    {
+        Debug.Log($"Server is the Owner? {IsOwnedByServer} - OwnerId: {OwnerClientId}");
 
+        if (!IsOwner)
+        {
+            return;
+        }
+
+        transform.position = new Vector3(transform.position.x, transform.position.y + 5f, transform.position.z);
+    }
 
     private void PlayableStateInitialize(PlayableState previousValue, PlayableState newValue)
     {
-        if (IsOwner)
+        if (IsOwner && IsClient)
         {
-            ServiceLocator.Get<BaseTurnManager>().InitializeLocalStates(thisPlayableState.Value); //pass to GameFlow to know when its local turn
+            if(IsHost)
+            {
+                //Host always is Player1Playing
+                ServiceLocator.Get<BaseTurnManager>().InitializeLocalStates(PlayableState.Player1Playing);
+
+            } else
+            {
+                ServiceLocator.Get<BaseTurnManager>().InitializeLocalStates(newValue); //pass to GameFlow to know when its local turn
+            }
+
+           
         }
 
-        if (thisPlayableState.Value == PlayableState.Player1Playing)
+        if (newValue == PlayableState.Player1Playing)
         {
 
             foreach (GameObject playerCollider in playerColliders)
@@ -279,12 +306,14 @@ public class PlayerThrower : NetworkBehaviour
             }
         }
 
-        ServiceLocator.Get<BasePlayersPublicInfoManager>().AddPlayerToPlayersDictionary(thisPlayableState.Value, gameObject);
+
+        ServiceLocator.Get<BasePlayersPublicInfoManager>().AddPlayerToPlayersDictionary(newValue, gameObject);
 
     }
 
     public override void OnNetworkDespawn()
     {
+        GameManager.OnClientOwnershipChanged -= HandleOnClientOwnershipChanged;
         thisPlayableState.OnValueChanged -= PlayableStateInitialize;
 
         if (IsOwner)
@@ -296,19 +325,31 @@ public class PlayerThrower : NetworkBehaviour
             turnManager.OnMyTurnJumped -= GameFlowManager_OnMyTurnJumped;
 
             gameStateManager.CurrentGameState.OnValueChanged -= HandleOnGameStateChanged;
+
+            UnHandleEvents();
         }
 
-        UnHandleEvents();
+
 
     }
 
     public override void OnGainedOwnership()
     {
-        Debug.Log($"Gained Ownership: {OwnerClientId}");
+        //if(IsOwner)
+        //{
+        //    InitializeOwner();
+        //    HandleEvents();
+        //    playerTouchColl.enabled = true;
+        //}
+
+        ////HandleOnStateChanged(playerStateMachine.CurrentState.State);
+        //Debug.Log($"PlayerThrower Gained Ownership, new owner is: {OwnerClientId}");
+        //Debug.Log($"Player State machine exist? {playerStateMachine != null}");
+        ////playerInventory.ResyncReconnect();
     }
 
     public override void OnLostOwnership()
     {
-        Debug.Log($"Lost Ownership: {OwnerClientId}");
+        Debug.Log($"Lost Ownership");
     }
 }

@@ -38,7 +38,7 @@ public abstract class BaseTurnManager : NetworkBehaviour
 
 
     /// <summary>
-    /// Set the localPlayable and localPlayed states to the GameFlowManager, Only Owner.
+    /// Set the localPlayable and localPlayed states to the GameFlowManager, Only Client Owner.
     /// </summary>
     /// <param name="playingState"> Playing State</param>
     public abstract void InitializeLocalStates(PlayableState playingState);
