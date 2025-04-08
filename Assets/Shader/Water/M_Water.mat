@@ -99,6 +99,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _1: 0.1
+    - _2: 0.5
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
     - _AlphaToMask: 0
@@ -115,10 +117,10 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
-    - _FoamAmount: 7.21
-    - _FoamCuttoff: 49.09
-    - _FoamScale: 12.94
-    - _FoamSpeed: 3.45
+    - _FoamAmount: 1.08
+    - _FoamCuttoff: 0.47
+    - _FoamScale: 8.11
+    - _FoamSpeed: 0.1
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
@@ -131,7 +133,7 @@ Material:
     - _RippleColor: 0
     - _RippleDensity: 250
     - _RippleSlimness: 6
-    - _RippleSpeed: 2
+    - _RippleSpeed: 0.9
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -145,7 +147,7 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DeepColor: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FoamColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FoamColor: {r: 1, g: 0, b: 0.103104115, a: 1}
     - _RippleColor: {r: 0.91336316, g: 1.3352873, b: 1.3950504, a: 0}
     - _ShallowColor: {r: 1, g: 1, b: 1, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
