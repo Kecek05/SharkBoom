@@ -19,9 +19,16 @@ public class PlayerFlipGfx : DragListener
     protected override void DoOnDragChange(float forcePercent, float angle)
     {
         if (playerDragController.GetOpositeFingerPos().x > playerGfxTransform.position.x + angleOffset)
+        {
+            Debug.Log("Drag Right");
             transform.eulerAngles = new Vector3(transform.eulerAngles.x, -90f , transform.eulerAngles.z);
+        }
         else if (playerDragController.GetOpositeFingerPos().x < playerGfxTransform.position.x - angleOffset)
+        {
+            Debug.Log("Drag Left");
             transform.eulerAngles = new Vector3(transform.eulerAngles.x, 90f, transform.eulerAngles.z);
+
+        }
     }
 
     protected override void DoOnDragRelease()

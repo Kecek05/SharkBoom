@@ -6,7 +6,7 @@ public class PlayerAnimator : NetworkBehaviour
 {
     [BetterHeader("References")]
     [SerializeField] private Animator animator;
-    [SerializeField] private PlayerThrower player;
+    private bool isRight;
 
     private readonly static int[] animations =
     {
@@ -29,21 +29,64 @@ public class PlayerAnimator : NetworkBehaviour
         } 
         else if (newState == PlayerState.DraggingItem)
         {
-            PlayAnimation(Animations.Aim);
+            if (isRight)
+            {
+                PlayAnimation(Animations.AimR);
+            }
+            else
+            {
+                PlayAnimation(Animations.AimL);
+            }
         }
         else if (newState == PlayerState.DraggingJump)
         {
-            PlayAnimation(Animations.AimJump, 0);
+            if(isRight)
+            {
+                PlayAnimation(Animations.AimR, 0);
+            } else
+            {
+                PlayAnimation(Animations.AimL, 0);
+            }
         }
         else if (newState == PlayerState.DragReleaseItem)
         {
-            PlayAnimation(Animations.Shoot);
+            if (isRight)
+            {
+                PlayAnimation(Animations.ShootR);
+            }
+            else
+            {
+                PlayAnimation(Animations.ShootL);
+            }
         }
         else if (newState == PlayerState.DragReleaseJump)
         {
-            PlayAnimation(Animations.Jump);
+            if (isRight)
+            {
+                PlayAnimation(Animations.JumpR);
+            }
+            else
+            {
+                PlayAnimation(Animations.JumpL);
+            }
+
         }
     }
+
+    public void HandleOnRotationChanged(bool isRight)
+    {
+        if (!IsOwner) return;
+
+        this.isRight = isRight;
+
+        RotationChanged();
+    }
+
+    private void RotationChanged()
+    {
+        PlayAnimation(currentAnimation);
+    }
+
 
     private void PlayAnimation(Animations newAnimation, float crossFade = 0.2f)
     {
@@ -61,9 +104,14 @@ public class PlayerAnimator : NetworkBehaviour
 public enum Animations
 {
     Idle,
-    Shoot,
-    Jump,
+    ShootL,
+    ShootR,
+    JumpL,
+    JumpR,
     AimJump,
-    Aim,
+    AimJumpL,
+    AimJumpR,
+    AimL,
+    AimR,
     None, //at the bottom!
 }
