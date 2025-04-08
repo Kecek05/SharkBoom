@@ -10,7 +10,7 @@ public abstract class BaseWarning : MonoBehaviour
     protected WaitForSeconds waitForSeconds;
 
     protected abstract void Start();
-    protected virtual void StartWarning()
+    protected void StartWarning()
     {
         waitForSeconds = new WaitForSeconds(warningDuration); //Warning duration
 
@@ -26,12 +26,12 @@ public abstract class BaseWarning : MonoBehaviour
         HideWarning();
     }
 
-    protected virtual void ShowWarning()
+    protected void ShowWarning()
     {
         warningPanel.gameObject.SetActive(true);
     }
 
-    protected virtual void HideWarning()
+    protected void HideWarning()
     {
         warningPanel.gameObject.SetActive(false);
     }
