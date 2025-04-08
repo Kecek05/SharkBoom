@@ -76,8 +76,6 @@ public class DragAndShoot : NetworkBehaviour
     private float outDistancePlane; // store the distance of the plane and screen
     private bool canCancelDrag = false;
 
-    private Vector2 worldPoint;
-
     protected Rigidbody2D selectedRb;
 
     //Publics
@@ -142,31 +140,27 @@ public class DragAndShoot : NetworkBehaviour
             //{
             //    if (hit.collider.gameObject == areaOfStartDrag)
             //    { Start dragging
-            
-            Vector2 worldPoint = cameraManager.CameraMain.ScreenToWorldPoint(Input.mousePosition);
 
-            this.worldPoint = worldPoint;
-            Collider2D hit2D = Physics2D.OverlapPoint(worldPoint, touchLayer);
 
-            if (hit2D != null)
+
+            Vector2 worldStartPoint = cameraManager.CameraMain.ScreenToWorldPoint(Input.mousePosition);
+            Collider2D hit2D = Physics2D.OverlapPoint(worldStartPoint, touchLayer);
+
+            if (hit2D.gameObject == areaOfStartDrag) // null reference here, undestrand why
             {
-                Debug.Log("ZOOM - First logic is okay");
+                //Start Dragging
+                Debug.Log("ZOOM - First CLICK is okay");
+                SetCanCancelDrag(false);
+                trajectory.SetSimulation(true);
+                startZoomPos = cameraManager.CameraObjectToFollow;
 
-                if (hit2D.gameObject == areaOfStartDrag)
-                {
-                    //Start Dragging
-                    Debug.Log("ZOOM - Second logic is okay");
-                    SetCanCancelDrag(false);
-                    trajectory.SetSimulation(true);
-                    startZoomPos = cameraManager.CameraObjectToFollow;
+                // plane = new Plane(Vector3.forward, Input.mousePosition); // we create the plane to calculate the Z, because a click is a 2D position
 
-                    // plane = new Plane(Vector3.forward, Input.mousePosition); // we create the plane to calculate the Z, because a click is a 2D position
-
-                    SetIsDragging(true);
-                    OnDragStart?.Invoke();
-                }
+                SetIsDragging(true);
+                OnDragStart?.Invoke();
             }
         }
+    
 
         if (context.canceled && isDragging)
         {
@@ -202,14 +196,21 @@ public class DragAndShoot : NetworkBehaviour
         //  {
         //  endPosDrag = ray.GetPoint(outDistancePlane); // get the position of the click instantaneously
 
-        if (Input.touchCount == 1)
+        //Collider2D hit2D = Physics2D.OverlapPoint(worldPoint, touchLayer);
+
+        Vector2 screenPos = Input.mousePosition;
+        Vector2 worldCurrentPoint = cameraManager.CameraMain.ScreenToWorldPoint(screenPos);
+        RaycastHit2D hit = Physics2D.Raycast(worldCurrentPoint, Vector2.zero, 0f, touchLayer);
+
+       // Collider2D hit2D = Physics2D.OverlapPoint(worldCurrentPoint, touchLayer);
+
+        if (Input.touchCount == 5 && hit.collider != null)
         {
             Debug.Log("ZOOM - One finger detected");
-            Vector2 worldPoint = cameraManager.CameraMain.ScreenToWorldPoint(Input.mousePosition);
 
-            endPosDrag = worldPoint; // get the position of the click instantaneously
+            endPosDrag = worldCurrentPoint; // get the position of the click instantaneously
             directionOfDrag = (startTrajectoryPos.position - endPosDrag).normalized; // calculate the direction of the drag on Vector3
-            dragDistance = Vector3.Distance(startTrajectoryPos.position, endPosDrag); // calculate the distance of the drag on float
+            dragDistance = Vector2.Distance(startTrajectoryPos.position, endPosDrag); // calculate the distance of the drag on float
 
             dragForce = dragDistance * forceAddMultiplier; //Calculate the force linearly
             dragForce = Mathf.Clamp(dragForce, minForce, maxForce);
@@ -254,6 +255,7 @@ public class DragAndShoot : NetworkBehaviour
                 //Not detected a change in distance
             }
         }
+        Debug.Log("Avoid detected finger position");
     }
 
     private void CheckCancelDrag()
