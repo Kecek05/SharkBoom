@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.Netcode;
 
 public class TimerManager : BaseTimerManager
 {
@@ -60,9 +61,20 @@ public class TimerManager : BaseTimerManager
         }
 
         TriggerOnTurnTimesUp();
-
+        TriggerOnTurnTimesUpClient();
         //time's up
 
         timerCoroutine = null;
+    }
+
+    protected override void TriggerOnTurnTimesUpClient()
+    {
+        TriggerOnTurnTimesUpClientRpc();
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void TriggerOnTurnTimesUpClientRpc()
+    {
+        TriggerOnTurnTimesUp();
     }
 }

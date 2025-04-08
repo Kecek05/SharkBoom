@@ -25,4 +25,6 @@ public abstract class BaseTimerManager : NetworkBehaviour
 
     protected abstract IEnumerator Timer();
 
+    protected abstract void TriggerOnTurnTimesUpClient();
+
 }
