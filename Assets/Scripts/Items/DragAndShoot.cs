@@ -135,20 +135,27 @@ public class DragAndShoot : NetworkBehaviour
 
         if (context.started) // capture the first frame when the touch is pressed
         {
-            // Ray rayStart = cameraManager.CameraMain.ScreenPointToRay(Input.mousePosition);
-            Vector2 worldPoint = cameraManager.CameraMain.ScreenToWorldPoint(Input.mousePosition);
-            this.worldPoint = worldPoint;
+            //Ray rayStart = cameraManager.CameraMain.ScreenPointToRay(Input.mousePosition);
+            //RaycastHit hit;
 
+            //if (Physics.Raycast(rayStart, out hit, Mathf.Infinity, touchLayer)) // compare if the touch hit on the object
+            //{
+            //    if (hit.collider.gameObject == areaOfStartDrag)
+            //    { Start dragging
+            
+            Vector2 worldPoint = cameraManager.CameraMain.ScreenToWorldPoint(Input.mousePosition);
+
+            this.worldPoint = worldPoint;
             Collider2D hit2D = Physics2D.OverlapPoint(worldPoint, touchLayer);
 
             if (hit2D != null)
             {
-                Debug.Log("First logic is okay");
+                Debug.Log("ZOOM - First logic is okay");
 
                 if (hit2D.gameObject == areaOfStartDrag)
                 {
                     //Start Dragging
-                    Debug.Log("Second logic is okay");
+                    Debug.Log("ZOOM - Second logic is okay");
                     SetCanCancelDrag(false);
                     trajectory.SetSimulation(true);
                     startZoomPos = cameraManager.CameraObjectToFollow;
@@ -190,12 +197,17 @@ public class DragAndShoot : NetworkBehaviour
 
         if (!canDrag || !isDragging || selectedRb == null) return;
 
-        Ray ray = cameraManager.CameraMain.ScreenPointToRay(Input.mousePosition); //CHANGE TO CONTEXT
+        //Ray ray = cameraManager.CameraMain.ScreenPointToRay(Input.mousePosition); //CHANGE TO CONTEXT
+        //  if (plane.Raycast(ray, out outDistancePlane) && Input.touchCount == 1) // this input touch count is a check for avoid the player bug if accidentally touch the screen with two fingers
+        //  {
+        //  endPosDrag = ray.GetPoint(outDistancePlane); // get the position of the click instantaneously
 
-
-        if (worldPoint.Raycast(ray, out outDistancePlane) && Input.touchCount == 1) // this input touch count is a check for avoid the player bug if accidentally touch the screen with two fingers
+        if (Input.touchCount == 1)
         {
-            endPosDrag = ray.GetPoint(outDistancePlane); // get the position of the click instantaneously
+            Debug.Log("ZOOM - One finger detected");
+            Vector2 worldPoint = cameraManager.CameraMain.ScreenToWorldPoint(Input.mousePosition);
+
+            endPosDrag = worldPoint; // get the position of the click instantaneously
             directionOfDrag = (startTrajectoryPos.position - endPosDrag).normalized; // calculate the direction of the drag on Vector3
             dragDistance = Vector3.Distance(startTrajectoryPos.position, endPosDrag); // calculate the distance of the drag on float
 
