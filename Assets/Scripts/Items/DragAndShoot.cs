@@ -55,7 +55,7 @@ public class DragAndShoot : NetworkBehaviour
     [SerializeField] private float zoomDragSpeed;
 
     [Tooltip("Amount of zoom to change")]
-    [SerializeField] private float zoomAmountToChange = 5f;
+    [SerializeField] private float zoomAmountToChange = 7f;
 
     [Tooltip("Will only detect the distance if exceeds threshold")]
     [SerializeField] private int detectDistanceThreshold = 2;
@@ -71,11 +71,6 @@ public class DragAndShoot : NetworkBehaviour
 
 
     private Transform startZoomPos; // store the original zoom position
-    private float zoomForce; // current force of zoom
-    private bool isZoomIncreasing; // bool for check if the force is decreasing or increasing and allow the zoom
-    private float lastZoomForce = 0f; // Store the last zoom force
-    private float checkMovementInterval = 0.001f; // control the time between checks of the zoom force, turn the difference bigger
-    private float lastCheckTime = 0f; // control the time between checks
 
     private Plane plane; // Cache for the clicks
     private float outDistancePlane; // store the distance of the plane and screen
@@ -138,14 +133,16 @@ public class DragAndShoot : NetworkBehaviour
 
         if (context.started) // capture the first frame when the touch is pressed
         {
-            Ray rayStart = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
+            // Ray rayStart = cameraManager.CameraMain.ScreenPointToRay(Input.mousePosition);
+            Vector2 worldPoint = cameraManager.CameraMain.ScreenToWorldPoint(Input.mousePosition);
+            Collider2D hit2D = Physics2D.OverlapPoint(worldPoint, touchLayer);
 
-            if (Physics.Raycast(rayStart, out hit, Mathf.Infinity, touchLayer)) // compare if the touch hit on the object
+            if (hit2D != null)
             {
-                if (hit.collider.gameObject == areaOfStartDrag)
+                if (hit2D.gameObject == areaOfStartDrag)
                 {
                     //Start Dragging
+                    Debug.Log("First logic is okay");
                     SetCanCancelDrag(false);
                     trajectory.SetSimulation(true);
                     startZoomPos = cameraManager.CameraObjectToFollow;
@@ -187,7 +184,7 @@ public class DragAndShoot : NetworkBehaviour
 
         if (!canDrag || !isDragging || selectedRb == null) return;
 
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //CHANGE TO CONTEXT
+        Ray ray = cameraManager.CameraMain.ScreenPointToRay(Input.mousePosition); //CHANGE TO CONTEXT
 
 
         if (plane.Raycast(ray, out outDistancePlane) && Input.touchCount == 1) // this input touch count is a check for avoid the player bug if accidentally touch the screen with two fingers
@@ -223,15 +220,12 @@ public class DragAndShoot : NetworkBehaviour
                 {
                     //Force is increasing
                     cameraManager.CameraZoom.ChangeZoom(-zoomAmountToChange, zoomDragSpeed);
-                    Debug.Log("Force is increasing");
                 }
                 else if (roundedDragDistance < roundedLastDragDistance)
                 {
                     //Force is decreasing
 
                     cameraManager.CameraZoom.ChangeZoom(zoomAmountToChange, zoomDragSpeed);
-
-                    Debug.Log("Force is decreasing");
                 }
 
 
@@ -306,7 +300,9 @@ public class DragAndShoot : NetworkBehaviour
 
     public float GetAngle()
     {
-        return Mathf.Atan2(directionOfDrag.y, directionOfDrag.x) * Mathf.Rad2Deg;
+        float angleRadians = Mathf.Atan2(directionOfDrag.y, directionOfDrag.x);
+        float angleDegrees = angleRadians * Mathf.Rad2Deg;
+        return Math.Abs(angleDegrees);
     }
 
     public float GetForcePercentage()

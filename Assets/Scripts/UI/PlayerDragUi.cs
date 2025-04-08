@@ -8,10 +8,11 @@ public class PlayerDragUi : DragListener
     [SerializeField] private TextMeshProUGUI forceText;
     [SerializeField] private TextMeshProUGUI directionText;
     [SerializeField] private PlayerThrower player;
+    [SerializeField] private LookAtCamera lookAtCamera;
+
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-
         HideText(); //hide enemy ui
     }
 
@@ -45,9 +46,8 @@ public class PlayerDragUi : DragListener
 
     protected override void DoOnDragChange(float forcePercent, float angle)
     {
-        forceText.text = "Force: " + Mathf.RoundToInt(forcePercent);
-
-        directionText.text = "Direction: " + Mathf.RoundToInt(angle);
+        forceText.text = $"Force: {Mathf.RoundToInt(forcePercent)}";
+        directionText.text = $"Direction: {Mathf.RoundToInt(angle)}°";
     }
 
     protected override void DoOnDragRelease()
@@ -59,12 +59,14 @@ public class PlayerDragUi : DragListener
     {
         forceText.enabled = true;
         directionText.enabled = true;
+        lookAtCamera.enabled = true; // we enable and disable because this script work on LateUpdate
     }
 
     private void HideText()
     {
         forceText.enabled = false;
         directionText.enabled = false;
+        lookAtCamera.enabled = false;
     }
 
 }

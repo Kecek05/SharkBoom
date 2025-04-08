@@ -82,6 +82,7 @@ public class CameraZoom : NetworkBehaviour
             if (currentDistance > previousDistance) // zoom in
             {
                 ChangeZoom(0.5f);
+                Debug.Log("zoom in");
             }
             else if (currentDistance < previousDistance) // zoom out
             {
@@ -115,7 +116,6 @@ public class CameraZoom : NetworkBehaviour
         cameraObjectFollowPos.z += value; // add the values for move the camera
         cameraObjectFollowPos.z = Mathf.Clamp(cameraObjectFollowPos.z, minZoom, maxZoom);
         cameraManager.CameraObjectToFollow.position = Vector3.MoveTowards(cameraManager.CameraObjectToFollow.position, cameraObjectFollowPos, zoomSpeed * Time.deltaTime); // Move towards is better for movimentation
-        Debug.Log($"Object to follow Z pos: {cameraObjectFollowPos.z}");
     }
 
     public override void OnNetworkDespawn()

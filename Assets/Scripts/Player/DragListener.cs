@@ -1,4 +1,5 @@
 using Unity.Netcode;
+using UnityEngine;
 
 public abstract class DragListener : NetworkBehaviour
 {
@@ -18,8 +19,10 @@ public abstract class DragListener : NetworkBehaviour
     public void HandleOnPlayerStateMachineStateChanged(PlayerState newState)
     {
         if (!IsOwner) return; //only owner
+
         if (newState == PlayerState.DragReleaseItem && newState == PlayerState.DraggingJump)
         {
+            Debug.Log("Drag Release Item");
             DoOnDragRelease();
         }
     }

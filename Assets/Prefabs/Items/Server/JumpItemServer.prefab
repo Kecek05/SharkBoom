@@ -54,7 +54,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1605454544280285762, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: lifeTime
-      value: 1.5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5150134811526336966, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_IsTrigger
@@ -95,17 +95,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 3992125483173273134}
   m_SourcePrefab: {fileID: 100100000, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
---- !u!114 &2061251337206000038 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8531394715748984986, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
-  m_PrefabInstance: {fileID: 7709761659009139004}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b617507da6d07e749b7efdb34e1173e1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &4139059953487484834 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
@@ -126,10 +115,9 @@ MonoBehaviour:
   isServerObject: 1
   itemSO: {fileID: 11400000, guid: c4047f17a9430314ab9b65ede680009f, type: 2}
   rb: {fileID: 5689049572469319462}
-  cinemachineFollow: {fileID: 2061251337206000038}
   collidersToChangeLayer:
   - {fileID: 4139059953487484834}
-  followingTime: 1.5
+  followingTime: 3
 --- !u!70 &3992125483173273134
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
