@@ -12,7 +12,7 @@ public abstract class BaseTimerManager : NetworkBehaviour
     protected NetworkVariable<int> timerTurn = new(0);
 
     protected Coroutine timerCoroutine;
-    protected WaitForSeconds timerDelay = new WaitForSeconds(1); //cache
+    protected WaitForSeconds timerDelay = new WaitForSeconds(1f); //cache
 
     public NetworkVariable<int> TimerTurn => timerTurn;
 
