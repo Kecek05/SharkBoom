@@ -76,6 +76,8 @@ public class DragAndShoot : NetworkBehaviour
     private float outDistancePlane; // store the distance of the plane and screen
     private bool canCancelDrag = false;
 
+    private Vector2 worldPoint;
+
     protected Rigidbody2D selectedRb;
 
     //Publics
@@ -135,19 +137,23 @@ public class DragAndShoot : NetworkBehaviour
         {
             // Ray rayStart = cameraManager.CameraMain.ScreenPointToRay(Input.mousePosition);
             Vector2 worldPoint = cameraManager.CameraMain.ScreenToWorldPoint(Input.mousePosition);
+            this.worldPoint = worldPoint;
+
             Collider2D hit2D = Physics2D.OverlapPoint(worldPoint, touchLayer);
 
             if (hit2D != null)
             {
+                Debug.Log("First logic is okay");
+
                 if (hit2D.gameObject == areaOfStartDrag)
                 {
                     //Start Dragging
-                    Debug.Log("First logic is okay");
+                    Debug.Log("Second logic is okay");
                     SetCanCancelDrag(false);
                     trajectory.SetSimulation(true);
                     startZoomPos = cameraManager.CameraObjectToFollow;
 
-                    plane = new Plane(Vector3.forward, Input.mousePosition); // we create the plane to calculate the Z, because a click is a 2D position
+                    // plane = new Plane(Vector3.forward, Input.mousePosition); // we create the plane to calculate the Z, because a click is a 2D position
 
                     SetIsDragging(true);
                     OnDragStart?.Invoke();
@@ -187,7 +193,7 @@ public class DragAndShoot : NetworkBehaviour
         Ray ray = cameraManager.CameraMain.ScreenPointToRay(Input.mousePosition); //CHANGE TO CONTEXT
 
 
-        if (plane.Raycast(ray, out outDistancePlane) && Input.touchCount == 1) // this input touch count is a check for avoid the player bug if accidentally touch the screen with two fingers
+        if (worldPoint.Raycast(ray, out outDistancePlane) && Input.touchCount == 1) // this input touch count is a check for avoid the player bug if accidentally touch the screen with two fingers
         {
             endPosDrag = ray.GetPoint(outDistancePlane); // get the position of the click instantaneously
             directionOfDrag = (startTrajectoryPos.position - endPosDrag).normalized; // calculate the direction of the drag on Vector3

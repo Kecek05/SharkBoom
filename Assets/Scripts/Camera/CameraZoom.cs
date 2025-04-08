@@ -29,6 +29,8 @@ public class CameraZoom : NetworkBehaviour
     [Tooltip("Think like a scope of a sniper, max = more close of player")]
     [SerializeField] private float maxZoom = 1f;
 
+    [SerializeField] private float zoomAmountChange = 0.5f;
+
     public void InitializeOwner()
     {
         if (!IsOwner) return;
@@ -80,12 +82,11 @@ public class CameraZoom : NetworkBehaviour
 
             if (currentDistance > previousDistance) // zoom in
             {
-                ChangeZoom(0.5f);
-                Debug.Log("zoom in");
+                ChangeZoom(zoomAmountChange);
             }
             else if (currentDistance < previousDistance) // zoom out
             {
-                ChangeZoom(-0.5f);
+                ChangeZoom(-zoomAmountChange);
             }
 
             previousDistance = currentDistance;
