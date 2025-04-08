@@ -1,8 +1,14 @@
 using Sortify;
+using System;
 using UnityEngine;
 
 public class PlayerFlipGfx : DragListener
 {
+    /// <summary>
+    /// Called when the look orientation is changed. Pass if is looking right
+    /// </summary>
+    public event Action<bool> OnRotationChanged;
+
     [BetterHeader("References")]
     [SerializeField] private Transform playerGfxTransform;
     [SerializeField] private PlayerDragController playerDragController;
@@ -21,13 +27,16 @@ public class PlayerFlipGfx : DragListener
         if (playerDragController.GetOpositeFingerPos().x > playerGfxTransform.position.x + angleOffset)
         {
             Debug.Log("Drag Right");
-            transform.eulerAngles = new Vector3(transform.eulerAngles.x, -90f , transform.eulerAngles.z);
+           // transform.eulerAngles = new Vector3(transform.eulerAngles.x, -90f , transform.eulerAngles.z);
+
+            OnRotationChanged?.Invoke(true);
         }
         else if (playerDragController.GetOpositeFingerPos().x < playerGfxTransform.position.x - angleOffset)
         {
             Debug.Log("Drag Left");
-            transform.eulerAngles = new Vector3(transform.eulerAngles.x, 90f, transform.eulerAngles.z);
+           // transform.eulerAngles = new Vector3(transform.eulerAngles.x, 90f, transform.eulerAngles.z);
 
+            OnRotationChanged?.Invoke(false);
         }
     }
 

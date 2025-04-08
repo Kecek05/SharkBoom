@@ -21,7 +21,15 @@ public class PlayerAnimator : NetworkBehaviour
         Animator.StringToHash("AimR"),
     };
 
+    private AnimationData idleAnimationData = new AnimationData(Animations.Idle, Animations.Idle);
+    private AnimationData shootAnimationData = new AnimationData(Animations.ShootL, Animations.ShootR);
+    private AnimationData jumpAnimationData = new AnimationData(Animations.JumpL, Animations.JumpR);
+    private AnimationData aimJumpAnimationData = new AnimationData(Animations.AimJumpL, Animations.AimJumpR, 0f);
+    private AnimationData aimAnimationData = new AnimationData(Animations.AimL, Animations.AimR);
+
+
     private Animations currentAnimation;
+    private AnimationData currentAnimationData;
 
     public void HandleOnPlayerStateMachineStateChanged(PlayerState newState)
     {
@@ -29,50 +37,23 @@ public class PlayerAnimator : NetworkBehaviour
 
         if (newState == PlayerState.IdleMyTurn || newState == PlayerState.IdleEnemyTurn || newState == PlayerState.MyTurnEnded)
         {
-            PlayAnimation(Animations.Idle);
-        } 
+            PlayAnimationData(idleAnimationData);
+        }
         else if (newState == PlayerState.DraggingItem)
         {
-            if (isRight)
-            {
-                PlayAnimation(Animations.AimR);
-            }
-            else
-            {
-                PlayAnimation(Animations.AimL);
-            }
+            PlayAnimationData(aimAnimationData);
         }
         else if (newState == PlayerState.DraggingJump)
         {
-            if(isRight)
-            {
-                PlayAnimation(Animations.AimJumpR, 0);
-            } else
-            {
-                PlayAnimation(Animations.AimJumpL, 0);
-            }
+            PlayAnimationData(aimJumpAnimationData);
         }
         else if (newState == PlayerState.DragReleaseItem)
         {
-            if (isRight)
-            {
-                PlayAnimation(Animations.ShootR);
-            }
-            else
-            {
-                PlayAnimation(Animations.ShootL);
-            }
+            PlayAnimationData(shootAnimationData);
         }
         else if (newState == PlayerState.DragReleaseJump)
         {
-            if (isRight)
-            {
-                PlayAnimation(Animations.JumpR);
-            }
-            else
-            {
-                PlayAnimation(Animations.JumpL);
-            }
+            PlayAnimationData(jumpAnimationData);
         }
     }
 
@@ -87,19 +68,31 @@ public class PlayerAnimator : NetworkBehaviour
 
     private void RotationChanged()
     {
-        PlayAnimation(currentAnimation);
+        PlayAnimationData(currentAnimationData);
     }
 
-
-    private void PlayAnimation(Animations newAnimation, float crossFade = 0.2f)
+    private void PlayAnimationData(AnimationData animationData)
     {
-        if(newAnimation == Animations.None) return; //none
+        if (animationData.animationL == Animations.None && animationData.animationR == Animations.None) return; //none
 
-        if (currentAnimation == newAnimation) return; //already playing this animation
+        //if (currentAnimation == animationData.animationL || currentAnimation == animationData.animationR) return; //already playing this animation
 
-        currentAnimation = newAnimation;
+        currentAnimationData = animationData;
 
-        animator.CrossFade(animations[(int)currentAnimation], crossFade);
+        if (isRight)
+        {
+            if(currentAnimation == animationData.animationR) return; //already playing this animation
+
+            currentAnimation = animationData.animationR;
+            animator.CrossFade(animations[(int)animationData.animationR], animationData.crossFade);
+        }
+        else
+        {
+            if(currentAnimation == animationData.animationL) return; //already playing this animation
+
+            currentAnimation = animationData.animationL;
+            animator.CrossFade(animations[(int)animationData.animationL], animationData.crossFade);
+        }
     }
 }
 
@@ -110,10 +103,22 @@ public enum Animations
     ShootR,
     JumpL,
     JumpR,
-    AimJump,
     AimJumpL,
     AimJumpR,
     AimL,
     AimR,
     None, //at the bottom!
+}
+
+public struct AnimationData
+{
+    public Animations animationL;
+    public Animations animationR;
+    public float crossFade;
+    public AnimationData(Animations animationL = Animations.None, Animations animationR = Animations.None, float crossFade = 0.2f)
+    {
+        this.animationL = animationL;
+        this.animationR = animationR;
+        this.crossFade = crossFade;
+    }
 }

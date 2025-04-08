@@ -115,8 +115,9 @@ public class PlayerThrower : NetworkBehaviour
         playerDragController.OnDragCancelable += HandleOnDragCancelable;
 
         playerInventoryUI.OnItemSelectedByUI += HandleOnItemSelectedByUI;
-    }
 
+        playerFlipGfx.OnRotationChanged += HandleOnPlayerFlipGfxRotationChanged;
+    }
 
     private void UnHandleEvents()
     {
@@ -135,6 +136,8 @@ public class PlayerThrower : NetworkBehaviour
         playerDragController.OnDragCancelable -= HandleOnDragCancelable;
 
         playerInventoryUI.OnItemSelectedByUI -= HandleOnItemSelectedByUI;
+
+        playerFlipGfx.OnRotationChanged -= HandleOnPlayerFlipGfxRotationChanged;
 
         cameraManager.UnInitializeOwner();
     }
@@ -211,6 +214,11 @@ public class PlayerThrower : NetworkBehaviour
         {
             playerStateMachine.TransitionTo(playerStateMachine.playerGameOverState);
         }
+    }
+
+    private void HandleOnPlayerFlipGfxRotationChanged(bool isRight)
+    {
+        playerAnimator.HandleOnRotationChanged(isRight);
     }
 
     [Rpc(SendTo.Server)]
