@@ -11,10 +11,14 @@ public class PlayerAnimator : NetworkBehaviour
     private readonly static int[] animations =
     {
         Animator.StringToHash("Idle"),
-        Animator.StringToHash("Shoot"),
-        Animator.StringToHash("Jump"),
-        Animator.StringToHash("AimJump"),
-        Animator.StringToHash("Aim"),
+        Animator.StringToHash("ShootL"),
+        Animator.StringToHash("ShootR"),
+        Animator.StringToHash("JumpL"),
+        Animator.StringToHash("JumpR"),
+        Animator.StringToHash("AimJumpL"),
+        Animator.StringToHash("AimJumpR"),
+        Animator.StringToHash("AimL"),
+        Animator.StringToHash("AimR"),
     };
 
     private Animations currentAnimation;
@@ -42,10 +46,10 @@ public class PlayerAnimator : NetworkBehaviour
         {
             if(isRight)
             {
-                PlayAnimation(Animations.AimR, 0);
+                PlayAnimation(Animations.AimJumpR, 0);
             } else
             {
-                PlayAnimation(Animations.AimL, 0);
+                PlayAnimation(Animations.AimJumpL, 0);
             }
         }
         else if (newState == PlayerState.DragReleaseItem)
@@ -69,7 +73,6 @@ public class PlayerAnimator : NetworkBehaviour
             {
                 PlayAnimation(Animations.JumpL);
             }
-
         }
     }
 
@@ -97,7 +100,6 @@ public class PlayerAnimator : NetworkBehaviour
         currentAnimation = newAnimation;
 
         animator.CrossFade(animations[(int)currentAnimation], crossFade);
-
     }
 }
 
