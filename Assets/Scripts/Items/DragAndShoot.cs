@@ -194,26 +194,19 @@ public class DragAndShoot : NetworkBehaviour
         //  {
         //  endPosDrag = ray.GetPoint(outDistancePlane); // get the position of the click instantaneously
 
-        //Collider2D hit2D = Physics2D.OverlapPoint(worldPoint, touchLayer);
-
-        Vector2 screenPos = Input.mousePosition;
-        Vector2 worldCurrentPoint = cameraManager.CameraMain.ScreenToWorldPoint(screenPos);
-        RaycastHit2D hit = Physics2D.Raycast(worldCurrentPoint, Vector2.zero, 0f, touchLayer);
-
         // Collider2D hit2D = Physics2D.OverlapPoint(worldCurrentPoint, touchLayer);
+        Ray rayStart = cameraManager.CameraMain.ScreenPointToRay(Input.mousePosition);
+        Plane plane = new Plane(Vector3.forward, Vector3.zero);
 
-        if (Input.touchCount == 5 && hit.collider != null)
+        if (plane.Raycast(rayStart, out outDistancePlane) && Input.touchCount == 1)
         {
-            Debug.Log("ZOOM - One finger detected");
 
-            endPosDrag = worldCurrentPoint; // get the position of the click instantaneously
+            endPosDrag = rayStart.GetPoint(outDistancePlane);
             directionOfDrag = (startTrajectoryPos.position - endPosDrag).normalized; // calculate the direction of the drag on Vector3
             dragDistance = Vector2.Distance(startTrajectoryPos.position, endPosDrag); // calculate the distance of the drag on float
 
             dragForce = dragDistance * forceAddMultiplier; //Calculate the force linearly
             dragForce = Mathf.Clamp(dragForce, minForce, maxForce);
-
-
 
             trajectory.UpdateDots(startTrajectoryPos.position, directionOfDrag * dragForce, selectedRb); // update the dots position 
 
@@ -253,7 +246,6 @@ public class DragAndShoot : NetworkBehaviour
                 //Not detected a change in distance
             }
         }
-
     }
 
     private void CheckCancelDrag()
