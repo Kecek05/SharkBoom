@@ -348,6 +348,10 @@ public class PlayerThrower : NetworkBehaviour
 
     public override void OnLostOwnership()
     {
-        Debug.Log($"Lost Ownership");
+        Debug.Log($"Lost Ownership - called before changing the owner");
+
+        playerTouchColl.enabled = false;
+
+        UnHandleEvents();
     }
 }

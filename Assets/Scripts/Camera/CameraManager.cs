@@ -121,6 +121,8 @@ public class CameraManager : NetworkBehaviour
 
     public void UnInitializeOwner()
     {
+        if (!IsOwner) return;
+
         cameraMovement.UnInitializeOwner();
         cameraZoom.UnInitializeOwner();
         cameraFollowing.UnInitializeOwner();

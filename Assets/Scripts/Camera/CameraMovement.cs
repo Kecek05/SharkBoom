@@ -47,12 +47,13 @@ public class CameraMovement : NetworkBehaviour
         {
             dragMoveActive = true;
             MoveStarted();
-
+            Debug.Log("Started dragging");
         }
         else if (context.canceled) // When we release the screen
         {
             dragMoveActive = false;
             MoveFinish();
+            Debug.Log("Finished dragging");
         }
     }
 
