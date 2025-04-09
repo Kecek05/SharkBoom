@@ -55,16 +55,26 @@ public class CameraManager : NetworkBehaviour
                 CameraMove();
                 break;
             case PlayerState.MyTurnStarted:
+                CameraMove();
+                break;
             case PlayerState.IdleEnemyTurn:
+                CameraMove();
+                break;
             case PlayerState.IdleMyTurn:
                 CameraMove();
                 break;
             case PlayerState.DraggingJump:
+                Dragging();
+                break;
             case PlayerState.DraggingItem:
                 Dragging();
                 break;
             case PlayerState.DragReleaseJump:
+                Following();
+                break;
             case PlayerState.DragReleaseItem:
+                Following();
+                break;
             case PlayerState.PlayerWatching:
                 Following();
                 break;
@@ -88,6 +98,7 @@ public class CameraManager : NetworkBehaviour
     {
         cameraZoom.enabled = true;
         cameraMovement.enabled = false;
+        Debug.Log("Dragging");  
     }
     private void Following()
     {

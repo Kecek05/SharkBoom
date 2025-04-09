@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8379730067978457469}
   - component: {fileID: 8104980272527296498}
   - component: {fileID: 405844151340449578}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: InventoryButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 225623893254906369}
   - component: {fileID: 4103504353177588816}
   - component: {fileID: 5104973882560572610}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: PlayerCanInteractWithInventoryText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -772,7 +772,7 @@ GameObject:
   - component: {fileID: 3129780423812430651}
   - component: {fileID: 3222283215369270763}
   - component: {fileID: 4882372458947561154}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: PlayerInventoryCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1006,7 +1006,6 @@ MonoBehaviour:
   cameraMovement: {fileID: 8450544055641021374}
   cameraZoom: {fileID: 2903552973942911587}
   cameraFollowing: {fileID: 1764359340906761994}
-  player: {fileID: 2871544100916734757}
 --- !u!114 &1764359340906761994
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1037,7 +1036,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   cameraManager: {fileID: 3009684404041675309}
   inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
-  dragMoveSpeed: 1
+  dragMoveSpeed: 0.5
   minMovX: -15
   maxMovX: 15
   minMovY: -10
@@ -1059,6 +1058,7 @@ MonoBehaviour:
   cameraManager: {fileID: 3009684404041675309}
   minZoom: -25
   maxZoom: 1
+  zoomAmountChange: 0.5
 --- !u!1 &1731536595254416242
 GameObject:
   m_ObjectHideFlags: 0
@@ -1071,7 +1071,7 @@ GameObject:
   - component: {fileID: 770099976245203709}
   - component: {fileID: 1705995384829575891}
   - component: {fileID: 8101142939162384478}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: JumpButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1191,7 +1191,7 @@ GameObject:
   - component: {fileID: 1555554115670077140}
   - component: {fileID: 4313767686286968856}
   - component: {fileID: 6773476030300152405}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: PlayerStateText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1358,7 +1358,7 @@ GameObject:
   - component: {fileID: 5913404985729619612}
   - component: {fileID: 2431052711063713342}
   - component: {fileID: 6653718117231751915}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: BackgroundButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1434,7 +1434,7 @@ GameObject:
   - component: {fileID: 4044765271217847303}
   - component: {fileID: 8490131476333331865}
   - component: {fileID: 6954761404739090485}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: DragDistanceText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1815,7 +1815,7 @@ GameObject:
   - component: {fileID: 9088615724884716203}
   - component: {fileID: 2166526160714012397}
   - component: {fileID: 746244578023088047}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1951,7 +1951,7 @@ GameObject:
   - component: {fileID: 3048060028184846068}
   - component: {fileID: 7707578037517434450}
   - component: {fileID: 3586585799661393402}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: InventoryItemHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2114,7 +2114,7 @@ GameObject:
   - component: {fileID: 6728952039454404771}
   - component: {fileID: 1183686492628617315}
   - component: {fileID: 4283063239054279799}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: SelectedRbText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2250,7 +2250,7 @@ GameObject:
   - component: {fileID: 8799811711083758960}
   - component: {fileID: 1991366623507089675}
   - component: {fileID: 3501556867693320141}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: PlayerDebugCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2337,7 +2337,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3330725078028108188}
   - component: {fileID: 5233387307745232000}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: PlayerInventoryUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2411,7 +2411,7 @@ Transform:
   m_GameObject: {fileID: 5504225720282205400}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.014, z: -0.31}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2451,7 +2451,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: -0.15}
+  m_Offset: {x: 0, y: -0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -2461,7 +2461,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 2, y: 2.29}
+  m_Size: {x: 3, y: 3}
   m_EdgeRadius: 0
 --- !u!1 &5736527916904145808
 GameObject:
@@ -2610,7 +2610,7 @@ GameObject:
   - component: {fileID: 7977444982494319574}
   - component: {fileID: 3582045563868544975}
   - component: {fileID: 8740863803064508621}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: SelectedItemIndexText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2916,7 +2916,7 @@ GameObject:
   - component: {fileID: 4477729431695094856}
   - component: {fileID: 5330454977958495046}
   - component: {fileID: 7092833399193746260}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
