@@ -12,9 +12,19 @@ public class MainMenuController : MonoBehaviour
 
     [BetterHeader("References")]
     [SerializeField] private Button openVsFriendsPanelBtn;
+    [SerializeField] private Button quickJoinBtn;
+    [SerializeField] private Button createGameBtn;
 
 
+    public async void QuickJoin()
+    {
+       await ClientSingleton.Instance.GameManager.QuickJoinLobbyAsync();
+    }
 
+    public async void CreateGame()
+    {
+        await HostSingleton.Instance.GameManager.StartHostAsync();
+    }
 
     private async void Awake()
     {

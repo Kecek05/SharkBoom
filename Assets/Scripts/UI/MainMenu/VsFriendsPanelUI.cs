@@ -27,7 +27,7 @@ public class VsFriendsPanelUI : MonoBehaviour
         vsFriendsPanel.SetActive(false);
     }
 
-    private void Show()
+    public void Show()
     {
         vsFriendsPanel.SetActive(true);
     }

@@ -2402,7 +2402,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &633795557
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2505,7 +2505,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 664665111}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1989499896}
+        m_TargetAssemblyTypeName: MainMenuController, Assembly-CSharp
+        m_MethodName: QuickJoin
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &664665111
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5073,7 +5085,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1222833796}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2059564259}
+        m_TargetAssemblyTypeName: VsFriendsPanelUI, Assembly-CSharp
+        m_MethodName: Show
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1222833796
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6773,6 +6797,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   openVsFriendsPanelBtn: {fileID: 1222833795}
+  quickJoinBtn: {fileID: 664665110}
+  createGameBtn: {fileID: 2032308059}
 --- !u!1 &1990635955
 GameObject:
   m_ObjectHideFlags: 0
@@ -6975,7 +7001,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2032308060}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1989499896}
+        m_TargetAssemblyTypeName: MainMenuController, Assembly-CSharp
+        m_MethodName: CreateGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2032308060
 MonoBehaviour:
   m_ObjectHideFlags: 0
