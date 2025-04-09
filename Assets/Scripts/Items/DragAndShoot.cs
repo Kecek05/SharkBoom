@@ -5,6 +5,7 @@ using Unity.Mathematics;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEngine.UI.Image;
 
 public class DragAndShoot : NetworkBehaviour
 {
@@ -133,31 +134,30 @@ public class DragAndShoot : NetworkBehaviour
 
         if (context.started) // capture the first frame when the touch is pressed
         {
-            //Ray rayStart = cameraManager.CameraMain.ScreenPointToRay(Input.mousePosition);
-            //RaycastHit hit;
 
-            //if (Physics.Raycast(rayStart, out hit, Mathf.Infinity, touchLayer)) // compare if the touch hit on the object
-            //{
-            //    if (hit.collider.gameObject == areaOfStartDrag)
-            //    { Start dragging
+            Ray rayStart = cameraManager.CameraMain.ScreenPointToRay(Input.mousePosition); // here we get a ray on screen point basead on touch pos
+            Plane plane = new Plane(Vector3.forward, Vector3.zero); // we create a plane for calculate the distance between the touch and the camera
+            float distance;
 
-
-
-            Vector2 worldStartPoint = cameraManager.CameraMain.ScreenToWorldPoint(Input.mousePosition);
-            Collider2D hit2D = Physics2D.OverlapPoint(worldStartPoint, touchLayer);
-
-            if (hit2D.gameObject == areaOfStartDrag) // null reference here, undestrand why
+            if (plane.Raycast(rayStart, out distance)) // here we compare if the ray hit the plane and give for us a distance number
             {
-                //Start Dragging
-                Debug.Log("ZOOM - First CLICK is okay");
-                SetCanCancelDrag(false);
-                trajectory.SetSimulation(true);
-                startZoomPos = cameraManager.CameraObjectToFollow;
+                Vector3 worldPoint = rayStart.GetPoint(distance); // we convert this distance and get the point and store in a vector3, because the world is 3d
+                Vector2 worldPoint2D = new Vector2(worldPoint.x, worldPoint.y); // we create a vector2 basead on vector3 values
+                Collider2D hit = Physics2D.OverlapPoint(worldPoint2D, touchLayer); // make a overlap point only to check if hit will hit the object that we need
 
-                // plane = new Plane(Vector3.forward, Input.mousePosition); // we create the plane to calculate the Z, because a click is a 2D position
+                if (hit != null) // check for dont creates null references
+                {
+                    if (hit.gameObject == areaOfStartDrag)
+                    {
+                        // Start Dragging
+                        SetCanCancelDrag(false);
+                        trajectory.SetSimulation(true);
+                        startZoomPos = cameraManager.CameraObjectToFollow;
 
-                SetIsDragging(true);
-                OnDragStart?.Invoke();
+                        SetIsDragging(true);
+                        OnDragStart?.Invoke();
+                    }
+                }
             }
         }
     
@@ -181,8 +181,6 @@ public class DragAndShoot : NetworkBehaviour
                 trajectory.SetSimulation(false);
                 OnDragRelease?.Invoke();
             }
-
-
         }
     }
 
@@ -202,7 +200,7 @@ public class DragAndShoot : NetworkBehaviour
         Vector2 worldCurrentPoint = cameraManager.CameraMain.ScreenToWorldPoint(screenPos);
         RaycastHit2D hit = Physics2D.Raycast(worldCurrentPoint, Vector2.zero, 0f, touchLayer);
 
-       // Collider2D hit2D = Physics2D.OverlapPoint(worldCurrentPoint, touchLayer);
+        // Collider2D hit2D = Physics2D.OverlapPoint(worldCurrentPoint, touchLayer);
 
         if (Input.touchCount == 5 && hit.collider != null)
         {
@@ -255,7 +253,7 @@ public class DragAndShoot : NetworkBehaviour
                 //Not detected a change in distance
             }
         }
-        Debug.Log("Avoid detected finger position");
+
     }
 
     private void CheckCancelDrag()
