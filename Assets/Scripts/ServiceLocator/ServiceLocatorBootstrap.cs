@@ -1,5 +1,6 @@
 using Sortify;
 using System;
+using Unity.Cinemachine;
 using UnityEngine;
 
 [DefaultExecutionOrder(-1)]
@@ -8,8 +9,11 @@ public class ServiceLocatorBootstrap : MonoBehaviour
     public static event Action OnServiceLocatorInitialized;
 
     [BetterHeader("References")]
-    [SerializeField] private ItemsListSO itemsListSO; //REFACTOR
-    [SerializeField] private Transform[] spawnPointsPos; //REFACTOR
+    [SerializeField] private ItemsListSO itemsListSO;
+    [SerializeField] private Transform[] spawnPointsPos;
+    [SerializeField] private CameraObjectToFollow cameraObjectToFollow;
+    [SerializeField] private CinemachineCamera cinemachineCamera;
+    [SerializeField] private Camera cameraMain;
 
     private void Awake()
     {
@@ -30,6 +34,8 @@ public class ServiceLocatorBootstrap : MonoBehaviour
         BaseGameOverManager gameOverManager = gameObject.AddComponent<GameOverManager>();
         BasePearlsManager pearlsManager = gameObject.AddComponent<PearlsManager>();
 
+        cameraObjectToFollow.gameObject.transform.position = new Vector3(0, 0, 0);
+
         ServiceLocator.Register(turnManager);
         ServiceLocator.Register(timerManager);
         ServiceLocator.Register(gameTimerManager);
@@ -38,6 +44,9 @@ public class ServiceLocatorBootstrap : MonoBehaviour
         ServiceLocator.Register(gameStateManager);
         ServiceLocator.Register(gameOverManager);
         ServiceLocator.Register(pearlsManager);
+        ServiceLocator.Register(cameraObjectToFollow);
+        ServiceLocator.Register(cinemachineCamera);
+        ServiceLocator.Register(cameraMain);
 
 
 

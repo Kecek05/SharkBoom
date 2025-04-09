@@ -67,6 +67,8 @@ public class CameraMovement : NetworkBehaviour
             {
                 Vector2 movementDelta = currentTouchPosition - lastTouchPosition;
                 MoveCamera(movementDelta); // move the camera with the diffence between the last touch position and the current touch position
+
+                Debug.Log($"Movement Delta: {movementDelta} - Current Touch Pos: {currentTouchPosition}");
             }
 
             lastTouchPosition = currentTouchPosition;

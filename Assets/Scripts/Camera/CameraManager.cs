@@ -1,7 +1,6 @@
 using Unity.Cinemachine;
 using Unity.Netcode;
 using UnityEngine;
-using static UnityEngine.CullingGroup;
 
 public class CameraManager : NetworkBehaviour
 {
@@ -28,14 +27,14 @@ public class CameraManager : NetworkBehaviour
     {
         if(!IsOwner) return;
 
-        cameraObjectToFollow = new GameObject("CameraObjectToFollow").transform;
-        cameraObjectToFollow.position = new Vector3(0, 0, 0);
+        cameraObjectToFollow = ServiceLocator.Get<CameraObjectToFollow>().transform;
+
 
         if (cinemachineCamera == null)
         {
-            cinemachineCamera = Object.FindFirstObjectByType<CinemachineCamera>();
-            cameraMain = Object.FindFirstObjectByType<Camera>();
+            cinemachineCamera = ServiceLocator.Get<CinemachineCamera>();
             cinemachineCamera.Target.TrackingTarget = cameraObjectToFollow;
+            cameraMain = ServiceLocator.Get<Camera>();
         }
 
         cameraMovement.InitializeOwner();
@@ -86,6 +85,8 @@ public class CameraManager : NetworkBehaviour
                 CameraTurnOff();
                 break;
         }
+
+        Debug.Log($"Camera State: {playerState}");
     }
 
     private void CameraMove()
@@ -126,5 +127,6 @@ public class CameraManager : NetworkBehaviour
         cameraMovement.UnInitializeOwner();
         cameraZoom.UnInitializeOwner();
         cameraFollowing.UnInitializeOwner();
+
     }
 }
