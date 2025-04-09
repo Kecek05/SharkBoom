@@ -102,6 +102,8 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleEvents()
     {
+        Debug.Log($"HandleEvents PlayerThrower - Im owner? {IsOwner} - OwnerId: {OwnerClientId}  - My Client Id: {NetworkManager.LocalClientId}");
+
         playerInventory.OnItemAdded += HandleOnItemAdded;
         playerInventory.OnItemChanged += HandleOnItemChanged;
         playerInventory.OnItemSelected += HandleOnItemSelected;
@@ -123,6 +125,8 @@ public class PlayerThrower : NetworkBehaviour
 
     private void UnHandleEvents()
     {
+        Debug.Log($"UnHandleEvents PlayerThrower - Im owner? {IsOwner} - OwnerId: {OwnerClientId} - My Client Id: {NetworkManager.LocalClientId}");
+
         playerInventory.OnItemAdded -= HandleOnItemAdded;
         playerInventory.OnItemChanged -= HandleOnItemChanged;
         playerInventory.OnItemSelected -= HandleOnItemSelected;
@@ -142,6 +146,7 @@ public class PlayerThrower : NetworkBehaviour
         playerFlipGfx.OnRotationChanged -= HandleOnPlayerFlipGfxRotationChanged;
 
         cameraManager.UnInitializeOwner();
+        playerLauncher.UnInitializeOwner();
     }
 
 
@@ -351,6 +356,7 @@ public class PlayerThrower : NetworkBehaviour
         Debug.Log($"Lost Ownership - called before changing the owner");
 
         playerTouchColl.enabled = false;
+
 
         UnHandleEvents();
     }

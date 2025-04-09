@@ -135,6 +135,8 @@ public class PlayerInventoryUI : NetworkBehaviour
 
         //UpdateOpenInventoryButton();
         HideInventory(); //hide only when selecting an item
+
+        Debug.Log($"Item Selected By UI - Item Inventory index: {itemInventoryIndex}");
     }
 
     public void UpdateOpenInventoryButton(Sprite itemIcon)

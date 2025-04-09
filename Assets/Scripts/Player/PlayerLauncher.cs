@@ -20,24 +20,15 @@ public class PlayerLauncher : NetworkBehaviour
     [SerializeField] private PlayerDragController playerDragController;
     [SerializeField] private PlayerInventory playerInventory;
     
-
-    //private BaseItemThrowableActivable itemThrowableActivableClient;
-    //private BaseItemThrowableActivable itemThrowableActivableServer;
     private BaseItemActivableManager itemActivableManager;
-
-    public override void OnNetworkSpawn()
-    {
-        if (IsOwner)
-        {
-            inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
-        }
-    }
 
     public void InitializeOwner()
     {
         if (!IsOwner) return;
 
         itemActivableManager = ServiceLocator.Get<BaseItemActivableManager>();
+
+        inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
     }
 
     private void InputReader_OnTouchPressEvent(InputAction.CallbackContext context)
@@ -146,12 +137,11 @@ public class PlayerLauncher : NetworkBehaviour
 
     }
 
-    public override void OnNetworkDespawn()
+    public void UnInitializeOwner()
     {
-        if(IsOwner)
-        {
-            inputReader.OnTouchPressEvent -= InputReader_OnTouchPressEvent;
-        }
+        if(!IsOwner) return;
+
+        inputReader.OnTouchPressEvent -= InputReader_OnTouchPressEvent;
     }
 
 }

@@ -10,8 +10,9 @@ public class CameraFollowing : NetworkBehaviour
 
     [Header("Settings")]
     [Tooltip("Time to pause camera on item finish position")]
-    [SerializeField] private float timeToAwait = 3f; 
+    [SerializeField] private float cameraZPosOnFollowing = -12f;
 
+    private WaitForSeconds waitToStopFollowing = new(3f);
     private Transform itemLaunched;
     private Vector3 lastCameraObjectToFollowPos;
     private Coroutine followObject;
@@ -52,7 +53,7 @@ public class CameraFollowing : NetworkBehaviour
     {
         while (itemLaunched != null) // while the itemLaunched is not destroyed
         {
-            cameraManager.CameraObjectToFollow.position = new Vector3(itemLaunched.position.x, itemLaunched.position.y, cameraManager.CameraObjectToFollow.position.z); // we set the position of the camera based on the itemLaunched x and y, and we maintain the z position of the camera
+            cameraManager.CameraObjectToFollow.position = new Vector3(itemLaunched.position.x, itemLaunched.position.y, cameraZPosOnFollowing);
             yield return null;
         }
 
@@ -69,7 +70,7 @@ public class CameraFollowing : NetworkBehaviour
 
     private IEnumerator ResetCam()
     {
-        yield return new WaitForSeconds(timeToAwait);
+        yield return waitToStopFollowing;
         ResetCamAfterFollow();
         resetCam = null;
     }
