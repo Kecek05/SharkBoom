@@ -43,7 +43,7 @@ public class PlayerNameBootstrap : MonoBehaviour
 
     private void HandlePlayerName(string playerName)
     {
-        if(string.IsNullOrEmpty(playerName) || playerName.Length > 20 || playerName.Length < 5)
+        if(string.IsNullOrEmpty(playerName) || playerName.Length > 15 || playerName.Length < 5)
         {
             confirmButton.interactable = false;
         }
