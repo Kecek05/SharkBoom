@@ -19,6 +19,8 @@ public class GameManager : NetworkBehaviour
     private BaseGameOverManager gameOverManager;
     private BasePearlsManager pearlsManager;
 
+    private int handledOwnershipEvents = 0;
+
     [SerializeField] private DamageableSO debugHitKillDamageableSO;
 
     public override void OnNetworkSpawn()
@@ -59,6 +61,11 @@ public class GameManager : NetworkBehaviour
 
     private void HandleOnOwnershipHandlerClientGainOwnership(ulong clientId)
     {
+        handledOwnershipEvents++;
+
+        Debug.Log($"HandleOnOwnershipHandlerClientGainOwnershipToClientRpc, ClientId: {clientId} - handledOwnershipEvents: {handledOwnershipEvents} - IsHost {IsHost}");
+        if (IsHost && handledOwnershipEvents >= 2) return;
+
         HandleOnOwnershipHandlerClientGainOwnershipToClientRpc(clientId);
         gameStateManager.HandleOnPlayerGainOwnership(clientId);
     }

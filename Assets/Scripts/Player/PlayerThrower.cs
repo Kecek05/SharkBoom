@@ -60,7 +60,7 @@ public class PlayerThrower : NetworkBehaviour
 
         if(newOwnerClientId == OwnerClientId)
         {
-            Debug.Log($"PlayerThrower Gained Ownership, new owner is: {newOwnerClientId} - Im {NetworkManager.LocalClientId}");
+            Debug.Log($"HandleOnClientOwnershipChanged, PlayerThrower Gained Ownership, new owner is: {newOwnerClientId} - Im {NetworkManager.LocalClientId}");
 
             InitializeOwner();
             HandleEvents();
@@ -68,6 +68,8 @@ public class PlayerThrower : NetworkBehaviour
 
             playerInventory.HandleOnGainOwnership();
             playerInventoryUI.HandleOnGainOwnership();
+
+            Debug.Log("HandleOnClientOwnershipChanged, Ownership changed");
         }
     }
 
