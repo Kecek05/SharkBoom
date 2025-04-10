@@ -93,17 +93,20 @@ public class CameraManager : NetworkBehaviour
     {
         cameraMovement.enabled = true;
         cameraZoom.enabled = true;
+        cameraFollowing.enabled = false;
     }
 
     private void Dragging()
     {
         cameraZoom.enabled = true;
         cameraMovement.enabled = false;
-        Debug.Log("Dragging");  
+        cameraFollowing.enabled = false; 
     }
     private void Following()
     {
         cameraFollowing.enabled = true;
+        cameraMovement.enabled = false;
+        cameraZoom.enabled = false;
     }
 
     private void CameraReset()

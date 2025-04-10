@@ -71,14 +71,9 @@ public class CameraFollowing : NetworkBehaviour
     private IEnumerator ResetCam()
     {
         yield return waitToStopFollowing;
-        ResetCamAfterFollow();
         resetCam = null;
     }
 
-    public void ResetCamAfterFollow()
-    {
-       cameraManager.CameraObjectToFollow.position = lastCameraObjectToFollowPos; // we send the camera for last position before the item was launched
-    }
 
     public void UnInitializeOwner()
     {

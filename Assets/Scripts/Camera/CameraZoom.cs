@@ -45,14 +45,14 @@ public class CameraZoom : NetworkBehaviour
     {
         if (context.started && this.enabled)
         {
-            cameraManager.CameraMovement.enabled = false;
+            // cameraManager.CameraMovement.enabled = false;
             ZoomStarted(); // when we have two fingers on the screen
         }
 
         if (context.canceled) 
         {
             ZoomEnded();
-            cameraManager.CameraMovement.enabled = true;
+            // cameraManager.CameraMovement.enabled = true;
         }
     }
 

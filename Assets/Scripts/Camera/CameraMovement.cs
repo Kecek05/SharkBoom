@@ -43,7 +43,7 @@ public class CameraMovement : NetworkBehaviour
 
     private void InputReader_OnTouchPressEvent(InputAction.CallbackContext context)
     {
-        if (context.started) // When we press the screen
+        if (context.started && this.enabled == true) // When we press the screen
         {
             dragMoveActive = true;
             MoveStarted();
