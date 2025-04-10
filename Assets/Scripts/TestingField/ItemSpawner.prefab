@@ -46,9 +46,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73458deaec7952d4d9be656811aeae5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemToSpawnSO: {fileID: 11400000, guid: 7667fbb8415883a4bb0ea49a0ebf3d7b, type: 2}
-  dragForce: 30
+  itemToSpawnSO: {fileID: 0}
   harpoonDirection: {fileID: 2674473600739214332}
+  dragForce: 30
+  delayBetweenSpawns: 3
 --- !u!1 &4738282254918005480
 GameObject:
   m_ObjectHideFlags: 0

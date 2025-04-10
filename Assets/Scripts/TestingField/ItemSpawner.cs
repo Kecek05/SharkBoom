@@ -1,3 +1,4 @@
+using Sortify;
 using System.Collections;
 using UnityEngine;
 
@@ -5,17 +6,17 @@ public class ItemSpawner : MonoBehaviour
 {
 
     [SerializeField] private ItemSO itemToSpawnSO;
-
-    [SerializeField] private float dragForce;
     [SerializeField] private Transform harpoonDirection;
+
+    [BetterHeader("Item Spawner Settings", 10)]
+    [SerializeField] private float dragForce;
     [SerializeField] private float delayBetweenSpawns = 3f;
+    [SerializeField] private bool canSpawn = true;
 
     private GameObject lastProjectile;
 
     private void OnDrawGizmos()
     {
-        float lineLength = 3f;
-
 
         Gizmos.color = Color.blue;
         Vector3 start = transform.position;
@@ -37,12 +38,13 @@ public class ItemSpawner : MonoBehaviour
 
         while (true)
         {
-            //In while to be possible to change the delays in runtime
-            WaitForSeconds delay = new WaitForSeconds(delayBetweenSpawns);
 
-            WaitForSeconds delayToActivate = new WaitForSeconds(delayBetweenSpawns / 2f);
+            //In while to be possible to change the delays in runtime
+            WaitForSeconds delay = new WaitForSeconds(delayBetweenSpawns / 2f);
 
             yield return delay;
+
+            if (!canSpawn) continue;
 
             ItemLauncherData itemLauncherData = new ItemLauncherData
             {
@@ -53,13 +55,14 @@ public class ItemSpawner : MonoBehaviour
             };
 
 
-            SpawnItemProjectile(itemLauncherData); 
+            SpawnItemProjectile(itemLauncherData);
+
+            yield return delay; // wait to activate if possible
 
             BaseItemThrowableActivable lastActivableProjectile = lastProjectile.GetComponent<BaseItemThrowableActivable>();
 
             if(lastActivableProjectile != null)
             {
-                yield return delayToActivate; // wait to activate
 
                 lastActivableProjectile.TryActivate();
             }
