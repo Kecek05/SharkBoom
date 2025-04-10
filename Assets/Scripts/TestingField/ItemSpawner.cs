@@ -8,20 +8,18 @@ public class ItemSpawner : MonoBehaviour
 
     [SerializeField] private float dragForce;
     [SerializeField] private Transform harpoonDirection;
+    [SerializeField] private float delayBetweenSpawns = 3f;
+
+    private GameObject lastProjectile;
 
     private void OnDrawGizmos()
     {
         float lineLength = 3f;
-        float radius = 0.2f;
-
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, radius);
 
 
         Gizmos.color = Color.blue;
         Vector3 start = transform.position;
 
-        // End point based on forward direction and line length
         Vector3 end = harpoonDirection.position;
 
         Gizmos.DrawLine(start, end);
@@ -37,21 +35,34 @@ public class ItemSpawner : MonoBehaviour
     private IEnumerator SpawnItem()
     {
 
-        while(true)
+        while (true)
         {
-            yield return new WaitForSeconds(3f);
+            //In while to be possible to change the delays in runtime
+            WaitForSeconds delay = new WaitForSeconds(delayBetweenSpawns);
+
+            WaitForSeconds delayToActivate = new WaitForSeconds(delayBetweenSpawns / 2f);
+
+            yield return delay;
 
             ItemLauncherData itemLauncherData = new ItemLauncherData
             {
                 dragForce = dragForce,
                 dragDirection = harpoonDirection.position,
                 selectedItemSOIndex = 0, // irrelevant
-                ownerPlayableState = PlayableState.None,
+                ownerPlayableState = PlayableState.None, // irrelevant
             };
 
 
             SpawnItemProjectile(itemLauncherData); 
 
+            BaseItemThrowableActivable lastActivableProjectile = lastProjectile.GetComponent<BaseItemThrowableActivable>();
+
+            if(lastActivableProjectile != null)
+            {
+                yield return delayToActivate; // wait to activate
+
+                lastActivableProjectile.TryActivate();
+            }
         }
     }
 
@@ -59,10 +70,10 @@ public class ItemSpawner : MonoBehaviour
     private void SpawnItemProjectile(ItemLauncherData launcherData) // on client, need to pass the prefab for the other clients instantiate it
     {
 
-        GameObject projetctile = Instantiate(itemToSpawnSO.itemClientPrefab, transform.position, Quaternion.identity);
+        lastProjectile = Instantiate(itemToSpawnSO.itemClientPrefab, transform.position, Quaternion.identity);
 
 
-        if (projetctile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
+        if (lastProjectile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
         {
             itemThrowable.Initialize(launcherData);
         }
