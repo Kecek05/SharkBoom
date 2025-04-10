@@ -49,6 +49,8 @@ public class PlayerThrower : NetworkBehaviour
 
         playerTouchColl.enabled = false;
 
+        //DEBUG
+        gameObject.name = "Player " + UnityEngine.Random.Range(0, 10000);
         Debug.Log($"OnNetworkSpawn of PlayerThrower - Im owner? {IsOwner} - OwnerId: {OwnerClientId}");
     }
 
@@ -111,8 +113,8 @@ public class PlayerThrower : NetworkBehaviour
 
         playerLauncher.OnItemLaunched += HandleOnItemLaunched;
 
-        if(IsOwner)
-            playerStateMachine.OnStateChanged += HandleOnStateChanged;
+
+        playerStateMachine.OnStateChanged += HandleOnStateChanged;
 
         playerDragController.OnDragStart += HandleOnDragStart;
         playerDragController.OnDragChange += HandleOnDragChange;
@@ -134,8 +136,7 @@ public class PlayerThrower : NetworkBehaviour
 
         playerLauncher.OnItemLaunched -= HandleOnItemLaunched;
 
-        if (IsOwner)
-            playerStateMachine.OnStateChanged -= HandleOnStateChanged;
+        playerStateMachine.OnStateChanged -= HandleOnStateChanged;
 
         playerDragController.OnDragStart -= HandleOnDragStart;
         playerDragController.OnDragChange -= HandleOnDragChange;
@@ -147,6 +148,7 @@ public class PlayerThrower : NetworkBehaviour
 
         cameraManager.UnInitializeOwner();
         playerLauncher.UnInitializeOwner();
+        playerInventoryUI.UnHandleInitializeOwner();
     }
 
 

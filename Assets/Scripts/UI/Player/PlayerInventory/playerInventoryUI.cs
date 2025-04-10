@@ -201,6 +201,12 @@ public class PlayerInventoryUI : NetworkBehaviour
         ShowInventoryButton();
     }
 
+    public void UnHandleInitializeOwner()
+    {
+        HideInventory();
+        HideInventoryButton();
+    }
+
     //DEBUG
     [Command("checkImOwnerInventoryUI", MonoTargetType.All)]
     private void CheckImOwnerInventoryUI()
