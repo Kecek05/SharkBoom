@@ -210,7 +210,7 @@ public class DragAndShoot : NetworkBehaviour
             dragForce = dragDistance * forceAddMultiplier; //Calculate the force linearly
             dragForce = Mathf.Clamp(dragForce, minForce, maxForce);
 
-            trajectory.UpdateDots(startTrajectoryPos.position, directionOfDrag * dragForce, selectedRb); // update the dots position 
+            trajectory.UpdateDots(startTrajectoryPos.position, directionOfDrag * dragForce, maxForce, selectedRb); // update the dots position 
 
             OnDragChange?.Invoke(GetForcePercentage(), GetAngle());
 
@@ -270,7 +270,7 @@ public class DragAndShoot : NetworkBehaviour
     protected void ResetDrag()
     {
         // Reset the dots position
-        trajectory.UpdateDots(startTrajectoryPos.position, directionOfDrag * minForce, selectedRb);
+        trajectory.UpdateDots(startTrajectoryPos.position, directionOfDrag * minForce, maxForce, selectedRb);
         SetIsDragging(false);
     }
 
