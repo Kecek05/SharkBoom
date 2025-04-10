@@ -109,10 +109,10 @@ public class TurnManager : BaseTurnManager
     {
         if(!IsServer) return;
 
-        SetPlayableStateServer(PlayableState.Player1Playing); // Debug
+        //SetPlayableStateServer(PlayableState.Player1Playing); // Debug
 
-        //int randomStartPlayer = UnityEngine.Random.Range(0, 2);
-        //SetPlayableStateServerRpc(randomStartPlayer == 0 ? PlayableState.Player1Playing : PlayableState.Player2Playing);
+        int randomStartPlayer = UnityEngine.Random.Range(0, 2);
+        SetPlayableStateServerRpc(randomStartPlayer == 0 ? PlayableState.Player1Playing : PlayableState.Player2Playing);
     }
 
     protected override async void DelayChangeTurns(PlayableState playableState)
