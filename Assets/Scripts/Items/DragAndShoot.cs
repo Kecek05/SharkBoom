@@ -52,8 +52,10 @@ public class DragAndShoot : NetworkBehaviour
     [SerializeField] private float forceAddMultiplier = 0.1f;
 
     [BetterHeader("Zoom Settings")]
-    [Tooltip("Speed of the Zoom")]
-    [SerializeField] private float zoomDragSpeed;
+    [Tooltip("Speed of the Zoom when we are increasing the zoom")]
+    [SerializeField] private float zoomIncreasingDragSpeed;
+    [Tooltip("Speed of the Zoom when we are decreasing the zoom")]
+    [SerializeField] private float zoomDecreasingDragSpeed;
 
     [Tooltip("Amount of zoom to change")]
     [SerializeField] private float zoomAmountToChange = 7f;
@@ -229,13 +231,13 @@ public class DragAndShoot : NetworkBehaviour
                 if (roundedDragDistance > roundedLastDragDistance)
                 {
                     //Force is increasing
-                    cameraManager.CameraZoom.ChangeZoom(-zoomAmountToChange, zoomDragSpeed);
+                    cameraManager.CameraZoom.ChangeZoom(-zoomAmountToChange, zoomIncreasingDragSpeed);
                 }
                 else if (roundedDragDistance < roundedLastDragDistance)
                 {
                     //Force is decreasing
 
-                    cameraManager.CameraZoom.ChangeZoom(zoomAmountToChange, zoomDragSpeed);
+                    cameraManager.CameraZoom.ChangeZoom(zoomAmountToChange, zoomDecreasingDragSpeed);
                 }
 
 
