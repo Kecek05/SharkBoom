@@ -504,6 +504,7 @@ GameObject:
   - component: {fileID: 5120579722876303172}
   - component: {fileID: 800024870368675109}
   - component: {fileID: 4799874711576044224}
+  - component: {fileID: 5307745833650858273}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -717,6 +718,7 @@ MonoBehaviour:
   trajectory: {fileID: 800024870368675109}
   inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
   areaOfStartDrag: {fileID: 5504225720282205400}
+  uiDetectionHelper: {fileID: 5307745833650858273}
   startTrajectoryPos: {fileID: 5526197349071884733}
   touchLayer:
     serializedVersion: 2
@@ -761,6 +763,18 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   maxHealth: 100
   player: {fileID: 2871544100916734757}
+--- !u!114 &5307745833650858273
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1244250245066138330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 162ba78a9b41a574cb4209d023f11e10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1348648853730134369
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,8 +1,5 @@
 using Sortify;
 using System;
-using System.Collections;
-using Unity.Cinemachine;
-using Unity.Mathematics;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
