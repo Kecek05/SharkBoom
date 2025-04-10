@@ -26,14 +26,12 @@ public class PlayerFlipGfx : DragListener
     {
         if (playerDragController.GetOpositeFingerPos().x > playerGfxTransform.position.x + angleOffset)
         {
-            Debug.Log("Drag Right");
            // transform.eulerAngles = new Vector3(transform.eulerAngles.x, -90f , transform.eulerAngles.z);
 
             OnRotationChanged?.Invoke(true);
         }
         else if (playerDragController.GetOpositeFingerPos().x < playerGfxTransform.position.x - angleOffset)
         {
-            Debug.Log("Drag Left");
            // transform.eulerAngles = new Vector3(transform.eulerAngles.x, 90f, transform.eulerAngles.z);
 
             OnRotationChanged?.Invoke(false);

@@ -86,7 +86,6 @@ public class CameraManager : NetworkBehaviour
                 break;
         }
 
-        Debug.Log($"Camera State: {playerState}");
     }
 
     private void CameraMove()
