@@ -6,6 +6,9 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using static UnityEngine.UI.Image;
+using UnityEngine.EventSystems;
+using NUnit.Framework;
+using System.Collections.Generic;
 
 public class DragAndShoot : NetworkBehaviour
 {
@@ -136,7 +139,7 @@ public class DragAndShoot : NetworkBehaviour
 
         if (context.started) // capture the first frame when the touch is pressed
         {
-
+            if(IsPointerOverUIObject()) return; // check if the touch is over a UI object
             Ray rayStart = cameraManager.CameraMain.ScreenPointToRay(Input.mousePosition); // here we get a ray on screen point basead on touch pos
             Plane plane = new Plane(Vector3.forward, Vector3.zero); // we create a plane for calculate the distance between the touch and the camera
             float distance;
@@ -250,6 +253,20 @@ public class DragAndShoot : NetworkBehaviour
         }
     }
 
+    private void Update()
+    {
+        if(!IsOwner) return;
+
+        if (!IsPointerOverUIObject())
+        {
+            Debug.Log("is false");
+        }
+        else
+        {
+            Debug.Log("is true");
+        }
+
+    }
     private void CheckCancelDrag()
     {
         if (Mathf.Abs(dragDistance) <= canceDragDistance)
@@ -325,6 +342,15 @@ public class DragAndShoot : NetworkBehaviour
     public Vector3 GetOpositeFingerPos()
     {
         return (startTrajectoryPos.position - endPosDrag) + startTrajectoryPos.position;
+    }
+
+    private bool IsPointerOverUIObject()
+    {
+        PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
+        eventDataCurrentPosition.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+        return results.Count > 0;
     }
 
     public override void OnNetworkDespawn()
