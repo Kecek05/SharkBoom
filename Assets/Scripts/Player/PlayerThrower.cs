@@ -113,8 +113,8 @@ public class PlayerThrower : NetworkBehaviour
 
         playerLauncher.OnItemLaunched += HandleOnItemLaunched;
 
-
-        playerStateMachine.OnStateChanged += HandleOnStateChanged;
+        if(playerStateMachine != null)
+            playerStateMachine.OnStateChanged += HandleOnStateChanged;
 
         playerDragController.OnDragStart += HandleOnDragStart;
         playerDragController.OnDragChange += HandleOnDragChange;
@@ -136,7 +136,8 @@ public class PlayerThrower : NetworkBehaviour
 
         playerLauncher.OnItemLaunched -= HandleOnItemLaunched;
 
-        playerStateMachine.OnStateChanged -= HandleOnStateChanged;
+        if (playerStateMachine != null)
+            playerStateMachine.OnStateChanged -= HandleOnStateChanged;
 
         playerDragController.OnDragStart -= HandleOnDragStart;
         playerDragController.OnDragChange -= HandleOnDragChange;
