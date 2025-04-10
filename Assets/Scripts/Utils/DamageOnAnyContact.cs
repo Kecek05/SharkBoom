@@ -10,12 +10,7 @@ public class DamageOnAnyContact : MonoBehaviour
     {
         if (collision.collider.gameObject.TryGetComponent(out IDamageable damageable))
         {
-            if (NetworkManager.Singleton.IsServer && !damaged)
-            {
-                damaged = true;
-                damageable.TakeDamage(damageableSO);
-                Debug.Log("Dealt " + damageableSO.damage + " damage to " + collision.gameObject.name);
-            }
+            TakeDamage(damageable);
         }
     }
 
@@ -23,12 +18,18 @@ public class DamageOnAnyContact : MonoBehaviour
     {
         if (collision.gameObject.TryGetComponent(out IDamageable damageable))
         {
-            if (NetworkManager.Singleton.IsServer && !damaged)
-            {
-                damaged = true;
-                damageable.TakeDamage(damageableSO);
-                Debug.Log("Dealt " + damageableSO.damage + " damage to " + collision.gameObject.name);
-            }
+            TakeDamage(damageable);
+        }
+    }
+
+
+    private void TakeDamage(IDamageable damageable)
+    {
+        if (NetworkManager.Singleton.IsServer && !damaged)
+        {
+            damaged = true;
+            damageable.TakeDamage(damageableSO);
+            Debug.Log($"Dealt {damageableSO.damage} ");
         }
     }
 }

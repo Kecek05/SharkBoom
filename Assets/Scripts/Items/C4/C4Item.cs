@@ -10,4 +10,9 @@ public class C4Item : BaseItemThrowableActivable
 
         explosionObj.SetActive(true);
     }
+
+    private void OnDestroy()
+    {
+        Debug.Log("C4 destroyed");
+    }
 }
