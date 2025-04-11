@@ -6,11 +6,13 @@ public class PlayerAnimator : NetworkBehaviour
 {
     [BetterHeader("References")]
     [SerializeField] private Animator animator;
-    private bool isRight;
+    private bool isRight; //Rotation that the player is looking
+    private bool isDefaultRight; // Rotation of the player thrower obj in idle. - TODO: Make it look to the direction of the other player
 
     private readonly static int[] animations =
     {
-        Animator.StringToHash("Idle"),
+        Animator.StringToHash("IdleL"),
+        Animator.StringToHash("IdleR"),
         Animator.StringToHash("ShootL"),
         Animator.StringToHash("ShootR"),
         Animator.StringToHash("JumpL"),
@@ -21,7 +23,7 @@ public class PlayerAnimator : NetworkBehaviour
         Animator.StringToHash("AimR"),
     };
 
-    private AnimationData idleAnimationData = new AnimationData(Animations.Idle, Animations.Idle);
+    private AnimationData idleAnimationData = new AnimationData(Animations.IdleL, Animations.IdleR);
     private AnimationData shootAnimationData = new AnimationData(Animations.ShootL, Animations.ShootR);
     private AnimationData jumpAnimationData = new AnimationData(Animations.JumpL, Animations.JumpR);
     private AnimationData aimJumpAnimationData = new AnimationData(Animations.AimJumpL, Animations.AimJumpR, 0f);
@@ -98,7 +100,8 @@ public class PlayerAnimator : NetworkBehaviour
 
 public enum Animations
 {
-    Idle,
+    IdleL,
+    IdleR,
     ShootL,
     ShootR,
     JumpL,
