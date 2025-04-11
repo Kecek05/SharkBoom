@@ -6,7 +6,7 @@ public class ItemSpawner : MonoBehaviour
 {
 
     [SerializeField] private ItemSO itemToSpawnSO;
-    [SerializeField] private Transform harpoonDirection;
+    [SerializeField] private Transform itemDirection;
 
     [BetterHeader("Item Spawner Settings", 10)]
     [SerializeField] private float dragForce;
@@ -21,7 +21,7 @@ public class ItemSpawner : MonoBehaviour
         Gizmos.color = Color.blue;
         Vector3 start = transform.position;
 
-        Vector3 end = harpoonDirection.position;
+        Vector3 end = itemDirection.position;
 
         Gizmos.DrawLine(start, end);
     }
@@ -49,7 +49,7 @@ public class ItemSpawner : MonoBehaviour
             ItemLauncherData itemLauncherData = new ItemLauncherData
             {
                 dragForce = dragForce,
-                dragDirection = harpoonDirection.position,
+                dragDirection = itemDirection.position,
                 selectedItemSOIndex = 0, // irrelevant
                 ownerPlayableState = PlayableState.None, // irrelevant
             };
@@ -74,7 +74,6 @@ public class ItemSpawner : MonoBehaviour
     {
 
         lastProjectile = Instantiate(itemToSpawnSO.itemClientPrefab, transform.position, Quaternion.identity);
-
 
         if (lastProjectile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
         {
