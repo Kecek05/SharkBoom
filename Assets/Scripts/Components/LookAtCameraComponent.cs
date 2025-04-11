@@ -1,7 +1,7 @@
 using Unity.Netcode;
 using UnityEngine;
 
-public class LookAtCamera : NetworkBehaviour
+public class LookAtCameraComponent : NetworkBehaviour
 {
 
     [SerializeField] private Mode mode;

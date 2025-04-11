@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class DestroyOnAnyContact : MonoBehaviour
+public class DestroyOnAnyContactComponent : MonoBehaviour
 {
 
     private void OnCollisionEnter2D(Collision2D collision)

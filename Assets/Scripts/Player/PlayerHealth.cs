@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class PlayerHealth : Health
+public class PlayerHealth : HealthComponent
 {
     public static event EventHandler<OnPlayerTakeDamageArgs> OnPlayerTakeDamage;
 

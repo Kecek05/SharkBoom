@@ -8,7 +8,7 @@ public class PlayerDragUi : DragListener
     [SerializeField] private TextMeshProUGUI forceText;
     [SerializeField] private TextMeshProUGUI directionText;
     [SerializeField] private PlayerThrower player;
-    [SerializeField] private LookAtCamera lookAtCamera;
+    [SerializeField] private LookAtCameraComponent lookAtCamera;
 
     public override void OnNetworkSpawn()
     {

@@ -1,7 +1,7 @@
 using Unity.Netcode;
 using UnityEngine;
 
-public class DamageOnAnyContact : MonoBehaviour
+public class DamageOnAnyContactComponent : MonoBehaviour
 {
     [SerializeField] private DamageableSO damageableSO;
     private bool damaged = false; //damage only once
