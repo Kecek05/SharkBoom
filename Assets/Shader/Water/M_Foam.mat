@@ -20,7 +20,7 @@ Material:
   stringTagMap: {}
   disabledShaderPasses:
   - MOTIONVECTORS
-  m_LockedProperties: 
+  m_LockedProperties: _Speed
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -68,6 +68,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: 630f9e1e5996e374abbf80e6931c1da4, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_8f5fe23bf2a94ece8ed8ade0b5b446d3_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 630f9e1e5996e374abbf80e6931c1da4, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SampleTexture2D_baf0faf2d4024424af7b1b30d4701ca5_Texture_1_Texture2D:
         m_Texture: {fileID: 2800000, guid: 630f9e1e5996e374abbf80e6931c1da4, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -95,10 +99,10 @@ Material:
     m_Ints: []
     m_Floats:
     - _AddPrecomputedVelocity: 0
-    - _Alpha: 0.34
+    - _Alpha: 0
     - _AlphaClip: 0
     - _AlphaToMask: 0
-    - _Ammount: -24.1
+    - _Ammount: 1
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
@@ -118,13 +122,15 @@ Material:
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
+    - _Power: -0.32
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Scale: 5.62
+    - _Scale: 31.7
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
+    - _Speed: -0.08
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
@@ -132,7 +138,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 2.6319332, g: 2.7650201, b: 2.79544, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
