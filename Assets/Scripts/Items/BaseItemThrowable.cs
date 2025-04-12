@@ -1,10 +1,8 @@
 using Sortify;
 using System;
-using Unity.Cinemachine;
-using Unity.Netcode;
 using UnityEngine;
 
-public class BaseItemThrowable : MonoBehaviour
+public abstract class BaseItemThrowable : MonoBehaviour
 {
 
     public static event Action OnItemFinishedAction;
