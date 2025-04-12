@@ -29,17 +29,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2597735930550134298, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
-      propertyPath: m_Mass
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 2597735930550134298, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_Material
       value: 
       objectReference: {fileID: 6200000, guid: e69ea16e6ffdede4da0881ffce5bb37b, type: 2}
-    - target: {fileID: 2597735930550134298, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
-      propertyPath: m_GravityScale
-      value: 1.1
-      objectReference: {fileID: 0}
     - target: {fileID: 4368214002554539844, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: itemSO
       value: 
@@ -72,13 +64,13 @@ PrefabInstance:
       addedObject: {fileID: 8753510293822866115}
     - targetCorrespondingSourceObject: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1883644660544141083}
+      addedObject: {fileID: 3526296545702240841}
     - targetCorrespondingSourceObject: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1748745522360704181}
+      addedObject: {fileID: 6832660065425819331}
     - targetCorrespondingSourceObject: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6288499697788896508}
+      addedObject: {fileID: 6347818193721593342}
   m_SourcePrefab: {fileID: 100100000, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
 --- !u!1 &4139059953487484834 stripped
 GameObject:
@@ -102,8 +94,8 @@ MonoBehaviour:
   rb: {fileID: 5689049572469319462}
   collidersToChangeLayer:
   - {fileID: 4139059953487484834}
-  spinObjectComponent: {fileID: 1883644660544141083}
---- !u!114 &1883644660544141083
+  spinObjectComponent: {fileID: 3526296545702240841}
+--- !u!114 &3526296545702240841
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -115,9 +107,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbe1a628dca722444a83a20053161fda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spiningSpeed: 500
---- !u!61 &1748745522360704181
-BoxCollider2D:
+  spiningSpeed: 600
+--- !u!60 &6832660065425819331
+PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -150,7 +142,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.022129584, y: 0.26128563}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -160,10 +152,24 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.11082182, y: 0.29360956}
-  m_EdgeRadius: 0
---- !u!61 &6288499697788896508
-BoxCollider2D:
+  m_Points:
+    m_Paths:
+    - - {x: -0.013277657, y: 0.3948018}
+      - {x: -0.069541425, y: 0.4587573}
+      - {x: -0.06321357, y: 0.41742143}
+      - {x: -0.058888227, y: 0.3684036}
+      - {x: -0.072740346, y: 0.3140449}
+      - {x: -0.03615518, y: 0.27577606}
+      - {x: -0.04343895, y: 0.25549814}
+      - {x: -0.018126484, y: 0.21029036}
+      - {x: -0.030055046, y: 0.20014672}
+      - {x: -0.018854529, y: 0.13736671}
+      - {x: 0.030020114, y: 0.14581665}
+      - {x: 0.037940174, y: 0.22255455}
+      - {x: 0.024021447, y: 0.31075642}
+  m_UseDelaunayMesh: 0
+--- !u!70 &6347818193721593342
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -172,7 +178,7 @@ BoxCollider2D:
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 6200000, guid: e69ea16e6ffdede4da0881ffce5bb37b, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -196,18 +202,9 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.0064901765, y: 0.052868787}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 0.08052039, y: 0.098130174}
-  m_EdgeRadius: 0
+  m_Offset: {x: 0.0017638206, y: 0.06643783}
+  m_Size: {x: 0.0460585, y: 0.12856935}
+  m_Direction: 0
 --- !u!50 &5689049572469319462 stripped
 Rigidbody2D:
   m_CorrespondingSourceObject: {fileID: 2597735930550134298, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
