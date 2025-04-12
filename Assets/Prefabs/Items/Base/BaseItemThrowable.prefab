@@ -65,16 +65,8 @@ PrefabInstance:
       addedObject: {fileID: 1605454544280285762}
     - targetCorrespondingSourceObject: {fileID: 8360590805627951754, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4368214002554539844}
-    - targetCorrespondingSourceObject: {fileID: 8360590805627951754, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 6129100009262690881}
   m_SourcePrefab: {fileID: 100100000, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
---- !u!50 &2597735930550134298 stripped
-Rigidbody2D:
-  m_CorrespondingSourceObject: {fileID: 253816083963472398, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
-  m_PrefabInstance: {fileID: 2848737264724986900}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &6020880011412641438 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8360590805627951754, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
@@ -92,24 +84,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56a19a6a88938a44eba33c6504d0afa6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lifeTime: 4
---- !u!114 &4368214002554539844
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6020880011412641438}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 880ba77410d1d354fb74b416542895c3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isServerObject: 0
-  itemSO: {fileID: 0}
-  rb: {fileID: 2597735930550134298}
-  collidersToChangeLayer:
-  - {fileID: 6020880011412641438}
+  lifeTime: 6
 --- !u!114 &6129100009262690881
 MonoBehaviour:
   m_ObjectHideFlags: 0

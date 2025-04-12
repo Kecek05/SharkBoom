@@ -19,10 +19,8 @@ public class SwordItemThrowable : BaseItemThrowable
 
     //DEBUG
 
-    //private void OnCollisionEnter2D(Collision2D collision)
-    //{
-    //    spinObjectComponent.DisableComponent();
-
-    //    rb.freezeRotation = true; //freeze rotation to avoid the spear to rotate when it hits something DEBUG
-    //}
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        spinObjectComponent.DisableComponent();
+    }
 }
