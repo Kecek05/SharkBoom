@@ -14,18 +14,20 @@ public class Trajectory : MonoBehaviour
     [SerializeField] private int dotsNumber;
     [RangeStep(0.01f, 1f, 0.01f)]
     [SerializeField] private float dotSpacing;
+    [SerializeField] private float forceChangeThreshold = 0.1f;
 
-    private Vector3 dotPos;
-    private float timeStamp; // Position of dots along the trajectory
     private Transform[] dotsList;
     private GameObject dotsParent;
-    private Vector3 adjustedForce;
-    private Vector3 adjustedForceDamping;
-    private float time; // current time of the dots
 
     private List<Vector2> trajectoryPoints = new List<Vector2>();
     private bool isSimulating;
+
     
+    
+    private Vector2 lastForceApplied = Vector2.zero;
+    private float currentForce;
+    private float previousForce;
+    private float diff;
 
     public void Initialize(Transform dotsParentTransform)
     {
@@ -37,17 +39,35 @@ public class Trajectory : MonoBehaviour
     private void PrepareDots()
     {
         dotsList = new Transform[dotsNumber];
+
         for (int i = 0; i < dotsNumber; i++)
         {
             dotsList[i] = Instantiate(dotPrefab2D, dotsParent.transform).transform; // Create dots based on the number of dots variable
             dotsList[i].position = dotsParent.transform.position; // set the dots position to the parent position (in player)
+            dotsList[i].gameObject.SetActive(false); // hide the dots, because we will show them when the distance is enough
         }
     }
 
-    public void UpdateDots(Vector2 objectPos, Vector2 forceApplied, Rigidbody2D rb) 
+    public void UpdateDots(Vector2 objectPos, Vector2 forceApplied, float maxForce, Rigidbody2D rb) 
     {
         trajectoryPoints.Add(objectPos);
         SimulateTrajectory(objectPos, forceApplied, rb);
+
+        currentForce = forceApplied.magnitude;
+        previousForce = lastForceApplied.magnitude;
+        diff = currentForce - previousForce;
+
+        if (Mathf.Abs(diff) >= forceChangeThreshold)
+        {
+            int targetActiveDots = Mathf.Clamp(Mathf.RoundToInt((currentForce / maxForce) * dotsNumber), 0, dotsNumber);
+
+            for (int i = 0; i < dotsNumber; i++)
+            {
+                dotsList[i].gameObject.SetActive(i < targetActiveDots);
+            }
+
+            lastForceApplied = forceApplied;
+        }
 
         for (int i = 0; i < dotsNumber && i < trajectoryPoints.Count; i++)
         {
