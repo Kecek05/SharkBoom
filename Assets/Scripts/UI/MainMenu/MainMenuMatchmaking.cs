@@ -12,6 +12,7 @@ public class MainMenuMatchmaking : MonoBehaviour
     [SerializeField] private Button cancelMatchmakingBtn;
     [SerializeField] private GameObject matchmakingPanel;
     [SerializeField] private TMP_Text matchmakingTime;
+    [SerializeField] private TMP_Text matchmakingText;
 
     private WaitForSeconds waitToTurnOnCancel = new WaitForSeconds(2f);
     private WaitForSeconds waitToIncreaseMatchmakingTime = new WaitForSeconds(1f);
@@ -35,7 +36,7 @@ public class MainMenuMatchmaking : MonoBehaviour
             if (isCanceling) return;
 
             isCanceling = true;
-            Debug.Log("Canceling...");
+            matchmakingText.text = "Canceling...";
             await ClientSingleton.Instance.GameManager.CancelMatchmakingAsync(); //wait to cancel the matchmake
             isMatchMaking = false;
             isCanceling = false;
@@ -52,7 +53,7 @@ public class MainMenuMatchmaking : MonoBehaviour
 
             isMatchMaking = true;
             timeInQueue = 0f; // zera o tempo
-            Debug.Log("Searching...");
+            matchmakingText.text = "Searching...";
             ClientSingleton.Instance.GameManager.MatchmakeAsync(OnMatchMade); //We will pass and event to be trigger when the result is ready.
 
             StartMatchmakingTimer();
@@ -61,16 +62,6 @@ public class MainMenuMatchmaking : MonoBehaviour
         });
 
         MatchplayMatchmaker.OnTicketCreated += MatchplayMatchmaker_OnTicketCreated;
-    }
-
-    private void Update()
-    {
-        if (isMatchMaking)
-        {
-            timeInQueue += Time.deltaTime;
-            TimeSpan ts = TimeSpan.FromSeconds(timeInQueue);
-            matchmakingTime.text = string.Format("{0:00}:{1:00}", ts.Minutes, ts.Seconds);
-        }
     }
 
     private void MatchplayMatchmaker_OnTicketCreated()
@@ -95,7 +86,9 @@ public class MainMenuMatchmaking : MonoBehaviour
     private void StartMatchmakingTimer()
     {
         if (matchmakingTimerCoroutine != null)
+        {
             StopCoroutine(matchmakingTimerCoroutine);
+        }
 
         matchmakingTimerCoroutine = StartCoroutine(MatchmakingTimer());
     }
@@ -115,7 +108,7 @@ public class MainMenuMatchmaking : MonoBehaviour
     {
         while (isMatchMaking)
         {
-            timeInQueue += Time.deltaTime;
+            timeInQueue += 1f;
             TimeSpan ts = TimeSpan.FromSeconds(timeInQueue);
             matchmakingTime.text = string.Format("{0:00}:{1:00}", ts.Minutes, ts.Seconds);
             yield return waitToIncreaseMatchmakingTime;
@@ -126,7 +119,8 @@ public class MainMenuMatchmaking : MonoBehaviour
     {
         cancelMatchmakingBtn.interactable = false;
         matchmakingPanel.SetActive(false);
-        matchmakingTime.text = string.Empty;    
+        matchmakingTime.text = string.Empty;
+        matchmakingText.text = string.Empty;
 
         if (cancelButtonCoroutine != null)
         {
@@ -134,6 +128,7 @@ public class MainMenuMatchmaking : MonoBehaviour
             cancelButtonCoroutine = null;
         }
     }
+
     private void Show()
     {
         matchmakingPanel.SetActive(true);
@@ -146,19 +141,24 @@ public class MainMenuMatchmaking : MonoBehaviour
         switch (result)
         {
             case MatchmakerPollingResult.Success:
-                Debug.Log("Match Found Success!");
+                // Debug.Log("Match Found Success!");
+                matchmakingText.text = "Match Found Success!";
                 break;
             case MatchmakerPollingResult.MatchAssignmentError:
-                Debug.Log("MatchAssignmentError Error!");
+                // Debug.Log("MatchAssignmentError Error!");
+                matchmakingText.text = "MatchAssignmentError Error!";
                 break;
             case MatchmakerPollingResult.TicketCreationError:
-                Debug.Log("TicketCreationError Error");
+                // Debug.Log("TicketCreationError Error");
+                matchmakingText.text = "TicketCreationError Error";
                 break;
             case MatchmakerPollingResult.TicketRetrievalError:
-                Debug.Log("TicketRetrievalError Error!");
+                // Debug.Log("TicketRetrievalError Error!");
+                matchmakingText.text = "TicketRetrievalError Error!";
                 break;
             case MatchmakerPollingResult.TicketCancellationError:
-                Debug.Log("TicketCancellationError Error!");
+                // Debug.Log("TicketCancellationError Error!");
+                matchmakingText.text = "TicketCancellationError Error!";
                 break;
         }
     }

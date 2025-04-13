@@ -333,7 +333,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4845276930943762971, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.000061035156
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4845637959249703711, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1605,7 +1605,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   searchMatchmakingBtn: {fileID: 594128583}
   cancelMatchmakingBtn: {fileID: 417580243}
-  matchmakingPanel: {fileID: 1883196075}
+  matchmakingPanel: {fileID: 633795556}
+  matchmakingTime: {fileID: 1617116381}
+  matchmakingText: {fileID: 418500910}
 --- !u!4 &413971047
 Transform:
   m_ObjectHideFlags: 0
@@ -2379,7 +2381,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &633795557
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7294,7 +7296,7 @@ MonoBehaviour:
   createGameBtn: {fileID: 2032308059}
   lobbyCodeInputField: {fileID: 1450178497}
   quickJoinBtn: {fileID: 664665110}
-  vsFriendsPanel: {fileID: 1478697326}
+  vsFriendsPanel: {fileID: 2059564257}
 --- !u!4 &2042124137
 Transform:
   m_ObjectHideFlags: 0
@@ -7325,7 +7327,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2059564258
 RectTransform:
   m_ObjectHideFlags: 0
