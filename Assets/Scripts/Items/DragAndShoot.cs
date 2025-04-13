@@ -32,7 +32,7 @@ public class DragAndShoot : NetworkBehaviour
     [SerializeField] private Trajectory trajectory;
     [SerializeField] private InputReader inputReader;
     [SerializeField] private GameObject areaOfStartDrag;
-    [SerializeField] private UIDetectionHelper uiDetectionHelper;
+    [SerializeField] private UIDetectionComponent uiDetectionHelper;
     [Tooltip("Center position of the drag")]
     [SerializeField] private Transform startTrajectoryPos;
     [SerializeField] private LayerMask touchLayer;
