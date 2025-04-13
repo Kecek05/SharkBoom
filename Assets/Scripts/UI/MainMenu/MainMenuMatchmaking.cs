@@ -1,5 +1,7 @@
 using Sortify;
+using System;
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,11 +11,14 @@ public class MainMenuMatchmaking : MonoBehaviour
     [SerializeField] private Button searchMatchmakingBtn;
     [SerializeField] private Button cancelMatchmakingBtn;
     [SerializeField] private GameObject matchmakingPanel;
+    [SerializeField] private TMP_Text matchmakingTime;
     private WaitForSeconds waitToTurnOnCancel = new WaitForSeconds(2f);
     private Coroutine cancelButtonCoroutine;
 
     private bool isMatchMaking = false;
     private bool isCanceling = false;
+
+    private float timeInQueue;
 
     private void Awake()
     {
@@ -50,6 +55,16 @@ public class MainMenuMatchmaking : MonoBehaviour
         MatchplayMatchmaker.OnTicketCreated += MatchplayMatchmaker_OnTicketCreated;
     }
 
+    private void Update()
+    {
+        if (isMatchMaking)
+        {
+            timeInQueue += Time.deltaTime;
+            TimeSpan ts = TimeSpan.FromSeconds(timeInQueue);
+            matchmakingTime.text = string.Format("{0:00}:{1:00}", ts.Minutes, ts.Seconds);
+        }
+    }
+
     private void MatchplayMatchmaker_OnTicketCreated()
     {
         if(cancelButtonCoroutine != null)
@@ -73,6 +88,7 @@ public class MainMenuMatchmaking : MonoBehaviour
     {
         cancelMatchmakingBtn.interactable = false;
         matchmakingPanel.SetActive(false);
+        matchmakingTime.text = string.Empty;    
 
         if (cancelButtonCoroutine != null)
         {
