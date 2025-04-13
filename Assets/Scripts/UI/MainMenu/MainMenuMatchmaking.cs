@@ -12,13 +12,18 @@ public class MainMenuMatchmaking : MonoBehaviour
     [SerializeField] private Button cancelMatchmakingBtn;
     [SerializeField] private GameObject matchmakingPanel;
     [SerializeField] private TMP_Text matchmakingTime;
+
     private WaitForSeconds waitToTurnOnCancel = new WaitForSeconds(2f);
+    private WaitForSeconds waitToIncreaseMatchmakingTime = new WaitForSeconds(1f);
+
     private Coroutine cancelButtonCoroutine;
+    private Coroutine matchmakingTimerCoroutine;
 
     private bool isMatchMaking = false;
     private bool isCanceling = false;
 
     private float timeInQueue;
+
 
     private void Awake()
     {
@@ -35,6 +40,7 @@ public class MainMenuMatchmaking : MonoBehaviour
             isMatchMaking = false;
             isCanceling = false;
 
+            StopMatchmakingTimer();
             Hide();
         });
 
@@ -45,9 +51,11 @@ public class MainMenuMatchmaking : MonoBehaviour
             if (isMatchMaking) return;
 
             isMatchMaking = true;
+            timeInQueue = 0f; // zera o tempo
             Debug.Log("Searching...");
             ClientSingleton.Instance.GameManager.MatchmakeAsync(OnMatchMade); //We will pass and event to be trigger when the result is ready.
 
+            StartMatchmakingTimer();
             Show();
 
         });
@@ -84,6 +92,36 @@ public class MainMenuMatchmaking : MonoBehaviour
         cancelButtonCoroutine = null;
     }
 
+    private void StartMatchmakingTimer()
+    {
+        if (matchmakingTimerCoroutine != null)
+            StopCoroutine(matchmakingTimerCoroutine);
+
+        matchmakingTimerCoroutine = StartCoroutine(MatchmakingTimer());
+    }
+
+    private void StopMatchmakingTimer()
+    {
+        if (matchmakingTimerCoroutine != null)
+        {
+            StopCoroutine(matchmakingTimerCoroutine);
+            matchmakingTimerCoroutine = null;
+        }
+
+        matchmakingTime.text = string.Empty;
+    }
+
+    private IEnumerator MatchmakingTimer()
+    {
+        while (isMatchMaking)
+        {
+            timeInQueue += Time.deltaTime;
+            TimeSpan ts = TimeSpan.FromSeconds(timeInQueue);
+            matchmakingTime.text = string.Format("{0:00}:{1:00}", ts.Minutes, ts.Seconds);
+            yield return waitToIncreaseMatchmakingTime;
+        }
+    }
+
     private void Hide()
     {
         cancelMatchmakingBtn.interactable = false;
@@ -103,6 +141,8 @@ public class MainMenuMatchmaking : MonoBehaviour
 
     private void OnMatchMade(MatchmakerPollingResult result)
     {
+        StopMatchmakingTimer();
+
         switch (result)
         {
             case MatchmakerPollingResult.Success:
