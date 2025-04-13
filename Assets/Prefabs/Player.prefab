@@ -302,7 +302,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPart: 2
-  playerHealth: {fileID: 4799874711576044224}
+  playerHealth: {fileID: 0}
 --- !u!61 &846515009672868521
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -503,7 +503,6 @@ GameObject:
   - component: {fileID: 1987240186612080187}
   - component: {fileID: 5120579722876303172}
   - component: {fileID: 800024870368675109}
-  - component: {fileID: 4799874711576044224}
   - component: {fileID: 5307745833650858273}
   m_Layer: 0
   m_Name: Player
@@ -749,21 +748,6 @@ MonoBehaviour:
   dotsNumber: 15
   dotSpacing: 0.049999997
   forceChangeThreshold: 0.1
---- !u!114 &4799874711576044224
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1244250245066138330}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f26550d4d9fdd6a418c3dd120c137ec5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  maxHealth: 100
-  player: {fileID: 2871544100916734757}
 --- !u!114 &5307745833650858273
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -924,7 +908,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPart: 1
-  playerHealth: {fileID: 4799874711576044224}
+  playerHealth: {fileID: 0}
 --- !u!61 &3497297678960791332
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1555,7 +1539,6 @@ GameObject:
   - component: {fileID: 612474146187259655}
   - component: {fileID: 6775973106891929312}
   - component: {fileID: 3234504240919327988}
-  - component: {fileID: 2022198949721990657}
   m_Layer: 5
   m_Name: DragCanvasHolder
   m_TagString: Untagged
@@ -1622,22 +1605,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &2022198949721990657
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2849262725538431552}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb09531204a5a0540aec86b4e836ed00, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  mode: 2
-  canvasTransform: {fileID: 6845962985718886839}
-  cameraManager: {fileID: 3009684404041675309}
 --- !u!1 &3077044857443190407
 GameObject:
   m_ObjectHideFlags: 0
@@ -1684,7 +1651,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPart: 0
-  playerHealth: {fileID: 4799874711576044224}
+  playerHealth: {fileID: 0}
 --- !u!58 &8150056595308058653
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -2667,7 +2634,7 @@ MonoBehaviour:
   forceText: {fileID: 1986637986843361798}
   directionText: {fileID: 3866401291948903226}
   player: {fileID: 2871544100916734757}
-  lookAtCamera: {fileID: 2022198949721990657}
+  lookAtCamera: {fileID: 0}
 --- !u!1 &8210345525591779225
 GameObject:
   m_ObjectHideFlags: 0

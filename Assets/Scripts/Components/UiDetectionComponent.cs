@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class UIDetectionHelper : MonoBehaviour
+public class UIDetectionComponent : MonoBehaviour
 {
 
     public bool IsPointerOverUI()
