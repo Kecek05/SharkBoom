@@ -52,6 +52,7 @@ public class PlayerAnimator : NetworkBehaviour
         else if (newState == PlayerState.DragReleaseItem)
         {
             PlayAnimationData(shootAnimationData);
+            Debug.Log($"Playing Shooting item - is right: {isRight}");
         }
         else if (newState == PlayerState.DragReleaseJump)
         {
