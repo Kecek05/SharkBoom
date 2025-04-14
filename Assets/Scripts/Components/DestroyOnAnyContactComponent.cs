@@ -12,4 +12,5 @@ public class DestroyOnAnyContactComponent : MonoBehaviour
     {
         Destroy(gameObject);
     }
+    //Debug.log
 }

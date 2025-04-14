@@ -32,4 +32,5 @@ public class DamageOnAnyContactComponent : MonoBehaviour
             Debug.Log($"Dealt {damageableSO.damage} ");
         }
     }
+    // Debug.Log
 }

@@ -78,5 +78,5 @@ public class HealthComponent : NetworkBehaviour
           //    networkObject.Despawn(true);
           //}
      } 
-
+    // Debug.log
 }

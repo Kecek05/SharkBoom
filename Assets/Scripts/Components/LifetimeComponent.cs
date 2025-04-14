@@ -8,4 +8,5 @@ public class LifetimeComponent : MonoBehaviour
     {
         Destroy(gameObject, lifeTime);
     }
+    // Debug.Log
 }
