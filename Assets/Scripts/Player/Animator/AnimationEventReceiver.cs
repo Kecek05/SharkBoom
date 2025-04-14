@@ -14,7 +14,7 @@ public class AnimationEventReceiver : MonoBehaviour
         // This method is called by the Animator component when an animation event is triggered.
         // It finds the corresponding AnimationEvent and invokes its UnityEvent.
 
-        AnimationEvent matchingEvent = animationEvents.Find(e => e.eventName == eventName);
+        AnimationEvent matchingEvent = animationEvents.Find(se => se.eventName == eventName);
         matchingEvent?.OnAnimationEvent.Invoke();
     }
 }

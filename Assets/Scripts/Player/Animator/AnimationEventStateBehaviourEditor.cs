@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.Animations;
@@ -8,6 +9,32 @@ public class AnimationEventStateBehaviourEditor : Editor
 {
     AnimationClip previewClip;
     float previewTime;
+    bool isPreviewing;
+
+    [MenuItem("GameObject/Enforce T-Pose", false, 0)]
+    static void EnforceTPose()
+    {
+        GameObject selected = Selection.activeGameObject;
+
+        if (!selected || !selected.TryGetComponent(out Animator animator) || !animator.avatar) return;
+
+        SkeletonBone[] skeletonBones = animator.avatar.humanDescription.skeleton;
+
+        foreach(HumanBodyBones hbb in Enum.GetValues(typeof(HumanBodyBones)))
+        {
+            if (hbb == HumanBodyBones.LastBone) continue;
+
+            Transform boneTransform = selected.transform.Find(hbb.ToString());
+            if (!boneTransform) continue;
+
+            SkeletonBone skeletonBone = skeletonBones.FirstOrDefault(sb => sb.name == boneTransform.name);
+            if(skeletonBone.name == null) continue;
+
+            if (hbb == HumanBodyBones.Hips) boneTransform.localPosition = skeletonBone.position;
+            boneTransform.localRotation = skeletonBone.rotation;
+
+        }
+    }
 
     public override void OnInspectorGUI()
     {
@@ -19,8 +46,22 @@ public class AnimationEventStateBehaviourEditor : Editor
         {
             GUILayout.Space(10);
 
-            PreviewAnimationClip(stateBehaviour);
-            
+            if(isPreviewing)
+            {
+                if(GUILayout.Button("Stop Preview"))
+                {
+                    EnforceTPose();
+                    isPreviewing = false;
+                } else
+                {
+                    PreviewAnimationClip(stateBehaviour);
+                }
+
+            } else if (GUILayout.Button("Preview Animation"))
+            {
+                isPreviewing = true;
+            }
+
             GUILayout.Label($"Previewing at {previewTime:F2}s", EditorStyles.helpBox);
         } else
         {
@@ -46,13 +87,13 @@ public class AnimationEventStateBehaviourEditor : Editor
 
         ChildAnimatorState matchingState = animatorController.layers
             .SelectMany(layer => layer.stateMachine.states)
-            .FirstOrDefault(state => state.state.name == stateBehaviour.name);
+            .FirstOrDefault(state => state.state.behaviours.Contains(stateBehaviour));
 
         previewClip = matchingState.state?.motion as AnimationClip;
 
         if(previewClip == null)
         {
-            errorMessage = "No valid AnimationClip found for the current state.";
+            errorMessage = $"No valid AnimationClip found for the current state. - Name: {stateBehaviour.name} - {stateBehaviour.eventName}";
             return false;
         }
         return true;
