@@ -19,6 +19,8 @@ public class LookAtCameraComponent : NetworkBehaviour
 
     private void LateUpdate() // we put in late update for performance reasons
     {
+
+        // Debuglog
         if (IsOwner)
         {
             switch (mode)

@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 
 public class UIDetectionComponent : MonoBehaviour
 {
-
+    // Debug.
     public bool IsPointerOverUI()
     {
         PointerEventData eventData = new PointerEventData(EventSystem.current); // We create a new event data for get the tocuh position
