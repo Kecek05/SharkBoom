@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 935b4e634b014d64fa86ee82373e96c7, type: 3}
+  m_Name: SwordSO
+  m_EditorClassIdentifier: 
+  itemClientPrefab: {fileID: 4139059953487484834, guid: 19b7d888bfd3cda4186c660cc83d2acb, type: 3}
+  itemServerPrefab: {fileID: 5096100497151844383, guid: 98b3c27cda2f29f47a4bc396001de733, type: 3}
+  itemName: Sword
+  itemIcon: {fileID: 21300000, guid: 6d93f7963a352ca40a7b4bf81ada7f14, type: 3}
+  rb: {fileID: 5689049572469319462, guid: 19b7d888bfd3cda4186c660cc83d2acb, type: 3}
+  damageableSO: {fileID: 11400000, guid: 5c108174f738b9b4d81e171a89b58721, type: 2}
+  cooldown: 1

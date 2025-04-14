@@ -20,18 +20,18 @@ public class PlayerStateMachine
     public PlayerWatchingState playerWatchingState;
     public PlayerGameOverState playerGameOverState;
 
-    public event Action<IState> OnStateChanged;
+    public event Action<PlayerState> OnStateChanged;
 
 
-    public PlayerStateMachine(PlayerThrower player)
+    public PlayerStateMachine(PlayerThrower player, PlayerDragController playerDragController, PlayerInventory playerInventory)
     {
         //our builder
         this.myTurnStartedState = new MyTurnStartedState(player);
-        this.idleMyTurnState = new IdleMyTurnState(player);
-        this.draggingJump = new DraggingJump(player);
-        this.draggingItem = new DraggingItem(player);
-        this.dragReleaseJump = new DragReleaseJump(player);
-        this.dragReleaseItem = new DragReleaseItem(player);
+        this.idleMyTurnState = new IdleMyTurnState(player, playerDragController, playerInventory);
+        this.draggingJump = new DraggingJump(player, playerDragController);
+        this.draggingItem = new DraggingItem(player, playerDragController);
+        this.dragReleaseJump = new DragReleaseJump();
+        this.dragReleaseItem = new DragReleaseItem();
         this.myTurnEndedState = new MyTurnEndedState(player);
         this.idleEnemyTurnState = new IdleEnemyTurnState();
         this.playerWatchingState = new PlayerWatchingState();
@@ -43,7 +43,7 @@ public class PlayerStateMachine
         currentState = startingState;
         currentState.Enter();
 
-        OnStateChanged?.Invoke(startingState);
+        OnStateChanged?.Invoke(startingState.State);
     }
 
     public void TransitionTo(IState nextState)
@@ -55,7 +55,7 @@ public class PlayerStateMachine
         currentState = nextState;
         nextState.Enter();
 
-        OnStateChanged?.Invoke(nextState);
+        OnStateChanged?.Invoke(nextState.State);
 
     }
 
@@ -66,4 +66,18 @@ public class PlayerStateMachine
             currentState.Execute();
         }
     }
+}
+
+public enum PlayerState
+{
+    MyTurnStarted,
+    IdleMyTurn,
+    DraggingJump,
+    DraggingItem,
+    DragReleaseJump,
+    DragReleaseItem,
+    MyTurnEnded,
+    IdleEnemyTurn,
+    PlayerWatching,
+    PlayerGameOver
 }

@@ -5,15 +5,17 @@ using System.Threading.Tasks;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
-using Unity.Services.Authentication;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class HostGameManager : IDisposable //Actual Logic to interact with UGS (Relay, Lobby, etc)
 {
+    public static event Action OnFailToStartHost;
+
     private const int MAX_CONNECTIONS = 2;
 
     private NetworkServer networkServer;
@@ -39,6 +41,7 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
         } catch (Exception e)
         {
             Debug.LogException(e);
+            OnFailToStartHost?.Invoke();
             return;
         }
 
@@ -49,6 +52,7 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
         } catch (Exception e)
         {
             Debug.LogException(e);
+            OnFailToStartHost?.Invoke();
             return;
         }
 
@@ -81,6 +85,7 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
         } catch (LobbyServiceException lobbyEx)
         {
             Debug.LogException(lobbyEx);
+            OnFailToStartHost?.Invoke();
             return;
         }
 
@@ -102,11 +107,32 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
 
         NetworkManager.Singleton.StartHost();
 
-        //GameStateManager.OnCanCloseServer += GameStateManager_OnCanCloseServer;
+        PearlsManager.OnFinishedCalculationsOnServer += PearlsManager_OnFinishedCalculationsOnServer;
 
         networkServer.OnClientLeft += HandleClientLeft;
 
         Loader.LoadHostNetwork(Loader.Scene.GameNetCodeTest);
+
+        while(SceneManager.GetActiveScene().name != Loader.Scene.GameNetCodeTest.ToString())
+        {
+            //Not in game
+            Debug.Log("Not in game scene");
+            await Task.Delay(100);
+        }
+
+        Debug.Log("Loaded game scene");
+        Debug.Log($"Loaded game scene, the game state is: {ServiceLocator.Get<BaseGameStateManager>().CurrentGameState.Value}");
+
+        await Task.Delay(2000);
+        Debug.Log("Waited to spawn players in host");
+
+        networkServer.PlayerSpawner.SpawnPlayer();
+
+        networkServer.PlayerSpawner.SpawnPlayer();
+
+        await Task.Delay(1000); //Wait for a bit until can change ownership to prevent some bugs | IDK if is needed
+
+        networkServer.SetCanChangeOwnership(true);
 
     }
 
@@ -121,16 +147,8 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
             Debug.LogException(lobbyEx);
         }
 
-        if (GameManager.Instance != null)
-        {
-            //Client Left, Cancel Game
-            ServiceLocator.Get<BaseGameStateManager>().ConnectionLostHostAndClient();
-        }
-        else
-        {
-            //Not in game, shutdown
-            ShutdownAsync();
-        }
+        ServiceLocator.Get<BaseGameStateManager>().ConnectionLostHostAndClient();
+        ShutdownAsync();
     }
 
     private IEnumerator HeartbeatLobby(float delayHeartbeatSeconds)
@@ -165,15 +183,14 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
         }
         lobbyId = string.Empty;
 
-
         networkServer.OnClientLeft -= HandleClientLeft;
 
-        //GameStateManager.OnCanCloseServer -= GameStateManager_OnCanCloseServer;
+        PearlsManager.OnFinishedCalculationsOnServer -= PearlsManager_OnFinishedCalculationsOnServer;
 
         networkServer?.Dispose();
     }
 
-    private void GameStateManager_OnCanCloseServer()
+    private void PearlsManager_OnFinishedCalculationsOnServer()
     {
         Debug.Log("OnCanCloseServer on Host");
         ShutdownAsync();

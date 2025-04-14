@@ -4,9 +4,9 @@ public class PlayerBodyPart : MonoBehaviour, IDamageable
 {
     
     [SerializeField] private BodyPartEnum bodyPart;
-    [SerializeField] private PlayerThrower player;
+    [SerializeField] private PlayerHealth playerHealth;
     public void TakeDamage(DamageableSO damageableSO)
     {
-        player.PlayerHealth.PlayerTakeDamage(damageableSO, bodyPart);
+        playerHealth.PlayerTakeDamage(damageableSO, bodyPart);
     }
 }

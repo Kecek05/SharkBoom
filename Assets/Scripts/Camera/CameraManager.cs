@@ -1,7 +1,6 @@
 using Unity.Cinemachine;
 using Unity.Netcode;
 using UnityEngine;
-using static UnityEngine.CullingGroup;
 
 public class CameraManager : NetworkBehaviour
 {
@@ -9,75 +8,104 @@ public class CameraManager : NetworkBehaviour
     [SerializeField] private CameraMovement cameraMovement;
     [SerializeField] private CameraZoom cameraZoom;
     [SerializeField] private CameraFollowing cameraFollowing;
-    [SerializeField] private PlayerThrower player;
+    
+
 
     private CinemachineCamera cinemachineCamera;
+    private Camera cameraMain; // Cache camera main for all scripts that need it
     private Transform cameraObjectToFollow;
+
     public Transform CameraObjectToFollow => cameraObjectToFollow;
     public CameraZoom CameraZoom => cameraZoom;
-    public CameraFollowing CameraFollowing => cameraFollowing;
     public CameraMovement CameraMovement => cameraMovement;
+    public CinemachineCamera CinemachineCamera => cinemachineCamera;
+    public Camera CameraMain => cameraMain;
 
     [SerializeField] private CameraState cameraState;
 
-    public override void OnNetworkSpawn()
+    public void InitializeOwner()
     {
-        if (IsOwner)
-        {
-            player.PlayerStateMachine.OnStateChanged += PlayerStateMachine_OnStateChanged;
-            cameraObjectToFollow = new GameObject("CameraObjectToFollow").transform;
-            cameraObjectToFollow.position = new Vector3(0, 0, 0);
+        if(!IsOwner) return;
 
-            if (cinemachineCamera == null)
-            {
-                cinemachineCamera = Object.FindFirstObjectByType<CinemachineCamera>();
-                cinemachineCamera.Target.TrackingTarget = cameraObjectToFollow;
-            }
+        cameraObjectToFollow = ServiceLocator.Get<CameraObjectToFollow>().transform;
+
+
+        if (cinemachineCamera == null)
+        {
+            cinemachineCamera = ServiceLocator.Get<CinemachineCamera>();
+            cinemachineCamera.Target.TrackingTarget = cameraObjectToFollow;
+            cameraMain = ServiceLocator.Get<Camera>();
         }
+
+        cameraMovement.InitializeOwner();
+        cameraZoom.InitializeOwner();
+        cameraFollowing.InitializeOwner();
+
+        CameraMove();
     }
 
-    private void PlayerStateMachine_OnStateChanged(IState playerState)
+    public void HandleOnPlayerStateMachineStateChanged(PlayerState playerState)
     {
-        if (playerState == player.PlayerStateMachine.idleEnemyTurnState)
+        if(!IsOwner) return;
+
+        switch(playerState)
         {
-            CameraMove();
+            default:
+                CameraMove();
+                break;
+            case PlayerState.MyTurnStarted:
+                CameraMove();
+                break;
+            case PlayerState.IdleEnemyTurn:
+                CameraMove();
+                break;
+            case PlayerState.IdleMyTurn:
+                CameraMove();
+                break;
+            case PlayerState.DraggingJump:
+                Dragging();
+                break;
+            case PlayerState.DraggingItem:
+                Dragging();
+                break;
+            case PlayerState.DragReleaseJump:
+                Following();
+                break;
+            case PlayerState.DragReleaseItem:
+                Following();
+                break;
+            case PlayerState.PlayerWatching:
+                Following();
+                break;
+            case PlayerState.MyTurnEnded:
+                CameraReset();
+                break;
+            case PlayerState.PlayerGameOver:
+                //turn off camera and focus on the dead player
+                CameraTurnOff();
+                break;
         }
-        else if (playerState == player.PlayerStateMachine.idleMyTurnState)
-        {
-            CameraMove();
-        }
-        else if (playerState == player.PlayerStateMachine.draggingJump || playerState == player.PlayerStateMachine.draggingItem)
-        {
-            Dragging();
-        }
-        else if (playerState == player.PlayerStateMachine.dragReleaseJump || playerState == player.PlayerStateMachine.dragReleaseItem)
-        {
-            Following();
-        }
-        else if (playerState == player.PlayerStateMachine.playerGameOverState)
-        {
-            CameraReset();
-        }
-        else if (playerState == player.PlayerStateMachine.playerWatchingState)
-        {
-            // when enemy realase the item
-        } else if (playerState == player.PlayerStateMachine.playerGameOverState)
-        {
-            //turn off camera and focus on the dead player
-            CameraTurnOff();
-        }
+
     }
 
     private void CameraMove()
     {
         cameraMovement.enabled = true;
         cameraZoom.enabled = true;
+        cameraFollowing.enabled = false;
     }
 
     private void Dragging()
     {
         cameraZoom.enabled = true;
         cameraMovement.enabled = false;
+        cameraFollowing.enabled = false; 
+    }
+    private void Following()
+    {
+        cameraFollowing.enabled = true;
+        cameraMovement.enabled = false;
+        cameraZoom.enabled = false;
     }
 
     private void CameraReset()
@@ -94,16 +122,13 @@ public class CameraManager : NetworkBehaviour
         cameraFollowing.enabled = false;
     }
 
-    private void Following()
+    public void UnInitializeOwner()
     {
-        cameraFollowing.enabled = true;
-    }
+        if (!IsOwner) return;
 
-    public override void OnNetworkDespawn()
-    {
-        if(IsOwner)
-        {
-            player.PlayerStateMachine.OnStateChanged -= PlayerStateMachine_OnStateChanged;
-        }
+        cameraMovement.UnInitializeOwner();
+        cameraZoom.UnInitializeOwner();
+        cameraFollowing.UnInitializeOwner();
+
     }
 }

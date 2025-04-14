@@ -4,31 +4,19 @@ using UnityEngine;
 
 public class GameStateManager : BaseGameStateManager
 {
-    private BaseGameOverManager gameOverManager;
-    private void Start()
-    {
-        gameOverManager = ServiceLocator.Get<BaseGameOverManager>();
-    }
 
-    public override async void ChangeGameState(GameState gameState, int delayToChange = 0)
+    public override async void ChangeGameState(GameState gameState, int delayToChangeMS = 0)
     {
-        if (gameOverManager.GameOver) return;
+        if (CurrentGameState.Value == GameState.GameEnded) return;
 
-        await Task.Delay(delayToChange);
-        SetGameState(gameState);
+        await Task.Delay(delayToChangeMS);
+        SetGameStateServerRpc(gameState);
 
     }
 
     public override void ConnectionLostHostAndClient()
     {
         TriggerOnLostConnectionInHost();
-    }
-
-    public override void HandleOnGameOver()
-    {
-        if (!IsServer) return;
-
-        ChangeGameState(GameState.GameEnded);
     }
 
     public override void HandleOnGameStateValueChanged(GameState newValue)
@@ -41,24 +29,35 @@ public class GameStateManager : BaseGameStateManager
                 //All players connected
                 Debug.Log("Start Spawning Players");
 
+                if(IsServer)
+                {
+                    //ServiceLocator.Get<BasePlayersPublicInfoManager>().RandomizePlayerItems();
+
+                    ChangeGameState(GameState.CalculatingResults);
+                }
+
                 break;
             case GameState.CalculatingResults:
-                if (IsServer && !IsHost) //DS
+                if(IsServer)
                 {
-                    //REFACTOR
-                    CalculatePearls.CalculatePossibleResults(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0], NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1]);
-                    ChangeGameState(GameState.ShowingPlayersInfo);
-                }
-                else if (IsHost)
-                {
-                    ChangeGameState(GameState.ShowingPlayersInfo);
+                    //if(!IsHost)  //REFACTOR
+                    //CalculatePearls.CalculatePossibleResults(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0], NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1]);
+                    ServiceLocator.Get<BasePlayersPublicInfoManager>().RandomizePlayerItems();
+
+                    if (!IsHost)
+                    {
+                        //Is DS, wait for a bit and then change state
+                        ChangeGameState(GameState.ShowingPlayersInfo, DELAY_STARTGAME);
+                    }
+
                 }
                 break;
             case GameState.ShowingPlayersInfo:
                 if (IsServer)
                 {
-                    GameManager.Instance.RandomizePlayerItems();
-                    ChangeGameState(GameState.GameStarted, delayClosePlayersInfo); //Show Players Info delay
+
+                    //ServiceLocator.Get<BasePlayersPublicInfoManager>().RandomizePlayerItems();
+                    ChangeGameState(GameState.GameStarted, DELAY_CLOSE_PLAYERSINFO); //Show Players Info delay
                 }
                 break;
             case GameState.GameStarted:
@@ -89,10 +88,26 @@ public class GameStateManager : BaseGameStateManager
         }
     }
 
-
-    protected override void SetGameState(GameState newState)
+    public override void HandleOnPlayerGainOwnership(ulong clientId)
     {
-        SetGameStateServerRpc(newState);
+        if(!IsServer) return;
+
+        if(!IsHost) return; //DS should not change state
+
+        clientsGainedOwnership++;
+        Debug.Log($"Client {clientId} Gained Ownership, Total: {clientsGainedOwnership}");
+
+        if (clientsGainedOwnership >= 2)
+        {
+            ChangeGameState(GameState.ShowingPlayersInfo, DELAY_STARTGAME); // All clients with ownership, relay can start game
+        }
+    }
+
+    public override void HandeOnPlayerDie()
+    {
+        //Player died, Game Over.
+
+        ChangeGameState(GameState.GameEnded);
     }
 
     [Rpc(SendTo.Server)]
@@ -100,4 +115,5 @@ public class GameStateManager : BaseGameStateManager
     {
         gameState.Value = newState;
     }
+
 }

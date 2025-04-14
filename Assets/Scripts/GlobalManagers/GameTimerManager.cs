@@ -1,9 +1,11 @@
+using QFSW.QC;
 using System.Collections;
+using Unity.Netcode;
 
 public class GameTimerManager : BaseGameTimerManager
 {
 
-    public override void HandleOnGameStateChange(GameState gameState)
+    public override void HandleOnGameStateChanged(GameState gameState)
     {
         if (!IsServer) return;
 
@@ -38,4 +40,24 @@ public class GameTimerManager : BaseGameTimerManager
         gameTimerCoroutine = null;
         TriggerOnGameTimerEnd();
     }
+
+
+    //Debug
+    [Command("StopGameTimer")]
+    private void StopGameTimer()
+    {
+        StopGameTimerServerRpc();
+    }
+
+    [Rpc(SendTo.Server)]
+    private void StopGameTimerServerRpc()
+    {
+        if (gameTimerCoroutine != null)
+        {
+            StopCoroutine(gameTimerCoroutine);
+            gameTimerCoroutine = null;
+            TriggerOnGameTimerEnd();
+        }
+    }
+
 }

@@ -1,18 +1,17 @@
 using Sortify;
 using System;
-using Unity.Cinemachine;
-using Unity.Netcode;
 using UnityEngine;
 
-public class BaseItemThrowable : MonoBehaviour
+public abstract class BaseItemThrowable : MonoBehaviour
 {
 
-    public event Action OnItemFinishedAction;
+    public static event Action OnItemFinishedAction;
+    public static event Action<Transform> OnItemReleasedAction;
+
     [BetterHeader("Base Item References")]
     [SerializeField] protected bool isServerObject;
     [SerializeField] protected ItemSO itemSO;
     [SerializeField] protected Rigidbody2D rb;
-    [SerializeField] protected CinemachineFollow cinemachineFollow;
     [SerializeField] protected GameObject[] collidersToChangeLayer;
     protected ItemLauncherData thisItemLaucherData;
 
@@ -45,10 +44,9 @@ public class BaseItemThrowable : MonoBehaviour
 
     protected virtual void ItemReleased(float force, Vector2 direction)
     {
-        //CameraManager.Instance.CameraFollowing.SetTheValuesOfCinemachine(cinemachineFollow);
-
+        OnItemReleasedAction?.Invoke(this.transform);
         rb.AddForce(direction * force, ForceMode2D.Impulse);
-
+        
     }
 
     protected virtual void ItemCallbackAction()
@@ -60,6 +58,8 @@ public class BaseItemThrowable : MonoBehaviour
 
     protected void OnDestroy()
     {
+        
+        OnItemFinishedAction?.Invoke();
         ItemCallbackAction();
     }
 }

@@ -25,6 +25,8 @@ public class MatchmakingResult
 
 public class MatchplayMatchmaker : IDisposable
 {
+    public static event Action OnTicketCreated;
+
     private string lastUsedTicket;
     private CancellationTokenSource cancelToken;
 
@@ -42,7 +44,7 @@ public class MatchplayMatchmaker : IDisposable
 
         List<Player> players = new List<Player>
         {
-            new Player(data.userAuthId, new MatchmakingPlayerData { pearls = data.UserPearls})
+            new Player(data.userAuthId, new MatchmakingPlayerData { pearls = data.userPearls})
         };
 
         try
@@ -52,6 +54,7 @@ public class MatchplayMatchmaker : IDisposable
 
             lastUsedTicket = createResult.Id;
 
+            OnTicketCreated?.Invoke();
             try
             {
                 while (!cancelToken.IsCancellationRequested)

@@ -59,14 +59,14 @@ public class ApplicationController : MonoBehaviour //Responsable of launching th
             clientSingleton.CreateClient();
 
             //Go to main menu
-            Loader.Load(Loader.Scene.AuthBootstrap);
+            Loader.LoadNoLoadingScreen(Loader.Scene.AuthBootstrap);
 
         }
     }
 
     private IEnumerator LoadGameSceneAsync(ServerSingleton serverSingleton)
     {
-        //Refactor change scene. Need to be this way because we were trying to change the scene and the Client load it before the server was ready.
+        // Need to be this way because we were trying to change the scene and the Client load it before the server was ready.
         AsyncOperation asyncLoadLoadingScene = Loader.LoadDSAsync(Loader.Scene.Loading);
 
         while(!asyncLoadLoadingScene.isDone)

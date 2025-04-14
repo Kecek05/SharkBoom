@@ -29,7 +29,7 @@ public abstract class BaseGameTimerManager : NetworkBehaviour
 
     protected void TriggerOnGameTimerEnd() => OnGameTimerEnd?.Invoke();
 
-    public abstract void HandleOnGameStateChange(GameState gameState);
+    public abstract void HandleOnGameStateChanged(GameState gameState);
     protected abstract IEnumerator GameTimerTicks();
 
 }

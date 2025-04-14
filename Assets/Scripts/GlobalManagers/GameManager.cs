@@ -1,16 +1,14 @@
-using Sortify;
+using QFSW.QC;
 using System;
-using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
 public class GameManager : NetworkBehaviour
 {
-    public static GameManager Instance { get; private set; }
-
-    [BetterHeader("References")]
-    [SerializeField] private ItemsListSO itemsListSO;
-    [SerializeField] private List<Transform> spawnPointsPos;
+    /// <summary>
+    /// Called when the client gain ownership of the player object. Pass the new owner clientId
+    /// </summary>
+    public static event Action<ulong> OnClientOwnershipChanged;
 
     private BaseTurnManager turnManager;
     private BaseTimerManager timerManager;
@@ -21,10 +19,9 @@ public class GameManager : NetworkBehaviour
     private BaseGameOverManager gameOverManager;
     private BasePearlsManager pearlsManager;
 
-    private void Awake()
-    {
-        Instance = this;
-    }
+    private int handledOwnershipEvents = 0;
+
+    [SerializeField] private DamageableSO debugHitKillDamageableSO;
 
     public override void OnNetworkSpawn()
     {
@@ -42,7 +39,9 @@ public class GameManager : NetworkBehaviour
 
     private void HandleEvents()
     {
-        gameStateManager.CurrentGameState.OnValueChanged += HandleOnGameStateChange;
+        Debug.Log("HandleEvents Game manager");
+
+        gameStateManager.CurrentGameState.OnValueChanged += HandleOnGameStateChanged;
 
         gameTimerManager.OnGameTimerEnd += HandleOnGameTimerEnd;
 
@@ -50,112 +49,126 @@ public class GameManager : NetworkBehaviour
 
         PlayerHealth.OnPlayerDie += HandeOnPlayerDie;
 
-        gameOverManager.LosedPlayer.OnValueChanged += HandleOnLosedPlayerValueChanged;
-        gameOverManager.OnGameOver += HandleOnGameOver;
+        turnManager.CurrentPlayableState.OnValueChanged += HandleOnPlayableStateChanged;
 
-        turnManager.CurrentPlayableState.OnValueChanged += HandleOnPlayableStateChange;
+        gameOverManager.LosedPlayer.OnValueChanged += HandleOnLosedPlayerChanged;
+
+        timerManager.OnTurnTimesUp += HandleOnTurnTimesUp;
+
+        if(IsServer)
+            OwnershipHandler.OnClientGainOwnership += HandleOnOwnershipHandlerClientGainOwnership;
     }
 
-    private void HandleOnGameOver()
+    private void HandleOnOwnershipHandlerClientGainOwnership(ulong clientId)
     {
-        gameStateManager.HandleOnGameOver();
-        timerManager.HandleOnGameOver();
+        HandleOnOwnershipHandlerClientGainOwnershipToClientRpc(clientId);
+        gameStateManager.HandleOnPlayerGainOwnership(clientId);
     }
 
-    private void HandleOnPlayableStateChange(PlayableState previousValue, PlayableState newValue)
+    [Rpc(SendTo.ClientsAndHost)]
+    private void HandleOnOwnershipHandlerClientGainOwnershipToClientRpc(ulong clientId)
+    {
+        OnClientOwnershipChanged?.Invoke(clientId);
+    }
+
+    // Times up
+    private void HandleOnTurnTimesUp()
+    {
+        turnManager.HandleOnTimesUp();
+    }
+
+
+    // Playable State
+    private void HandleOnPlayableStateChanged(PlayableState previousValue, PlayableState newValue)
     {
         timerManager.HandleOnPlayableStateValueChanged(previousValue, newValue);
         turnManager.HandleOnPlayableStateValueChanged(previousValue, newValue);
     }
 
-    private void HandeOnPlayerDie(PlayableState state)
+    // Player Die
+    private void HandeOnPlayerDie()
     {
-        gameOverManager.LoseGame(state);
+        gameStateManager.HandeOnPlayerDie();
 
         PlayerHealth.OnPlayerDie -= HandeOnPlayerDie;
     }
 
-    private void HandleOnLosedPlayerValueChanged(PlayableState previousValue, PlayableState newValue)
-    {
-        gameOverManager.HandleOnLosedPlayerValueChanged(previousValue, newValue);
-    }
-
+    // Player Spawned
     private void HandleOnPlayerSpawned(int playerCount)
     {
         gameStateManager.HandleOnPlayerSpawned(playerCount);
     }
 
+    // Game Timer End
     private void HandleOnGameTimerEnd()
     {
         gameStateManager.HandleOnGameTimerEnd();
     }
 
-    private void HandleOnGameStateChange(GameState previousValue, GameState newValue)
+    // Game State
+    private void HandleOnGameStateChanged(GameState previousValue, GameState newValue)
     {
         gameStateManager.HandleOnGameStateValueChanged(newValue);
 
-        pearlsManager.HandleOnGameStateChanged(newValue);
+        gameOverManager.HandleOnGameStateChanged(newValue); //Define the winner
+
         turnManager.HandleOnGameStateChanged(newValue);
-        gameTimerManager.HandleOnGameStateChange(newValue);
+        gameTimerManager.HandleOnGameStateChanged(newValue);
+        timerManager.HandleOnGameStateChanged(newValue);
+    }
+
+    // Losed Player
+    private void HandleOnLosedPlayerChanged(PlayableState previousValue, PlayableState newValue)
+    {
+        pearlsManager.HandleOnLosedPlayerChanged(newValue);
+
+        gameOverManager.HandleOnLosedPlayerChanged(newValue);
+
     }
 
     private void UnHandleEvents()
     {
-        gameStateManager.CurrentGameState.OnValueChanged -= HandleOnGameStateChange;
+        Debug.Log("UnHandleEvents Game Manager");
+
+        gameStateManager.CurrentGameState.OnValueChanged -= HandleOnGameStateChanged;
 
         gameTimerManager.OnGameTimerEnd -= HandleOnGameTimerEnd;
 
         PlayerSpawner.OnPlayerSpawned -= HandleOnPlayerSpawned;
 
-        gameOverManager.LosedPlayer.OnValueChanged -= HandleOnLosedPlayerValueChanged;
-
         PlayerHealth.OnPlayerDie -= HandeOnPlayerDie;
 
-        gameOverManager.LosedPlayer.OnValueChanged -= HandleOnLosedPlayerValueChanged;
-        gameOverManager.OnGameOver -= HandleOnGameOver;
+        turnManager.CurrentPlayableState.OnValueChanged -= HandleOnPlayableStateChanged;
 
-        turnManager.CurrentPlayableState.OnValueChanged -= HandleOnPlayableStateChange;
-    }
+        gameOverManager.LosedPlayer.OnValueChanged -= HandleOnLosedPlayerChanged;
 
-    /// <summary>
-    /// Call this to randomize and give items to players
-    /// </summary>
-    public void RandomizePlayerItems()
-    {
-        //int itemsInInventory = UnityEngine.Random.Range(2, itemsListSO.allItemsSOList.Count); //Random qtd of items for now
-        int itemsInInventory = itemsListSO.allItemsSOList.Count; //all items
+        timerManager.OnTurnTimesUp -= HandleOnTurnTimesUp;
 
-        //Add Jump item first
-        foreach (PlayerInventory playerInventory in FindObjectsByType<PlayerInventory>(FindObjectsSortMode.None))
-        {
-            playerInventory.SetPlayerItems(0);
-        }
-
-        for (int i = 0; i < itemsInInventory; i++)
-        {
-            int randomItemSOIndex = UnityEngine.Random.Range(1, itemsListSO.allItemsSOList.Count); //Start from index 1,index 0 is jump
-
-            foreach (PlayerInventory playerInventory in FindObjectsByType<PlayerInventory>(FindObjectsSortMode.None))
-            {
-                playerInventory.SetPlayerItems(randomItemSOIndex);
-            }
-        }
-    }
-
-    /// <summary>
-    /// Get a random Spawnpoint from the list and remove it.
-    /// </summary>
-    /// <returns></returns>
-    public Transform GetRandomSpawnPoint()
-    {
-        Transform selectedSpawnPoint = spawnPointsPos[UnityEngine.Random.Range(0, spawnPointsPos.Count)];
-        spawnPointsPos.Remove(selectedSpawnPoint);
-        return selectedSpawnPoint;
+        if (IsServer)
+            OwnershipHandler.OnClientGainOwnership -= HandleOnOwnershipHandlerClientGainOwnership;
     }
 
     public override void OnNetworkDespawn()
     {
         UnHandleEvents();
+    }
+
+
+
+    //DEBUG
+    [Command("killPlayer")]
+    private void SetGameOver(PlayableState playableState)
+    {
+        SetGameOverRpc(playableState);
+    }
+
+    [Rpc(SendTo.Server)]
+    private void SetGameOverRpc(PlayableState playableState)
+    {
+        PlayerHealth playerHealth = ServiceLocator.Get<BasePlayersPublicInfoManager>().GetPlayerObjectByPlayableState(playableState).GetComponent<PlayerHealth>();
+
+        playerHealth.PlayerTakeDamage(debugHitKillDamageableSO, BodyPartEnum.Head);
+
     }
 
 }

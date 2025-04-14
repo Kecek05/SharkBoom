@@ -5,7 +5,6 @@ using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
 using Unity.Services.Authentication;
-using Unity.Services.CloudCode;
 using Unity.Services.Core;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
@@ -72,17 +71,21 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         if (authState == AuthState.Authenticated)
         {
 
-            Debug.Log(AuthenticationWrapper.PlayerName + authState);
+
+            string playerName = await Save.LoadPlayerName(AuthenticationService.Instance.PlayerId);
+
+            Debug.Log($"Player Name: {playerName} - {authState}");
+
 
             userData = new UserData
             {
-                userName = AuthenticationWrapper.PlayerName,
+                userName = playerName,
                 userAuthId = AuthenticationService.Instance.PlayerId,
             };
 
             userData.SetUserPearls(await Save.LoadPlayerPearls(AuthenticationService.Instance.PlayerId));
 
-             Loader.Load(Loader.Scene.MainMenu);
+             Loader.LoadNoLoadingScreen(Loader.Scene.SaveBootstrap);
 
             return true;
         }
@@ -92,12 +95,12 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
 
     public void StartMatchmakingClient(string ip, int port)
     {
+        Debug.Log($"StartMatchmakingClient, IP: {ip} - PORT: {port}");
         SetIsDedicatedServerGame(true);
         UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
         transport.SetConnectionData(ip, (ushort)port);
         Loader.LoadClient();
     }
-
 
     public async Task StartRelayClientAsync(string joinCode)
     {
@@ -131,11 +134,11 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         string payload = JsonUtility.ToJson(userData); //serialize the payload to json
         byte[] payloadBytes = System.Text.Encoding.UTF8.GetBytes(payload); //serialize the payload to bytes
 
+        Debug.Log($"ConnectClient, UserData: {userData.userName}, Pearls: {userData.userPearls}, AuthId: {userData.userAuthId} ");
+
         NetworkManager.Singleton.NetworkConfig.ConnectionData = payloadBytes;
 
         NetworkManager.Singleton.StartClient();
-
-        Debug.Log("Started Client!");
     }
 
     public async Task QuickJoinLobbyAsync()
@@ -191,10 +194,20 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         if(matchmakingResult.result == MatchmakerPollingResult.Success)
         {
             Debug.Log("Match Found!");
+            //Set values to possible reconnect
+            await SetReconnectValues(userData, matchmakingResult.ip, matchmakingResult.port);
+
             StartMatchmakingClient(matchmakingResult.ip, matchmakingResult.port);
         }
 
         return matchmakingResult.result;
+    }
+
+    private async Task SetReconnectValues(UserData userData, string serverIP, int serverPort)
+    {
+        await Reconnect.SetIsInMatch(userData.userAuthId, true);
+
+        await Reconnect.SetPlayerMatchConnection(userData.userAuthId, serverIP, serverPort);
     }
 
     public async Task CancelMatchmakingAsync()
@@ -210,7 +223,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
     private async void Save_OnPlayerPearlsChanged()
     {
         UserData.SetUserPearls(await Save.LoadPlayerPearls(UserData.userAuthId));
-        Debug.Log($"Save Player Pearls Changed to: {UserData.UserPearls}");
+        Debug.Log($"Save Player Pearls Changed to: {UserData.userPearls}");
     }
 
     /// <summary>

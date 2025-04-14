@@ -1,3 +1,4 @@
+using QFSW.QC;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -14,6 +15,8 @@ public static class Loader
         GameNetCodeTest,
         MainMenu,
         AuthBootstrap,
+        SaveBootstrap,
+        NameBootstrap,
     }
 
     public enum LoadType
@@ -71,6 +74,13 @@ public static class Loader
         targetScene = scene;
 
         NetworkManager.Singleton.SceneManager.LoadScene(Scene.Loading.ToString(), LoadSceneMode.Single);
+    }
+
+    [Command("loadScene")]
+    public static void LoadNoLoadingScreen(Scene scene)
+    {
+        loadType = LoadType.None;
+        SceneManager.LoadScene(scene.ToString());
     }
 
     public static void LoadCallback()

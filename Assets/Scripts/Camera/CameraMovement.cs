@@ -1,12 +1,10 @@
 using Sortify;
 using System;
-using System.Collections;
-using Unity.Cinemachine;
-using Unity.Mathematics;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class CameraMovement : MonoBehaviour
+public class CameraMovement : NetworkBehaviour
 {
     [SerializeField] private CameraManager cameraManager;
     [SerializeField] private InputReader inputReader;
@@ -32,26 +30,20 @@ public class CameraMovement : MonoBehaviour
     private bool dragMoveActive = false; // hold if the drag move is active
     private Vector2 lastTouchPosition;
 
-
-    private void Start()
+    public void InitializeOwner()
     {
+        if (!IsOwner) return;
+
         inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
         inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
     }
 
-    private void OnDestroy()
-    {
-        inputReader.OnTouchPressEvent -= InputReader_OnTouchPressEvent;
-        inputReader.OnPrimaryFingerPositionEvent -= InputReader_OnPrimaryFingerPositionEvent;
-    }
-
     private void InputReader_OnTouchPressEvent(InputAction.CallbackContext context)
     {
-        if (context.started) // When we press the screen
+        if (context.started && this.enabled == true) // When we press the screen
         {
             dragMoveActive = true;
             MoveStarted();
-
         }
         else if (context.canceled) // When we release the screen
         {
@@ -70,6 +62,7 @@ public class CameraMovement : MonoBehaviour
             {
                 Vector2 movementDelta = currentTouchPosition - lastTouchPosition;
                 MoveCamera(movementDelta); // move the camera with the diffence between the last touch position and the current touch position
+
             }
 
             lastTouchPosition = currentTouchPosition;
@@ -94,6 +87,13 @@ public class CameraMovement : MonoBehaviour
             Mathf.Clamp(cameraManager.CameraObjectToFollow.position.y + moveDir.y, minMovY, maxMovY),  
             cameraManager.CameraObjectToFollow.position.z 
         );  // Basically we get the pos of camera and add the movement direction of the camera, and clamp the values to the min and max values
+    }
+
+    public void UnInitializeOwner()
+    {
+        if (!IsOwner) return;
+        inputReader.OnTouchPressEvent -= InputReader_OnTouchPressEvent;
+        inputReader.OnPrimaryFingerPositionEvent -= InputReader_OnPrimaryFingerPositionEvent;
     }
 }
 

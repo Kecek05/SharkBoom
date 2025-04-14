@@ -1,25 +1,21 @@
-using System.Runtime.CompilerServices;
 using Unity.Netcode;
 using UnityEngine;
 
 public class PearlsManager : BasePearlsManager
 {
 
-    public override void HandleOnGameStateChanged(GameState newValue)
+    public override void HandleOnLosedPlayerChanged(PlayableState newValue)
     {
-        if (newValue == GameState.GameEnded)
-        {
-            CheckForTheWinner(ServiceLocator.Get<BaseGameOverManager>().LosedPlayer.Value);
-        }
-    }
-
-    protected override async void CheckForTheWinner(PlayableState losedPlayerState)
-    {
-        //Code to check if both players have the same health, if so, tie, otherwise check who has the most health and declare the winner.
-
         if (!IsServer) return;
 
-        if (losedPlayerState == PlayableState.None)
+        ChangePearls(newValue);
+    }
+
+    protected override async void ChangePearls(PlayableState losedPlayerState)
+    {
+        if (!IsServer) return;
+
+        if (losedPlayerState == PlayableState.Tie)
         {
             //Tie, both lose
 
@@ -30,14 +26,29 @@ public class PearlsManager : BasePearlsManager
 
                 await CalculatePearls.ChangePearlsLoser(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1]);
 
+                SendGameResultsToClient
+                    (
+                    NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId,
+                    CalculatePearls.AuthIdToCalculatedPearls[NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId].PearlsToLose
+                    );
+
+                SendGameResultsToClient
+                    (
+                    NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId,
+                    CalculatePearls.AuthIdToCalculatedPearls[NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId].PearlsToLose
+                    );
+
+
+            } else
+            {
+                SendGameResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId, 0);
+
+                SendGameResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId, 0);
             }
 
-            SendGameResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId, NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].calculatedPearls.PearlsToLose);
+            TriggerOnFinishedCalculationsOnServer();
 
-            SendGameResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId, NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].calculatedPearls.PearlsToLose);
-
-            //TriggerCanCloseServerRpc();
-
+            Debug.Log("Tie, both lose");
             return;
         }
 
@@ -51,14 +62,33 @@ public class PearlsManager : BasePearlsManager
                 await CalculatePearls.ChangePearlsWinner(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1]);
 
                 await CalculatePearls.ChangePearlsLoser(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0]);
+
+
+                SendGameResultsToClient
+                    (
+                    NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId,
+                    CalculatePearls.AuthIdToCalculatedPearls[NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId].PearlsToLose
+                    );
+
+                SendGameResultsToClient
+                    (
+                    NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId,
+                    CalculatePearls.AuthIdToCalculatedPearls[NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId].PearlsToWin
+                    );
+
+            } else
+            {
+                SendGameResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId, 0);
+
+                SendGameResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId, 0);
             }
 
-            SendGameResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId, NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].calculatedPearls.PearlsToLose);
 
-            SendGameResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId, NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].calculatedPearls.PearlsToWin);
 
+
+            Debug.Log($"Player {NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userName} Winner");
         }
-        else
+        else if (losedPlayerState == NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].playableState)
         {
             //Player 1 Winner
 
@@ -68,19 +98,32 @@ public class PearlsManager : BasePearlsManager
                 await CalculatePearls.ChangePearlsWinner(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0]);
 
                 await CalculatePearls.ChangePearlsLoser(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1]);
+
+                SendGameResultsToClient
+                    (
+                    NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId,
+                    CalculatePearls.AuthIdToCalculatedPearls[NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId].PearlsToWin
+                    );
+
+                SendGameResultsToClient
+                    (
+                    NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId,
+                    CalculatePearls.AuthIdToCalculatedPearls[NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId].PearlsToLose
+                    );
+            } else
+            {
+                SendGameResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId, 0);
+
+                SendGameResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId, 0);
             }
 
-            SendGameResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId, NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].calculatedPearls.PearlsToWin);
 
-            SendGameResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId, NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].calculatedPearls.PearlsToLose);
 
+                Debug.Log($"Player {NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userName} Winner");
         }
 
-        //TriggerCanCloseServerRpc();
+        TriggerOnFinishedCalculationsOnServer();
     }
-
-
-
 
     protected override void SendGameResultsToClient(string authId, int valueToShow)
     {

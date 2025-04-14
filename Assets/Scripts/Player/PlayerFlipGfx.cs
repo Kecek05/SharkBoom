@@ -1,10 +1,17 @@
 using Sortify;
+using System;
 using UnityEngine;
 
 public class PlayerFlipGfx : DragListener
 {
+    /// <summary>
+    /// Called when the look orientation is changed. Pass if is looking right
+    /// </summary>
+    public event Action<bool> OnRotationChanged;
+
     [BetterHeader("References")]
     [SerializeField] private Transform playerGfxTransform;
+    [SerializeField] private PlayerDragController playerDragController;
 
     [Tooltip("Value to be add to not rotate the object to close to the 90 degrees")]
     [SerializeField] private float angleOffset = 0.5f;
@@ -15,12 +22,20 @@ public class PlayerFlipGfx : DragListener
         startEulerAngles = playerGfxTransform.eulerAngles;
     }
 
-    protected override void DoOnDragChange()
+    protected override void DoOnDragChange(float forcePercent, float angle)
     {
-        if (player.PlayerDragController.GetOpositeFingerPos().x > playerGfxTransform.position.x + angleOffset)
-            transform.eulerAngles = new Vector3(transform.eulerAngles.x, -90f , transform.eulerAngles.z);
-        else if (player.PlayerDragController.GetOpositeFingerPos().x < playerGfxTransform.position.x - angleOffset)
-            transform.eulerAngles = new Vector3(transform.eulerAngles.x, 90f, transform.eulerAngles.z);
+        if (playerDragController.GetOpositeFingerPos().x > playerGfxTransform.position.x + angleOffset)
+        {
+           // transform.eulerAngles = new Vector3(transform.eulerAngles.x, -90f , transform.eulerAngles.z);
+
+            OnRotationChanged?.Invoke(true);
+        }
+        else if (playerDragController.GetOpositeFingerPos().x < playerGfxTransform.position.x - angleOffset)
+        {
+           // transform.eulerAngles = new Vector3(transform.eulerAngles.x, 90f, transform.eulerAngles.z);
+
+            OnRotationChanged?.Invoke(false);
+        }
     }
 
     protected override void DoOnDragRelease()

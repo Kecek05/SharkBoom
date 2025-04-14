@@ -1,13 +1,16 @@
+using QFSW.QC;
 using System.Threading.Tasks;
 using Unity.Netcode;
+using UnityEngine;
 
 public class TurnManager : BaseTurnManager
 {
-    private BaseGameOverManager gameOverManager;
+
+    private BaseGameStateManager gameStateManager;
 
     private void Start()
     {
-        gameOverManager = ServiceLocator.Get<BaseGameOverManager>();
+        gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
     }
 
     public override void HandleOnGameStateChanged(GameState newValue)
@@ -22,7 +25,7 @@ public class TurnManager : BaseTurnManager
     {
         if(!IsClient) return;
 
-        if (gameOverManager.GameOver) return;
+        if (gameStateManager.CurrentGameState.Value == GameState.GameEnded) return;
 
         if (newValue == localPlayableState)
         {
@@ -34,6 +37,12 @@ public class TurnManager : BaseTurnManager
             //Local Player cant play
             TriggerOnMyTurnEnded();
         }
+    }
+
+
+    public override void HandleOnTimesUp()
+    {
+        PlayerPlayed(currentPlayableState.Value); //change turn
     }
 
     public override void InitializeLocalStates(PlayableState playingState)
@@ -51,7 +60,7 @@ public class TurnManager : BaseTurnManager
         }
 
         TriggerOnLocalPlayableStateChanged();
-
+        Debug.Log($"InitializeLocalStates, Local Playing State {playingState}");
     }
 
 
@@ -64,7 +73,7 @@ public class TurnManager : BaseTurnManager
     [Rpc(SendTo.Server)]
     private void PlayerJumpedServerRpc(PlayableState playableState)
     {
-        if (gameOverManager.GameOver) return;
+        if (gameStateManager.CurrentGameState.Value == GameState.GameEnded) return;
 
         PlayerJumpedClient(playableState);
     }
@@ -78,7 +87,7 @@ public class TurnManager : BaseTurnManager
     [Rpc(SendTo.Server)]
     private void PlayerPlayedServerRpc(PlayableState playerPlayingState)
     {
-        if (gameOverManager.GameOver) return;
+        if (gameStateManager.CurrentGameState.Value == GameState.GameEnded) return;
 
         if (playerPlayingState == PlayableState.Player1Playing)
         {
@@ -108,7 +117,7 @@ public class TurnManager : BaseTurnManager
 
     protected override async void DelayChangeTurns(PlayableState playableState)
     {
-        if (gameOverManager.GameOver) return;
+        if (gameStateManager.CurrentGameState.Value == GameState.GameEnded) return;
 
         await Task.Delay(delayBetweenTurns);
         SetPlayableStateServer(playableState);
@@ -123,7 +132,7 @@ public class TurnManager : BaseTurnManager
     [Rpc(SendTo.ClientsAndHost)]
     private void PlayerJumpedClientRpc(PlayableState playableState)
     {
-        if (gameOverManager.GameOver) return;
+        if (gameStateManager.CurrentGameState.Value == GameState.GameEnded) return;
 
         if (localPlayableState == playableState)
         {
@@ -132,6 +141,11 @@ public class TurnManager : BaseTurnManager
         }
     }
 
+    [Command("printLocalPlayableState")]
+    private void PrintLocalPlayableState() //DEBUG
+    {
+        Debug.Log($"Local Playable State: {localPlayableState}");
+    }
 
     protected override void SetPlayableStateServer(PlayableState newState)
     {
@@ -143,4 +157,5 @@ public class TurnManager : BaseTurnManager
     {
         currentPlayableState.Value = newState;
     }
+
 }

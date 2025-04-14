@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine;
@@ -9,14 +7,19 @@ public class NetworkServer : IDisposable
 {
 
     public Action<string> OnClientLeft;
-    public Action<PlayerData> OnUserLeft;
-    public Action<PlayerData> OnUserJoined;
+    public Action OnUserLeft;
+    public Action OnUserJoined;
 
     private NetworkManager networkManager;
     private IPlayerSpawner playerSpawner;
     private IServerAuthenticationService serverAuthenticationService;
 
+    private bool alreadyChangedToSpawningPlayers = false;
+    private int approvedClients = 0;
 
+    private bool canChangeOwnership = false;
+
+    public bool CanChangeOwnership => canChangeOwnership;
     public IPlayerSpawner PlayerSpawner => playerSpawner;
     public IServerAuthenticationService ServerAuthenticationService => serverAuthenticationService;
 
@@ -38,10 +41,43 @@ public class NetworkServer : IDisposable
 
         if(sceneName != Loader.Scene.GameNetCodeTest.ToString()) return; //Only Spawn players in Game Scene
 
-
         Debug.Log($"Client {clientId} / AuthId {serverAuthenticationService.GetAuthIdByClientId(clientId)} loaded scene {sceneName}");
 
-        playerSpawner.SpawnPlayer(clientId);
+        
+
+        //playerSpawner.SpawnPlayer(clientId);
+
+        Debug.Log("SceneManager_OnLoadComplete, Handling Reconnection");
+
+        if (OwnershipHandler.IsReconnecting(serverAuthenticationService.ClientIdToUserData[clientId].userAuthId))
+        {
+            OwnershipHandler.HandleOwnership(serverAuthenticationService.ClientIdToUserData[clientId].userAuthId, clientId);
+            Debug.Log("SceneManager_OnLoadComplete, Player Reconnecting");
+        }
+        else
+        {
+            //New client
+            approvedClients++;
+
+            PlayerData newPlayerData = new PlayerData()
+            {
+                userData = serverAuthenticationService.ClientIdToUserData[clientId],
+                clientId = clientId,
+                playableState = GetPlayableStateByApprovedClients(),
+                gameObject = null
+            };
+
+            serverAuthenticationService.RegisterClient(newPlayerData);
+
+            OwnershipHandler.HandleClientJoinPlayerOwnership(newPlayerData);
+
+            Debug.Log($"SceneManager_OnLoadComplete, New client - Player Data - userData Auth Id {newPlayerData.userData.userAuthId} - clientId {newPlayerData.clientId} - PlayableState {newPlayerData.playableState} - GameObject {newPlayerData.gameObject}");
+        }
+
+        OnUserJoined?.Invoke();
+
+
+        Debug.Log("SceneManager_OnLoadComplete, Finished Handling Reconnection");
     }
 
     public bool OpenConnection(string ip, int port)
@@ -64,10 +100,8 @@ public class NetworkServer : IDisposable
     {
         Debug.Log($"Client {clientId} disconnected");
 
-        OnUserLeft?.Invoke(serverAuthenticationService.GetPlayerDataByClientId(clientId));
+        OnUserLeft?.Invoke();
         OnClientLeft?.Invoke(serverAuthenticationService.GetAuthIdByClientId(clientId));
-        serverAuthenticationService.UnregisterClient(clientId);
-
     }
 
     private void ApprovalCheck(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
@@ -76,29 +110,73 @@ public class NetworkServer : IDisposable
 
         UserData userData = JsonUtility.FromJson<UserData>(payload); //Deserialize the payload to UserData
 
-        PlayerData newPlayerData = new PlayerData()
-        {
-            userData = userData,
-            clientId = request.ClientNetworkId,
-            playableState = PlayableState.None, //None for now
-            calculatedPearls = new CalculatedPearls(),
-            gameObject = null
-        };
+        Debug.Log($"ApprovalCheck, Name: {userData.userName}, Pearls: {userData.userPearls}, AuthId: {userData.userAuthId} ");
 
-        serverAuthenticationService.RegisterClient(newPlayerData);
+        serverAuthenticationService.RegisterUserData(userData, request.ClientNetworkId);
 
+        //if (OwnershipHandler.IsReconnecting(userData.userAuthId))
+        //{
+        //    OwnershipHandler.HandleOwnership(userData, request.ClientNetworkId);
+        //}
+        //else
+        //{
+        //    //New client
+        //    approvedClients++;
 
+        //    PlayerData newPlayerData = new PlayerData()
+        //    {
+        //        userData = userData,
+        //        clientId = request.ClientNetworkId,
+        //        playableState = GetPlayableStateByApprovedClients(),
+        //        gameObject = null
+        //    };
 
-        OnUserJoined?.Invoke(newPlayerData);
+        //    serverAuthenticationService.RegisterClient(newPlayerData);
+
+        //    OwnershipHandler.HandleClientJoinPlayerOwnership(newPlayerData);
+
+        //    Debug.Log($"ApprovalCheck, New client - Player Data - userData Auth Id {newPlayerData.userData.userAuthId} - clientId {newPlayerData.clientId} - PlayableState {newPlayerData.playableState} - GameObject {newPlayerData.gameObject}");
+        //}
+
+        //OnUserJoined?.Invoke();
 
         response.Approved = true; //Connection is approved
         response.CreatePlayerObject = false;
 
-        if(serverAuthenticationService.RegisteredClientCount == 2) //two clients in game
-            ServiceLocator.Get<BaseGameStateManager>().ChangeGameState(GameState.SpawningPlayers);
-        
+        if(serverAuthenticationService.RegisteredClientCount == 2 && !alreadyChangedToSpawningPlayers)
+        {
+            //two clients in game and not changed to spawning players yet
+            alreadyChangedToSpawningPlayers = true;
+
+            Debug.Log("Both players registered in approval check");
+            //ServiceLocator.Get<BaseGameStateManager>().ChangeGameState(GameState.SpawningPlayers);
+        }
     }
 
+    public PlayableState GetPlayableStateByApprovedClients()
+    {
+        Debug.Log($"GetPlayableStateByApprovedClients - {approvedClients}");
+
+        if (approvedClients == 1)
+        {
+            return PlayableState.Player1Playing;
+        }
+        else if (approvedClients == 2)
+        {
+            return PlayableState.Player2Playing;
+        }
+        else
+        {
+            Debug.LogError($"GetPlayableStateByApprovedClients - PlayerCount is not 1 or 2 - it is {approvedClients}");
+            return PlayableState.None;
+        }
+    }
+
+    public void SetCanChangeOwnership(bool canChange)
+    {
+        Debug.Log("SetCanChangeOwnership");
+        canChangeOwnership = canChange;
+    }
 
     public void Dispose()
     {

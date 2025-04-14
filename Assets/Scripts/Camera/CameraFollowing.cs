@@ -1,46 +1,85 @@
+
 using System.Collections;
-using System.Security.Cryptography;
-using Unity.Cinemachine;
+using Unity.Netcode;
 using UnityEngine;
 
-public class CameraFollowing : MonoBehaviour
+public class CameraFollowing : NetworkBehaviour
 {
+    [Header("References")]
     [SerializeField] private CameraManager cameraManager;
-    private CinemachineFollow cinemachineFollowCamera;
-    private Coroutine followingCourotine;
 
-    
-    public void SetTheValuesOfCinemachine(CinemachineFollow _cinemachineFollowCamera)
+    [Header("Settings")]
+    [Tooltip("Time to pause camera on item finish position")]
+    [SerializeField] private float cameraZPosOnFollowing = -12f;
+
+    private WaitForSeconds waitToStopFollowing = new(3f);
+    private Transform itemLaunched;
+    private Vector3 lastCameraObjectToFollowPos;
+    private Coroutine followObject;
+    private Coroutine resetCam;
+
+    public void InitializeOwner()
     {
-        cinemachineFollowCamera = _cinemachineFollowCamera;
-        FollowingStarted();
+        if(!IsOwner) return;
+
+        BaseItemThrowable.OnItemReleasedAction += BaseItemThrowable_OnItemReleasedAction;
+        BaseItemThrowable.OnItemFinishedAction += BaseItemThrowable_OnItemFinishedAction;
     }
 
-    private void FollowingStarted()
+    private void BaseItemThrowable_OnItemReleasedAction(Transform itemLaunched)
     {
-        if (followingCourotine == null)
+        lastCameraObjectToFollowPos = cameraManager.CameraObjectToFollow.position; // store current position of the camera before the item is launched
+        SetTarget(itemLaunched);
+    }
+
+
+    public void SetTarget(Transform itemLaunched) // Here we set the target and start the coroutine to follow the object
+    {
+        if (itemLaunched == null) return;
+
+        cameraManager.CinemachineCamera.Target.TrackingTarget = cameraManager.CameraObjectToFollow; // make sure the camera is following the object
+        this.itemLaunched = itemLaunched;
+
+        if (followObject != null) // if the coroutine is already running, stop it
         {
-            followingCourotine = StartCoroutine(FollowingCourotine());
+            StopCoroutine(followObject);
         }
+
+        followObject = StartCoroutine(FollowObject()); 
+
     }
 
-    private IEnumerator FollowingCourotine()
+    private IEnumerator FollowObject()
     {
-        while (cinemachineFollowCamera != null)
+        while (itemLaunched != null) // while the itemLaunched is not destroyed
         {
-            cinemachineFollowCamera.FollowOffset.z = cameraManager.CameraObjectToFollow.position.z;
+            cameraManager.CameraObjectToFollow.position = new Vector3(itemLaunched.position.x, itemLaunched.position.y, cameraZPosOnFollowing);
             yield return null;
         }
-        FollowingEnded();
+
+        followObject = null;
     }
 
-    private void FollowingEnded()
+    private void BaseItemThrowable_OnItemFinishedAction()
     {
-        if (followingCourotine != null)
+        if (resetCam == null)
         {
-            StopCoroutine(followingCourotine);
-            followingCourotine = null;
-            cinemachineFollowCamera = null;
+            resetCam = StartCoroutine(ResetCam()); // when the item finished their action, we start the coroutine to reset the camera
         }
     }
+
+    private IEnumerator ResetCam()
+    {
+        yield return waitToStopFollowing;
+        resetCam = null;
+    }
+
+
+    public void UnInitializeOwner()
+    {
+        if (!IsOwner) return;
+        BaseItemThrowable.OnItemReleasedAction -= BaseItemThrowable_OnItemReleasedAction;
+        BaseItemThrowable.OnItemFinishedAction -= BaseItemThrowable_OnItemFinishedAction;
+    }
+
 }

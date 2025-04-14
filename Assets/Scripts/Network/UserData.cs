@@ -20,15 +20,16 @@ public enum GameQueue
 [Serializable]
 public class UserData
 {
+    //need to be public for the Json payload
 
     public string userName;
     public string userAuthId;
 
-    private int userPearls;
-
-    public int UserPearls => userPearls;
+    public int userPearls; 
 
     public void SetUserPearls(int userPearls) => this.userPearls = userPearls;
+
+    public void SetPlayerName(string playerName) => this.userName = playerName;
 
     public GameInfo userGamePreferences = new();
 }

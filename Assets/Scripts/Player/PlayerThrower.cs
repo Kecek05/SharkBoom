@@ -1,87 +1,235 @@
 using QFSW.QC;
 using Sortify;
 using System;
-using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
 public class PlayerThrower : NetworkBehaviour
 {
-    public static event Action<PlayerThrower> OnPlayerSpawned;
 
 
     [BetterHeader("References")]
     [SerializeField] private GameObject playerGFX;
+    [SerializeField] private PlayerDragUi playerDragUi;
+    [SerializeField] private CameraManager cameraManager;
+    [SerializeField] private PlayerFlipGfx playerFlipGfx;
+    [SerializeField] private PlayerRotateToAim playerRotateToAim;
+    [SerializeField] private PlayerAnimator playerAnimator;
     [SerializeField] private PlayerInventory playerInventory;
     [SerializeField] private PlayerInventoryUI playerInventoryUI;
-    [SerializeField] private PlayerHealth playerHealth;
     [SerializeField] private PlayerDragController playerDragController;
     [SerializeField] private PlayerLauncher playerLauncher;
-    [SerializeField] private BoxCollider playerTouchColl;
+    [SerializeField] private Collider2D playerTouchColl;
     [SerializeField] private GameObject[] playerColliders;
     private PlayerStateMachine playerStateMachine;
 
     private NetworkVariable<PlayableState> thisPlayableState = new();
 
     private BaseTurnManager turnManager;
-    private BaseGameOverManager gameOverManager;
+    private BaseGameStateManager gameStateManager;
 
     //Publics
     public PlayerStateMachine PlayerStateMachine => playerStateMachine;
-    public PlayerInventory PlayerInventory => playerInventory;
-    public PlayerInventoryUI PlayerInventoryUI => playerInventoryUI;
-    public PlayerHealth PlayerHealth => playerHealth;
-    public PlayerDragController PlayerDragController => playerDragController;
-    public PlayerLauncher PlayerLauncher => playerLauncher;
     public NetworkVariable<PlayableState> ThisPlayableState => thisPlayableState;
-
 
     public override void OnNetworkSpawn()
     {
+        GameManager.OnClientOwnershipChanged += HandleOnClientOwnershipChanged;
 
-        if (IsServer)
-        {
-            PlayerData playerData = NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.GetPlayerDataByClientId(OwnerClientId);
-
-            OnPlayerSpawned?.Invoke(this);
-
-            gameObject.name = "Player " + playerData.userData.userName; //Debug
-        }
-
-
+        gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
+        turnManager = ServiceLocator.Get<BaseTurnManager>();
 
         thisPlayableState.OnValueChanged += PlayableStateInitialize;
 
-        if(!IsHost) // host will add itself twice
-            PlayableStateInitialize(thisPlayableState.Value, thisPlayableState.Value);
 
-        if (IsOwner)
+        PlayableStateInitialize(thisPlayableState.Value, thisPlayableState.Value);
+
+        //if (!IsHost) // host will add itself twice
+        //    PlayableStateInitialize(thisPlayableState.Value, thisPlayableState.Value);
+
+        playerTouchColl.enabled = false;
+
+        //DEBUG
+        gameObject.name = "Player " + UnityEngine.Random.Range(0, 10000);
+        Debug.Log($"OnNetworkSpawn of PlayerThrower - Im owner? {IsOwner} - OwnerId: {OwnerClientId}");
+    }
+
+    private void HandleOnClientOwnershipChanged(ulong newOwnerClientId)
+    {
+        if (!IsOwner) return;
+
+        Debug.Log($"HandleOnClientOwnershipChanged - new owner by event: {newOwnerClientId} - new owner obj: {OwnerClientId}");
+
+        if(newOwnerClientId == OwnerClientId)
         {
-            gameOverManager = ServiceLocator.Get<BaseGameOverManager>();
-            turnManager = ServiceLocator.Get<BaseTurnManager>();
+            Debug.Log($"HandleOnClientOwnershipChanged, PlayerThrower Gained Ownership, new owner is: {newOwnerClientId} - Im {NetworkManager.LocalClientId}");
 
-            turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
+            InitializeOwner();
+            HandleEvents();
+            playerTouchColl.enabled = true;
 
-            turnManager.OnMyTurnEnded += GameFlowManager_OnMyTurnEnded;
+            playerInventory.HandleOnGainOwnership();
+            playerInventoryUI.HandleOnGainOwnership();
 
-            turnManager.OnMyTurnJumped += GameFlowManager_OnMyTurnJumped;
-
-            gameOverManager.OnGameOver += GameFlowManager_OnGameOver;
-
-            playerStateMachine = new PlayerStateMachine(this);
-
-            playerStateMachine.Initialize(playerStateMachine.idleEnemyTurnState);
-
-        } else
-        {
-            //if not owner, turn off touch collider
-            playerTouchColl.enabled = false;
-
+            Debug.Log("HandleOnClientOwnershipChanged, Ownership changed");
         }
+    }
 
+    private void InitializeOwner()
+    {
+        //Owner initialize code
+        Debug.Log("InitializeOwner called");
+
+        PlayableStateInitialize(thisPlayableState.Value, thisPlayableState.Value);
+
+        turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
+
+        turnManager.OnMyTurnEnded += GameFlowManager_OnMyTurnEnded;
+
+        turnManager.OnMyTurnJumped += GameFlowManager_OnMyTurnJumped;
+
+        gameStateManager.CurrentGameState.OnValueChanged += HandleOnGameStateChanged;
+
+        playerStateMachine = new PlayerStateMachine(this, playerDragController, playerInventory);
+
+        playerStateMachine.Initialize(playerStateMachine.idleEnemyTurnState);
+
+        cameraManager.InitializeOwner();
+        playerFlipGfx.InitializeOwner();
+        playerRotateToAim.InitializeOwner();
+        playerInventory.InitializeOwner();
+        playerLauncher.InitializeOwner();
+        playerDragController.InitializeOwner(playerInventory.GetItemSOByItemSOIndex(0).rb);
+    }
+
+    private void HandleEvents()
+    {
+        Debug.Log($"HandleEvents PlayerThrower - Im owner? {IsOwner} - OwnerId: {OwnerClientId}  - My Client Id: {NetworkManager.LocalClientId}");
+
+        playerInventory.OnItemAdded += HandleOnItemAdded;
+        playerInventory.OnItemChanged += HandleOnItemChanged;
+        playerInventory.OnItemSelected += HandleOnItemSelected;
+        playerInventory.OnItemSelectedSO += HandleOnItemSelectedSO;
+
+        playerLauncher.OnItemLaunched += HandleOnItemLaunched;
+
+        if(playerStateMachine != null)
+            playerStateMachine.OnStateChanged += HandleOnStateChanged;
+
+        playerDragController.OnDragStart += HandleOnDragStart;
+        playerDragController.OnDragChange += HandleOnDragChange;
+        playerDragController.OnDragCancelable += HandleOnDragCancelable;
+
+        playerInventoryUI.OnItemSelectedByUI += HandleOnItemSelectedByUI;
+
+        playerFlipGfx.OnRotationChanged += HandleOnPlayerFlipGfxRotationChanged;
+    }
+
+    private void UnHandleEvents()
+    {
+        Debug.Log($"UnHandleEvents PlayerThrower - Im owner? {IsOwner} - OwnerId: {OwnerClientId} - My Client Id: {NetworkManager.LocalClientId}");
+
+        playerInventory.OnItemAdded -= HandleOnItemAdded;
+        playerInventory.OnItemChanged -= HandleOnItemChanged;
+        playerInventory.OnItemSelected -= HandleOnItemSelected;
+        playerInventory.OnItemSelectedSO -= HandleOnItemSelectedSO;
+
+        playerLauncher.OnItemLaunched -= HandleOnItemLaunched;
+
+        if (playerStateMachine != null)
+            playerStateMachine.OnStateChanged -= HandleOnStateChanged;
+
+        playerDragController.OnDragStart -= HandleOnDragStart;
+        playerDragController.OnDragChange -= HandleOnDragChange;
+        playerDragController.OnDragCancelable -= HandleOnDragCancelable;
+
+        playerInventoryUI.OnItemSelectedByUI -= HandleOnItemSelectedByUI;
+
+        playerFlipGfx.OnRotationChanged -= HandleOnPlayerFlipGfxRotationChanged;
+
+        cameraManager.UnInitializeOwner();
+        playerLauncher.UnInitializeOwner();
+        playerInventoryUI.UnHandleInitializeOwner();
     }
 
 
+    private void HandleOnDragStart()
+    {
+        playerDragUi.HandleOnPlayerDragControllerDragStart();
+    }
+
+    private void HandleOnDragCancelable(bool cancelable)
+    {
+        playerDragUi.HandleOnPlayerDragControllerDragCancelable(cancelable);
+    }
+
+    private void HandleOnItemSelectedSO(ItemSO itemSOSelected)
+    {
+        playerInventoryUI.UpdateOpenInventoryButton(itemSOSelected.itemIcon);
+    }
+
+    private void HandleOnItemSelectedByUI(int itemInventoryIndex)
+    {
+        playerInventory.SelectItemDataByItemInventoryIndex(itemInventoryIndex);
+    }
+
+    private void HandleOnDragChange(float forcePercent, float angle)
+    {
+        playerFlipGfx.HandleOnPlayerDragControllerDragChange(forcePercent, angle);
+        playerDragUi.HandleOnPlayerDragControllerDragChange(forcePercent, angle);
+        playerRotateToAim.HandleOnPlayerDragControllerDragChange(forcePercent, angle);
+    }
+
+    private void HandleOnStateChanged(PlayerState state)
+    {
+        cameraManager.HandleOnPlayerStateMachineStateChanged(state);
+        playerInventory.HandleOnPlayerStateMachineStateChanged(state);
+
+        playerLauncher.HandleOnPlayerStateMachineStateChanged(state);
+        playerDragController.HandleOnPlayerStateMachineStateChanged(state);
+        playerAnimator.HandleOnPlayerStateMachineStateChanged(state);
+
+        playerRotateToAim.HandleOnPlayerStateMachineStateChanged(state);
+        playerFlipGfx.HandleOnPlayerStateMachineStateChanged(state);
+        playerDragUi.HandleOnPlayerStateMachineStateChanged(state);
+
+        playerInventoryUI.HandleOnPlayerStateMachineStateChanged(state);
+
+    }
+    private void HandleOnItemLaunched(int itemInventoryIndex)
+    {
+        playerInventory.HandleOnPlayerLauncherItemLaunched(itemInventoryIndex);
+    }
+
+    private void HandleOnItemSelected(int selectedItemInventoryIndex)
+    {
+        playerDragController.SetDragRb(playerInventory.GetSelectedItemSO().rb);
+
+        playerInventoryUI.HandleOnPlayerInventoryItemSelected(selectedItemInventoryIndex);
+    }
+
+    private void HandleOnItemChanged(ItemInventoryData itemChanged)
+    {
+        playerInventoryUI.HandleOnPlayerInventoryItemChanged(itemChanged);
+    }
+
+    private void HandleOnItemAdded(ItemInventoryData itemAdded)
+    {
+        playerInventoryUI.HandleOnPlayerInventoryItemAdded(itemAdded);
+    }
+
+    private void HandleOnGameStateChanged(GameState previousValue, GameState newValue)
+    {
+        if(newValue == GameState.GameEnded)
+        {
+            playerStateMachine.TransitionTo(playerStateMachine.playerGameOverState);
+        }
+    }
+
+    private void HandleOnPlayerFlipGfxRotationChanged(bool isRight)
+    {
+        playerAnimator.HandleOnRotationChanged(isRight);
+    }
 
     [Rpc(SendTo.Server)]
     public void InitializePlayerRpc(PlayableState playableState, Quaternion GFXRotation)
@@ -117,10 +265,6 @@ public class PlayerThrower : NetworkBehaviour
 
     }
 
-    private void GameFlowManager_OnGameOver()
-    {
-        playerStateMachine.TransitionTo(playerStateMachine.playerGameOverState);
-    }
 
     //DEBUG
     [Command("player-passTurn", MonoTargetType.All)]
@@ -136,19 +280,41 @@ public class PlayerThrower : NetworkBehaviour
 
     }
 
-    
+    //DEBUG
+    [Command("checkImOwner", MonoTargetType.All)]
+    private void CheckImOwner()
+    {
+        Debug.Log($"Server is the Owner? {IsOwnedByServer} - OwnerId: {OwnerClientId}");
+
+        if (!IsOwner)
+        {
+            return;
+        }
+
+        transform.position = new Vector3(transform.position.x, transform.position.y + 5f, transform.position.z);
+    }
 
     private void PlayableStateInitialize(PlayableState previousValue, PlayableState newValue)
     {
-        if (IsOwner)
+        if (IsOwner && IsClient)
         {
-            ServiceLocator.Get<BaseTurnManager>().InitializeLocalStates(thisPlayableState.Value); //pass to GameFlow to know when its local turn
+            if(IsHost)
+            {
+                //Host always is Player1Playing
+                ServiceLocator.Get<BaseTurnManager>().InitializeLocalStates(PlayableState.Player1Playing);
+
+            } else
+            {
+                ServiceLocator.Get<BaseTurnManager>().InitializeLocalStates(newValue); //pass to GameFlow to know when its local turn
+            }
+
+           
         }
 
-        if (thisPlayableState.Value == PlayableState.Player1Playing)
+        if (newValue == PlayableState.Player1Playing)
         {
 
-            foreach(GameObject playerCollider in playerColliders)
+            foreach (GameObject playerCollider in playerColliders)
             {
                 playerCollider.layer = PlayersPublicInfoManager.PLAYER_1_LAYER;
             }
@@ -161,12 +327,14 @@ public class PlayerThrower : NetworkBehaviour
             }
         }
 
-        ServiceLocator.Get<BasePlayersPublicInfoManager>().AddPlayerToPlayersDictionary(thisPlayableState.Value, gameObject);
+
+        ServiceLocator.Get<BasePlayersPublicInfoManager>().AddPlayerToPlayersDictionary(newValue, gameObject);
 
     }
 
     public override void OnNetworkDespawn()
     {
+        GameManager.OnClientOwnershipChanged -= HandleOnClientOwnershipChanged;
         thisPlayableState.OnValueChanged -= PlayableStateInitialize;
 
         if (IsOwner)
@@ -177,8 +345,22 @@ public class PlayerThrower : NetworkBehaviour
 
             turnManager.OnMyTurnJumped -= GameFlowManager_OnMyTurnJumped;
 
-            gameOverManager.OnGameOver -= GameFlowManager_OnGameOver;
+            gameStateManager.CurrentGameState.OnValueChanged -= HandleOnGameStateChanged;
+
+            UnHandleEvents();
         }
+
+
+
     }
 
+    public override void OnLostOwnership()
+    {
+        Debug.Log($"Lost Ownership - called before changing the owner");
+
+        playerTouchColl.enabled = false;
+
+
+        UnHandleEvents();
+    }
 }

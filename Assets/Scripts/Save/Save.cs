@@ -1,24 +1,13 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
-using Unity.Services.CloudSave;
 using QFSW.QC;
 using System;
-using Unity.Services.Authentication;
 using Unity.Services.CloudCode;
 
 public static class Save
 {
-    //ONLY SERVER
-
-    private const string ADD_PEARLS_ENDPOINT = "AddSavePlayerPearls";
-    private const string GET_PEARLS_ENDPOINT = "GetPlayerPearls";
-
-    private const string ADD_PEARLS_ARGUMENT_PLAYERID = "playerId";
-    private const string ADD_PEARLS_ARGUMENT_PEARLS = "pearls";
-    private const string ARGUMENT_PROJECT_ID = "gameProjectId";
-    private const string PROJECT_ID = "01563be5-25e2-47ed-b519-012967e3d8e3";
-
+    public static event Action OnPlayerPearlsLoaded;
     public static event Action OnPlayerPearlsChanged;
 
     [Command("save-addSavePlayerPearls")]
@@ -28,28 +17,101 @@ public static class Save
 
         var arguments = new Dictionary<string, object>
         {
-            { ARGUMENT_PROJECT_ID, PROJECT_ID },
-            { ADD_PEARLS_ARGUMENT_PEARLS, PlayerPearlsToAdd },
-            { ADD_PEARLS_ARGUMENT_PLAYERID, userAuthId }
+            { CloudCodeRefs.ARGUMENT_PROJECT_ID, CloudCodeRefs.PROJECT_ID },
+            { CloudCodeRefs.ADD_PEARLS_ARGUMENT_PEARLS, PlayerPearlsToAdd },
+            { CloudCodeRefs.ARGUMENT_PLAYERID, userAuthId }
         };
-        await CloudCodeService.Instance.CallEndpointAsync(ADD_PEARLS_ENDPOINT, arguments);
-        Debug.Log($"AddSavePlayerPearls");
-        OnPlayerPearlsChanged?.Invoke();
+
+        bool saved = false;
+
+        while(!saved)
+        {
+            try
+            {
+                await CloudCodeService.Instance.CallEndpointAsync(CloudCodeRefs.ADD_PEARLS_ENDPOINT, arguments);
+                saved = true;
+                Debug.Log($"AddSavePlayerPearls");
+                OnPlayerPearlsChanged?.Invoke();
+            }
+            catch (CloudCodeException e)
+            {
+                Debug.LogError($"Error saving pearls: {e.Message}, trying again");
+                await Task.Delay(100);
+            }
+        }
     }
 
     public static async Task<int> LoadPlayerPearls(string userAuthId)
     {
         var arguments = new Dictionary<string, object>
         {
-            { ARGUMENT_PROJECT_ID, PROJECT_ID },
-            { ADD_PEARLS_ARGUMENT_PLAYERID, userAuthId }
+            { CloudCodeRefs.ARGUMENT_PROJECT_ID, CloudCodeRefs.PROJECT_ID },
+            { CloudCodeRefs.ARGUMENT_PLAYERID, userAuthId }
         };
 
-        int loadPearls = await CloudCodeService.Instance.CallEndpointAsync<int>(GET_PEARLS_ENDPOINT, arguments);
+        try
+        {
+            int loadPearls = await CloudCodeService.Instance.CallEndpointAsync<int>(CloudCodeRefs.GET_PEARLS_ENDPOINT, arguments);
 
-        Debug.Log($"Player Pearls: {loadPearls}");
-        return loadPearls;
+            Debug.Log($"Player Pearls: {loadPearls}");
+            OnPlayerPearlsLoaded?.Invoke();
+            return loadPearls;
 
-
+        } catch (CloudCodeException e)
+        {
+            Debug.LogError($"Error loading pearls: {e.Message}, Closing Game");
+            Application.Quit();
+            return 0;
+        }
     }
+
+    public static async Task<string> LoadPlayerName(string userAuthId)
+    {
+        var arguments = new Dictionary<string, object>
+        {
+            { CloudCodeRefs.ARGUMENT_PROJECT_ID, CloudCodeRefs.PROJECT_ID },
+            { CloudCodeRefs.ARGUMENT_PLAYERID, userAuthId }
+        };
+        try
+        {
+            string playerName = await CloudCodeService.Instance.CallEndpointAsync<string>(CloudCodeRefs.GET_PLAYER_NAME_ENDPOINT, arguments);
+            Debug.Log($"Player Name: {playerName}");
+            return playerName;
+        }
+        catch (CloudCodeException e)
+        {
+            Debug.LogError($"Error loading player name: {e.Message}, Closing Game");
+            Application.Quit();
+            return "";
+        }
+    }
+
+    [Command("save-setPlayerName")]
+    public static async Task SavePlayerName(string userAuthId, string playerName)
+    {
+        var arguments = new Dictionary<string, object>
+        {
+            { CloudCodeRefs.ARGUMENT_PROJECT_ID, CloudCodeRefs.PROJECT_ID },
+            { CloudCodeRefs.ARGUMENT_PLAYERID, userAuthId },
+            { CloudCodeRefs.SET_PLAYER_NAME_ARGUMENT_NAME, playerName }
+        };
+
+        bool saved = false;
+
+        while (!saved)
+        {
+            try
+            {
+                await CloudCodeService.Instance.CallEndpointAsync(CloudCodeRefs.SET_PLAYER_NAME_ENDPOINT, arguments);
+                saved = true;
+                Debug.Log($"Saved Player Name");
+            }
+            catch (CloudCodeException e)
+            {
+                Debug.LogError($"Error saving name: {e.Message}, trying again");
+                await Task.Delay(100);
+            }
+        }
+    }
+
 }

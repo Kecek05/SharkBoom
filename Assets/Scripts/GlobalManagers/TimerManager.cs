@@ -1,33 +1,35 @@
 using System.Collections;
+using Unity.Netcode;
 
 public class TimerManager : BaseTimerManager
 {
-    private BaseGameOverManager gameOverManager;
-    private BaseTurnManager turnManager;
+    private BaseGameStateManager gameStateManager;
 
     private void Start()
     {
-        gameOverManager = ServiceLocator.Get<BaseGameOverManager>();
-
-        turnManager = ServiceLocator.Get<BaseTurnManager>();
+        gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
     }
 
-    public override void HandleOnGameOver()
+    public override void HandleOnGameStateChanged(GameState gameState)
     {
         if(!IsServer) return;
 
-        if (timerCoroutine != null)
+        if(gameState == GameState.GameEnded)
         {
-            StopCoroutine(timerCoroutine);
-            timerCoroutine = null;
+            if (timerCoroutine != null)
+            {
+                StopCoroutine(timerCoroutine);
+                timerCoroutine = null;
+            }
         }
+
     }
 
     public override void HandleOnPlayableStateValueChanged(PlayableState previousValue, PlayableState newValue)
     {
         if(!IsServer) return;
 
-        if (gameOverManager.GameOver) return;
+        if (gameStateManager.CurrentGameState.Value == GameState.GameEnded) return;
 
         if (newValue == PlayableState.Player1Playing || newValue == PlayableState.Player2Playing)
         {
@@ -59,10 +61,20 @@ public class TimerManager : BaseTimerManager
         }
 
         TriggerOnTurnTimesUp();
-
+        TriggerOnTurnTimesUpClient();
         //time's up
-        turnManager.PlayerPlayed(turnManager.CurrentPlayableState.Value); //change turn
 
         timerCoroutine = null;
+    }
+
+    protected override void TriggerOnTurnTimesUpClient()
+    {
+        TriggerOnTurnTimesUpClientRpc();
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void TriggerOnTurnTimesUpClientRpc()
+    {
+        TriggerOnTurnTimesUp();
     }
 }

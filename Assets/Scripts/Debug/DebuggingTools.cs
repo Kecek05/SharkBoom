@@ -11,8 +11,6 @@ public class DebuggingTools : NetworkBehaviour
 {
 
     [BetterHeader("References")]
-    public TextMeshProUGUI debugGameStateText;
-    public TextMeshProUGUI debugPlayableStateText;
     public TextMeshProUGUI debugPingText;
 
     //Ping
@@ -21,7 +19,6 @@ public class DebuggingTools : NetworkBehaviour
 
     private BaseGameStateManager stateManager;
     private BaseTurnManager turnManager;
-    private BaseGameOverManager gameOverManager;
 
     public override void OnNetworkSpawn()
     {
@@ -32,7 +29,6 @@ public class DebuggingTools : NetworkBehaviour
 
         stateManager = ServiceLocator.Get<BaseGameStateManager>();
         turnManager = ServiceLocator.Get<BaseTurnManager>();
-        gameOverManager = ServiceLocator.Get<BaseGameOverManager>();
     }
 
     private IEnumerator PingCoroutine()
@@ -61,12 +57,12 @@ public class DebuggingTools : NetworkBehaviour
         }
     }
 
-    private void Update()
+    [Command("printGameState")]
+    private void PrintGameState()
     {
-        debugGameStateText.text = stateManager.CurrentGameState.Value.ToString();
-        debugPlayableStateText.text = turnManager.CurrentPlayableState.Value.ToString();
+        Debug.Log(stateManager.CurrentGameState.Value.ToString());
+        Debug.Log(turnManager.CurrentPlayableState.Value.ToString());
     }
-
 
 
     [Command("shutDownDebug")]
@@ -94,34 +90,9 @@ public class DebuggingTools : NetworkBehaviour
     {
         foreach (PlayerData playerData in NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.ClientIdToPlayerData.Values)
         {
-            Debug.Log($"PlayerUserData Name: {playerData.userData.userName} - Client Id: {playerData.clientId} - PlayableState: {playerData.playableState} - Pearls: {playerData.userData.UserPearls} - GameObject: {playerData.gameObject} - PlayerId: {playerData.userData.userAuthId}");
-            Debug.Log($"Pearls To Win: {playerData.calculatedPearls.PearlsToWin} - Pearls To Lose: - {playerData.calculatedPearls.PearlsToLose}");
+            Debug.Log($"PlayerUserData Name: {playerData.userData.userName} - Client Id: {playerData.clientId} - PlayableState: {playerData.playableState} - Pearls: {playerData.userData.userPearls} - GameObject: {playerData.gameObject} - PlayerId: {playerData.userData.userAuthId}");
         }
     }
 
-
-    [Command("setGameOver")]
-    private void SetGameOver(PlayableState playableState)
-    {
-        SetGameOverRpc(playableState);
-    }
-
-    [Rpc(SendTo.Server)]
-    private void SetGameOverRpc(PlayableState playableState)
-    {
-        gameOverManager.LoseGame(playableState);
-    }
-
-    [Rpc(SendTo.Server)]
-    private void DebugOnServerRpc(string debugText)
-    {
-        Debug.Log(debugText);
-    }
-
-    [Command("serverDebugLog")]
-    private void SendDebugLogToServer(string message)
-    {
-        DebugOnServerRpc(message);
-    }
 
 }

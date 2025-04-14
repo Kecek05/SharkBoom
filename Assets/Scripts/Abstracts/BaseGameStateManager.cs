@@ -10,20 +10,14 @@ public abstract class BaseGameStateManager : NetworkBehaviour
     /// </summary>
     public event Action OnLostConnectionInHost;
 
-    /// <summary>
-    /// Called when the server should be closed.
-    /// </summary>
-    public event Action OnCanCloseServer;
-
 
     //Variables
-    protected int delayClosePlayersInfo = 3000; //in ms
+    protected const int DELAY_CLOSE_PLAYERSINFO = 3000; //in ms
+    protected const int DELAY_STARTGAME = 3000; //in ms
     protected NetworkVariable<GameState> gameState = new(GameState.WaitingForPlayers);
-
+    protected int clientsGainedOwnership = 0;
 
     //Publics
-
-    public int DelayClosePlayersInfo => delayClosePlayersInfo;
     public NetworkVariable<GameState> CurrentGameState => gameState;
 
     //Methods
@@ -48,12 +42,6 @@ public abstract class BaseGameStateManager : NetworkBehaviour
     /// <param name="newValue"></param>
     public abstract void HandleOnGameStateValueChanged(GameState newValue);
 
-    public abstract void HandleOnGameOver();
-
-    /// <summary>
-    /// Trigger event to close the server
-    /// </summary>
-    protected void TriggerCanCloseServer() => OnCanCloseServer?.Invoke();
 
     protected void TriggerOnLostConnectionInHost() => OnLostConnectionInHost?.Invoke();
 
@@ -67,15 +55,13 @@ public abstract class BaseGameStateManager : NetworkBehaviour
     public abstract void ChangeGameState(GameState gameState, int delayToChange = 0);
 
     /// <summary>
-    /// Set the game state on server.
-    /// </summary>
-    /// <param name="newState"></param>
-    protected abstract void SetGameState(GameState newState);
-
-    /// <summary>
     /// Called when any player lost connection in Host.
     /// </summary>
     public abstract void ConnectionLostHostAndClient();
+
+    public abstract void HandeOnPlayerDie();
+
+    public abstract void HandleOnPlayerGainOwnership(ulong clientId);
 
 }
 

@@ -1,7 +1,6 @@
 using Sortify;
 using System;
 using Unity.Netcode;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 public abstract class BaseTurnManager : NetworkBehaviour
@@ -23,7 +22,6 @@ public abstract class BaseTurnManager : NetworkBehaviour
 
     protected NetworkVariable<PlayableState> currentPlayableState = new(PlayableState.None);
 
-    protected GameStateManager gameStateManager;
     //Publics
     public PlayableState LocalPlayableState => localPlayableState;
     public NetworkVariable<PlayableState> CurrentPlayableState => currentPlayableState;
@@ -40,7 +38,7 @@ public abstract class BaseTurnManager : NetworkBehaviour
 
 
     /// <summary>
-    /// Set the localPlayable and localPlayed states to the GameFlowManager, Only Owner.
+    /// Set the localPlayable and localPlayed states to the GameFlowManager, Only Client Owner.
     /// </summary>
     /// <param name="playingState"> Playing State</param>
     public abstract void InitializeLocalStates(PlayableState playingState);
@@ -75,4 +73,6 @@ public abstract class BaseTurnManager : NetworkBehaviour
 
     public abstract void HandleOnGameStateChanged(GameState newValue);
     public abstract void HandleOnPlayableStateValueChanged(PlayableState previousValue, PlayableState newValue);
+
+    public abstract void HandleOnTimesUp();
 }

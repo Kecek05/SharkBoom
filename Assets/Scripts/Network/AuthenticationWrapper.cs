@@ -17,9 +17,6 @@ public static class AuthenticationWrapper
 
     public static AuthState AuthState { get; private set; } = AuthState.NotAuthenticated;
 
-    private static string playerName = "NoName";
-    public static string PlayerName => playerName;
-
     public static string GooglePlayToken;
 
     public static async Task<AuthState> DoAuthUnity()
@@ -131,10 +128,9 @@ public static class AuthenticationWrapper
         {
             await AuthenticationService.Instance.SignInWithGooglePlayGamesAsync(GooglePlayToken);
 
-            await SetPlayerName(PlayGamesPlatform.Instance.GetUserDisplayName());
-
             AuthState = AuthState.Authenticated;
             Debug.Log($"AUTHENTICATED WITH GOOGLE PLAY GAMES UNITY, CODE: {GooglePlayToken}");
+            return;
         }
         catch (AuthenticationException ex)
         {
@@ -144,6 +140,8 @@ public static class AuthenticationWrapper
         {
             Debug.LogException(ex);
         }
+
+        OnSignInFail?.Invoke();
     }
 
 #endif
@@ -231,11 +229,9 @@ public static class AuthenticationWrapper
 
             PlayerPrefs.SetString("AccessToken", accessToken);
 
-            await SetPlayerName(await AuthenticationService.Instance.GetPlayerNameAsync());
-
             AuthState = AuthState.Authenticated;
 
-
+            return;
         }
         catch (AuthenticationException ex)
         {
@@ -245,6 +241,7 @@ public static class AuthenticationWrapper
         {
             Debug.LogException(ex);
         }
+        OnSignInFail?.Invoke();
     }
 
     private static async Task SignInAnonymouslyAsync(int maxTries = 5)
@@ -259,7 +256,6 @@ public static class AuthenticationWrapper
             {
                 await AuthenticationService.Instance.SignInAnonymouslyAsync();
 
-                await SetPlayerName(await AuthenticationService.Instance.GetPlayerNameAsync());
 
                 if (AuthenticationService.Instance.IsSignedIn && AuthenticationService.Instance.IsAuthorized)
                 {
@@ -290,16 +286,9 @@ public static class AuthenticationWrapper
         {
             Debug.LogWarning($"Player could not authenticate after {tries} tries.");
             AuthState = AuthState.TimeOut;
+            OnSignInFail?.Invoke();
         }
     }
-
-    public static async Task SetPlayerName(string newPlayerName)
-    {
-        playerName = newPlayerName;
-
-        await AuthenticationService.Instance.UpdatePlayerNameAsync(playerName);
-    }
-
 
 }
 

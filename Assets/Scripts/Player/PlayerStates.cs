@@ -10,6 +10,9 @@ public class MyTurnStartedState : IState
 
     //My Turn started, set up only
     private PlayerThrower player;
+    private PlayerState state = PlayerState.MyTurnStarted;
+
+    public PlayerState State => state;
 
     public MyTurnStartedState(PlayerThrower player)
     {
@@ -48,27 +51,33 @@ public class IdleMyTurnState : IState
     //Idle in my turn
     // Can Move Camera, Choose items and drag
     //Change to Dragging if start dragging
-
     private PlayerThrower player;
+    private PlayerDragController playerDragController;
+    private PlayerInventory playerInventory;
+    private PlayerState state = PlayerState.IdleMyTurn;
 
-    public IdleMyTurnState(PlayerThrower player)
+    public PlayerState State => state;
+
+    public IdleMyTurnState(PlayerThrower player ,PlayerDragController playerDragController, PlayerInventory playerInventory)
     {
         //our builder
         this.player = player;
+        this.playerDragController = playerDragController;
+        this.playerInventory = playerInventory;
     }
 
     public void Enter()
     {
         Debug.Log("Entering Idle State");
 
-        player.PlayerDragController.OnDragStart += PlayerDragController_OnDragStart;
+        playerDragController.OnDragStart += PlayerDragController_OnDragStart;
 
         //Set Can Move Camera
     }
 
     private void PlayerDragController_OnDragStart()
     {
-        if (player.PlayerInventory.SelectedItemInventoryIndex == 0)
+        if (playerInventory.SelectedItemInventoryIndex == 0)
         {
             player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.draggingJump);
         } else
@@ -84,7 +93,7 @@ public class IdleMyTurnState : IState
 
     public void Exit()
     {
-        player.PlayerDragController.OnDragStart -= PlayerDragController_OnDragStart;
+        playerDragController.OnDragStart -= PlayerDragController_OnDragStart;
 
         Debug.Log("Exiting Idle State");
     }
@@ -97,17 +106,21 @@ public class DraggingJump : IState
     //Change to Release Jump if release the jump
 
     private PlayerThrower player;
+    private PlayerDragController playerDragController;
+    private PlayerState state = PlayerState.DraggingJump;
 
+    public PlayerState State => state;
 
-    public DraggingJump(PlayerThrower player) {
+    public DraggingJump(PlayerThrower player, PlayerDragController playerDragController) {
         //our builder
         this.player = player;
+        this.playerDragController = playerDragController;
     }
     public void Enter()
     {
         Debug.Log("Entering Dragging Jump State");
         //Set Cant move camera
-        player.PlayerDragController.OnDragRelease += PlayerDragController_OnDragRelease;
+        playerDragController.OnDragRelease += PlayerDragController_OnDragRelease;
     }
 
     private void PlayerDragController_OnDragRelease()
@@ -122,7 +135,7 @@ public class DraggingJump : IState
 
     public void Exit()
     {
-        player.PlayerDragController.OnDragRelease -= PlayerDragController_OnDragRelease;
+        playerDragController.OnDragRelease -= PlayerDragController_OnDragRelease;
 
         Debug.Log("Exiting Dragging Jump State");
     }
@@ -136,17 +149,22 @@ public class DraggingItem : IState
     //Change to Release Item if release the item
 
     private PlayerThrower player;
+    private PlayerDragController playerDragController;
+    private PlayerState state = PlayerState.DraggingItem;
 
-    public DraggingItem(PlayerThrower player)
+    public PlayerState State => state;
+
+    public DraggingItem(PlayerThrower player, PlayerDragController playerDragController)
     {
         //our builder
         this.player = player;
+        this.playerDragController = playerDragController;
     }
     public void Enter()
     {
         Debug.Log("Entering Dragging Item State");
 
-        player.PlayerDragController.OnDragRelease += PlayerDragController_OnDragRelease;
+        playerDragController.OnDragRelease += PlayerDragController_OnDragRelease;
         //Set Cant move camera
 
     }
@@ -163,7 +181,7 @@ public class DraggingItem : IState
 
     public void Exit()
     {
-        player.PlayerDragController.OnDragRelease -= PlayerDragController_OnDragRelease;
+        playerDragController.OnDragRelease -= PlayerDragController_OnDragRelease;
 
         Debug.Log("Exiting Dragging Item State");
     }
@@ -176,12 +194,15 @@ public class DragReleaseJump : IState
     //Cant Move Camera, Cant Choose items, Cant Drag, Camera following the action
     //Change to the IdleMyTurn after the item Callback
 
-    private PlayerThrower player;
 
-    public DragReleaseJump(PlayerThrower player)
+    private PlayerState state = PlayerState.DragReleaseJump;
+
+    public PlayerState State => state;
+
+    public DragReleaseJump()
     {
         //our builder
-        this.player = player;
+
     }
     public void Enter()
     {
@@ -209,12 +230,13 @@ public class DragReleaseItem : IState
     //Cant Move Camera, Cant Choose items, Cant Drag, Camera following the action
     //Change to the MyTurnEnded after the item Callback
 
-    private PlayerThrower player;
+    private PlayerState state = PlayerState.DragReleaseItem;
 
-    public DragReleaseItem(PlayerThrower player)
+    public PlayerState State => state;
+
+    public DragReleaseItem()
     {
         //our builder
-        this.player = player;
     }
     public void Enter()
     {
@@ -240,6 +262,9 @@ public class MyTurnEndedState : IState
 
     private PlayerThrower player;
     private BaseTurnManager turnManager;
+    private PlayerState state = PlayerState.MyTurnEnded;
+
+    public PlayerState State => state;
 
     public MyTurnEndedState(PlayerThrower player)
     {
@@ -278,7 +303,9 @@ public class IdleEnemyTurnState : IState
 {
     //Idle in enemy turn
     //Can select items, move camera
+    private PlayerState state = PlayerState.IdleEnemyTurn;
 
+    public PlayerState State => state;
     public IdleEnemyTurnState()
     {
         //our builder
@@ -301,7 +328,9 @@ public class PlayerWatchingState : IState
 {
     //Player is watching the enemy turn
     //Cant do anything
+    private PlayerState state = PlayerState.PlayerWatching;
 
+    public PlayerState State => state;
 
     public PlayerWatchingState()
     {
@@ -325,6 +354,10 @@ public class PlayerWatchingState : IState
 public class PlayerGameOverState : IState
 {
     //Cant do anything
+    private PlayerState state = PlayerState.PlayerGameOver;
+
+    public PlayerState State => state;
+
     public PlayerGameOverState()
     {
         //our builder

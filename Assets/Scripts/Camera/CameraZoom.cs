@@ -1,11 +1,10 @@
 using Sortify;
-using System;
 using System.Collections;
-using Unity.Cinemachine;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class CameraZoom : MonoBehaviour
+public class CameraZoom : NetworkBehaviour
 {
 
     [SerializeField] private InputReader inputReader;
@@ -27,27 +26,31 @@ public class CameraZoom : MonoBehaviour
     [SerializeField] private float minZoom = -15f;
     [Tooltip("Think like a scope of a sniper, max = more close of player")]
     [SerializeField] private float maxZoom = 1f;
-    
 
-    private void Start()
+    [SerializeField] private float zoomAmountChange = 0.5f;
+
+    public void InitializeOwner()
     {
+        if (!IsOwner) return;
+
         inputReader.OnSecondaryTouchContactEvent += InputReader_OnSecondaryTouchContactEvent;
         inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
         inputReader.OnSecondaryFingerPositionEvent += InputReader_OnSecondaryFingerPositionEvent;
+
     }
 
     private void InputReader_OnSecondaryTouchContactEvent(InputAction.CallbackContext context)
     {
         if (context.started && this.enabled)
         {
-            cameraManager.CameraMovement.enabled = false;
+            // cameraManager.CameraMovement.enabled = false;
             ZoomStarted(); // when we have two fingers on the screen
         }
 
         if (context.canceled) 
         {
             ZoomEnded();
-            cameraManager.CameraMovement.enabled = true;
+            // cameraManager.CameraMovement.enabled = true;
         }
     }
 
@@ -77,11 +80,11 @@ public class CameraZoom : MonoBehaviour
 
             if (currentDistance > previousDistance) // zoom in
             {
-                ChangeZoom(0.5f);
+                ChangeZoom(zoomAmountChange);
             }
             else if (currentDistance < previousDistance) // zoom out
             {
-                ChangeZoom(-0.5f);
+                ChangeZoom(-zoomAmountChange);
             }
 
             previousDistance = currentDistance;
@@ -111,11 +114,12 @@ public class CameraZoom : MonoBehaviour
         cameraObjectFollowPos.z += value; // add the values for move the camera
         cameraObjectFollowPos.z = Mathf.Clamp(cameraObjectFollowPos.z, minZoom, maxZoom);
         cameraManager.CameraObjectToFollow.position = Vector3.MoveTowards(cameraManager.CameraObjectToFollow.position, cameraObjectFollowPos, zoomSpeed * Time.deltaTime); // Move towards is better for movimentation
-        Debug.Log($"Object to follow Z pos: {cameraObjectFollowPos.z}");
     }
 
-    private void OnDestroy()
+    public void UnInitializeOwner()
     {
+        if(!IsOwner) return;
+
         inputReader.OnSecondaryTouchContactEvent -= InputReader_OnSecondaryTouchContactEvent;
         inputReader.OnPrimaryFingerPositionEvent -= InputReader_OnPrimaryFingerPositionEvent;
         inputReader.OnSecondaryFingerPositionEvent -= InputReader_OnSecondaryFingerPositionEvent;

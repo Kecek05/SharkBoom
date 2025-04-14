@@ -16,21 +16,45 @@ public class ServerAuthenticationService : IServerAuthenticationService
 
     private Dictionary<ulong, PlayerData> clientIdToPlayerData = new Dictionary<ulong, PlayerData>();
 
+    /// <summary>
+    /// Used to register the user data to the client ID in ApprovalCheck
+    /// </summary>
+    private Dictionary<ulong, UserData> clientIdToUserData = new Dictionary<ulong, UserData>();
+
+    /// <summary>
+    /// Used to register the user data to the client ID in ApprovalCheck
+    /// </summary>
+    public Dictionary<ulong, UserData> ClientIdToUserData => clientIdToUserData;
     public List<PlayerData> PlayerDatas => playerDatas;
     public Dictionary<ulong, PlayerData> ClientIdToPlayerData => clientIdToPlayerData;
     public int RegisteredClientCount => clientIdToAuth.Count;
 
+    public Dictionary<ulong, string> ClientIdToAuth => clientIdToAuth;
     public Dictionary<string, ulong>.ValueCollection AuthToClientIdValues => authToClientId.Values;
+    public Dictionary<string, ulong> AuthIdToClientId => authToClientId;
+    public Dictionary<string, PlayerData> AuthIdToPlayerData => authIdToPlayerData;
 
     public void RegisterClient(PlayerData playerData)
     {
-        //if dont exist, add
-        clientIdToAuth[playerData.clientId] = playerData.userData.userAuthId;
+        if (!authToClientId.ContainsKey(playerData.userData.userAuthId))
+        {
+            //New client
+            Debug.Log("RegisterClient, New Client");
+            playerDatas.Add(playerData);
+
+        }
+
+        clientIdToPlayerData[playerData.clientId] = playerData;
         authToClientId[playerData.userData.userAuthId] = playerData.clientId;
+        clientIdToAuth[playerData.clientId] = playerData.userData.userAuthId;
         authIdToPlayerData[playerData.userData.userAuthId] = playerData;
 
-        playerDatas.Add(playerData);
-        clientIdToPlayerData[playerData.clientId] = playerData;
+        Debug.Log($"RegisterClient, AuthId: {playerData.userData.userAuthId} ClientId: {playerData.clientId} ");
+    }
+
+    public void RegisterUserData(UserData userData, ulong clientId)
+    {
+        clientIdToUserData[clientId] = userData;
     }
 
     public void RegisterPlayableClient(PlayerData playerData)
@@ -57,6 +81,15 @@ public class ServerAuthenticationService : IServerAuthenticationService
             {
                 return playerData;
             }
+        }
+        return null;
+    }
+
+    public PlayerData GetPlayerDataByAuthId(string authId)
+    {
+        if (authIdToPlayerData.TryGetValue(authId, out PlayerData playerData))
+        {
+            return playerData;
         }
         return null;
     }

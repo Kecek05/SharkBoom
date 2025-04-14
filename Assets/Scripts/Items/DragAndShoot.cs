@@ -1,10 +1,9 @@
-using QFSW.QC;
 using Sortify;
 using System;
-using Unity.Mathematics;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
+
 
 public class DragAndShoot : NetworkBehaviour
 {
@@ -19,9 +18,9 @@ public class DragAndShoot : NetworkBehaviour
     public event Action OnDragStart;
 
     /// <summary>
-    /// Event that is called when the drag is changing position, finger changed pos
+    /// Event that is called when the drag is changing position, finger changed pos, pass Force percent and Angle
     /// </summary>
-    public event Action OnDragChange;
+    public event Action<float,float> OnDragChange;
 
     /// <summary>
     /// Event that is called when the drag is cancelable
@@ -33,6 +32,7 @@ public class DragAndShoot : NetworkBehaviour
     [SerializeField] private Trajectory trajectory;
     [SerializeField] private InputReader inputReader;
     [SerializeField] private GameObject areaOfStartDrag;
+    [SerializeField] private UIDetectionComponent uiDetectionHelper;
     [Tooltip("Center position of the drag")]
     [SerializeField] private Transform startTrajectoryPos;
     [SerializeField] private LayerMask touchLayer;
@@ -51,11 +51,13 @@ public class DragAndShoot : NetworkBehaviour
     [SerializeField] private float forceAddMultiplier = 0.1f;
 
     [BetterHeader("Zoom Settings")]
-    [Tooltip("Speed of the Zoom")]
-    [SerializeField] private float zoomDragSpeed;
+    [Tooltip("Speed of the Zoom when we are increasing the zoom")]
+    [SerializeField] private float zoomIncreasingDragSpeed;
+    [Tooltip("Speed of the Zoom when we are decreasing the zoom")]
+    [SerializeField] private float zoomDecreasingDragSpeed;
 
     [Tooltip("Amount of zoom to change")]
-    [SerializeField] private float zoomAmountToChange = 5f;
+    [SerializeField] private float zoomAmountToChange = 7f;
 
     [Tooltip("Will only detect the distance if exceeds threshold")]
     [SerializeField] private int detectDistanceThreshold = 2;
@@ -71,11 +73,6 @@ public class DragAndShoot : NetworkBehaviour
 
 
     private Transform startZoomPos; // store the original zoom position
-    private float zoomForce; // current force of zoom
-    private bool isZoomIncreasing; // bool for check if the force is decreasing or increasing and allow the zoom
-    private float lastZoomForce = 0f; // Store the last zoom force
-    private float checkMovementInterval = 0.001f; // control the time between checks of the zoom force, turn the difference bigger
-    private float lastCheckTime = 0f; // control the time between checks
 
     private Plane plane; // Cache for the clicks
     private float outDistancePlane; // store the distance of the plane and screen
@@ -108,16 +105,24 @@ public class DragAndShoot : NetworkBehaviour
     private int roundedDragDistance = 0; //cache
 
 
-    public override void OnNetworkSpawn()
+    public void InitializeOwner(Rigidbody2D rb)
     {
-        if (!IsOwner) return;
+        if(!IsOwner) return;
 
+        //Owner initialize code
         inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
         inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
 
         trajectory.Initialize(startTrajectoryPos);
+
+        SetDragRb(rb); //get jump's rb, default value
+
     }
 
+    /// <summary>
+    /// Set the rigidbody of the item that will be launched
+    /// </summary>
+    /// <param name="rb"></param>
     public void SetDragRb(Rigidbody2D rb)
     {
         selectedRb = rb;
@@ -130,25 +135,34 @@ public class DragAndShoot : NetworkBehaviour
 
         if (context.started) // capture the first frame when the touch is pressed
         {
-            Ray rayStart = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
+            if(uiDetectionHelper.IsPointerOverUI()) return; // check if the touch is over a UI object
 
-            if (Physics.Raycast(rayStart, out hit, Mathf.Infinity, touchLayer)) // compare if the touch hit on the object
+            Ray rayStart = cameraManager.CameraMain.ScreenPointToRay(Input.mousePosition); // here we get a ray on screen point basead on touch pos
+            Plane plane = new Plane(Vector3.forward, Vector3.zero); // we create a plane for calculate the distance between the touch and the camera
+            float distance;
+
+            if (plane.Raycast(rayStart, out distance)) // here we compare if the ray hit the plane and give for us a distance number
             {
-                if (hit.collider.gameObject == areaOfStartDrag)
+                Vector3 worldPoint = rayStart.GetPoint(distance); // we convert this distance and get the point and store in a vector3, because the world is 3d
+                Vector2 worldPoint2D = new Vector2(worldPoint.x, worldPoint.y); // we create a vector2 basead on vector3 values
+                Collider2D hit = Physics2D.OverlapPoint(worldPoint2D, touchLayer); // make a overlap point only to check if hit will hit the object that we need
+
+                if (hit != null) // check for dont creates null references
                 {
-                    //Start Dragging
-                    SetCanCancelDrag(false);
-                    trajectory.SetSimulation(true);
-                    startZoomPos = cameraManager.CameraObjectToFollow;
+                    if (hit.gameObject == areaOfStartDrag)
+                    {
+                        // Start Dragging
+                        SetCanCancelDrag(false);
+                        trajectory.SetSimulation(true);
+                        startZoomPos = cameraManager.CameraObjectToFollow;
 
-                    plane = new Plane(Vector3.forward, Input.mousePosition); // we create the plane to calculate the Z, because a click is a 2D position
-
-                    SetIsDragging(true);
-                    OnDragStart?.Invoke();
+                        SetIsDragging(true);
+                        OnDragStart?.Invoke();
+                    }
                 }
             }
         }
+    
 
         if (context.canceled && isDragging)
         {
@@ -169,8 +183,6 @@ public class DragAndShoot : NetworkBehaviour
                 trajectory.SetSimulation(false);
                 OnDragRelease?.Invoke();
             }
-
-
         }
     }
 
@@ -179,23 +191,28 @@ public class DragAndShoot : NetworkBehaviour
 
         if (!canDrag || !isDragging || selectedRb == null) return;
 
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //CHANGE TO CONTEXT
+        //Ray ray = cameraManager.CameraMain.ScreenPointToRay(Input.mousePosition); //CHANGE TO CONTEXT
+        //  if (plane.Raycast(ray, out outDistancePlane) && Input.touchCount == 1) // this input touch count is a check for avoid the player bug if accidentally touch the screen with two fingers
+        //  {
+        //  endPosDrag = ray.GetPoint(outDistancePlane); // get the position of the click instantaneously
 
+        // Collider2D hit2D = Physics2D.OverlapPoint(worldCurrentPoint, touchLayer);
+        Ray rayStart = cameraManager.CameraMain.ScreenPointToRay(Input.mousePosition);
+        Plane plane = new Plane(Vector3.forward, Vector3.zero);
 
-        if (plane.Raycast(ray, out outDistancePlane) && Input.touchCount == 1) // this input touch count is a check for avoid the player bug if accidentally touch the screen with two fingers
+        if (plane.Raycast(rayStart, out outDistancePlane) && Input.touchCount == 1)
         {
-            endPosDrag = ray.GetPoint(outDistancePlane); // get the position of the click instantaneously
+
+            endPosDrag = rayStart.GetPoint(outDistancePlane);
             directionOfDrag = (startTrajectoryPos.position - endPosDrag).normalized; // calculate the direction of the drag on Vector3
-            dragDistance = Vector3.Distance(startTrajectoryPos.position, endPosDrag); // calculate the distance of the drag on float
+            dragDistance = Vector2.Distance(startTrajectoryPos.position, endPosDrag); // calculate the distance of the drag on float
 
             dragForce = dragDistance * forceAddMultiplier; //Calculate the force linearly
             dragForce = Mathf.Clamp(dragForce, minForce, maxForce);
 
+            trajectory.UpdateDots(startTrajectoryPos.position, directionOfDrag * dragForce, maxForce, selectedRb); // update the dots position 
 
-
-            trajectory.UpdateDots(startTrajectoryPos.position, directionOfDrag * dragForce, selectedRb); // update the dots position 
-
-            OnDragChange?.Invoke();
+            OnDragChange?.Invoke(GetForcePercentage(), GetAngle());
 
             CheckCancelDrag();
 
@@ -214,16 +231,13 @@ public class DragAndShoot : NetworkBehaviour
                 if (roundedDragDistance > roundedLastDragDistance)
                 {
                     //Force is increasing
-                    cameraManager.CameraZoom.ChangeZoom(-zoomAmountToChange, zoomDragSpeed);
-                    Debug.Log("Force is increasing");
+                    cameraManager.CameraZoom.ChangeZoom(-zoomAmountToChange, zoomIncreasingDragSpeed);
                 }
                 else if (roundedDragDistance < roundedLastDragDistance)
                 {
                     //Force is decreasing
 
-                    cameraManager.CameraZoom.ChangeZoom(zoomAmountToChange, zoomDragSpeed);
-
-                    Debug.Log("Force is decreasing");
+                    cameraManager.CameraZoom.ChangeZoom(zoomAmountToChange, zoomDecreasingDragSpeed);
                 }
 
 
@@ -256,7 +270,7 @@ public class DragAndShoot : NetworkBehaviour
     protected void ResetDrag()
     {
         // Reset the dots position
-        trajectory.UpdateDots(startTrajectoryPos.position, directionOfDrag * minForce, selectedRb);
+        trajectory.UpdateDots(startTrajectoryPos.position, directionOfDrag * minForce, maxForce, selectedRb);
         SetIsDragging(false);
     }
 
@@ -298,7 +312,9 @@ public class DragAndShoot : NetworkBehaviour
 
     public float GetAngle()
     {
-        return Mathf.Atan2(directionOfDrag.y, directionOfDrag.x) * Mathf.Rad2Deg;
+        float angleRadians = Mathf.Atan2(directionOfDrag.y, directionOfDrag.x);
+        float angleDegrees = angleRadians * Mathf.Rad2Deg;
+        return Math.Abs(angleDegrees);
     }
 
     public float GetForcePercentage()

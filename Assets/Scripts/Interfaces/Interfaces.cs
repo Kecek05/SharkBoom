@@ -1,7 +1,4 @@
-using Sortify;
-using System;
 using System.Collections.Generic;
-using Unity.Netcode;
 using UnityEngine;
 
 public interface IDamageable
@@ -18,6 +15,7 @@ public interface IDraggable
 
 public interface IState
 {
+    public PlayerState State { get; } // The state enum that this state represents
     public void Enter(); // Code that runs when we first enter the state
 
     public void Execute(); // per-frame logic, include condition to transition to a new state
@@ -45,11 +43,15 @@ public interface IServerAuthenticationService //Decopling of the Authentication 
     void UnregisterClient(ulong clientId);
 
     void RegisterPlayableClient(PlayerData playerData);
-
+    void RegisterUserData(UserData userData, ulong clientId);
     public List<PlayerData> PlayerDatas { get; }
     public Dictionary<ulong, PlayerData> ClientIdToPlayerData { get; }
-    public Dictionary<string, ulong>.ValueCollection AuthToClientIdValues { get; }
-    PlayerData GetPlayerDataByClientId(ulong clientId);
+    public Dictionary<ulong, string> ClientIdToAuth { get; }
+    public Dictionary<string, ulong> AuthIdToClientId { get; }
+    public Dictionary<string, PlayerData> AuthIdToPlayerData { get; }
+    public Dictionary<ulong, UserData> ClientIdToUserData { get; }
+    public PlayerData GetPlayerDataByClientId(ulong clientId);
+    public PlayerData GetPlayerDataByAuthId(string authId);
     public string GetAuthIdByClientId(ulong clientId);
     public ulong GetClientIdByAuthId(string authId);
 }
@@ -58,7 +60,7 @@ public interface IPlayerSpawner
 {
     int PlayerCount { get; }
 
-    void SpawnPlayer(ulong clientId);
+    void SpawnPlayer();
 
     PlayableState GetPlayableStateByCount();
 }

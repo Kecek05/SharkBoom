@@ -12,7 +12,7 @@ public abstract class BaseTimerManager : NetworkBehaviour
     protected NetworkVariable<int> timerTurn = new(0);
 
     protected Coroutine timerCoroutine;
-    protected WaitForSeconds timerDelay = new WaitForSeconds(1); //cache
+    protected WaitForSeconds timerDelay = new WaitForSeconds(1f); //cache
 
     public NetworkVariable<int> TimerTurn => timerTurn;
 
@@ -21,8 +21,10 @@ public abstract class BaseTimerManager : NetworkBehaviour
 
     public abstract void HandleOnPlayableStateValueChanged(PlayableState previousValue, PlayableState newValue);
 
-    public abstract void HandleOnGameOver();
+    public abstract void HandleOnGameStateChanged(GameState gameState);
 
     protected abstract IEnumerator Timer();
+
+    protected abstract void TriggerOnTurnTimesUpClient();
 
 }

@@ -1,32 +1,28 @@
-using Sortify;
 using Unity.Netcode;
 using UnityEngine;
 
 public abstract class DragListener : NetworkBehaviour
 {
-    [BetterHeader("DragListener References")]
-    [SerializeField] protected PlayerThrower player;
 
-    public override void OnNetworkSpawn()
+    public void InitializeOwner()
     {
-        if (IsOwner)
-        {
-            player.PlayerStateMachine.OnStateChanged += PlayerStateMachine_OnStateChanged;
-            player.PlayerDragController.OnDragChange += PlayerDragController_OnDragChange;
-
-            DoOnSpawn();
-        }
+        if (!IsOwner) return;
+        DoOnSpawn();
     }
 
-    private void PlayerDragController_OnDragChange()
+    public void HandleOnPlayerDragControllerDragChange(float forcePercent, float angle)
     {
-        DoOnDragChange();
+        if(!IsOwner) return; //only owner
+        DoOnDragChange(forcePercent, angle);
     }
 
-    private void PlayerStateMachine_OnStateChanged(IState newState)
+    public void HandleOnPlayerStateMachineStateChanged(PlayerState newState)
     {
-        if (newState == player.PlayerStateMachine.dragReleaseItem && newState == player.PlayerStateMachine.dragReleaseJump)
+        if (!IsOwner) return; //only owner
+
+        if (newState == PlayerState.DragReleaseItem && newState == PlayerState.DraggingJump)
         {
+            Debug.Log("Drag Release Item");
             DoOnDragRelease();
         }
     }
@@ -39,20 +35,11 @@ public abstract class DragListener : NetworkBehaviour
     /// <summary>
     /// Called when the finger changes position
     /// </summary>
-    protected abstract void DoOnDragChange();
+    protected abstract void DoOnDragChange(float forcePercent, float andlePercent);
 
     /// <summary>
     /// Called when the drag is released, the object is launched.
     /// </summary>
     protected abstract void DoOnDragRelease();
 
-
-    public override void OnNetworkDespawn()
-    {
-        if (IsOwner)
-        {
-            player.PlayerStateMachine.OnStateChanged -= PlayerStateMachine_OnStateChanged;
-            player.PlayerDragController.OnDragChange -= PlayerDragController_OnDragChange;
-        }
-    }
 }
