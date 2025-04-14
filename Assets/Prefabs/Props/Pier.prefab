@@ -41,7 +41,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6932234482931318273}
-  - component: {fileID: 3148814221337869867}
+  - component: {fileID: 6499070172568188070}
   m_Layer: 0
   m_Name: Pier
   m_TagString: Untagged
@@ -65,8 +65,8 @@ Transform:
   - {fileID: 3589377580263476738}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &3148814221337869867
-BoxCollider2D:
+--- !u!68 &6499070172568188070
+EdgeCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -99,18 +99,21 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.0208503, y: 1.5678862}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 5.9837646, y: 3.137418}
+  m_Offset: {x: 0, y: 0}
   m_EdgeRadius: 0
+  m_Points:
+  - {x: -3.0197604, y: -0.0051751137}
+  - {x: -3.0367785, y: 4.8353252}
+  - {x: -2.4417443, y: 4.8347793}
+  - {x: -2.4088826, y: 3.1508214}
+  - {x: 2.3740969, y: 3.1589723}
+  - {x: 2.3923635, y: 4.948689}
+  - {x: 3.024872, y: 4.9430666}
+  - {x: 2.9994996, y: -0.022441387}
+  m_AdjacentStartPoint: {x: 0, y: 0}
+  m_AdjacentEndPoint: {x: 0, y: 0}
+  m_UseAdjacentStartPoint: 0
+  m_UseAdjacentEndPoint: 0
 --- !u!1001 &4039961385243431547
 PrefabInstance:
   m_ObjectHideFlags: 0
