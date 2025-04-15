@@ -2853,6 +2853,7 @@ GameObject:
   - component: {fileID: 4211308265386752966}
   - component: {fileID: 1886713303149004347}
   - component: {fileID: 7858360450705475451}
+  - component: {fileID: 4662654998955221258}
   m_Layer: 0
   m_Name: GFX
   m_TagString: Untagged
@@ -2889,7 +2890,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8363574200510345622}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 3bb6a7f2a84e75a4fb0c1e38fe8ee317, type: 3}
+  m_Avatar: {fileID: 9000000, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
   m_Controller: {fileID: 9100000, guid: f92172a1b3edbf84fbfd94be69d76f44, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
@@ -3072,6 +3073,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   animator: {fileID: 2419861509587768571}
+--- !u!114 &4662654998955221258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8363574200510345622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0e7b59c3a2f13a4e93a45090f61238b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 2419861509587768571}
+  ragdollRoot: {fileID: 260593271260911567}
+  startRagdoll: 0
+  ragdollRbs: []
+  ragdollJoints: []
+  ragdollColliders: []
 --- !u!1001 &294820086137516068
 PrefabInstance:
   m_ObjectHideFlags: 0
