@@ -143,7 +143,7 @@ public class PlayerAnimator : NetworkBehaviour
         }
     }
 }
-
+//Debug.LOG
 public enum Animations
 {
     Idle_L,
