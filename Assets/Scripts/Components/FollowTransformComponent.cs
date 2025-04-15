@@ -16,6 +16,8 @@ public class FollowTransformComponent : MonoBehaviour
 
     private void Update()
     {
+        if(!isActive) return;
+
         if (targetTransform != null)
         {
             if (followPosition) transform.position = targetTransform.position;

@@ -74,6 +74,7 @@ public class AnimationEventStateBehaviourEditor : Editor
         if (previewClip == null) return;
 
         previewTime = stateBehaviour.triggerTime * previewClip.length;
+        GUILayout.Label($"previewClip is {previewClip.name}", EditorStyles.helpBox);
 
         AnimationMode.StartAnimationMode();
         AnimationMode.SampleAnimationClip(Selection.activeGameObject, previewClip, previewTime);
