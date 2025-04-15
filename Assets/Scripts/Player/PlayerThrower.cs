@@ -165,6 +165,7 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleOnItemSelectedSO(ItemSO itemSOSelected)
     {
+        playerAnimator.HandleOnItemSelectedSO(itemSOSelected);
         playerInventoryUI.UpdateOpenInventoryButton(itemSOSelected.itemIcon);
     }
 
