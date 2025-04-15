@@ -8,7 +8,7 @@ public class PlayerAnimator : NetworkBehaviour
     [SerializeField] private Animator animator;
     private bool isRight; //Rotation that the player is looking
     private bool isDefaultRight; // Rotation of the player thrower obj in idle. - TODO: Make it look to the direction of the other player
-
+   
     private readonly static int[] animations =
     {
         Animator.StringToHash("IdleL"),

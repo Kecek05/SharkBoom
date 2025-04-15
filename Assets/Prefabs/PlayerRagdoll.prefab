@@ -659,7 +659,7 @@ MonoBehaviour:
   cameraManager: {fileID: 3009684404041675309}
   playerFlipGfx: {fileID: 5874533860640660207}
   playerRotateToAim: {fileID: 5182517899106838082}
-  playerAnimator: {fileID: 4517368665423685050}
+  playerAnimator: {fileID: 7858360450705475451}
   playerInventory: {fileID: 6377254783256832976}
   playerInventoryUI: {fileID: 5233387307745232000}
   playerDragController: {fileID: 5120579722876303172}
@@ -2845,7 +2845,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2927350467601940059}
-  - component: {fileID: 4517368665423685050}
   - component: {fileID: 2419861509587768571}
   - component: {fileID: 1269078687045767889}
   - component: {fileID: 5182517899106838082}
@@ -2853,6 +2852,7 @@ GameObject:
   - component: {fileID: 4836813870748371602}
   - component: {fileID: 4211308265386752966}
   - component: {fileID: 1886713303149004347}
+  - component: {fileID: 7858360450705475451}
   m_Layer: 0
   m_Name: GFX
   m_TagString: Untagged
@@ -2880,20 +2880,6 @@ Transform:
   - {fileID: 4811186132774915558}
   m_Father: {fileID: 2498330595957626671}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4517368665423685050
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8363574200510345622}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9c25ac9af426d6a4b83c87f5be6dff14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  animator: {fileID: 2419861509587768571}
 --- !u!95 &2419861509587768571
 Animator:
   serializedVersion: 7
@@ -2902,7 +2888,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8363574200510345622}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 3bb6a7f2a84e75a4fb0c1e38fe8ee317, type: 3}
   m_Controller: {fileID: 9100000, guid: f92172a1b3edbf84fbfd94be69d76f44, type: 2}
   m_CullingMode: 1
@@ -3072,6 +3058,20 @@ MonoBehaviour:
   - {fileID: 6638358059838224111}
   - {fileID: 6088306520483499470}
   - {fileID: 1113524177670980907}
+--- !u!114 &7858360450705475451
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8363574200510345622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c25ac9af426d6a4b83c87f5be6dff14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  animator: {fileID: 2419861509587768571}
 --- !u!1001 &294820086137516068
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3140,6 +3140,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SharkScaled
       objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: f92172a1b3edbf84fbfd94be69d76f44, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3669,8 +3673,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 0
   serializedVersion: 3
-  m_Size: {x: 0.005702352, y: 0.010839697, z: 0.005702351}
-  m_Center: {x: -0.0028511737, y: 0.0054198485, z: -0.0033683493}
+  m_Size: {x: 0.0075821425, y: 0.010839697, z: 0.005702352}
+  m_Center: {x: -0.00020246801, y: 0.005419849, z: -0.003368349}
 --- !u!54 &5746538422057847661
 Rigidbody:
   m_ObjectHideFlags: 0
