@@ -3052,8 +3052,6 @@ GameObject:
   - component: {fileID: 4836813870748371602}
   - component: {fileID: 5182517899106838082}
   - component: {fileID: 5874533860640660207}
-  - component: {fileID: 6442722495720543816}
-  - component: {fileID: 8680706082944603920}
   m_Layer: 0
   m_Name: GFX
   m_TagString: Untagged
@@ -3174,63 +3172,6 @@ MonoBehaviour:
   playerGfxTransform: {fileID: 2927350467601940059}
   playerDragController: {fileID: 5120579722876303172}
   angleOffset: 0.5
---- !u!114 &6442722495720543816
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8363574200510345622}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b6f152ba9896efc41852063ae4c21bf8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  animationEvents:
-  - eventName: OnShootL
-    OnAnimationEvent:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 8680706082944603920}
-          m_TargetAssemblyTypeName: DebugAnimationEvent, Assembly-CSharp
-          m_MethodName: DebugEvent
-          m_Mode: 5
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: OnShootL
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventName: OnShootR
-    OnAnimationEvent:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 8680706082944603920}
-          m_TargetAssemblyTypeName: DebugAnimationEvent, Assembly-CSharp
-          m_MethodName: DebugEvent
-          m_Mode: 5
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: OnShootR
-            m_BoolArgument: 0
-          m_CallState: 2
---- !u!114 &8680706082944603920
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8363574200510345622}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0dddf675a6e31b4c8e9179c67c8851b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &8899995143544939368
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3272,6 +3213,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4620289361477869721}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9046425745237551091}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2840372647813959626}
   m_SourcePrefab: {fileID: 100100000, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
 --- !u!4 &25512513775890386 stripped
 Transform:
@@ -3526,6 +3473,47 @@ MonoBehaviour:
   - {fileID: 2572791617393059235}
   - {fileID: 3164422666808450690}
   - {fileID: 8133575095239153255}
+--- !u!114 &9046425745237551091
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8593514310569795129}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f152ba9896efc41852063ae4c21bf8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animationEvents:
+  - eventName: OnShootHarpoon
+    OnAnimationEvent:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2840372647813959626}
+          m_TargetAssemblyTypeName: DebugAnimationEvent, Assembly-CSharp
+          m_MethodName: DebugEvent
+          m_Mode: 5
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: OnShootHarpoon
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &2840372647813959626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8593514310569795129}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0dddf675a6e31b4c8e9179c67c8851b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &8647242514972726819 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8970590820240951989, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
