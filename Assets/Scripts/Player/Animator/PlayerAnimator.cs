@@ -11,23 +11,23 @@ public class PlayerAnimator : NetworkBehaviour
 
     private readonly static int[] animations =
     {
-        Animator.StringToHash("IdleL"),
-        Animator.StringToHash("IdleR"),
-        Animator.StringToHash("ShootL"),
-        Animator.StringToHash("ShootR"),
-        Animator.StringToHash("JumpL"),
-        Animator.StringToHash("JumpR"),
-        Animator.StringToHash("AimJumpL"),
-        Animator.StringToHash("AimJumpR"),
-        Animator.StringToHash("AimL"),
-        Animator.StringToHash("AimR"),
+        Animator.StringToHash("Idle_L"),
+        Animator.StringToHash("Idle_R"),
+        Animator.StringToHash("ShootHarpoon_L"),
+        Animator.StringToHash("ShootHarpoon_R"),
+        Animator.StringToHash("Jump_L"),
+        Animator.StringToHash("Jump_R"),
+        Animator.StringToHash("AimJump_L"),
+        Animator.StringToHash("AimJump_R"),
+        Animator.StringToHash("AimHarpoon_L"),
+        Animator.StringToHash("AimHarpoon_R"),
     };
 
-    private AnimationData idleAnimationData = new AnimationData(Animations.IdleL, Animations.IdleR);
-    private AnimationData shootAnimationData = new AnimationData(Animations.ShootL, Animations.ShootR);
-    private AnimationData jumpAnimationData = new AnimationData(Animations.JumpL, Animations.JumpR);
-    private AnimationData aimJumpAnimationData = new AnimationData(Animations.AimJumpL, Animations.AimJumpR, 0f);
-    private AnimationData aimAnimationData = new AnimationData(Animations.AimL, Animations.AimR);
+    private AnimationData idleAnimationData = new AnimationData(Animations.Idle_L, Animations.Idle_R);
+    private AnimationData shootAnimationData = new AnimationData(Animations.ShootHarpoon_L, Animations.ShootHarpoon_R);
+    private AnimationData jumpAnimationData = new AnimationData(Animations.Jump_L, Animations.Jump_R);
+    private AnimationData aimJumpAnimationData = new AnimationData(Animations.AimJump_L, Animations.AimJump_R, 0f);
+    private AnimationData aimAnimationData = new AnimationData(Animations.AimHarpoon_L, Animations.AimHarpoon_R);
 
 
     private Animations currentAnimation;
@@ -101,16 +101,16 @@ public class PlayerAnimator : NetworkBehaviour
 
 public enum Animations
 {
-    IdleL,
-    IdleR,
-    ShootL,
-    ShootR,
-    JumpL,
-    JumpR,
-    AimJumpL,
-    AimJumpR,
-    AimL,
-    AimR,
+    Idle_L,
+    Idle_R,
+    ShootHarpoon_L,
+    ShootHarpoon_R,
+    Jump_L,
+    Jump_R,
+    AimJump_L,
+    AimJump_R,
+    AimHarpoon_L,
+    AimHarpoon_R,
     None, //at the bottom!
 }
 
