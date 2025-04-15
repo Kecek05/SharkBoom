@@ -138,15 +138,18 @@ public class DragAndShoot : NetworkBehaviour
             if(uiDetectionHelper.IsPointerOverUI()) return; // check if the touch is over a UI object
 
             Ray rayStart = cameraManager.CameraMain.ScreenPointToRay(Input.mousePosition); // here we get a ray on screen point basead on touch pos
-            Plane plane = new Plane(Vector3.forward, Vector3.zero); // we create a plane for calculate the distance between the touch and the camera
+            Plane plane = new Plane(cameraManager.CameraMain.transform.forward, Vector3.zero); // we create a plane for calculate the distance between the touch and the camera
             float distance;
 
             if (plane.Raycast(rayStart, out distance)) // here we compare if the ray hit the plane and give for us a distance number
             {
-                Vector3 worldPoint = rayStart.GetPoint(distance); // we convert this distance and get the point and store in a vector3, because the world is 3d
-                Vector2 worldPoint2D = new Vector2(worldPoint.x, worldPoint.y); // we create a vector2 basead on vector3 values
+                Vector3 screenTouchPos = Input.mousePosition; // We get the pos of click
+                screenTouchPos.z = Mathf.Abs(cameraManager.CameraMain.transform.position.z - this.transform.position.z); // we make the z axis for get the distance between the camera and the object
+                
+                Vector2 worldPoint2D = cameraManager.CameraMain.ScreenToWorldPoint(screenTouchPos); // convert the screen pos to world pos and create a point for verify if collide with the areaOfStartDrag
+                
                 Collider2D hit = Physics2D.OverlapPoint(worldPoint2D, touchLayer); // make a overlap point only to check if hit will hit the object that we need
-
+                
                 if (hit != null) // check for dont creates null references
                 {
                     if (hit.gameObject == areaOfStartDrag)
