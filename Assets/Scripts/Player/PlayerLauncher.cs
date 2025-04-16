@@ -45,12 +45,12 @@ public class PlayerLauncher : NetworkBehaviour
 
         if (state == PlayerState.DragReleaseJump || state == PlayerState.DragReleaseItem)
         {
-            Launch();
+            //Launch();
         }
     }
 
 
-    private void Launch()
+    public void Launch()
     {
 
         itemActivableManager.ResetItemActivable();

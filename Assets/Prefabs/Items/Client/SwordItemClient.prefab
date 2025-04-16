@@ -51,7 +51,7 @@ PrefabInstance:
     - target: {fileID: 6921408951194769166, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: -7387706064836869012, guid: 79afe580eb691c94fa99cc6d3079b899, type: 3}
+      objectReference: {fileID: 485410949237174819, guid: 79afe580eb691c94fa99cc6d3079b899, type: 3}
     m_RemovedComponents:
     - {fileID: 5150134811526336966, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
     - {fileID: 6129100009262690881, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
@@ -118,7 +118,7 @@ PolygonCollider2D:
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 6200000, guid: e69ea16e6ffdede4da0881ffce5bb37b, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -154,19 +154,26 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -0.013277657, y: 0.3948018}
-      - {x: -0.069541425, y: 0.4587573}
-      - {x: -0.06321357, y: 0.41742143}
-      - {x: -0.058888227, y: 0.3684036}
-      - {x: -0.072740346, y: 0.3140449}
-      - {x: -0.03615518, y: 0.27577606}
-      - {x: -0.04343895, y: 0.25549814}
-      - {x: -0.018126484, y: 0.21029036}
-      - {x: -0.030055046, y: 0.20014672}
-      - {x: -0.018854529, y: 0.13736671}
-      - {x: 0.030020114, y: 0.14581665}
-      - {x: 0.037940174, y: 0.22255455}
-      - {x: 0.024021447, y: 0.31075642}
+    - - {x: -0.14617981, y: 2.22678}
+      - {x: -0.37729317, y: 2.4232352}
+      - {x: -0.40063012, y: 2.3977997}
+      - {x: -0.33450732, y: 2.1656394}
+      - {x: -0.31881818, y: 1.9842501}
+      - {x: -0.34491915, y: 1.7846376}
+      - {x: -0.3985959, y: 1.6467059}
+      - {x: -0.27819037, y: 1.5572904}
+      - {x: -0.1950581, y: 1.4065187}
+      - {x: -0.24165519, y: 1.3457533}
+      - {x: -0.11637907, y: 1.1186895}
+      - {x: -0.12127577, y: 1.0742682}
+      - {x: -0.16546094, y: 1.0616586}
+      - {x: -0.09932095, y: 0.71904284}
+      - {x: 0.16685736, y: 0.7484429}
+      - {x: 0.19565786, y: 1.0576322}
+      - {x: 0.19283053, y: 1.2531248}
+      - {x: 0.15279177, y: 1.5577495}
+      - {x: 0.078193516, y: 1.7959689}
+      - {x: -0.028149188, y: 2.0392642}
   m_UseDelaunayMesh: 0
 --- !u!70 &6347818193721593342
 CapsuleCollider2D:
@@ -202,8 +209,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.0017638206, y: 0.06643783}
-  m_Size: {x: 0.0460585, y: 0.12856935}
+  m_Offset: {x: -0.01222229, y: 0.32200205}
+  m_Size: {x: 0.17574784, y: 0.6396978}
   m_Direction: 0
 --- !u!50 &5689049572469319462 stripped
 Rigidbody2D:
