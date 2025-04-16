@@ -93,6 +93,7 @@ public class PlayerInventoryUI : NetworkBehaviour
             }
         }
 
+        HideInventory();
         //UpdateOpenInventoryButton();
     }
 
@@ -135,7 +136,7 @@ public class PlayerInventoryUI : NetworkBehaviour
         OnItemSelectedByUI?.Invoke(itemInventoryIndex); //Notify the player that an item was selected by UI
 
         //UpdateOpenInventoryButton();
-        HideInventory(); //hide only when selecting an item
+        //HideInventory(); //hide only when selecting an item
 
         Debug.Log($"Item Selected By UI - Item Inventory index: {itemInventoryIndex}");
     }
