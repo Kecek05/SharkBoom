@@ -21,6 +21,7 @@ public class PlayerInventoryUI : NetworkBehaviour
     [SerializeField] private GameObject playerItemSingleUIPrefab;
     [SerializeField] private Button jumpButton;
     [SerializeField] private Button openInventoryButton;
+    [SerializeField] private Image selectedItemImage;
     [SerializeField] private GameObject openInventoryBackground;
     [SerializeField] private ItemsListSO itemsListSO;
     //[SerializeField] private PlayerInventory playerInventory;
@@ -143,7 +144,7 @@ public class PlayerInventoryUI : NetworkBehaviour
     {
         if(!IsOwner) return;
 
-        openInventoryButton.image.sprite = itemIcon; //Show Icon of selected item
+        selectedItemImage.sprite = itemIcon; //Show Icon of selected item
     }
 
     private void ToggleInventory()
