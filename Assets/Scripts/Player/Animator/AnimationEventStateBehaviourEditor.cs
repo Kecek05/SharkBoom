@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System;
 using System.Linq;
 using UnityEditor;
@@ -132,3 +133,5 @@ public class AnimationEventStateBehaviourEditor : Editor
         return animatorController;
     }
 }
+
+#endif

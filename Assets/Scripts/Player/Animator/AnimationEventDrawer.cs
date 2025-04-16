@@ -1,6 +1,8 @@
 using UnityEditor;
 using UnityEngine;
 
+#if UNITY_EDITOR
+
 [CustomPropertyDrawer(typeof(AnimationEvent))]
 public class AnimationEventDrawer : PropertyDrawer
 {
@@ -28,3 +30,4 @@ public class AnimationEventDrawer : PropertyDrawer
     }
 
 }
+#endif
