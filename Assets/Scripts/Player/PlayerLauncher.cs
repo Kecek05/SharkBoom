@@ -52,6 +52,7 @@ public class PlayerLauncher : NetworkBehaviour
 
     public void Launch()
     {
+        if (!IsOwner) return;
 
         itemActivableManager.ResetItemActivable();
 
