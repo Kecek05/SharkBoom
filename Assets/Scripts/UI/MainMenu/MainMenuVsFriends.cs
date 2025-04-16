@@ -39,7 +39,7 @@ public class MainMenuVsFriends : MonoBehaviour
             isBusy = true;
             createGameBtn.interactable = false;
             await HostSingleton.Instance.GameManager.StartHostAsync();
-            createGameBtn.interactable = true;
+            //createGameBtn.interactable = true;
             isBusy = false;
         });
 
@@ -50,7 +50,7 @@ public class MainMenuVsFriends : MonoBehaviour
             isBusy = true;
             lobbyCodeInputField.interactable = false;
             await ClientSingleton.Instance.GameManager.StartRelayClientAsync(lobbyCodeInputField.text);
-            lobbyCodeInputField.interactable = true;
+            //lobbyCodeInputField.interactable = true;
             isBusy = false;
 
         });
