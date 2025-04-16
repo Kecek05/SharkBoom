@@ -28,7 +28,7 @@ public class CameraManager : NetworkBehaviour
         if(!IsOwner) return;
 
         cameraObjectToFollow = ServiceLocator.Get<CameraObjectToFollow>().transform;
-
+        cameraObjectToFollow.transform.position = new Vector3(10, 0, -20);
 
         if (cinemachineCamera == null)
         {
@@ -40,8 +40,7 @@ public class CameraManager : NetworkBehaviour
         cameraMovement.InitializeOwner();
         cameraZoom.InitializeOwner();
         cameraFollowing.InitializeOwner();
-
-        CameraMove();
+        
     }
 
     public void HandleOnPlayerStateMachineStateChanged(PlayerState playerState)

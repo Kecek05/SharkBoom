@@ -640,7 +640,7 @@ MonoBehaviour:
   maxForce: 26
   minForce: 1
   forceAddMultiplier: 4.6
-  zoomIncreasingDragSpeed: 30
+  zoomIncreasingDragSpeed: 25
   zoomDecreasingDragSpeed: 15
   zoomAmountToChange: 7
   detectDistanceThreshold: 1
@@ -659,7 +659,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dotPrefab2D: {fileID: 66968322209639492, guid: e513424720fa4e748a1a76b936898672, type: 3}
   dragAndShoot: {fileID: 5120579722876303172}
-  dotsNumber: 15
+  dotsNumber: 10
   dotSpacing: 0.049999997
   forceChangeThreshold: 0.1
 --- !u!114 &1153067105674216560
@@ -949,7 +949,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   cameraManager: {fileID: 3009684404041675309}
-  cameraZPosOnFollowing: -20
+  cameraZPosOnFollowing: -25
 --- !u!114 &8450544055641021374
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -966,10 +966,10 @@ MonoBehaviour:
   cameraManager: {fileID: 3009684404041675309}
   inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
   dragMoveSpeed: 0.5
-  minMovX: -25
-  maxMovX: 25
-  minMovY: -25
-  maxMovY: 25
+  minMovX: -15
+  maxMovX: 30
+  minMovY: -15
+  maxMovY: 10
 --- !u!114 &2903552973942911587
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -985,7 +985,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
   cameraManager: {fileID: 3009684404041675309}
-  minZoom: -25
+  minZoom: -35
   maxZoom: 3
   zoomAmountChange: 0.5
 --- !u!1 &1731536595254416242
