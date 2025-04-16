@@ -73,9 +73,9 @@ public class PlayerAnimator : NetworkBehaviour
 
     public void HandleOnItemSelectedSO(ItemSO itemSelectedSO)
     {
-        selectedAimAnimation = itemSelectedSO.aimItemData;
+        selectedAimAnimation = itemSelectedSO.itemAnimationSO.aimItemData;
 
-        selectedShootAnimation = itemSelectedSO.shootItemData;
+        selectedShootAnimation = itemSelectedSO.itemAnimationSO.shootItemData;
     }
 
     public void HandleOnPlayerStateMachineStateChanged(PlayerState newState)
@@ -125,25 +125,51 @@ public class PlayerAnimator : NetworkBehaviour
 
         //if (currentAnimation == animationData.animationL || currentAnimation == animationData.animationR) return; //already playing this animation
 
+        if(animationData.Equals(currentAnimationData))
+        {
+            //Already playing this animation
+
+            if(isRight)
+            {
+                //looking to the right
+
+                if(currentAnimation == animationData.animationR) return; //already playing the right animation
+
+                currentAnimation = animationData.animationR;
+                animator.CrossFade(animations[(int)animationData.animationR], animationData.crossFadeBetweenSides);
+            } else
+            {
+                //looking to the left
+
+                if (currentAnimation == animationData.animationL) return; //already playing the left animation
+
+                currentAnimation = animationData.animationL;
+                animator.CrossFade(animations[(int)animationData.animationL], animationData.crossFadeBetweenSides);
+            }
+        } else
+        {
+            // not the same animation
+
+            if (isRight)
+            {
+                //looking to the right
+
+                currentAnimation = animationData.animationR;
+                animator.CrossFade(animations[(int)animationData.animationR], animationData.crossFade);
+            }
+            else
+            {
+                //looking to the left
+
+                currentAnimation = animationData.animationL;
+                animator.CrossFade(animations[(int)animationData.animationL], animationData.crossFade);
+            }
+        }
         currentAnimationData = animationData;
-
-        if (isRight)
-        {
-            if(currentAnimation == animationData.animationR) return; //already playing this animation
-
-            currentAnimation = animationData.animationR;
-            animator.CrossFade(animations[(int)animationData.animationR], animationData.crossFade);
-        }
-        else
-        {
-            if(currentAnimation == animationData.animationL) return; //already playing this animation
-
-            currentAnimation = animationData.animationL;
-            animator.CrossFade(animations[(int)animationData.animationL], animationData.crossFade);
-        }
     }
 }
-//Debug.LOG
+
+
 public enum Animations
 {
     Idle_L,
@@ -196,15 +222,37 @@ public enum Animations
 }
 
 [Serializable]
-public struct AnimationData
+public struct AnimationData : IEquatable<AnimationData>
 {
     public Animations animationL;
     public Animations animationR;
+
+    /// <summary>
+    /// Crossfade time in seconds in Fade In
+    /// </summary>
+    [Tooltip("Crossfade time in seconds in Fade In")]
     public float crossFade;
-    public AnimationData(Animations animationL = Animations.None, Animations animationR = Animations.None, float crossFade = 0.2f)
+
+    /// <summary>
+    /// Crossfade time in seconds when changing between left and right
+    /// </summary>
+    [Tooltip("Crossfade time in seconds when changing between left and right")]
+    public float crossFadeBetweenSides;
+
+    public AnimationData(Animations animationL = Animations.None, Animations animationR = Animations.None, float crossFade = 0.2f, float crossFadeBetweenSides = 0f)
     {
         this.animationL = animationL;
         this.animationR = animationR;
         this.crossFade = crossFade;
+        this.crossFadeBetweenSides = crossFadeBetweenSides;
+    }
+
+    public bool Equals(AnimationData other)
+    {
+        return
+            animationL == other.animationL &&
+            animationR == other.animationR &&
+            crossFade == other.crossFade &&
+            crossFadeBetweenSides == other.crossFadeBetweenSides;
     }
 }

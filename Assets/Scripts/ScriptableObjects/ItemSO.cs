@@ -21,7 +21,6 @@ public class ItemSO : ScriptableObject
     /// </summary>
     public int cooldown;
 
-    public AnimationData aimItemData;
-    public AnimationData shootItemData;
+    public ItemAnimationSO itemAnimationSO;
 
 }
