@@ -10,13 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9a1102b562888f243957578745fdf472, type: 3}
-  m_Name: AnchorAnimationSO
+  m_Name: JumpItemAnimationSO
   m_EditorClassIdentifier: 
   aimItemData:
-    animationL: 0
-    animationR: 0
-    crossFade: 0
+    animationL: 2
+    animationR: 3
+    crossFade: 0.3
+    crossFadeBetweenSides: 0
   shootItemData:
-    animationL: 0
-    animationR: 0
+    animationL: 24
+    animationR: 25
     crossFade: 0
+    crossFadeBetweenSides: 0

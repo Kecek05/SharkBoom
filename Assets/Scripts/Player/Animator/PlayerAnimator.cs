@@ -62,7 +62,7 @@ public class PlayerAnimator : NetworkBehaviour
 
     private AnimationData idleAnimationData = new AnimationData(Animations.Idle_L, Animations.Idle_R);
     private AnimationData jumpAnimationData = new AnimationData(Animations.Jump_L, Animations.Jump_R);
-    private AnimationData aimJumpAnimationData = new AnimationData(Animations.AimJump_L, Animations.AimJump_R, 0f);
+    private AnimationData aimJumpAnimationData = new AnimationData(Animations.AimJump_L, Animations.AimJump_R);
 
 
     private Animations currentAnimation;
@@ -224,9 +224,12 @@ public enum Animations
 [Serializable]
 public struct AnimationData : IEquatable<AnimationData>
 {
+    [BetterHeader("Animations", 12)]
     public Animations animationL;
     public Animations animationR;
+    [Space(7)]
 
+    [BetterHeader("Crossfades", 12)]
     /// <summary>
     /// Crossfade time in seconds in Fade In
     /// </summary>
@@ -239,7 +242,7 @@ public struct AnimationData : IEquatable<AnimationData>
     [Tooltip("Crossfade time in seconds when changing between left and right")]
     public float crossFadeBetweenSides;
 
-    public AnimationData(Animations animationL = Animations.None, Animations animationR = Animations.None, float crossFade = 0.2f, float crossFadeBetweenSides = 0f)
+    public AnimationData(Animations animationL = Animations.None, Animations animationR = Animations.None, float crossFade = 0.3f, float crossFadeBetweenSides = 0f)
     {
         this.animationL = animationL;
         this.animationR = animationR;
