@@ -19,6 +19,7 @@ public class PlayerThrower : NetworkBehaviour
     [SerializeField] private PlayerInventoryUI playerInventoryUI;
     [SerializeField] private PlayerDragController playerDragController;
     [SerializeField] private PlayerLauncher playerLauncher;
+    [SerializeField] private PlayerDetectFacingDirection playerDetectFacingDirection;
     [SerializeField] private Collider2D playerTouchColl;
     [SerializeField] private GameObject[] playerColliders;
     private PlayerStateMachine playerStateMachine;
@@ -95,7 +96,7 @@ public class PlayerThrower : NetworkBehaviour
         playerStateMachine.Initialize(playerStateMachine.idleEnemyTurnState);
 
         cameraManager.InitializeOwner();
-        playerFlipGfx.InitializeOwner();
+        playerDetectFacingDirection.InitializeOwner();
         playerRotateToAim.InitializeOwner();
         playerInventory.InitializeOwner();
         playerLauncher.InitializeOwner();
@@ -122,8 +123,9 @@ public class PlayerThrower : NetworkBehaviour
 
         playerInventoryUI.OnItemSelectedByUI += HandleOnItemSelectedByUI;
 
-        playerFlipGfx.OnRotationChanged += HandleOnPlayerFlipGfxRotationChanged;
+        playerDetectFacingDirection.OnRotationChanged += HandleOnPlayerDetectFacingDirectionRotationChanged;
     }
+
 
     private void UnHandleEvents()
     {
@@ -145,13 +147,18 @@ public class PlayerThrower : NetworkBehaviour
 
         playerInventoryUI.OnItemSelectedByUI -= HandleOnItemSelectedByUI;
 
-        playerFlipGfx.OnRotationChanged -= HandleOnPlayerFlipGfxRotationChanged;
+        playerDetectFacingDirection.OnRotationChanged -= HandleOnPlayerDetectFacingDirectionRotationChanged;
 
         cameraManager.UnInitializeOwner();
         playerLauncher.UnInitializeOwner();
         playerInventoryUI.UnHandleInitializeOwner();
     }
 
+    private void HandleOnPlayerDetectFacingDirectionRotationChanged(bool isRight)
+    {
+        playerAnimator.HandleOnRotationChanged(isRight);
+        playerFlipGfx.HandleOnRotationChanged(isRight);
+    }
 
     private void HandleOnDragStart()
     {
@@ -176,7 +183,7 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleOnDragChange(float forcePercent, float angle)
     {
-        playerFlipGfx.HandleOnPlayerDragControllerDragChange(forcePercent, angle);
+        playerDetectFacingDirection.HandleOnPlayerDragControllerDragChange(forcePercent, angle);
         playerDragUi.HandleOnPlayerDragControllerDragChange(forcePercent, angle);
         playerRotateToAim.HandleOnPlayerDragControllerDragChange(forcePercent, angle);
     }
@@ -191,7 +198,7 @@ public class PlayerThrower : NetworkBehaviour
         playerAnimator.HandleOnPlayerStateMachineStateChanged(state);
 
         playerRotateToAim.HandleOnPlayerStateMachineStateChanged(state);
-        playerFlipGfx.HandleOnPlayerStateMachineStateChanged(state);
+        playerDetectFacingDirection.HandleOnPlayerStateMachineStateChanged(state);
         playerDragUi.HandleOnPlayerStateMachineStateChanged(state);
 
         playerInventoryUI.HandleOnPlayerStateMachineStateChanged(state);
@@ -229,7 +236,7 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleOnPlayerFlipGfxRotationChanged(bool isRight)
     {
-        playerAnimator.HandleOnRotationChanged(isRight);
+
     }
 
     [Rpc(SendTo.Server)]

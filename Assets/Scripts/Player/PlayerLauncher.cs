@@ -13,7 +13,6 @@ public class PlayerLauncher : NetworkBehaviour
     /// </summary>
     public event Action<int> OnItemLaunched; 
 
-
     [BetterHeader("References")]
     [SerializeField] private InputReader inputReader;
     [SerializeField] private Transform spawnItemPos;
