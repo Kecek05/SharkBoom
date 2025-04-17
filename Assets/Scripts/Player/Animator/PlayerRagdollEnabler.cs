@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -8,8 +9,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [SerializeField] private Transform ragdollRoot;
     [SerializeField] private PlayerHealth playerHealth;
 
-    public Rigidbody[] ragdollRbs;
-
+    [SerializeField] private Rigidbody[] ragdollRbs;
 
     public void InitializeOwner()
     {
@@ -41,26 +41,35 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         EnableRagdoll();
     }
 
+    public void TriggerRagdoll(Vector3 force, Vector3 hitPoint)
+    {
+        Rigidbody hitRigidbody = ragdollRbs.OrderBy(rigidbody => Vector3.Distance(rigidbody.position, hitPoint)).First(); // we order all rbs by distance to hitpoint and take the first one
+        hitRigidbody.AddForceAtPosition(force, hitPoint, ForceMode.Impulse);
+
+        // set the state anim for ragdoll
+    }
+
+
     private void EnableRagdoll()
     {
-        animator.enabled = false;
-
         foreach (Rigidbody ragdollRb in ragdollRbs)
         {
             ragdollRb.isKinematic = false;
         }
 
+        animator.enabled = false;
+
     }
 
     private void DisableRagdoll()
     {
-        animator.enabled = true;
-
         foreach (Rigidbody ragdollRb in ragdollRbs)
         {
             ragdollRb.isKinematic = true;
 
         }
+
+        animator.enabled = true;
     }
 
     public void UnInitializeOwner()
