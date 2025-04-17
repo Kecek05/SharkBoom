@@ -1,15 +1,28 @@
-using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class PlayerAnimatorTest : MonoBehaviour
 {
     [SerializeField] private PlayerAnimator playerAnimator;
 
-    //[SerializeField] private List<ItemSO> itemSOList;
+    [SerializeField] private ItemsListSO itemSOList;
 
-   // [SerializeField] private Button 
+    private ItemSO itemSelectedSO;
 
+    public void ButtonSelectItem(int index)
+    {
+        if (index < 0 || index >= itemSOList.allItemsSOList.Count)
+        {
+            Debug.LogWarning("Index out of range");
+            return;
+        }
+        itemSelectedSO = itemSOList.allItemsSOList[index];
+        HandleOnItemSelectedSO(itemSelectedSO);
+    }
+
+    public void SetPlayerState(PlayerState playerState)
+    {
+        HandleOnPlayerStateMachineStateChanged(playerState);
+    }
 
     private void HandleOnItemSelectedSO(ItemSO itemSelectedSO)
     {
