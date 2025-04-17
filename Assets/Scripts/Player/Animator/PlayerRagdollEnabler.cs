@@ -4,26 +4,13 @@ public class PlayerRagdollEnabler : MonoBehaviour
 {
     [SerializeField] private Animator animator;
     [SerializeField] private Transform ragdollRoot;
-    [SerializeField] private bool startRagdoll = false;
 
     public Rigidbody[] ragdollRbs;
-    public CharacterJoint[] ragdollJoints;
-    public Collider[] ragdollColliders;
 
     private void Awake()
     {
         ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
-        ragdollJoints = ragdollRoot.GetComponentsInChildren<CharacterJoint>();
-        ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>();
-
-        if (startRagdoll)
-        {
-            EnableRagdoll();
-        }
-        else
-        {
-            EnableAnimator();
-        }
+        DisableRagdoll();
 
     }
 
@@ -31,16 +18,12 @@ public class PlayerRagdollEnabler : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            startRagdoll = !startRagdoll;
+            EnableRagdoll();
+        }
 
-            if (startRagdoll)
-            {
-                EnableRagdoll();
-            }
-            else
-            {
-                EnableAnimator();
-            }
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            DisableRagdoll();
         }
     }
 
@@ -48,42 +31,21 @@ public class PlayerRagdollEnabler : MonoBehaviour
     {
         animator.enabled = false;
 
-        foreach (CharacterJoint characterJoint in ragdollJoints)
-        {
-            characterJoint.enableCollision = true;
-        }
-
-        foreach (Collider ragColliders in ragdollColliders)
-        {
-            ragColliders.enabled = true;
-        }
-
         foreach (Rigidbody ragdollRb in ragdollRbs)
         {
-            ragdollRb.detectCollisions = true;
-            ragdollRb.useGravity = true;
+            ragdollRb.isKinematic = false;
         }
 
     }
 
-    private void EnableAnimator()
+    private void DisableRagdoll()
     {
         animator.enabled = true;
 
-        foreach (CharacterJoint characterJoint in ragdollJoints)
+        foreach (Rigidbody ragdollRb in ragdollRbs)
         {
-            characterJoint.enableCollision = false;
-        }
+            ragdollRb.isKinematic = true;
 
-        foreach(Collider ragColliders in  ragdollColliders)
-        {
-            ragColliders.enabled = false;
-        }
-
-        foreach(Rigidbody ragdollRb in ragdollRbs)
-        {
-            ragdollRb.detectCollisions = false;
-            ragdollRb.useGravity = false;
         }
     }
 
