@@ -1,30 +1,33 @@
+using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerRagdollEnabler : MonoBehaviour
+public class PlayerRagdollEnabler : NetworkBehaviour
 {
     [SerializeField] private Animator animator;
     [SerializeField] private Transform ragdollRoot;
 
     public Rigidbody[] ragdollRbs;
 
-    private void Awake()
+
+    public void InitializeOwner()
     {
+        if (!IsOwner) return;
+
         ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
         DisableRagdoll();
-
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            EnableRagdoll();
-        }
+        //if (Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    EnableRagdoll();
+        //}
 
-        if(Input.GetKeyDown(KeyCode.R))
-        {
-            DisableRagdoll();
-        }
+        //if(Input.GetKeyDown(KeyCode.R))
+        //{
+        //    DisableRagdoll();
+        //}
     }
 
     private void EnableRagdoll()
@@ -47,6 +50,13 @@ public class PlayerRagdollEnabler : MonoBehaviour
             ragdollRb.isKinematic = true;
 
         }
+    }
+
+    public void UnInitializeOwner()
+    {
+        if (!IsOwner) return;
+
+        DisableRagdoll();
     }
 
 }

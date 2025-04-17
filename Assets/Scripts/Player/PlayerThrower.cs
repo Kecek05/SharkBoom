@@ -20,6 +20,7 @@ public class PlayerThrower : NetworkBehaviour
     [SerializeField] private PlayerDragController playerDragController;
     [SerializeField] private PlayerLauncher playerLauncher;
     [SerializeField] private PlayerDetectFacingDirection playerDetectFacingDirection;
+    [SerializeField] private PlayerRagdollEnabler playerRagdollEnabler;
     [SerializeField] private Collider2D playerTouchColl;
     [SerializeField] private GameObject[] playerColliders;
     private PlayerStateMachine playerStateMachine;
@@ -101,6 +102,7 @@ public class PlayerThrower : NetworkBehaviour
         playerInventory.InitializeOwner();
         playerLauncher.InitializeOwner();
         playerDragController.InitializeOwner(playerInventory.GetItemSOByItemSOIndex(0).rb);
+        playerRagdollEnabler.InitializeOwner();
     }
 
     private void HandleEvents()
@@ -152,6 +154,7 @@ public class PlayerThrower : NetworkBehaviour
         cameraManager.UnInitializeOwner();
         playerLauncher.UnInitializeOwner();
         playerInventoryUI.UnHandleInitializeOwner();
+        playerRagdollEnabler.UnInitializeOwner();
     }
 
     private void HandleOnPlayerDetectFacingDirectionRotationChanged(bool isRight)

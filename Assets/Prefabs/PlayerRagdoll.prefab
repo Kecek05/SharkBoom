@@ -664,7 +664,8 @@ MonoBehaviour:
   playerInventoryUI: {fileID: 5233387307745232000}
   playerDragController: {fileID: 5120579722876303172}
   playerLauncher: {fileID: 1987240186612080187}
-  playerDetectFacingDirection: {fileID: 0}
+  playerDetectFacingDirection: {fileID: 3009221047477586855}
+  playerRagdollEnabler: {fileID: 3163063031829088633}
   playerTouchColl: {fileID: 227282763038740262}
   playerColliders:
   - {fileID: 3077044857443190407}
@@ -2856,6 +2857,7 @@ GameObject:
   - component: {fileID: 1886713303149004347}
   - component: {fileID: 7858360450705475451}
   - component: {fileID: 3163063031829088633}
+  - component: {fileID: 3009221047477586855}
   m_Layer: 0
   m_Name: GFX
   m_TagString: Untagged
@@ -3083,9 +3085,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0e7b59c3a2f13a4e93a45090f61238b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   animator: {fileID: 2419861509587768571}
   ragdollRoot: {fileID: 2927350467601940059}
   ragdollRbs: []
+--- !u!114 &3009221047477586855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8363574200510345622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d7ecebd7fd794a4ea84df12e27b8800, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  playerGfxTransform: {fileID: 2927350467601940059}
+  playerDragController: {fileID: 5120579722876303172}
+  angleOffset: 0.5
 --- !u!1001 &294820086137516068
 PrefabInstance:
   m_ObjectHideFlags: 0
