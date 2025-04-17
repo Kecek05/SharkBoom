@@ -20,7 +20,12 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         DisableRagdoll();
     }
 
-    
+    // Just for debug on scene Ragdoll
+    private void Awake()
+    {
+        ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
+        DisableRagdoll();
+    }
 
     private void Update()
     {
@@ -43,7 +48,9 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     public void TriggerRagdoll(Vector3 force, Vector3 hitPoint)
     {
-        Rigidbody hitRigidbody = ragdollRbs.OrderBy(rigidbody => Vector3.Distance(rigidbody.position, hitPoint)).First(); // we order all rbs by distance to hitpoint and take the first one
+        EnableRagdoll();
+
+        Rigidbody hitRigidbody = ragdollRbs.OrderBy(Rigidbody => Vector3.Distance(Rigidbody.position, hitPoint)).First(); // we order all rbs by distance to hitpoint and take the first one
         hitRigidbody.AddForceAtPosition(force, hitPoint, ForceMode.Impulse);
 
         // set the state anim for ragdoll
