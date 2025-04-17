@@ -2855,6 +2855,7 @@ GameObject:
   - component: {fileID: 4211308265386752966}
   - component: {fileID: 1886713303149004347}
   - component: {fileID: 7858360450705475451}
+  - component: {fileID: 3163063031829088633}
   m_Layer: 0
   m_Name: GFX
   m_TagString: Untagged
@@ -3070,6 +3071,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   animator: {fileID: 2419861509587768571}
+--- !u!114 &3163063031829088633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8363574200510345622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0e7b59c3a2f13a4e93a45090f61238b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 2419861509587768571}
+  ragdollRoot: {fileID: 2927350467601940059}
+  ragdollRbs: []
 --- !u!1001 &294820086137516068
 PrefabInstance:
   m_ObjectHideFlags: 0
