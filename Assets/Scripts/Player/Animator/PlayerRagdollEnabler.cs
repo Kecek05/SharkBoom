@@ -5,11 +5,17 @@ using UnityEngine;
 
 public class PlayerRagdollEnabler : NetworkBehaviour
 {
+    [Header("References")]
     [SerializeField] private Animator animator;
     [SerializeField] private Transform ragdollRoot;
     [SerializeField] private PlayerHealth playerHealth;
 
     [SerializeField] private Rigidbody[] ragdollRbs;
+    private Transform hipBone;
+
+
+    [Header("Seetings")]
+    [SerializeField] private float timeToWakeUp = 5f;
 
     public void InitializeOwner()
     {
@@ -54,6 +60,16 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         hitRigidbody.AddForceAtPosition(force, hitPoint, ForceMode.Impulse);
 
         // set the state anim for ragdoll
+    }
+
+    private void RagdollBehaviour()
+    {
+        timeToWakeUp -= Time.deltaTime;
+
+        if(timeToWakeUp <= 0)
+        {
+            DisableRagdoll();
+        }
     }
 
 
