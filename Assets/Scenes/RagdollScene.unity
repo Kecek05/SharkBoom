@@ -175,10 +175,6 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3163063031829088633, guid: 00e3339f246bf9a44b0a2a04d1b5b1ec, type: 3}
-      propertyPath: ragdollRoot
-      value: 
-      objectReference: {fileID: 2059781530}
     - target: {fileID: 6789602644162241133, guid: 00e3339f246bf9a44b0a2a04d1b5b1ec, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 2331259650
@@ -570,11 +566,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &2059781530 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 260593271260911567, guid: 00e3339f246bf9a44b0a2a04d1b5b1ec, type: 3}
-  m_PrefabInstance: {fileID: 197961096}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
