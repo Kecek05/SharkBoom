@@ -19,9 +19,43 @@ public class PlayerAnimatorTest : MonoBehaviour
         HandleOnItemSelectedSO(itemSelectedSO);
     }
 
-    public void SetPlayerState(PlayerState playerState)
+
+    public void SetPlayerStateByIndex(int playerStateIndex)
     {
-        HandleOnPlayerStateMachineStateChanged(playerState);
+
+        switch(playerStateIndex)
+        {
+            case 0:
+                HandleOnPlayerStateMachineStateChanged(PlayerState.IdleMyTurn);
+                break;
+            case 1:
+                if(itemSelectedSO == null)
+                {
+                    Debug.LogWarning("Item not selected");
+                    return;
+                }
+                HandleOnPlayerStateMachineStateChanged(PlayerState.DraggingItem);
+                break;
+            case 2:
+                HandleOnPlayerStateMachineStateChanged(PlayerState.DraggingJump);
+                break;
+            case 3:
+                if (itemSelectedSO == null)
+                {
+                    Debug.LogWarning("Item not selected");
+                    return;
+                }
+                HandleOnPlayerStateMachineStateChanged(PlayerState.DragReleaseItem);
+                break;
+            case 4:
+                HandleOnPlayerStateMachineStateChanged(PlayerState.DragReleaseJump);
+                break;
+        }
+    }
+
+    public void SetIsRight(bool isRight)
+    {
+        HandleOnRotationChanged(isRight);
     }
 
     private void HandleOnItemSelectedSO(ItemSO itemSelectedSO)
