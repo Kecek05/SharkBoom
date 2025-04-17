@@ -8,6 +8,12 @@ public class PlayerAnimatorTest : MonoBehaviour
 
     private ItemSO itemSelectedSO;
 
+    private void Start()
+    {
+        //Start with Idle
+        SetPlayerStateByIndex(0);
+    }
+
     public void ButtonSelectItem(int index)
     {
         if (index < 0 || index >= itemSOList.allItemsSOList.Count)
