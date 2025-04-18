@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerAnimatorTest : MonoBehaviour
 {
     [SerializeField] private PlayerAnimator playerAnimator;
+    [SerializeField] private PlayerSpawnItemOnHand playerSpawnItemOnHand;
 
     [SerializeField] private ItemsListSO itemSOList;
 
@@ -11,6 +12,7 @@ public class PlayerAnimatorTest : MonoBehaviour
     private void Start()
     {
         //Start with Idle
+        SetIsRight(true);
         SetPlayerStateByIndex(0);
     }
 
@@ -67,15 +69,18 @@ public class PlayerAnimatorTest : MonoBehaviour
     private void HandleOnItemSelectedSO(ItemSO itemSelectedSO)
     {
         playerAnimator.HandleOnItemSelectedSO(itemSelectedSO);
+        playerSpawnItemOnHand.HandleOnItemSelectedSO(itemSelectedSO);
     }
 
     private void HandleOnPlayerStateMachineStateChanged(PlayerState newState)
     {
         playerAnimator.HandleOnPlayerStateMachineStateChanged(newState);
+        playerSpawnItemOnHand.HandleOnPlayerStateMachineStateChanged(newState);
     }
 
     private void HandleOnRotationChanged(bool isRight)
     {
         playerAnimator.HandleOnRotationChanged(isRight);
+        playerSpawnItemOnHand.HandleOnRotationChanged(isRight);
     }
 }
