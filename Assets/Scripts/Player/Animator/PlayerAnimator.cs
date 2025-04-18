@@ -121,6 +121,8 @@ public class PlayerAnimator : NetworkBehaviour
 
     private void PlayAnimationData(AnimationData animationData)
     {
+        Debug.Log($"$Animation Data - Animation L: {animationData.animationL} - Animation R: {animationData.animationR}");
+
         if (animationData.animationL == Animations.None && animationData.animationR == Animations.None) return; //none
 
         //if (currentAnimation == animationData.animationL || currentAnimation == animationData.animationR) return; //already playing this animation

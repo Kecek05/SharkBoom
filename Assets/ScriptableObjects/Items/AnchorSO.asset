@@ -14,16 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemClientPrefab: {fileID: 0}
   itemServerPrefab: {fileID: 0}
-  itemName: 
+  itemName: Anchor
   itemIcon: {fileID: 21300000, guid: d90045570f4a0e649b07284ec97b05b9, type: 3}
   rb: {fileID: 0}
   damageableSO: {fileID: 0}
   cooldown: 0
-  aimItemData:
-    animationL: 4
-    animationR: 5
-    crossFade: 0.3
-  shootItemData:
-    animationL: 26
-    animationR: 27
-    crossFade: 0.3
+  itemAnimationSO: {fileID: 11400000, guid: fae89a120333ee64390a4a0f6b56607a, type: 2}
