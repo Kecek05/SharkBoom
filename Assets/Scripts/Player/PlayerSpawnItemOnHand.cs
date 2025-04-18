@@ -10,7 +10,7 @@ public class PlayerSpawnItemOnHand : MonoBehaviour
     private ItemSocket selectedSocket;
     private ItemSO selectedItemSO;
     private bool isRightSocket; //Rotation that the player is looking
-    private Transform spawnedItem;
+    private GameObject spawnedItem;
 
     public void HandleOnRotationChanged(bool isRight)
     {
@@ -68,8 +68,8 @@ public class PlayerSpawnItemOnHand : MonoBehaviour
             spawnedItem = null;
         }
 
-        GameObject itemSpawned = Instantiate(selectedItemSO.itemClientPrefab, selectedSocket.transform.position, Quaternion.identity);
-        itemSpawned.transform.SetParent(selectedSocket.transform);
+        spawnedItem = Instantiate(selectedItemSO.itemClientPrefab, selectedSocket.transform.position, Quaternion.identity);
+        spawnedItem.transform.SetParent(selectedSocket.transform);
     }
 
     private void DespawnItem()
