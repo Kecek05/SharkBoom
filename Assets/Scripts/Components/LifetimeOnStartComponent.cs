@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class LifetimeComponent : MonoBehaviour
+public class LifetimeOnStartComponent : MonoBehaviour
 {
     [SerializeField] private float lifeTime;
 

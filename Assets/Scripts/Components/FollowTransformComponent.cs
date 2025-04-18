@@ -13,14 +13,17 @@ public class FollowTransformComponent : MonoBehaviour
     [SerializeField] private bool followPosition = true;
     [SerializeField] private bool followRotation = true;
     [SerializeField] private bool followScale = false;
+    [Space(3)]
+    [SerializeField] private Vector3 positionOffset;
 
-    private void Update()
+
+    private void LateUpdate()
     {
         if(!isActive) return;
 
         if (targetTransform != null)
         {
-            if (followPosition) transform.position = targetTransform.position;
+            if (followPosition) transform.position = targetTransform.position + positionOffset;
 
             if (followRotation) transform.rotation = targetTransform.rotation;
 
