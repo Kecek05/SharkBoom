@@ -10,7 +10,7 @@ public class PlayerSpawnItemOnHand : MonoBehaviour
     private ItemSocket selectedSocket;
     private ItemSO selectedItemSO;
     private bool isRightSocket = false; //Rotation that the player is looking
-    private GameObject spawnedItem;
+    private BaseItemThrowable spawnedItem;
     private PlayerState playerState;
     private bool canSpawnItem = false;
 
@@ -80,15 +80,26 @@ public class PlayerSpawnItemOnHand : MonoBehaviour
         if (spawnedItem != null)
         {
             Debug.LogWarning("Item already spawned, destroying it");
-            Destroy(spawnedItem);
-            spawnedItem = null;
+            spawnedItem.DestroyItem(() =>
+            {
+                spawnedItem = null;
+                InstantiateObj();
+                return;
+            });
+        } else
+        {
+            InstantiateObj();
         }
+        
+    }
 
-        spawnedItem = Instantiate(selectedItemSO.itemClientPrefab, selectedSocket.transform.position, Quaternion.identity);
+    private void InstantiateObj()
+    {
+        spawnedItem = Instantiate(selectedItemSO.itemClientPrefab, selectedSocket.transform.position, Quaternion.identity).GetComponent<BaseItemThrowable>();
         spawnedItem.transform.SetParent(selectedSocket.transform);
         spawnedItem.transform.localRotation = Quaternion.identity;
 
-        spawnedItem.GetComponent<BaseItemThrowable>().Initialize(PlayableState.None);
+        spawnedItem.Initialize(PlayableState.None);
     }
 
     private void DespawnItem()
@@ -96,8 +107,11 @@ public class PlayerSpawnItemOnHand : MonoBehaviour
         //Despawn item
         if (spawnedItem != null)
         {
-            Destroy(spawnedItem.gameObject);
-            spawnedItem = null;
+            spawnedItem.DestroyItem(() =>
+            {
+                spawnedItem = null;
+            });
+            
         }
 
     }

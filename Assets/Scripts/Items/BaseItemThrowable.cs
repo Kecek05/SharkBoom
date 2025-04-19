@@ -13,6 +13,7 @@ public abstract class BaseItemThrowable : MonoBehaviour
     [SerializeField] protected ItemSO itemSO;
     [SerializeField] protected Rigidbody2D rb;
     [SerializeField] protected GameObject[] collidersToChangeLayer;
+    [SerializeField] protected DissolveShaderComponent dissolveShaderComponent;
     protected ItemLauncherData thisItemLaucherData;
 
     protected BaseTurnManager turnManager;
@@ -42,6 +43,9 @@ public abstract class BaseItemThrowable : MonoBehaviour
                 break;
         }
 
+        if(dissolveShaderComponent != null)
+            dissolveShaderComponent.DissolveFadeIn();
+
         //turnManager = ServiceLocator.Get<BaseTurnManager>();
         //ItemReleased(thisItemLaucherData.dragForce, thisItemLaucherData.dragDirection);
     }
@@ -69,10 +73,23 @@ public abstract class BaseItemThrowable : MonoBehaviour
         turnManager.PlayerPlayed(thisItemLaucherData.ownerPlayableState);
     }
 
-    protected void OnDestroy()
+    public virtual void DestroyItem(Action destroyedCallback = null)
     {
-        
         OnItemFinishedAction?.Invoke();
         ItemCallbackAction();
+
+        if(dissolveShaderComponent != null)
+        {
+            dissolveShaderComponent.DissolveFadeOut(() =>
+            {
+                destroyedCallback?.Invoke();
+                Destroy(this.gameObject);
+            });
+        }
+        else
+        {
+            destroyedCallback?.Invoke();
+            Destroy(this.gameObject);
+        }
     }
 }
