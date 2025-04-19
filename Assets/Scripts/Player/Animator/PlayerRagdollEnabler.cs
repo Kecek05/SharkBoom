@@ -14,8 +14,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [SerializeField] private PlayerHealth playerHealth;
     [SerializeField] private Rigidbody[] ragdollRbs;
 
-
-
     [Header("Seetings")]
     [SerializeField] private float timeToWakeUp = 5f;
 
@@ -27,11 +25,11 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     {
         if (!IsOwner) return;
 
-        PlayerHealth.OnPlayerTakeDamage += PlayerHealth_OnPlayerTakeDamage;
         ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
 
         DisableRagdoll(false);
     }
+
 
     // Just for debug on scene Ragdoll
     private void Awake()
@@ -54,7 +52,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         }
     }
 
-    private void PlayerHealth_OnPlayerTakeDamage(object sender, PlayerHealth.OnPlayerTakeDamageArgs e)
+    public void PlayerHealth_OnPlayerTakeDamage(object sender, PlayerHealth.OnPlayerTakeDamageArgs e)
     {
         EnableRagdoll(); // when take damage enable ragdoll (check if this have delay)
     }

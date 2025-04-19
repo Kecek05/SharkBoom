@@ -126,8 +126,8 @@ public class PlayerThrower : NetworkBehaviour
         playerInventoryUI.OnItemSelectedByUI += HandleOnItemSelectedByUI;
 
         playerDetectFacingDirection.OnRotationChanged += HandleOnPlayerDetectFacingDirectionRotationChanged;
+        PlayerHealth.OnPlayerTakeDamage += HandleOnPlayerHealthPlayerTakeDamage;
     }
-
 
     private void UnHandleEvents()
     {
@@ -150,6 +150,7 @@ public class PlayerThrower : NetworkBehaviour
         playerInventoryUI.OnItemSelectedByUI -= HandleOnItemSelectedByUI;
 
         playerDetectFacingDirection.OnRotationChanged -= HandleOnPlayerDetectFacingDirectionRotationChanged;
+        PlayerHealth.OnPlayerTakeDamage -= HandleOnPlayerHealthPlayerTakeDamage;
 
         cameraManager.UnInitializeOwner();
         playerLauncher.UnInitializeOwner();
@@ -240,6 +241,11 @@ public class PlayerThrower : NetworkBehaviour
     private void HandleOnPlayerFlipGfxRotationChanged(bool isRight)
     {
 
+    }
+
+    private void HandleOnPlayerHealthPlayerTakeDamage(object sender, PlayerHealth.OnPlayerTakeDamageArgs e)
+    {
+        playerRagdollEnabler.PlayerHealth_OnPlayerTakeDamage(sender, e);
     }
 
     [Rpc(SendTo.Server)]
