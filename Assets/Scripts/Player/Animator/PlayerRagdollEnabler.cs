@@ -21,6 +21,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     private Vector3 initialPosition;
     private Quaternion initialRotation;
+    private float verticalOffset = 0f;
 
     public void InitializeOwner()
     {
@@ -29,17 +30,16 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         PlayerHealth.OnPlayerTakeDamage += PlayerHealth_OnPlayerTakeDamage;
         ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
 
-        DisableRagdoll();
+        DisableRagdoll(false);
     }
 
     // Just for debug on scene Ragdoll
     private void Awake()
     {
         ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
-        DisableRagdoll();
+        DisableRagdoll(false);
     }
     
-
 
     private void Update()
     {
@@ -50,14 +50,13 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
         if(Input.GetKeyDown(KeyCode.R))
         {
-            DisableRagdoll();
+            DisableRagdoll(true);
         }
     }
 
-
     private void PlayerHealth_OnPlayerTakeDamage(object sender, PlayerHealth.OnPlayerTakeDamageArgs e)
     {
-        EnableRagdoll();
+        EnableRagdoll(); // when take damage enable ragdoll (check if this have delay)
     }
 
     public void TriggerRagdoll(Vector3 force, Vector3 hitPoint)
@@ -67,22 +66,13 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         Rigidbody hitRigidbody = ragdollRbs.OrderBy(Rigidbody => Vector3.Distance(Rigidbody.position, hitPoint)).First(); // we order all rbs by distance to hitpoint and take the first one
         hitRigidbody.AddForceAtPosition(force, hitPoint, ForceMode.Impulse);
 
-        // set the state anim for ragdoll
-    }
-
-    private void RagdollBehaviour()
-    {
-        timeToWakeUp -= Time.deltaTime;
-
-        if(timeToWakeUp <= 0)
-        {
-            DisableRagdoll();
-        }
+        // set the state anim for ragdoll (after)
     }
 
     private void AlignPositionToHips()
     {
         Vector3 newPosition = hipsTransform.position; // create a new pos basead on actual hips transform position
+        newPosition.y -= verticalOffset;  // correcting the y axis to align with the root transform
         rootTransform.position = newPosition;
         rootTransform.rotation = Quaternion.LookRotation(ragdollRoot.forward, Vector3.up);
 
@@ -95,6 +85,8 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     private void EnableRagdoll()
     {
+        verticalOffset = hipsTransform.position.y - rootTransform.position.y;
+
         foreach (Rigidbody ragdollRb in ragdollRbs)
         {
             ragdollRb.isKinematic = false;
@@ -104,9 +96,12 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     }
 
-    private void DisableRagdoll()
+    private void DisableRagdoll(bool alignToHips)
     {
-        AlignPositionToHips();
+        if (alignToHips)
+        {
+            AlignPositionToHips();
+        }
 
         foreach (Rigidbody ragdollRb in ragdollRbs)
         {
@@ -122,7 +117,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         if (!IsOwner) return;
 
         PlayerHealth.OnPlayerTakeDamage -= PlayerHealth_OnPlayerTakeDamage;
-        DisableRagdoll();
+        DisableRagdoll(false);
     }
 
 }
