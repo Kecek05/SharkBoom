@@ -8,14 +8,19 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [Header("References")]
     [SerializeField] private Animator animator;
     [SerializeField] private Transform ragdollRoot;
-    [SerializeField] private PlayerHealth playerHealth;
+    [SerializeField] private Transform rootTransform;
+    [SerializeField] private Transform hipsTransform;
 
+    [SerializeField] private PlayerHealth playerHealth;
     [SerializeField] private Rigidbody[] ragdollRbs;
-    private Transform hipBone;
+
 
 
     [Header("Seetings")]
     [SerializeField] private float timeToWakeUp = 5f;
+
+    private Vector3 initialPosition;
+    private Quaternion initialRotation;
 
     public void InitializeOwner()
     {
@@ -23,6 +28,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
         PlayerHealth.OnPlayerTakeDamage += PlayerHealth_OnPlayerTakeDamage;
         ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
+
         DisableRagdoll();
     }
 
@@ -32,6 +38,8 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
         DisableRagdoll();
     }
+    
+
 
     private void Update()
     {
@@ -72,6 +80,18 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         }
     }
 
+    private void AlignPositionToHips()
+    {
+        Vector3 newPosition = hipsTransform.position; // create a new pos basead on actual hips transform position
+        rootTransform.position = newPosition;
+        rootTransform.rotation = Quaternion.LookRotation(ragdollRoot.forward, Vector3.up);
+
+        // Send gfx for original pos 
+        ragdollRoot.localPosition = Vector3.zero;
+        ragdollRoot.localRotation = Quaternion.identity;
+
+    }
+
 
     private void EnableRagdoll()
     {
@@ -86,13 +106,15 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     private void DisableRagdoll()
     {
+        AlignPositionToHips();
+
         foreach (Rigidbody ragdollRb in ragdollRbs)
         {
             ragdollRb.isKinematic = true;
-
         }
 
         animator.enabled = true;
+        
     }
 
     public void UnInitializeOwner()
