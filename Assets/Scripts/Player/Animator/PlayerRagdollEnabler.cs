@@ -8,14 +8,20 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [Header("References")]
     [SerializeField] private Animator animator;
     [SerializeField] private Transform ragdollRoot;
-    [SerializeField] private PlayerHealth playerHealth;
+    [SerializeField] private Transform rootTransform;
+    [SerializeField] private Transform hipsTransform;
 
+    [SerializeField] private PlayerHealth playerHealth;
     [SerializeField] private Rigidbody[] ragdollRbs;
-    private Transform hipBone;
+
 
 
     [Header("Seetings")]
     [SerializeField] private float timeToWakeUp = 5f;
+
+    private Vector3 initialPosition;
+    private Quaternion initialRotation;
+    private float verticalOffset = 0f;
 
     public void InitializeOwner()
     {
@@ -23,15 +29,17 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
         PlayerHealth.OnPlayerTakeDamage += PlayerHealth_OnPlayerTakeDamage;
         ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
-        DisableRagdoll();
+
+        DisableRagdoll(false);
     }
 
     // Just for debug on scene Ragdoll
     private void Awake()
     {
         ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
-        DisableRagdoll();
+        DisableRagdoll(false);
     }
+    
 
     private void Update()
     {
@@ -42,14 +50,13 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
         if(Input.GetKeyDown(KeyCode.R))
         {
-            DisableRagdoll();
+            DisableRagdoll(true);
         }
     }
 
-
     private void PlayerHealth_OnPlayerTakeDamage(object sender, PlayerHealth.OnPlayerTakeDamageArgs e)
     {
-        EnableRagdoll();
+        EnableRagdoll(); // when take damage enable ragdoll (check if this have delay)
     }
 
     public void TriggerRagdoll(Vector3 force, Vector3 hitPoint)
@@ -59,22 +66,27 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         Rigidbody hitRigidbody = ragdollRbs.OrderBy(Rigidbody => Vector3.Distance(Rigidbody.position, hitPoint)).First(); // we order all rbs by distance to hitpoint and take the first one
         hitRigidbody.AddForceAtPosition(force, hitPoint, ForceMode.Impulse);
 
-        // set the state anim for ragdoll
+        // set the state anim for ragdoll (after)
     }
 
-    private void RagdollBehaviour()
+    private void AlignPositionToHips()
     {
-        timeToWakeUp -= Time.deltaTime;
+        Vector3 newPosition = hipsTransform.position; // create a new pos basead on actual hips transform position
+        newPosition.y -= verticalOffset;  // correcting the y axis to align with the root transform
+        rootTransform.position = newPosition;
+        rootTransform.rotation = Quaternion.LookRotation(ragdollRoot.forward, Vector3.up);
 
-        if(timeToWakeUp <= 0)
-        {
-            DisableRagdoll();
-        }
+        // Send gfx for original pos 
+        ragdollRoot.localPosition = Vector3.zero;
+        ragdollRoot.localRotation = Quaternion.identity;
+
     }
 
 
     private void EnableRagdoll()
     {
+        verticalOffset = hipsTransform.position.y - rootTransform.position.y;
+
         foreach (Rigidbody ragdollRb in ragdollRbs)
         {
             ragdollRb.isKinematic = false;
@@ -84,15 +96,20 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     }
 
-    private void DisableRagdoll()
+    private void DisableRagdoll(bool alignToHips)
     {
+        if (alignToHips)
+        {
+            AlignPositionToHips();
+        }
+
         foreach (Rigidbody ragdollRb in ragdollRbs)
         {
             ragdollRb.isKinematic = true;
-
         }
 
         animator.enabled = true;
+        
     }
 
     public void UnInitializeOwner()
@@ -100,7 +117,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         if (!IsOwner) return;
 
         PlayerHealth.OnPlayerTakeDamage -= PlayerHealth_OnPlayerTakeDamage;
-        DisableRagdoll();
+        DisableRagdoll(false);
     }
 
 }
