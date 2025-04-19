@@ -9,9 +9,11 @@ public class PlayerSpawnItemOnHand : MonoBehaviour
 
     private ItemSocket selectedSocket;
     private ItemSO selectedItemSO;
-    private bool isRightSocket; //Rotation that the player is looking
+    private bool isRightSocket = false; //Rotation that the player is looking
     private GameObject spawnedItem;
     private PlayerState playerState;
+    private bool canSpawnItem = false;
+
     public void HandleOnRotationChanged(bool isRight)
     {
         //Used to select the right side socket
@@ -27,9 +29,18 @@ public class PlayerSpawnItemOnHand : MonoBehaviour
         UpdateSelectedSocket();
     }
 
+    public void HandleOnPlayerAnimatorCrossfadeFinished()
+    {
+        Debug.Log("HandleOnPlayerAnimatorCrossfadeFinished");
+        SpawnItem();
+    }
+
     public void HandleOnPlayerStateMachineStateChanged(PlayerState newState)
     {
+        Debug.Log($"HandleOnPlayerStateMachineStateChanged: {newState}");
+
         playerState = newState;
+        canSpawnItem = false;
 
         switch (newState)
         {
@@ -39,9 +50,10 @@ public class PlayerSpawnItemOnHand : MonoBehaviour
                 break;
             case PlayerState.DraggingItem:
                 //Spawn Item
-                SpawnItem();
+                canSpawnItem = true;
                 break;
             case PlayerState.DraggingJump:
+                canSpawnItem = true;
                 //Do nothing
                 break;
             case PlayerState.DragReleaseItem:
@@ -56,8 +68,8 @@ public class PlayerSpawnItemOnHand : MonoBehaviour
     private void SpawnItem()
     {
         //Spawn selected Item on the selected socket
-
-        if(playerState == PlayerState.IdleMyTurn) return; //Do nothing if the player is not in the right state
+        Debug.Log($"Spawning item: {selectedItemSO} on socket: {selectedSocket} - PlayerState: {playerState} - Can Spawn? {canSpawnItem}");
+        if (!canSpawnItem) return; //Do nothing if the player is not in the right state
 
         if (selectedItemSO == null)
         {

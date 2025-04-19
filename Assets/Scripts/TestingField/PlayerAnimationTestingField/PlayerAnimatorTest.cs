@@ -11,9 +11,16 @@ public class PlayerAnimatorTest : MonoBehaviour
 
     private void Start()
     {
+        playerAnimator.OnCrossfadeFinished += HandleOnPlayerAnimatorCrossfadeFinished;
+        Debug.Log("PlayerAnimatorTest started");
         //Start with Idle
-        SetIsRight(true);
+        SetIsRight(false);
         SetPlayerStateByIndex(0);
+    }
+
+    private void HandleOnPlayerAnimatorCrossfadeFinished()
+    {
+        playerSpawnItemOnHand.HandleOnPlayerAnimatorCrossfadeFinished();
     }
 
     public void ButtonSelectItem(int index)

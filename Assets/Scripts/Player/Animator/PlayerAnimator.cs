@@ -1,10 +1,13 @@
 using Sortify;
 using System;
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
 public class PlayerAnimator : NetworkBehaviour
 {
+    public event Action OnCrossfadeFinished;
+
     [BetterHeader("References")]
     [SerializeField] private Animator animator;
     private bool isRight; //Rotation that the player is looking
@@ -70,6 +73,8 @@ public class PlayerAnimator : NetworkBehaviour
 
     private AnimationData selectedAimAnimation;
     private AnimationData selectedShootAnimation;
+
+    private Coroutine crossFadeCoroutine;
 
     public void HandleOnItemSelectedSO(ItemSO itemSelectedSO)
     {
@@ -138,7 +143,7 @@ public class PlayerAnimator : NetworkBehaviour
                 if(currentAnimation == animationData.animationR) return; //already playing the right animation
 
                 currentAnimation = animationData.animationR;
-                animator.CrossFade(animations[(int)animationData.animationR], animationData.crossFadeBetweenSides);
+                DoCrossFade(animations[(int)animationData.animationR], animationData.crossFadeBetweenSides);
             } else
             {
                 //looking to the left
@@ -146,7 +151,7 @@ public class PlayerAnimator : NetworkBehaviour
                 if (currentAnimation == animationData.animationL) return; //already playing the left animation
 
                 currentAnimation = animationData.animationL;
-                animator.CrossFade(animations[(int)animationData.animationL], animationData.crossFadeBetweenSides);
+                DoCrossFade(animations[(int)animationData.animationL], animationData.crossFadeBetweenSides);
             }
         } else
         {
@@ -157,17 +162,49 @@ public class PlayerAnimator : NetworkBehaviour
                 //looking to the right
 
                 currentAnimation = animationData.animationR;
-                animator.CrossFade(animations[(int)animationData.animationR], animationData.crossFade);
+                DoCrossFade(animations[(int)animationData.animationR], animationData.crossFade);
             }
             else
             {
                 //looking to the left
 
                 currentAnimation = animationData.animationL;
-                animator.CrossFade(animations[(int)animationData.animationL], animationData.crossFade);
+                DoCrossFade(animations[(int)animationData.animationL], animationData.crossFade);
             }
         }
         currentAnimationData = animationData;
+    }
+
+    private void DoCrossFade(int stateHashName, float fadeTime)
+    {
+        if(crossFadeCoroutine != null)
+        {
+            StopCoroutine(crossFadeCoroutine);
+            crossFadeCoroutine = null;
+        }
+
+        animator.CrossFade(stateHashName, fadeTime);
+
+        crossFadeCoroutine = StartCoroutine(CrossFadeCallback());
+    }
+
+    private IEnumerator CrossFadeCallback()
+    {
+        // Wait until the animator is in transition
+        while (!animator.IsInTransition(0))
+        {
+            yield return null;
+        }
+
+        // Wait until the transition has ended
+        while (animator.IsInTransition(0))
+        {
+            yield return null;
+        }
+
+        // Transition has ended
+        Debug.Log("Crossfade Finished!");
+        OnCrossfadeFinished?.Invoke();
     }
 }
 
