@@ -89,7 +89,7 @@ public class PlayerLauncher : NetworkBehaviour
 
         if (projetctile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
         {
-            itemThrowable.Initialize(launcherData);
+            itemThrowable.ItemReleased(launcherData);
         }
 
         if (projetctile.transform.TryGetComponent(out BaseItemThrowableActivable activable))
@@ -126,7 +126,7 @@ public class PlayerLauncher : NetworkBehaviour
 
         if (projetctile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
         {
-            itemThrowable.Initialize(launcherData);
+            itemThrowable.ItemReleased(launcherData);
         }
 
         if (projetctile.transform.TryGetComponent(out BaseItemThrowableActivable activable))

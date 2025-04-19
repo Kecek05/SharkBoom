@@ -11,7 +11,7 @@ public class PlayerSpawnItemOnHand : MonoBehaviour
     private ItemSO selectedItemSO;
     private bool isRightSocket; //Rotation that the player is looking
     private GameObject spawnedItem;
-
+    private PlayerState playerState;
     public void HandleOnRotationChanged(bool isRight)
     {
         //Used to select the right side socket
@@ -29,6 +29,8 @@ public class PlayerSpawnItemOnHand : MonoBehaviour
 
     public void HandleOnPlayerStateMachineStateChanged(PlayerState newState)
     {
+        playerState = newState;
+
         switch (newState)
         {
             case PlayerState.IdleMyTurn:
@@ -55,7 +57,9 @@ public class PlayerSpawnItemOnHand : MonoBehaviour
     {
         //Spawn selected Item on the selected socket
 
-        if(selectedItemSO == null)
+        if(playerState == PlayerState.IdleMyTurn) return; //Do nothing if the player is not in the right state
+
+        if (selectedItemSO == null)
         {
             Debug.LogWarning("Item not selected");
             return;
@@ -70,6 +74,9 @@ public class PlayerSpawnItemOnHand : MonoBehaviour
 
         spawnedItem = Instantiate(selectedItemSO.itemClientPrefab, selectedSocket.transform.position, Quaternion.identity);
         spawnedItem.transform.SetParent(selectedSocket.transform);
+        spawnedItem.transform.localRotation = Quaternion.identity;
+
+        spawnedItem.GetComponent<BaseItemThrowable>().Initialize(PlayableState.None);
     }
 
     private void DespawnItem()

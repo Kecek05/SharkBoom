@@ -24,9 +24,9 @@ public abstract class BaseItemThrowable : MonoBehaviour
     public virtual void Initialize(PlayableState ownerPlayableState)
     {
         //thisItemLaucherData = itemLauncherData;
-        rb.
+        rb.bodyType = RigidbodyType2D.Static; //Statick until the item is released
 
-        switch(ownerPlayableState)
+        switch (ownerPlayableState)
         {
             case PlayableState.Player1Playing:
                 foreach(GameObject gameObject in collidersToChangeLayer)
@@ -51,14 +51,15 @@ public abstract class BaseItemThrowable : MonoBehaviour
     /// </summary>
     /// <param name="force"></param>
     /// <param name="direction"></param>
-    protected virtual void ItemReleased(ItemLauncherData itemLauncherData)
+    public virtual void ItemReleased(ItemLauncherData itemLauncherData)
     {
         thisItemLaucherData = itemLauncherData;
         turnManager = ServiceLocator.Get<BaseTurnManager>();
 
         OnItemReleasedAction?.Invoke(this.transform);
         rb.AddForce(itemLauncherData.dragDirection * itemLauncherData.dragForce, ForceMode2D.Impulse);
-        
+
+        rb.bodyType = RigidbodyType2D.Dynamic; //Statick until the item is released
     }
 
     protected virtual void ItemCallbackAction()

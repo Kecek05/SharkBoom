@@ -8,9 +8,9 @@ public class JumpItem : BaseItemThrowable
     private float currentFollowingTime = 0f;
     private Transform objectToFollowTransform;
 
-    protected override void ItemReleased(float force, Vector2 direction)
+    public override void ItemReleased(ItemLauncherData itemLauncherData)
     {
-        base.ItemReleased(force, direction);
+        base.ItemReleased(itemLauncherData);
 
         if (isServerObject) return; // Jump is Client Sided. The server should not follow the player
 
