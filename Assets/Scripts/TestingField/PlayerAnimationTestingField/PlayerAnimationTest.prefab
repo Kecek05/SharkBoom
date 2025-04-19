@@ -81,6 +81,7 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 0, y: 0, z: 0}
+  rotationOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &3308459357660836661
 GameObject:
   m_ObjectHideFlags: 0
@@ -214,7 +215,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2878995692
+  GlobalObjectIdHash: 3106684233
   InScenePlacedSourceGlobalObjectIdHash: 3106684233
   DeferredDespawnTick: 0
   Ownership: 1
@@ -293,6 +294,7 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 0, y: 0, z: 0}
+  rotationOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &4182906682709038719
 GameObject:
   m_ObjectHideFlags: 0
@@ -503,6 +505,7 @@ GameObject:
   - component: {fileID: 4680714892015843351}
   - component: {fileID: 3908963777484058891}
   - component: {fileID: 5278958500852761623}
+  - component: {fileID: 8355466299788488543}
   m_Layer: 0
   m_Name: AimHarpoonSocketL
   m_TagString: Untagged
@@ -543,6 +546,7 @@ MonoBehaviour:
   followRotation: 0
   followScale: 0
   positionOffset: {x: -0.17, y: 0.2, z: 1.15}
+  rotationOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!114 &5278958500852761623
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -556,6 +560,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemSO: {fileID: 11400000, guid: 7667fbb8415883a4bb0ea49a0ebf3d7b, type: 2}
+--- !u!114 &8355466299788488543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5867819794706076953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 163cbd466808d31408360bb4cf238748, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetTransform: {fileID: 1467896000163848446}
 --- !u!1 &5993199301861590462
 GameObject:
   m_ObjectHideFlags: 0
@@ -836,6 +853,7 @@ MonoBehaviour:
   followRotation: 0
   followScale: 0
   positionOffset: {x: 0.2, y: 0.22, z: 1.2}
+  rotationOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!114 &5310388967461320567
 MonoBehaviour:
   m_ObjectHideFlags: 0

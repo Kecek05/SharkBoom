@@ -16,7 +16,6 @@ public class FollowTransformComponent : MonoBehaviour
     [Space(3)]
     [SerializeField] private Vector3 positionOffset;
 
-
     private void LateUpdate()
     {
         if(!isActive) return;
