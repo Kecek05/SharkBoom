@@ -17,11 +17,16 @@ public abstract class BaseItemThrowable : MonoBehaviour
 
     protected BaseTurnManager turnManager;
 
-    public virtual void Initialize(ItemLauncherData itemLauncherData)
+    /// <summary>
+    /// Called when the item spawns in hand
+    /// </summary>
+    /// <param name="itemLauncherData"></param>
+    public virtual void Initialize(PlayableState ownerPlayableState)
     {
-        thisItemLaucherData = itemLauncherData;
+        //thisItemLaucherData = itemLauncherData;
+        rb.
 
-        switch(thisItemLaucherData.ownerPlayableState)
+        switch(ownerPlayableState)
         {
             case PlayableState.Player1Playing:
                 foreach(GameObject gameObject in collidersToChangeLayer)
@@ -37,15 +42,22 @@ public abstract class BaseItemThrowable : MonoBehaviour
                 break;
         }
 
-        turnManager = ServiceLocator.Get<BaseTurnManager>();
-        ItemReleased(thisItemLaucherData.dragForce, thisItemLaucherData.dragDirection);
+        //turnManager = ServiceLocator.Get<BaseTurnManager>();
+        //ItemReleased(thisItemLaucherData.dragForce, thisItemLaucherData.dragDirection);
     }
 
-
-    protected virtual void ItemReleased(float force, Vector2 direction)
+    /// <summary>
+    /// Called when the item should stop following the hand and will be released
+    /// </summary>
+    /// <param name="force"></param>
+    /// <param name="direction"></param>
+    protected virtual void ItemReleased(ItemLauncherData itemLauncherData)
     {
+        thisItemLaucherData = itemLauncherData;
+        turnManager = ServiceLocator.Get<BaseTurnManager>();
+
         OnItemReleasedAction?.Invoke(this.transform);
-        rb.AddForce(direction * force, ForceMode2D.Impulse);
+        rb.AddForce(itemLauncherData.dragDirection * itemLauncherData.dragForce, ForceMode2D.Impulse);
         
     }
 
