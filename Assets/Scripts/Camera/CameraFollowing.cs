@@ -61,7 +61,7 @@ public class CameraFollowing : NetworkBehaviour
 
     private IEnumerator FollowObjectCoroutine(float duration, bool stopOnNull = true)    
     {
-        float elapsed = 0f;
+        float timer = 0f;
 
         if (stopOnNull)
         {
@@ -74,14 +74,14 @@ public class CameraFollowing : NetworkBehaviour
         }
         else
         {
-            while (elapsed < duration)
+            while (timer < duration)
             {
                 if (itemLaunched != null)
                 {
                     cameraManager.CameraObjectToFollow.position = new Vector3(itemLaunched.position.x, itemLaunched.position.y, cameraZPosOnFollowing);
                 }
 
-                elapsed += Time.deltaTime;
+                timer += Time.deltaTime;
                 yield return null;
             }
 
