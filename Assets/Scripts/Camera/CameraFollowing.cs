@@ -52,11 +52,11 @@ public class CameraFollowing : NetworkBehaviour
             StopCoroutine(followObject);
         }
 
-        followObject = StartCoroutine(FollowObject(stopOnNull, duration)); 
+        followObject = StartCoroutine(FollowObject(duration, stopOnNull)); 
 
     }
 
-    private IEnumerator FollowObject(bool stopOnNull = true, float duration)    
+    private IEnumerator FollowObject(float duration, bool stopOnNull = true)    
     {
         if(stopOnNull)
         {
