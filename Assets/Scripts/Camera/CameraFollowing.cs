@@ -9,14 +9,16 @@ public class CameraFollowing : NetworkBehaviour
     [SerializeField] private CameraManager cameraManager;
 
     [Header("Settings")]
-    [Tooltip("Time to pause camera on item finish position")]
     [SerializeField] private float cameraZPosOnFollowing = -12f;
 
-    private WaitForSeconds waitToStopFollowing = new(3f);
+    private WaitForSeconds waitTimeToStopFollowing = new(3f);
     private Transform itemLaunched;
     private Vector3 lastCameraObjectToFollowPos;
+
     private Coroutine followObject;
     private Coroutine resetCam;
+
+
 
     public void InitializeOwner()
     {
@@ -26,21 +28,22 @@ public class CameraFollowing : NetworkBehaviour
         BaseItemThrowable.OnItemFinishedAction += HandleOnItemFinishedAction;
     }
 
+
+
     private void HandleOnItemReleasedAction(Transform itemLaunched)
     {
         lastCameraObjectToFollowPos = cameraManager.CameraObjectToFollow.position; // store current position of the camera before the item is launched
-        SetTarget(itemLaunched);
+        SetTarget(itemLaunched, true);
     }
 
     private void HandleOnItemFinishedAction()
     {
         if (resetCam == null)
-        {
-            resetCam = StartCoroutine(ResetCam()); // when the item finished their action, we start the coroutine to reset the camera
-        }
+            resetCam = StartCoroutine(ResetCam());
     }
 
-    public void SetTarget(Transform itemLaunched, bool stopOnNull = true, float duration = 5f) // Here we set the target and start the coroutine to follow the object
+
+    public void SetTarget(Transform itemLaunched, bool stopOnNull, float duration = 5f)
     {
         if (itemLaunched == null) return;
 
@@ -52,46 +55,34 @@ public class CameraFollowing : NetworkBehaviour
             StopCoroutine(followObject);
         }
 
-        followObject = StartCoroutine(FollowObject(duration, stopOnNull)); 
-
+        followObject = StartCoroutine(FollowObjectCoroutine(duration, stopOnNull)); 
     }
 
-    private IEnumerator FollowObject(float duration, bool stopOnNull = true)    
+
+    private IEnumerator FollowObjectCoroutine(float duration, bool stopOnNull = true)    
     {
-        if(stopOnNull)
+        float elapsed = 0f;
+
+        if (stopOnNull)
         {
             while (itemLaunched != null) // while the itemLaunched is not destroyed
             {
                 cameraManager.CameraObjectToFollow.position = new Vector3(itemLaunched.position.x, itemLaunched.position.y, cameraZPosOnFollowing);
                 yield return null;
             }
-
             followObject = null;
         }
         else
         {
-            float elapsed = 0f;
-
-            if (stopOnNull)
+            while (elapsed < duration)
             {
-                while (itemLaunched != null)
+                if (itemLaunched != null)
                 {
                     cameraManager.CameraObjectToFollow.position = new Vector3(itemLaunched.position.x, itemLaunched.position.y, cameraZPosOnFollowing);
-                    yield return null;
                 }
-            }
-            else
-            {
-                while (elapsed < duration)
-                {
-                    if (itemLaunched != null)
-                    {
-                        cameraManager.CameraObjectToFollow.position = new Vector3(itemLaunched.position.x, itemLaunched.position.y, cameraZPosOnFollowing);
-                    }
 
-                    elapsed += Time.deltaTime;
-                    yield return null;
-                }
+                elapsed += Time.deltaTime;
+                yield return null;
             }
 
             followObject = null;
@@ -101,7 +92,8 @@ public class CameraFollowing : NetworkBehaviour
 
     private IEnumerator ResetCam()
     {
-        yield return waitToStopFollowing;
+        yield return waitTimeToStopFollowing;
+        cameraManager.CameraObjectToFollow.position = lastCameraObjectToFollowPos;
         resetCam = null;
     }
 

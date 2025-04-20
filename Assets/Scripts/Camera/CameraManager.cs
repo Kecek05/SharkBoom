@@ -52,12 +52,13 @@ public class CameraManager : NetworkBehaviour
                 break;
             case PlayerState.MyTurnStarted:
                 IdleReposOnPlayer();
+                CameraMove();
                 break;
             case PlayerState.IdleEnemyTurn:
                 CameraMove();
                 break;
             case PlayerState.IdleMyTurn:
-                CameraMove();
+                IdleReposOnPlayer();
                 break;
             case PlayerState.DraggingJump:
                 Dragging();
