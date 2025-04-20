@@ -5741,7 +5741,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4845276930943762971, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.000015258789
+      value: -0.000015258789
       objectReference: {fileID: 0}
     - target: {fileID: 4845637959249703711, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchorMax.y
@@ -7131,6 +7131,7 @@ MonoBehaviour:
   playerResultText: {fileID: 1555018307}
   pearlsResultText: {fileID: 257195408}
   returnButton: {fileID: 298473520}
+  drawColor: {r: 0.9811321, g: 0.3150802, b: 0.013883919, a: 1}
 --- !u!1 &1628977044
 GameObject:
   m_ObjectHideFlags: 0

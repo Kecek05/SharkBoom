@@ -95,7 +95,6 @@ public class GameOverUI : MonoBehaviour
         {
             playerResultText.text = "Draw!";
             playerResultText.color = drawColor;
-            return;
         }
 
         playerResultText.text = "You Lose!";
