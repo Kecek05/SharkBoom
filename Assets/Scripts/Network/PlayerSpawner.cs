@@ -10,15 +10,18 @@ public class PlayerSpawner : IPlayerSpawner
     /// </summary>
     public static event Action<int> OnPlayerSpawned;
 
-    private readonly NetworkObject playerPrefab;
+    private readonly NetworkObject[] playerPrefabs;
 
     private int playerSpawned = 0;
+    private int firstPlayerIndex;
 
     public int PlayerCount => playerSpawned;
+    public NetworkObject[] PlayerPrefabs => playerPrefabs;
 
-    public PlayerSpawner(NetworkObject _playerPrefab)
+    public PlayerSpawner(NetworkObject[] _playerPrefabs)
     {
-        playerPrefab = _playerPrefab;
+        playerPrefabs = _playerPrefabs;
+        firstPlayerIndex = UnityEngine.Random.Range(0, 2);
     }
 
 
@@ -33,11 +36,14 @@ public class PlayerSpawner : IPlayerSpawner
             return;
         }
 
+        int prefabIndex = (playerSpawned == 0) ? firstPlayerIndex : 1 - firstPlayerIndex;
         playerSpawned++;
 
         Transform randomSpawnPointSelected = ServiceLocator.Get<BasePlayersPublicInfoManager>().GetRandomSpawnPoint();
 
-        NetworkObject playerInstance = GameObject.Instantiate(playerPrefab, randomSpawnPointSelected.position, Quaternion.identity);
+        
+        
+        NetworkObject playerInstance = GameObject.Instantiate(playerPrefabs[prefabIndex], randomSpawnPointSelected.position, Quaternion.identity);
 
 
         playerInstance.Spawn(true);

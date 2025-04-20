@@ -23,7 +23,7 @@ public class NetworkServer : IDisposable
     public IPlayerSpawner PlayerSpawner => playerSpawner;
     public IServerAuthenticationService ServerAuthenticationService => serverAuthenticationService;
 
-    public NetworkServer(NetworkManager _networkManager,NetworkObject _playerPrefab) // our constructor
+    public NetworkServer(NetworkManager _networkManager,NetworkObject[] _playerPrefab) // our constructor
     {
         networkManager = _networkManager;
         playerSpawner = new PlayerSpawner(_playerPrefab);

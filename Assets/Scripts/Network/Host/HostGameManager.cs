@@ -19,7 +19,7 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
     private const int MAX_CONNECTIONS = 2;
 
     private NetworkServer networkServer;
-    private NetworkObject playerPrefab;
+    private NetworkObject[] playerPrefabs;
 
     private Allocation allocation;
 
@@ -28,9 +28,9 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
 
     private string lobbyId;
 
-    public HostGameManager(NetworkObject _playerPrefab)
+    public HostGameManager(NetworkObject[] _playerPrefabs)
     {
-        playerPrefab = _playerPrefab;
+        playerPrefabs = _playerPrefabs;
     }
 
     public async Task StartHostAsync()
@@ -89,7 +89,8 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
             return;
         }
 
-        networkServer = new NetworkServer(NetworkManager.Singleton, playerPrefab);
+        PlayerSpawner sharedSpawner = new PlayerSpawner(playerPrefabs);
+        networkServer = new NetworkServer(NetworkManager.Singleton, sharedSpawner.PlayerPrefabs);
 
 
         string payload = JsonUtility.ToJson(ClientSingleton.Instance.GameManager.UserData); //serialize the payload to json
