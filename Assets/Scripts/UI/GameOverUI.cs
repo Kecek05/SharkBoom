@@ -91,14 +91,16 @@ public class GameOverUI : MonoBehaviour
         alreadyChanged = true;
 
         //Lose UI Code
-        if(isDraw)
+        if (isDraw)
         {
             playerResultText.text = "Draw!";
             playerResultText.color = drawColor;
         }
-
-        playerResultText.text = "You Lose!";
-        playerResultText.color = Color.red;
+        else
+        {
+            playerResultText.text = "You Lose!";
+            playerResultText.color = Color.red;
+        }
 
         Debug.Log("Change GameOverUI to Lose");
     }
