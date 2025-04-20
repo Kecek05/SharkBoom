@@ -8,20 +8,19 @@ public class CameraManager : NetworkBehaviour
     [SerializeField] private CameraMovement cameraMovement;
     [SerializeField] private CameraZoom cameraZoom;
     [SerializeField] private CameraFollowing cameraFollowing;
+    [SerializeField] private Transform playerTransform;
     
-
-
     private CinemachineCamera cinemachineCamera;
     private Camera cameraMain; // Cache camera main for all scripts that need it
     private Transform cameraObjectToFollow;
 
     public Transform CameraObjectToFollow => cameraObjectToFollow;
+    public Transform PlayerTransform => playerTransform;
     public CameraZoom CameraZoom => cameraZoom;
     public CameraMovement CameraMovement => cameraMovement;
     public CinemachineCamera CinemachineCamera => cinemachineCamera;
     public Camera CameraMain => cameraMain;
 
-    [SerializeField] private CameraState cameraState;
 
     public void InitializeOwner()
     {
@@ -52,7 +51,7 @@ public class CameraManager : NetworkBehaviour
                 CameraMove();
                 break;
             case PlayerState.MyTurnStarted:
-                CameraMove();
+                IdleReposOnPlayer();
                 break;
             case PlayerState.IdleEnemyTurn:
                 CameraMove();
@@ -83,7 +82,7 @@ public class CameraManager : NetworkBehaviour
                 CameraTurnOff();
                 break;
         }
-
+        Debug.Log($"Player State On The Camera: {playerState}");
     }
 
     private void CameraMove()
@@ -91,6 +90,14 @@ public class CameraManager : NetworkBehaviour
         cameraMovement.enabled = true;
         cameraZoom.enabled = true;
         cameraFollowing.enabled = false;
+    }
+
+    private void IdleReposOnPlayer()
+    {
+        cameraMovement.enabled = false;
+        cameraZoom.enabled = false;
+        cameraFollowing.enabled = true;
+        cameraFollowing.SetTarget(playerTransform, false, 3f);
     }
 
     private void Dragging()

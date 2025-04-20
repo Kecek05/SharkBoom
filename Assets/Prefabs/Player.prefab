@@ -170,6 +170,7 @@ MonoBehaviour:
   followPosition: 1
   followRotation: 0
   followScale: 0
+  positionOffset: {x: 0, y: 0, z: 0}
 --- !u!1 &773857424255861932
 GameObject:
   m_ObjectHideFlags: 0
@@ -937,6 +938,7 @@ MonoBehaviour:
   cameraMovement: {fileID: 8450544055641021374}
   cameraZoom: {fileID: 2903552973942911587}
   cameraFollowing: {fileID: 1764359340906761994}
+  playerTransform: {fileID: 2927350467601940059}
 --- !u!114 &1764359340906761994
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1626,6 +1628,7 @@ MonoBehaviour:
   followPosition: 1
   followRotation: 1
   followScale: 0
+  positionOffset: {x: 0, y: 0, z: 0}
 --- !u!1 &4490644184409646491
 GameObject:
   m_ObjectHideFlags: 0
@@ -2110,6 +2113,7 @@ MonoBehaviour:
   followPosition: 1
   followRotation: 0
   followScale: 0
+  positionOffset: {x: 0, y: 0, z: 0}
 --- !u!1 &6853187466876448082
 GameObject:
   m_ObjectHideFlags: 0
@@ -2261,6 +2265,7 @@ MonoBehaviour:
   followPosition: 1
   followRotation: 1
   followScale: 0
+  positionOffset: {x: 0, y: 0, z: 0}
 --- !u!1 &7325663205444476635
 GameObject:
   m_ObjectHideFlags: 0
@@ -3393,6 +3398,8 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   animator: {fileID: 3092204672454369017}
   ragdollRoot: {fileID: 8937845431586505859}
+  rootTransform: {fileID: 0}
+  hipsTransform: {fileID: 0}
   playerHealth: {fileID: 0}
   ragdollRbs: []
   timeToWakeUp: 5
