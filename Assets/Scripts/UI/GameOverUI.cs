@@ -11,6 +11,7 @@ public class GameOverUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI playerResultText;
     [SerializeField] private TextMeshProUGUI pearlsResultText;
     [SerializeField] private Button returnButton;
+    [SerializeField] private Color drawColor;
 
     private bool alreadyChanged = false; //Prevent double change when losting connection
 
@@ -83,13 +84,19 @@ public class GameOverUI : MonoBehaviour
         Debug.Log("Change GameOverUI to WIN");
     }
 
-    private void GameStateManager_OnLose()
+    private void GameStateManager_OnLose(bool isDraw)
     {
         if (alreadyChanged) return;
 
         alreadyChanged = true;
 
         //Lose UI Code
+        if(isDraw)
+        {
+            playerResultText.text = "Draw!";
+            playerResultText.color = drawColor;
+            return;
+        }
 
         playerResultText.text = "You Lose!";
         playerResultText.color = Color.red;
