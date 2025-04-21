@@ -11,6 +11,7 @@ public class PlayerSpawner : IPlayerSpawner
     public static event Action<int> OnPlayerSpawned;
 
     private readonly NetworkObject playerPrefab;
+    private readonly bool switchOrder;
 
     private int playerSpawned = 0;
 
@@ -20,6 +21,7 @@ public class PlayerSpawner : IPlayerSpawner
     public PlayerSpawner(NetworkObject _playerPrefab)
     {
         playerPrefab = _playerPrefab;
+        switchOrder = UnityEngine.Random.value > 0.5f; // Randomly switching the value false or true for bool basead on 50% chance
     }
 
 
@@ -45,15 +47,31 @@ public class PlayerSpawner : IPlayerSpawner
 
         if(visual != null && meshRenderer != null)
         {
-            if (PlayerCount == 1)
+            if(switchOrder)
             {
-                meshRenderer.sharedMesh = visual.SharkMesh;
-                meshRenderer.material = visual.SharkMaterial;
+                if (PlayerCount == 1)
+                {
+                    meshRenderer.sharedMesh = visual.SharkMesh;
+                    meshRenderer.material = visual.SharkMaterial;
+                }
+                else if (PlayerCount == 2)
+                {
+                    meshRenderer.sharedMesh = visual.OrcaMesh;
+                    meshRenderer.material = visual.OrcaMaterial;
+                }
             }
-            else if (PlayerCount == 2)
+            else
             {
-                meshRenderer.sharedMesh = visual.OrcaMesh;
-                meshRenderer.material = visual.OrcaMaterial;
+                if (PlayerCount == 1)
+                {
+                    meshRenderer.sharedMesh = visual.OrcaMesh;
+                    meshRenderer.material = visual.OrcaMaterial;
+                }
+                else if (PlayerCount == 2)
+                {
+                    meshRenderer.sharedMesh = visual.SharkMesh;
+                    meshRenderer.material = visual.SharkMaterial;
+                }
             }
         }
         
