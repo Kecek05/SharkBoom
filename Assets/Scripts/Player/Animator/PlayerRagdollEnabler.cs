@@ -21,34 +21,33 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         if (!IsOwner) return;
 
         ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
-
         DisableRagdoll(false);
     }
 
 
     public void HandleOnPlayerTakeDamage(object sender, PlayerHealth.OnPlayerTakeDamageArgs e)
     {
-        EnableRagdoll(); // when take damage enable ragdoll (check if this have delay)
+        EnableRagdollNetworked();// when take damage enable ragdoll (check if this have delay)
         Debug.Log("Event for enable ragdoll");
     }
 
     public void HandleOnPlayerStateChanged(PlayerState state)
     {
-        if (state == PlayerState.IdleEnemyTurn || state == PlayerState.IdleEnemyTurn)
+        if (state == PlayerState.IdleEnemyTurn || state == PlayerState.IdleMyTurn)
         {
-            DisableRagdoll(false);
+            EnableRagdollNetworked();
         }
     }
 
-    public void TriggerRagdoll(Vector3 force, Vector3 hitPoint)
-    {
-        EnableRagdoll();
+    //public void TriggerRagdoll(Vector3 force, Vector3 hitPoint)
+    //{
+    //    EnableRagdoll();
 
-        Rigidbody hitRigidbody = ragdollRbs.OrderBy(Rigidbody => Vector3.Distance(Rigidbody.position, hitPoint)).First(); // we order all rbs by distance to hitpoint and take the first one
-        hitRigidbody.AddForceAtPosition(force, hitPoint, ForceMode.Impulse);
+    //    Rigidbody hitRigidbody = ragdollRbs.OrderBy(Rigidbody => Vector3.Distance(Rigidbody.position, hitPoint)).First(); // we order all rbs by distance to hitpoint and take the first one
+    //    hitRigidbody.AddForceAtPosition(force, hitPoint, ForceMode.Impulse);
 
-        // set the state anim for ragdoll (after)
-    }
+    //    // set the state anim for ragdoll (after)
+    //}
 
     private void AlignPositionToHips()
     {
@@ -60,12 +59,27 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         // Send gfx for original pos 
         ragdollRoot.localPosition = Vector3.zero;
         ragdollRoot.localRotation = Quaternion.identity;
+    }
 
+    public void EnableRagdollNetworked()
+    {
+        if (!IsServer) return;
+
+        EnableRagdollClientRpc();
+    }
+
+    [ClientRpc]
+    private void EnableRagdollClientRpc()
+    {
+        EnableRagdoll();
     }
 
     private void EnableRagdoll()
     {
-        Debug.Log("Ragdoll function");
+        if(ragdollRbs == null)
+        {
+            ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
+        }
 
         verticalOffset = hipsTransform.position.y - rootTransform.position.y;
 
