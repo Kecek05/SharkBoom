@@ -35,7 +35,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     {
         if (state == PlayerState.IdleEnemyTurn || state == PlayerState.IdleMyTurn)
         {
-            EnableRagdollNetworked();
+            DisableRagdoll(false);
         }
     }
 
@@ -68,7 +68,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         EnableRagdollClientRpc();
     }
 
-    [ClientRpc]
+    [Rpc(SendTo.ClientsAndHost)]
     private void EnableRagdollClientRpc()
     {
         EnableRagdoll();
