@@ -17,7 +17,6 @@ public class PlayerSpawner : IPlayerSpawner
 
     public int PlayerCount => playerSpawned;
 
-   
     public PlayerSpawner(NetworkObject _playerPrefab)
     {
         playerPrefab = _playerPrefab;
@@ -42,22 +41,6 @@ public class PlayerSpawner : IPlayerSpawner
 
         NetworkObject playerInstance = GameObject.Instantiate(playerPrefab, randomSpawnPointSelected.position, Quaternion.identity);
 
-        PlayerRandomizeVisual visual = playerInstance.GetComponentInChildren<PlayerRandomizeVisual>();
-        SkinnedMeshRenderer meshRenderer = playerInstance.GetComponentInChildren<SkinnedMeshRenderer>();
-
-        if(visual != null && meshRenderer != null)
-        {
-            if (PlayerCount == 1)
-            {
-                meshRenderer.sharedMesh = switchOrder ? visual.OrcaMesh : visual.SharkMesh; // we are switching the meshes basead on bool
-                meshRenderer.material = switchOrder ? visual.OrcaMaterial : visual.SharkMaterial;
-            }
-            else if (PlayerCount == 2)
-            {
-                meshRenderer.sharedMesh = switchOrder ? visual.SharkMesh : visual.OrcaMesh; // need to be inverted in relation of player 1, because we want different meshes
-                meshRenderer.material = switchOrder ? visual.SharkMaterial : visual.OrcaMaterial;
-            }
-        }
         
 
         playerInstance.Spawn(true);
@@ -65,6 +48,27 @@ public class PlayerSpawner : IPlayerSpawner
 
         playerInstance.GetComponent<PlayerThrower>().InitializePlayerRpc(GetPlayableStateByCount(), randomSpawnPointSelected.rotation);
 
+        PlayerRandomizeVisual visual = playerInstance.GetComponentInChildren<PlayerRandomizeVisual>();
+
+        if (visual == null)
+        {
+            Debug.LogError("PlayerRandomizeVisual is null");
+        }
+        else
+        {
+            PlayerVisualType visualType;
+
+            if (PlayerCount == 1)
+            {
+                visualType = switchOrder ? PlayerVisualType.Orca : PlayerVisualType.Shark;
+                visual.SetVisualNetworked(visualType);
+            }
+            else if (PlayerCount == 2)
+            {
+                visualType = switchOrder ? PlayerVisualType.Shark : PlayerVisualType.Orca;
+                visual.SetVisualNetworked(visualType);
+            }
+        }
         //PlayerData playerData = NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.ClientIdToPlayerData[clientId];
 
         //playerData.gameObject = playerInstance.gameObject;

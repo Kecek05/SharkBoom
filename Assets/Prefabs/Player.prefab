@@ -2563,10 +2563,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b50a1a9b93abb146b42182e9ff360a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   sharkMesh: {fileID: -1704988206623216765, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
   sharkMaterial: {fileID: -876546973899608171, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
   orcaMesh: {fileID: -1704988206623216765, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
   orcaMaterial: {fileID: -1048756183676823253, guid: 98ad67e4ae4dbb54eb05b761fb2a2c02, type: 3}
+  meshRenderer: {fileID: 6782599419969224015}
 --- !u!1001 &8899995143544939368
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4291,6 +4293,11 @@ Transform:
 --- !u!4 &6657814064489085325 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6348266845613974811, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
+  m_PrefabInstance: {fileID: 8899995143544939368}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &6782599419969224015 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -6511219549512425945, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
   m_PrefabInstance: {fileID: 8899995143544939368}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &6863549959518550006 stripped

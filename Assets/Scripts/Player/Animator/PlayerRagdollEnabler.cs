@@ -39,15 +39,15 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         }
     }
 
-    //public void TriggerRagdoll(Vector3 force, Vector3 hitPoint)
-    //{
-    //    EnableRagdoll();
+    public void TriggerRagdoll(Vector3 force, Vector3 hitPoint)
+    {
+        EnableRagdollNetworked();
 
-    //    Rigidbody hitRigidbody = ragdollRbs.OrderBy(Rigidbody => Vector3.Distance(Rigidbody.position, hitPoint)).First(); // we order all rbs by distance to hitpoint and take the first one
-    //    hitRigidbody.AddForceAtPosition(force, hitPoint, ForceMode.Impulse);
+        Rigidbody hitRigidbody = ragdollRbs.OrderBy(Rigidbody => Vector3.Distance(Rigidbody.position, hitPoint)).First(); // we order all rbs by distance to hitpoint and take the first one
+        hitRigidbody.AddForceAtPosition(force, hitPoint, ForceMode.Impulse);
 
-    //    // set the state anim for ragdoll (after)
-    //}
+        // set the state anim for ragdoll (after)
+    }
 
     private void AlignPositionToHips()
     {
