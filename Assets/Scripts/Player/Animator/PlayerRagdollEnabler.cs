@@ -31,28 +31,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     }
 
 
-    // Just for debug on scene Ragdoll
-    private void Awake()
-    {
-        ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
-        DisableRagdoll(false);
-    }
-    
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            EnableRagdoll();
-        }
-
-        if(Input.GetKeyDown(KeyCode.R))
-        {
-            DisableRagdoll(true);
-        }
-    }
-
-    public void PlayerHealth_OnPlayerTakeDamage(object sender, PlayerHealth.OnPlayerTakeDamageArgs e)
+    public void HandleOnPlayerTakeDamage(object sender, PlayerHealth.OnPlayerTakeDamageArgs e)
     {
         EnableRagdoll(); // when take damage enable ragdoll (check if this have delay)
     }
@@ -80,6 +59,13 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     }
 
+    public void HandleOnPlayerStateChanged(PlayerState state)
+    {
+        if(state == PlayerState.IdleEnemyTurn || state == PlayerState.IdleEnemyTurn)
+        {
+            DisableRagdoll(true);
+        }
+    }
 
     private void EnableRagdoll()
     {
@@ -114,7 +100,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     {
         if (!IsOwner) return;
 
-        PlayerHealth.OnPlayerTakeDamage -= PlayerHealth_OnPlayerTakeDamage;
+        PlayerHealth.OnPlayerTakeDamage -= HandleOnPlayerTakeDamage;
         DisableRagdoll(false);
     }
 

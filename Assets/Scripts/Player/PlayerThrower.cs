@@ -206,8 +206,9 @@ public class PlayerThrower : NetworkBehaviour
         playerDragUi.HandleOnPlayerStateMachineStateChanged(state);
 
         playerInventoryUI.HandleOnPlayerStateMachineStateChanged(state);
-
+        playerRagdollEnabler.HandleOnPlayerStateChanged(state);
     }
+
     private void HandleOnItemLaunched(int itemInventoryIndex)
     {
         playerInventory.HandleOnPlayerLauncherItemLaunched(itemInventoryIndex);
@@ -245,7 +246,7 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleOnPlayerHealthPlayerTakeDamage(object sender, PlayerHealth.OnPlayerTakeDamageArgs e)
     {
-        playerRagdollEnabler.PlayerHealth_OnPlayerTakeDamage(sender, e);
+        playerRagdollEnabler.HandleOnPlayerTakeDamage(sender, e);
     }
 
     [Rpc(SendTo.Server)]
