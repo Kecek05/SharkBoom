@@ -14,11 +14,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [SerializeField] private PlayerHealth playerHealth;
     [SerializeField] private Rigidbody[] ragdollRbs;
 
-    [Header("Seetings")]
-    [SerializeField] private float timeToWakeUp = 5f;
-
-    private Vector3 initialPosition;
-    private Quaternion initialRotation;
     private float verticalOffset = 0f;
 
     public void InitializeOwner()
@@ -31,30 +26,17 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     }
 
 
-    // Just for debug on scene Ragdoll
-    private void Awake()
+    public void HandleOnPlayerTakeDamage(object sender, PlayerHealth.OnPlayerTakeDamageArgs e)
     {
-        ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
-        DisableRagdoll(false);
+        EnableRagdoll(); // when take damage enable ragdoll (check if this have delay)
     }
-    
 
-    private void Update()
+    public void HandleOnPlayerStateChanged(PlayerState state)
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            EnableRagdoll();
-        }
-
-        if(Input.GetKeyDown(KeyCode.R))
+        if (state == PlayerState.IdleEnemyTurn || state == PlayerState.IdleEnemyTurn)
         {
             DisableRagdoll(true);
         }
-    }
-
-    public void PlayerHealth_OnPlayerTakeDamage(object sender, PlayerHealth.OnPlayerTakeDamageArgs e)
-    {
-        EnableRagdoll(); // when take damage enable ragdoll (check if this have delay)
     }
 
     public void TriggerRagdoll(Vector3 force, Vector3 hitPoint)
@@ -80,7 +62,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     }
 
-
     private void EnableRagdoll()
     {
         verticalOffset = hipsTransform.position.y - rootTransform.position.y;
@@ -91,7 +72,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         }
 
         animator.enabled = false;
-
     }
 
     private void DisableRagdoll(bool alignToHips)
@@ -107,15 +87,13 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         }
 
         animator.enabled = true;
-        
     }
 
     public void UnInitializeOwner()
     {
         if (!IsOwner) return;
 
-        PlayerHealth.OnPlayerTakeDamage -= PlayerHealth_OnPlayerTakeDamage;
+        PlayerHealth.OnPlayerTakeDamage -= HandleOnPlayerTakeDamage;
         DisableRagdoll(false);
     }
-
 }

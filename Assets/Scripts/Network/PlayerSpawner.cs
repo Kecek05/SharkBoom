@@ -11,14 +11,17 @@ public class PlayerSpawner : IPlayerSpawner
     public static event Action<int> OnPlayerSpawned;
 
     private readonly NetworkObject playerPrefab;
+    private readonly bool switchOrder;
 
     private int playerSpawned = 0;
 
     public int PlayerCount => playerSpawned;
 
+   
     public PlayerSpawner(NetworkObject _playerPrefab)
     {
         playerPrefab = _playerPrefab;
+        switchOrder = UnityEngine.Random.value > 0.5f; // Randomly switching the value false or true for bool basead on 50% chance
     }
 
 
@@ -39,6 +42,23 @@ public class PlayerSpawner : IPlayerSpawner
 
         NetworkObject playerInstance = GameObject.Instantiate(playerPrefab, randomSpawnPointSelected.position, Quaternion.identity);
 
+        PlayerRandomizeVisual visual = playerInstance.GetComponentInChildren<PlayerRandomizeVisual>();
+        SkinnedMeshRenderer meshRenderer = playerInstance.GetComponentInChildren<SkinnedMeshRenderer>();
+
+        if(visual != null && meshRenderer != null)
+        {
+            if (PlayerCount == 1)
+            {
+                meshRenderer.sharedMesh = switchOrder ? visual.OrcaMesh : visual.SharkMesh; // we are switching the meshes basead on bool
+                meshRenderer.material = switchOrder ? visual.OrcaMaterial : visual.SharkMaterial;
+            }
+            else if (PlayerCount == 2)
+            {
+                meshRenderer.sharedMesh = switchOrder ? visual.SharkMesh : visual.OrcaMesh; // need to be inverted in relation of player 1, because we want different meshes
+                meshRenderer.material = switchOrder ? visual.SharkMaterial : visual.OrcaMaterial;
+            }
+        }
+        
 
         playerInstance.Spawn(true);
         playerInstance.DontDestroyWithOwner = true;
