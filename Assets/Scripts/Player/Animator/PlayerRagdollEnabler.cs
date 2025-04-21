@@ -29,13 +29,14 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     public void HandleOnPlayerTakeDamage(object sender, PlayerHealth.OnPlayerTakeDamageArgs e)
     {
         EnableRagdoll(); // when take damage enable ragdoll (check if this have delay)
+        Debug.Log("Event for enable ragdoll");
     }
 
     public void HandleOnPlayerStateChanged(PlayerState state)
     {
         if (state == PlayerState.IdleEnemyTurn || state == PlayerState.IdleEnemyTurn)
         {
-            DisableRagdoll(true);
+            DisableRagdoll(false);
         }
     }
 
@@ -64,6 +65,8 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     private void EnableRagdoll()
     {
+        Debug.Log("Ragdoll function");
+
         verticalOffset = hipsTransform.position.y - rootTransform.position.y;
 
         foreach (Rigidbody ragdollRb in ragdollRbs)
@@ -79,6 +82,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         if (alignToHips)
         {
             AlignPositionToHips();
+            Debug.Log("Ragdoll align");
         }
 
         foreach (Rigidbody ragdollRb in ragdollRbs)
@@ -87,6 +91,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         }
 
         animator.enabled = true;
+        Debug.Log("Ragdoll disable");
     }
 
     public void UnInitializeOwner()

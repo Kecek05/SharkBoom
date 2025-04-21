@@ -52,7 +52,6 @@ public class CameraManager : NetworkBehaviour
                 break;
             case PlayerState.MyTurnStarted:
                 IdleReposOnPlayer();
-                CameraMove();
                 break;
             case PlayerState.IdleEnemyTurn:
                 CameraMove();
@@ -99,6 +98,7 @@ public class CameraManager : NetworkBehaviour
         cameraZoom.enabled = false;
         cameraFollowing.enabled = true;
         cameraFollowing.SetTarget(playerTransform, false, 3f); // passing the object that we want to follow, false for stop until the item is null, and pass the duration of the follow
+        CameraMove();
     }
 
     private void Dragging()
