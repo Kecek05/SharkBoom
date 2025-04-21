@@ -14,11 +14,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [SerializeField] private PlayerHealth playerHealth;
     [SerializeField] private Rigidbody[] ragdollRbs;
 
-    [Header("Seetings")]
-    [SerializeField] private float timeToWakeUp = 5f;
-
-    private Vector3 initialPosition;
-    private Quaternion initialRotation;
     private float verticalOffset = 0f;
 
     public void InitializeOwner()
@@ -34,6 +29,14 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     public void HandleOnPlayerTakeDamage(object sender, PlayerHealth.OnPlayerTakeDamageArgs e)
     {
         EnableRagdoll(); // when take damage enable ragdoll (check if this have delay)
+    }
+
+    public void HandleOnPlayerStateChanged(PlayerState state)
+    {
+        if (state == PlayerState.IdleEnemyTurn || state == PlayerState.IdleEnemyTurn)
+        {
+            DisableRagdoll(true);
+        }
     }
 
     public void TriggerRagdoll(Vector3 force, Vector3 hitPoint)
@@ -59,14 +62,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     }
 
-    public void HandleOnPlayerStateChanged(PlayerState state)
-    {
-        if(state == PlayerState.IdleEnemyTurn || state == PlayerState.IdleEnemyTurn)
-        {
-            DisableRagdoll(true);
-        }
-    }
-
     private void EnableRagdoll()
     {
         verticalOffset = hipsTransform.position.y - rootTransform.position.y;
@@ -77,7 +72,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         }
 
         animator.enabled = false;
-
     }
 
     private void DisableRagdoll(bool alignToHips)
@@ -93,7 +87,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         }
 
         animator.enabled = true;
-        
     }
 
     public void UnInitializeOwner()
@@ -103,5 +96,4 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         PlayerHealth.OnPlayerTakeDamage -= HandleOnPlayerTakeDamage;
         DisableRagdoll(false);
     }
-
 }
