@@ -55,13 +55,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1383368225982518461}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -0.00155, y: 0.00251, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7349848525656600872}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &2493144463555008761
 GameObject:
   m_ObjectHideFlags: 0
@@ -106,7 +106,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 633f60b4376dd944aacd07902762ba7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetTransform: {fileID: 7581399860478811582}
+  targetTransform: {fileID: 8138967240029982676}
   isActive: 1
   followPosition: 1
   followRotation: 1
@@ -136,13 +136,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3045540592449955152}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0.00091, y: 0.00272, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7055526767340454378}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &3308459357660836661
 GameObject:
   m_ObjectHideFlags: 0
@@ -276,7 +276,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2878995692
+  GlobalObjectIdHash: 3106684233
   InScenePlacedSourceGlobalObjectIdHash: 3106684233
   DeferredDespawnTick: 0
   Ownership: 1
@@ -349,7 +349,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 633f60b4376dd944aacd07902762ba7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetTransform: {fileID: 5147129387547507646}
+  targetTransform: {fileID: 4468449641654689969}
   isActive: 1
   followPosition: 1
   followRotation: 1
@@ -565,7 +565,6 @@ GameObject:
   - component: {fileID: 4680714892015843351}
   - component: {fileID: 3908963777484058891}
   - component: {fileID: 5278958500852761623}
-  - component: {fileID: 8355466299788488543}
   m_Layer: 0
   m_Name: AimHarpoonSocketL
   m_TagString: Untagged
@@ -600,12 +599,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 633f60b4376dd944aacd07902762ba7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetTransform: {fileID: 7349848525656600872}
+  targetTransform: {fileID: 4468449641654689969}
   isActive: 1
   followPosition: 1
-  followRotation: 0
+  followRotation: 1
   followScale: 0
-  positionOffset: {x: 1.13, y: 0.2, z: 0.18}
+  positionOffset: {x: 0, y: 0, z: 0}
 --- !u!114 &5278958500852761623
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -619,19 +618,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemSO: {fileID: 11400000, guid: 7667fbb8415883a4bb0ea49a0ebf3d7b, type: 2}
---- !u!114 &8355466299788488543
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5867819794706076953}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 163cbd466808d31408360bb4cf238748, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetTransform: {fileID: 1467896000163848446}
 --- !u!1 &5993199301861590462
 GameObject:
   m_ObjectHideFlags: 0
@@ -906,12 +892,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 633f60b4376dd944aacd07902762ba7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetTransform: {fileID: 7055526767340454378}
+  targetTransform: {fileID: 8138967240029982676}
   isActive: 1
   followPosition: 1
-  followRotation: 0
+  followRotation: 1
   followScale: 0
-  positionOffset: {x: 0.2, y: 0.22, z: 1.2}
+  positionOffset: {x: 0, y: 0, z: 0}
 --- !u!114 &5310388967461320567
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2049,6 +2035,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7454132992546465335}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2169192528537242856}
   m_SourcePrefab: {fileID: 100100000, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
 --- !u!4 &2519088854175241 stripped
 Transform:
@@ -2218,6 +2207,47 @@ MonoBehaviour:
   - {fileID: 1568049866736013291}
   - {fileID: 2133854058064721098}
   - {fileID: 5086519079058504751}
+--- !u!114 &2169192528537242856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4698656218586641521}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f152ba9896efc41852063ae4c21bf8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animationEvents:
+  - eventName: OnShoot
+    OnAnimationEvent:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 3453084934751554821}
+          m_TargetAssemblyTypeName: DebugAnimationEvent, Assembly-CSharp
+          m_MethodName: 
+          m_Mode: 5
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: OnShoot
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 3453084934751554821}
+          m_TargetAssemblyTypeName: DebugAnimationEvent, Assembly-CSharp
+          m_MethodName: 
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: 
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!4 &4766570115092394442 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1140485468167043306, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}

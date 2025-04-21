@@ -99,7 +99,17 @@ public class PlayerSpawnItemOnHand : MonoBehaviour
         spawnedItem.transform.SetParent(selectedSocket.transform);
         spawnedItem.transform.localRotation = Quaternion.identity;
 
-        spawnedItem.Initialize(PlayableState.None);
+        spawnedItem.Initialize(PlayableState.None); // TODO: Set the right playable state
+    }
+
+    public void HandleOnShoot()
+    {
+        //Release item
+        if (spawnedItem != null)
+        {
+            spawnedItem.transform.SetParent(null);
+            spawnedItem = null;
+        }
     }
 
     private void DespawnItem()
