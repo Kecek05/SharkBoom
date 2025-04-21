@@ -47,31 +47,15 @@ public class PlayerSpawner : IPlayerSpawner
 
         if(visual != null && meshRenderer != null)
         {
-            if(switchOrder)
+            if (PlayerCount == 1)
             {
-                if (PlayerCount == 1)
-                {
-                    meshRenderer.sharedMesh = visual.SharkMesh;
-                    meshRenderer.material = visual.SharkMaterial;
-                }
-                else if (PlayerCount == 2)
-                {
-                    meshRenderer.sharedMesh = visual.OrcaMesh;
-                    meshRenderer.material = visual.OrcaMaterial;
-                }
+                meshRenderer.sharedMesh = switchOrder ? visual.OrcaMesh : visual.SharkMesh; // we are switching the meshes basead on bool
+                meshRenderer.material = switchOrder ? visual.OrcaMaterial : visual.SharkMaterial;
             }
-            else
+            else if (PlayerCount == 2)
             {
-                if (PlayerCount == 1)
-                {
-                    meshRenderer.sharedMesh = visual.OrcaMesh;
-                    meshRenderer.material = visual.OrcaMaterial;
-                }
-                else if (PlayerCount == 2)
-                {
-                    meshRenderer.sharedMesh = visual.SharkMesh;
-                    meshRenderer.material = visual.SharkMaterial;
-                }
+                meshRenderer.sharedMesh = switchOrder ? visual.SharkMesh : visual.OrcaMesh; // need to be inverted in relation of player 1, because we want different meshes
+                meshRenderer.material = switchOrder ? visual.SharkMaterial : visual.OrcaMaterial;
             }
         }
         
