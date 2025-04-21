@@ -16,6 +16,7 @@ public class PlayerSpawner : IPlayerSpawner
 
     public int PlayerCount => playerSpawned;
 
+   
     public PlayerSpawner(NetworkObject _playerPrefab)
     {
         playerPrefab = _playerPrefab;
@@ -39,6 +40,23 @@ public class PlayerSpawner : IPlayerSpawner
 
         NetworkObject playerInstance = GameObject.Instantiate(playerPrefab, randomSpawnPointSelected.position, Quaternion.identity);
 
+        PlayerRandomizeVisual visual = playerInstance.GetComponentInChildren<PlayerRandomizeVisual>();
+        SkinnedMeshRenderer meshRenderer = playerInstance.GetComponentInChildren<SkinnedMeshRenderer>();
+
+        if(visual != null && meshRenderer != null)
+        {
+            if (PlayerCount == 1)
+            {
+                meshRenderer.sharedMesh = visual.SharkMesh;
+                meshRenderer.material = visual.SharkMaterial;
+            }
+            else if (PlayerCount == 2)
+            {
+                meshRenderer.sharedMesh = visual.OrcaMesh;
+                meshRenderer.material = visual.OrcaMaterial;
+            }
+        }
+        
 
         playerInstance.Spawn(true);
         playerInstance.DontDestroyWithOwner = true;

@@ -2413,6 +2413,7 @@ GameObject:
   - component: {fileID: 5182517899106838082}
   - component: {fileID: 5874533860640660207}
   - component: {fileID: 8219345119279371754}
+  - component: {fileID: 2468292975892475623}
   m_Layer: 0
   m_Name: GFX
   m_TagString: Untagged
@@ -2550,6 +2551,22 @@ MonoBehaviour:
   playerGfxTransform: {fileID: 2927350467601940059}
   playerDragController: {fileID: 5120579722876303172}
   angleOffset: 0.5
+--- !u!114 &2468292975892475623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8363574200510345622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b50a1a9b93abb146b42182e9ff360a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sharkMesh: {fileID: -1704988206623216765, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
+  sharkMaterial: {fileID: -876546973899608171, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
+  orcaMesh: {fileID: -1704988206623216765, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
+  orcaMaterial: {fileID: -1048756183676823253, guid: 98ad67e4ae4dbb54eb05b761fb2a2c02, type: 3}
 --- !u!1001 &8899995143544939368
 PrefabInstance:
   m_ObjectHideFlags: 0
