@@ -1,9 +1,11 @@
+using System;
 using UnityEngine;
 
 public class PlayerAnimatorTest : MonoBehaviour
 {
     [SerializeField] private PlayerAnimator playerAnimator;
     [SerializeField] private PlayerSpawnItemOnHand playerSpawnItemOnHand;
+    [SerializeField] private PlayerLauncherTest playerLauncherTest;
 
     [SerializeField] private ItemsListSO itemSOList;
 
@@ -12,6 +14,8 @@ public class PlayerAnimatorTest : MonoBehaviour
     private void Start()
     {
         playerAnimator.OnCrossfadeFinished += HandleOnPlayerAnimatorCrossfadeFinished;
+        playerSpawnItemOnHand.OnItemOnHandSpawned += HandleOnPlayerSpawnItemOnHandItemOnHandSpawned;
+        playerSpawnItemOnHand.OnItemOnHandDespawned += HandleOnPlayerSpawnItemOnHandItemOnHandDespawned;
         Debug.Log("PlayerAnimatorTest started");
         //Start with Idle
         SetIsRight(false);
@@ -20,7 +24,7 @@ public class PlayerAnimatorTest : MonoBehaviour
 
     private void HandleOnPlayerAnimatorCrossfadeFinished()
     {
-        playerSpawnItemOnHand.HandleOnPlayerAnimatorCrossfadeFinished();
+        playerSpawnItemOnHand.HandleOnCrossfadeFinished();
     }
 
     public void ButtonSelectItem(int index)
@@ -82,7 +86,7 @@ public class PlayerAnimatorTest : MonoBehaviour
     private void HandleOnPlayerStateMachineStateChanged(PlayerState newState)
     {
         playerAnimator.HandleOnPlayerStateMachineStateChanged(newState);
-        playerSpawnItemOnHand.HandleOnPlayerStateMachineStateChanged(newState);
+        playerSpawnItemOnHand.HandleOnStateChanged(newState);
     }
 
     private void HandleOnRotationChanged(bool isRight)
@@ -90,4 +94,16 @@ public class PlayerAnimatorTest : MonoBehaviour
         playerAnimator.HandleOnRotationChanged(isRight);
         playerSpawnItemOnHand.HandleOnRotationChanged(isRight);
     }
+
+    private void HandleOnPlayerSpawnItemOnHandItemOnHandSpawned(BaseItemThrowable throwable)
+    {
+        playerLauncherTest.HandleOnItemOnHandSpawned(throwable);
+    }
+
+    private void HandleOnPlayerSpawnItemOnHandItemOnHandDespawned(BaseItemThrowable throwable)
+    {
+        playerLauncherTest.HandleOnItemOnHandDespawned(throwable);
+    }
+
+
 }

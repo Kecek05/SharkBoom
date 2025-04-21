@@ -1,8 +1,11 @@
 using Sortify;
+using System;
 using UnityEngine;
 
 public class PlayerSpawnItemOnHand : MonoBehaviour
 {
+    public event Action<BaseItemThrowable> OnItemOnHandSpawned;
+    public event Action<BaseItemThrowable> OnItemOnHandDespawned;
 
     [SerializeField] private ItemSocket[] leftSideSockets;
     [SerializeField] private ItemSocket[] rightSideSockets;
@@ -29,13 +32,13 @@ public class PlayerSpawnItemOnHand : MonoBehaviour
         UpdateSelectedSocket();
     }
 
-    public void HandleOnPlayerAnimatorCrossfadeFinished()
+    public void HandleOnCrossfadeFinished()
     {
         Debug.Log("HandleOnPlayerAnimatorCrossfadeFinished");
         SpawnItem();
     }
 
-    public void HandleOnPlayerStateMachineStateChanged(PlayerState newState)
+    public void HandleOnStateChanged(PlayerState newState)
     {
         Debug.Log($"HandleOnPlayerStateMachineStateChanged: {newState}");
 
@@ -100,6 +103,8 @@ public class PlayerSpawnItemOnHand : MonoBehaviour
         spawnedItem.transform.localRotation = Quaternion.identity;
 
         spawnedItem.Initialize(PlayableState.None); // TODO: Set the right playable state
+
+        OnItemOnHandSpawned?.Invoke(spawnedItem);
     }
 
     public void HandleOnShoot()
@@ -119,6 +124,7 @@ public class PlayerSpawnItemOnHand : MonoBehaviour
         {
             spawnedItem.DestroyItem(() =>
             {
+                OnItemOnHandDespawned?.Invoke(spawnedItem);
                 spawnedItem = null;
             });
             

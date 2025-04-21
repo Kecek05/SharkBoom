@@ -14,6 +14,7 @@ public abstract class BaseItemThrowable : MonoBehaviour
     [SerializeField] protected Rigidbody2D rb;
     [SerializeField] protected GameObject[] collidersToChangeLayer;
     [SerializeField] protected DissolveShaderComponent dissolveShaderComponent;
+    [SerializeField] protected LifetimeTriggerComponent lifetimeTriggerComponent;
     protected ItemLauncherData thisItemLaucherData;
 
     protected BaseTurnManager turnManager;
@@ -61,9 +62,11 @@ public abstract class BaseItemThrowable : MonoBehaviour
         turnManager = ServiceLocator.Get<BaseTurnManager>();
 
         OnItemReleasedAction?.Invoke(this.transform);
+        rb.bodyType = RigidbodyType2D.Dynamic; //Statick until the item is released
         rb.AddForce(itemLauncherData.dragDirection * itemLauncherData.dragForce, ForceMode2D.Impulse);
 
-        rb.bodyType = RigidbodyType2D.Dynamic; //Statick until the item is released
+        if(lifetimeTriggerComponent)
+            lifetimeTriggerComponent.StartLifetime();
     }
 
     protected virtual void ItemCallbackAction()

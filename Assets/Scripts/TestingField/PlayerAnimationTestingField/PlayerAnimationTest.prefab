@@ -240,6 +240,7 @@ GameObject:
   - component: {fileID: 4138560099368875656}
   - component: {fileID: 1395142749047318013}
   - component: {fileID: 964839364522880536}
+  - component: {fileID: 4426540835157296268}
   m_Layer: 0
   m_Name: PlayerAnimationTest
   m_TagString: Untagged
@@ -276,7 +277,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3106684233
+  GlobalObjectIdHash: 2878995692
   InScenePlacedSourceGlobalObjectIdHash: 3106684233
   DeferredDespawnTick: 0
   Ownership: 1
@@ -305,6 +306,20 @@ MonoBehaviour:
   - {fileID: 5278958500852761623}
   rightSideSockets:
   - {fileID: 5310388967461320567}
+--- !u!114 &4426540835157296268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3453084934751554821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8be8c679c6deb1641b44193bc81ef04c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemDirection: {fileID: 1467896000163848446}
+  dragForce: 10
 --- !u!1 &3623888700796022734
 GameObject:
   m_ObjectHideFlags: 0
@@ -797,6 +812,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerAnimator: {fileID: 3217823194244817449}
   playerSpawnItemOnHand: {fileID: 964839364522880536}
+  playerLauncherTest: {fileID: 4426540835157296268}
   itemSOList: {fileID: 11400000, guid: 0512cb21a29af2e4b88962e2cb6a1605, type: 2}
 --- !u!1 &6857045355972327651
 GameObject:
@@ -2224,10 +2240,10 @@ MonoBehaviour:
     OnAnimationEvent:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 3453084934751554821}
-          m_TargetAssemblyTypeName: DebugAnimationEvent, Assembly-CSharp
-          m_MethodName: 
-          m_Mode: 5
+        - m_Target: {fileID: 964839364522880536}
+          m_TargetAssemblyTypeName: PlayerSpawnItemOnHand, Assembly-CSharp
+          m_MethodName: HandleOnShoot
+          m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -2236,13 +2252,13 @@ MonoBehaviour:
             m_StringArgument: OnShoot
             m_BoolArgument: 0
           m_CallState: 2
-        - m_Target: {fileID: 3453084934751554821}
-          m_TargetAssemblyTypeName: DebugAnimationEvent, Assembly-CSharp
-          m_MethodName: 
+        - m_Target: {fileID: 4426540835157296268}
+          m_TargetAssemblyTypeName: PlayerLauncherTest, Assembly-CSharp
+          m_MethodName: Launch
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: 
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
