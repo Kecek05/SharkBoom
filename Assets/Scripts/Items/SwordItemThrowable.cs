@@ -7,15 +7,14 @@ public class SwordItemThrowable : BaseItemThrowable
 
     [SerializeField] private BaseItemComponent spinObjectComponent;
 
-    public override void Initialize(PlayableState ownerPlayableState)
+    public override void ItemReleased(ItemLauncherData itemLauncherData)
     {
-        base.Initialize(ownerPlayableState);
+        base.ItemReleased(itemLauncherData);
 
         spinObjectComponent.EnableComponent();
 
         spinObjectComponent.StartComponentLogic();
     }
-
 
     //DEBUG
 

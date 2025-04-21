@@ -4,9 +4,9 @@ public class HarpoonItemThrowable : BaseItemThrowable
 {
     [SerializeField] private BaseItemComponent rotateTowardsVelocityComponent;
 
-    public override void Initialize(PlayableState ownerPlayableState)
+    public override void ItemReleased(ItemLauncherData itemLauncherData)
     {
-        base.Initialize(ownerPlayableState);
+        base.ItemReleased(itemLauncherData);
 
         rotateTowardsVelocityComponent.EnableComponent();
 
