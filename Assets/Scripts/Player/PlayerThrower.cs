@@ -194,7 +194,6 @@ public class PlayerThrower : NetworkBehaviour
         playerAnimator.HandleOnItemSelectedSO(itemSOSelected);
         playerInventoryUI.UpdateOpenInventoryButton(itemSOSelected.itemIcon);
 
-        playerSpawnItemOnHand.HandleOnItemSelectedSO(itemSOSelected);
     }
 
     private void HandleOnItemSelectedByUI(int itemInventoryIndex)
@@ -239,6 +238,8 @@ public class PlayerThrower : NetworkBehaviour
         playerDragController.SetDragRb(playerInventory.GetSelectedItemSO().rb);
 
         playerInventoryUI.HandleOnPlayerInventoryItemSelected(selectedItemInventoryIndex);
+
+        playerSpawnItemOnHand.HandleOnPlayerInventoryItemSelected(selectedItemInventoryIndex);
     }
 
     private void HandleOnItemChanged(ItemInventoryData itemChanged)
