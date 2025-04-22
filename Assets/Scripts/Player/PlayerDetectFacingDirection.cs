@@ -35,13 +35,20 @@ public class PlayerDetectFacingDirection : DragListener
         if (playerDragController.GetOpositeFingerPos().x > playerGfxTransform.position.x + angleOffset)
         {
             //right
-            Debug.Log("Right");
+            if(isDirectionRight) return; //do nothing if the direction is already right
+
             OnRotationChanged?.Invoke(true);
+
+            isDirectionRight = true;
+
         }
         else if (playerDragController.GetOpositeFingerPos().x < playerGfxTransform.position.x - angleOffset)
         {
             //left
-            Debug.Log("Left");
+            if(!isDirectionRight) return; //do nothing if the direction is already left
+
+            isDirectionRight = false;
+
             OnRotationChanged?.Invoke(false);
         }
     }

@@ -116,4 +116,9 @@ public abstract class BaseItemThrowable : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
+
+    protected void OnDestroy()
+    {
+        DestroyItem();
+    }
 }
