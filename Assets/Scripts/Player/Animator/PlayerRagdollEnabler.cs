@@ -13,6 +13,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     [SerializeField] private PlayerHealth playerHealth;
     [SerializeField] private Rigidbody[] ragdollRbs;
+    [SerializeField] private Collider[] ragdollColliders;
 
     private float verticalOffset = 0f;
 
@@ -20,8 +21,9 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     {
         if (!IsOwner) return;
 
-        ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
-        //DisableRagdoll(false);
+        CacheRagdollComponents();
+        DisableRagdoll();
+        // not align and disable ragdoll
     }
 
 
@@ -31,52 +33,39 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
         if (IsOwner)
         {
+            // turn on ragdoll
             RequestRagdollServerRpc();
             Debug.Log("Event for enable ragdoll");
         }
     }
 
+    private void HandleItemCallback()
+    {
+
+    }
+
     public void HandleOnPlayerStateChanged(PlayerState state)
     {
-        if (state == PlayerState.IdleEnemyTurn || state == PlayerState.IdleMyTurn)
+        if (state == PlayerState.IdleMyTurn || state == PlayerState.IdleEnemyTurn)
         {
-            if (IsOwner)
-            {
-                RequestRagdollDisableServerRpc();
-            }
+            RequestRagdollDisableServerRpc();
         }
     }
 
     public void TriggerRagdoll(Vector3 force, Vector3 hitPoint)
     {
-        EnableRagdollNetworked();
+        RequestRagdollServerRpc();
 
         Rigidbody hitRigidbody = ragdollRbs.OrderBy(Rigidbody => Vector3.Distance(Rigidbody.position, hitPoint)).First(); // we order all rbs by distance to hitpoint and take the first one
         hitRigidbody.AddForceAtPosition(force, hitPoint, ForceMode.Impulse);
 
+        Debug.Log("Trigger Ragdoll");
         // set the state anim for ragdoll (after)
-    }
-
-    private void AlignPositionToHips()
-    {
-        Vector3 newPosition = hipsTransform.position; // create a new pos basead on actual hips transform position
-        newPosition.y -= verticalOffset;  // correcting the y axis to align with the root transform
-        rootTransform.position = newPosition;
-        rootTransform.rotation = Quaternion.LookRotation(ragdollRoot.forward, Vector3.up);
-
-        // Send gfx for original pos 
-        ragdollRoot.localPosition = Vector3.zero;
-        ragdollRoot.localRotation = Quaternion.identity;
     }
 
 
     [Rpc(SendTo.Server)]
     private void RequestRagdollServerRpc()
-    {
-        EnableRagdollNetworked();
-    }
-
-    public void EnableRagdollNetworked()
     {
         EnableRagdollClientRpc();
         Debug.Log("Ragdoll enable SEND TO RPC");
@@ -91,10 +80,9 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     private void EnableRagdoll()
     {
-        if(ragdollRbs == null)
-        {
-            ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
-        }
+        animator.enabled = false;
+
+        CacheRagdollComponents();
 
         verticalOffset = hipsTransform.position.y - rootTransform.position.y;
 
@@ -103,18 +91,17 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             ragdollRb.isKinematic = false;
         }
 
-        animator.enabled = false;
+        foreach (Collider ragdollCollider in ragdollColliders)
+        {
+            ragdollCollider.enabled = true;
+        }
+
         Debug.Log("Ragdoll enable");
     }
 
 
     [Rpc(SendTo.Server)]
     private void RequestRagdollDisableServerRpc()
-    {
-        DisableRagdollNetworked();
-    }
-
-    public void DisableRagdollNetworked()
     {
         DisableRagdollClientRpc();
         Debug.Log("Disable Ragdoll SEND TO RPC");
@@ -123,25 +110,46 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost)]
     private void DisableRagdollClientRpc()
     {
-        DisableRagdoll(true);
+        DisableRagdoll();
+        // align to hips
         Debug.Log("Disable Ragdoll RPC");
     }
 
-    private void DisableRagdoll(bool alignToHips)
+    private void AlignPositionToHips()
     {
-        if (alignToHips)
-        {
-            AlignPositionToHips();
-            Debug.Log("Ragdoll align");
-        }
+        Vector3 newPosition = hipsTransform.position; // create a new pos basead on actual hips transform position
+        newPosition.y -= verticalOffset;  // correcting the y axis to align with the root transform
+        rootTransform.position = newPosition;
+        rootTransform.rotation = Quaternion.LookRotation(ragdollRoot.forward, Vector3.up);
+
+        // Send gfx for original pos 
+        ragdollRoot.localPosition = Vector3.zero;
+        ragdollRoot.localRotation = Quaternion.identity;
+
+    }
+
+    private void DisableRagdoll()
+    {
+        animator.enabled = true;
 
         foreach (Rigidbody ragdollRb in ragdollRbs)
         {
             ragdollRb.isKinematic = true;
         }
 
-        animator.enabled = true;
+        foreach (Collider ragdollCollider in ragdollColliders)
+        {
+            ragdollCollider.enabled = false;
+        }
+
+        
         Debug.Log("Ragdoll disable");
+    }
+
+    private void CacheRagdollComponents()
+    {
+        ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
+        ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>();
     }
 
     public void UnInitializeOwner()
@@ -149,6 +157,5 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         if (!IsOwner) return;
 
         PlayerHealth.OnPlayerTakeDamage -= HandleOnPlayerTakeDamage;
-        DisableRagdoll(false);
     }
 }

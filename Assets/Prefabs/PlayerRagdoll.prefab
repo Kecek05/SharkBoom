@@ -575,7 +575,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2331259650
+  GlobalObjectIdHash: 1265939711
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -672,6 +672,7 @@ MonoBehaviour:
   - {fileID: 1482397564086282568}
   - {fileID: 773857424255861932}
   - {fileID: 1244250245066138330}
+  playerSpawnItemOnHand: {fileID: 0}
 --- !u!114 &6377254783256832976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1024,6 +1025,7 @@ MonoBehaviour:
   cameraMovement: {fileID: 8450544055641021374}
   cameraZoom: {fileID: 2903552973942911587}
   cameraFollowing: {fileID: 1764359340906761994}
+  playerTransform: {fileID: 0}
 --- !u!114 &1764359340906761994
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3092,7 +3094,7 @@ MonoBehaviour:
   hipsTransform: {fileID: 2782434505581925117}
   playerHealth: {fileID: 2518838509862417992}
   ragdollRbs: []
-  timeToWakeUp: 1
+  ragdollColliders: []
 --- !u!114 &3009221047477586855
 MonoBehaviour:
   m_ObjectHideFlags: 0
