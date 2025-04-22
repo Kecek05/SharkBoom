@@ -21,21 +21,29 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         if (!IsOwner) return;
 
         ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
-        DisableRagdoll(false);
+        //DisableRagdoll(false);
     }
 
 
     public void HandleOnPlayerTakeDamage(object sender, PlayerHealth.OnPlayerTakeDamageArgs e)
     {
-        EnableRagdollNetworked();// when take damage enable ragdoll (check if this have delay)
-        Debug.Log("Event for enable ragdoll");
+        if (sender != playerHealth) return;
+
+        if (IsOwner)
+        {
+            RequestRagdollServerRpc();
+            Debug.Log("Event for enable ragdoll");
+        }
     }
 
     public void HandleOnPlayerStateChanged(PlayerState state)
     {
         if (state == PlayerState.IdleEnemyTurn || state == PlayerState.IdleMyTurn)
         {
-            DisableRagdoll(false);
+            if (IsOwner)
+            {
+                RequestRagdollDisableServerRpc();
+            }
         }
     }
 
@@ -61,17 +69,24 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         ragdollRoot.localRotation = Quaternion.identity;
     }
 
+
+    [Rpc(SendTo.Server)]
+    private void RequestRagdollServerRpc()
+    {
+        EnableRagdollNetworked();
+    }
+
     public void EnableRagdollNetworked()
     {
-        if (!IsServer) return;
-
         EnableRagdollClientRpc();
+        Debug.Log("Ragdoll enable SEND TO RPC");
     }
 
     [Rpc(SendTo.ClientsAndHost)]
     private void EnableRagdollClientRpc()
     {
         EnableRagdoll();
+        Debug.Log("Ragdoll enable RPC");
     }
 
     private void EnableRagdoll()
@@ -89,6 +104,27 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         }
 
         animator.enabled = false;
+        Debug.Log("Ragdoll enable");
+    }
+
+
+    [Rpc(SendTo.Server)]
+    private void RequestRagdollDisableServerRpc()
+    {
+        DisableRagdollNetworked();
+    }
+
+    public void DisableRagdollNetworked()
+    {
+        DisableRagdollClientRpc();
+        Debug.Log("Disable Ragdoll SEND TO RPC");
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void DisableRagdollClientRpc()
+    {
+        DisableRagdoll(true);
+        Debug.Log("Disable Ragdoll RPC");
     }
 
     private void DisableRagdoll(bool alignToHips)
