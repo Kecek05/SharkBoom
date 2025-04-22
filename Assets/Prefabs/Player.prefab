@@ -713,6 +713,7 @@ MonoBehaviour:
   - {fileID: 1482397564086282568}
   - {fileID: 773857424255861932}
   - {fileID: 1244250245066138330}
+  playerSpawnItemOnHand: {fileID: 5846641034301650373}
 --- !u!114 &6377254783256832976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2624,6 +2625,7 @@ Transform:
   - {fileID: 4751293668964476053}
   - {fileID: 3268204637718415723}
   - {fileID: 1265534911540065886}
+  - {fileID: 8907946017582502155}
   m_Father: {fileID: 2498330595957626671}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6932457704017656328
@@ -2704,8 +2706,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  aimTransform: {fileID: 0}
-  aimDefaultPosition: {fileID: 0}
+  aimTransform: {fileID: 6133530615958570407}
+  aimDefaultPosition: {fileID: 8907946017582502155}
   playerDragController: {fileID: 5120579722876303172}
 --- !u!114 &5874533860640660207
 MonoBehaviour:
@@ -2753,6 +2755,37 @@ MonoBehaviour:
   orcaMesh: {fileID: -1704988206623216765, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
   orcaMaterial: {fileID: -1048756183676823253, guid: 98ad67e4ae4dbb54eb05b761fb2a2c02, type: 3}
   meshRenderer: {fileID: 6782599419969224015}
+--- !u!1 &9060422909739577700
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8907946017582502155}
+  m_Layer: 0
+  m_Name: AimDefaultPos
+  m_TagString: Untagged
+  m_Icon: {fileID: -5938655980376293919, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8907946017582502155
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9060422909739577700}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 2.053, z: -3.776}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2927350467601940059}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &8899995143544939368
 PrefabInstance:
   m_ObjectHideFlags: 0
