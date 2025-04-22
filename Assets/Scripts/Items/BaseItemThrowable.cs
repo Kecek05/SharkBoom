@@ -23,26 +23,26 @@ public abstract class BaseItemThrowable : MonoBehaviour
     /// Called when the item spawns in hand
     /// </summary>
     /// <param name="itemLauncherData"></param>
-    public virtual void Initialize(PlayableState ownerPlayableState)
+    public virtual void Initialize()
     {
         //thisItemLaucherData = itemLauncherData;
         rb.bodyType = RigidbodyType2D.Static; //Statick until the item is released
 
-        switch (ownerPlayableState)
-        {
-            case PlayableState.Player1Playing:
-                foreach(GameObject gameObject in collidersToChangeLayer)
-                {
-                    gameObject.layer = PlayersPublicInfoManager.PLAYER_1_LAYER;
-                }
-                break;
-            case PlayableState.Player2Playing:
-                foreach (GameObject gameObject in collidersToChangeLayer)
-                {
-                    gameObject.layer = PlayersPublicInfoManager.PLAYER_2_LAYER;
-                }
-                break;
-        }
+        //switch (ownerPlayableState)
+        //{
+        //    case PlayableState.Player1Playing:
+        //        foreach(GameObject gameObject in collidersToChangeLayer)
+        //        {
+        //            gameObject.layer = PlayersPublicInfoManager.PLAYER_1_LAYER;
+        //        }
+        //        break;
+        //    case PlayableState.Player2Playing:
+        //        foreach (GameObject gameObject in collidersToChangeLayer)
+        //        {
+        //            gameObject.layer = PlayersPublicInfoManager.PLAYER_2_LAYER;
+        //        }
+        //        break;
+        //}
 
         if(dissolveShaderComponent != null)
             dissolveShaderComponent.DissolveFadeIn();
@@ -58,6 +58,8 @@ public abstract class BaseItemThrowable : MonoBehaviour
     /// <param name="direction"></param>
     public virtual void ItemReleased(ItemLauncherData itemLauncherData)
     {
+        SetCollision(itemLauncherData.ownerPlayableState);
+
         thisItemLaucherData = itemLauncherData;
         turnManager = ServiceLocator.Get<BaseTurnManager>();
 
@@ -67,6 +69,25 @@ public abstract class BaseItemThrowable : MonoBehaviour
 
         if(lifetimeTriggerComponent)
             lifetimeTriggerComponent.StartLifetime();
+    }
+
+    private void SetCollision(PlayableState playableState)
+    {
+        switch (playableState)
+        {
+            case PlayableState.Player1Playing:
+                foreach (GameObject gameObject in collidersToChangeLayer)
+                {
+                    gameObject.layer = PlayersPublicInfoManager.PLAYER_1_LAYER;
+                }
+                break;
+            case PlayableState.Player2Playing:
+                foreach (GameObject gameObject in collidersToChangeLayer)
+                {
+                    gameObject.layer = PlayersPublicInfoManager.PLAYER_2_LAYER;
+                }
+                break;
+        }
     }
 
     protected virtual void ItemCallbackAction()

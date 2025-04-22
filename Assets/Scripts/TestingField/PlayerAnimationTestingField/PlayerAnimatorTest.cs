@@ -86,7 +86,7 @@ public class PlayerAnimatorTest : MonoBehaviour
     private void HandleOnPlayerStateMachineStateChanged(PlayerState newState)
     {
         playerAnimator.HandleOnPlayerStateMachineStateChanged(newState);
-        playerSpawnItemOnHand.HandleOnStateChanged(newState);
+        playerSpawnItemOnHand.HandleOnPlayerStateChanged(newState);
     }
 
     private void HandleOnRotationChanged(bool isRight)

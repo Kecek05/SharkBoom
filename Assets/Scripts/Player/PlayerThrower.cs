@@ -3,6 +3,7 @@ using Sortify;
 using System;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.InputSystem.LowLevel;
 
 public class PlayerThrower : NetworkBehaviour
 {
@@ -23,6 +24,7 @@ public class PlayerThrower : NetworkBehaviour
     [SerializeField] private PlayerRagdollEnabler playerRagdollEnabler;
     [SerializeField] private Collider2D playerTouchColl;
     [SerializeField] private GameObject[] playerColliders;
+    [SerializeField] private PlayerSpawnItemOnHand playerSpawnItemOnHand;
     private PlayerStateMachine playerStateMachine;
 
     private NetworkVariable<PlayableState> thisPlayableState = new();
@@ -127,6 +129,12 @@ public class PlayerThrower : NetworkBehaviour
 
         playerDetectFacingDirection.OnRotationChanged += HandleOnPlayerDetectFacingDirectionRotationChanged;
         PlayerHealth.OnPlayerTakeDamage += HandleOnPlayerHealthPlayerTakeDamage;
+
+        playerAnimator.OnCrossfadeFinished += HandleOnPlayerAnimatorCrossfadeFinished;
+
+        playerSpawnItemOnHand.OnItemOnHandSpawned += HandleOnPlayerSpawnItemOnHandItemOnHandSpawned;
+        playerSpawnItemOnHand.OnItemOnHandDespawned += HandleOnPlayerSpawnItemOnHandItemOnHandDespawned;
+
     }
 
     private void UnHandleEvents()
@@ -152,6 +160,11 @@ public class PlayerThrower : NetworkBehaviour
         playerDetectFacingDirection.OnRotationChanged -= HandleOnPlayerDetectFacingDirectionRotationChanged;
         PlayerHealth.OnPlayerTakeDamage -= HandleOnPlayerHealthPlayerTakeDamage;
 
+        playerAnimator.OnCrossfadeFinished -= HandleOnPlayerAnimatorCrossfadeFinished;
+
+        playerSpawnItemOnHand.OnItemOnHandSpawned -= HandleOnPlayerSpawnItemOnHandItemOnHandSpawned;
+        playerSpawnItemOnHand.OnItemOnHandDespawned -= HandleOnPlayerSpawnItemOnHandItemOnHandDespawned;
+
         cameraManager.UnInitializeOwner();
         playerLauncher.UnInitializeOwner();
         playerInventoryUI.UnHandleInitializeOwner();
@@ -162,6 +175,8 @@ public class PlayerThrower : NetworkBehaviour
     {
         playerAnimator.HandleOnRotationChanged(isRight);
         playerFlipGfx.HandleOnRotationChanged(isRight);
+
+        playerSpawnItemOnHand.HandleOnRotationChanged(isRight);
     }
 
     private void HandleOnDragStart()
@@ -178,6 +193,8 @@ public class PlayerThrower : NetworkBehaviour
     {
         playerAnimator.HandleOnItemSelectedSO(itemSOSelected);
         playerInventoryUI.UpdateOpenInventoryButton(itemSOSelected.itemIcon);
+
+        playerSpawnItemOnHand.HandleOnItemSelectedSO(itemSOSelected);
     }
 
     private void HandleOnItemSelectedByUI(int itemInventoryIndex)
@@ -207,6 +224,9 @@ public class PlayerThrower : NetworkBehaviour
 
         playerInventoryUI.HandleOnPlayerStateMachineStateChanged(state);
         playerRagdollEnabler.HandleOnPlayerStateChanged(state);
+
+
+        playerSpawnItemOnHand.HandleOnPlayerStateChanged(state);
     }
 
     private void HandleOnItemLaunched(int itemInventoryIndex)
@@ -239,15 +259,27 @@ public class PlayerThrower : NetworkBehaviour
         }
     }
 
-    private void HandleOnPlayerFlipGfxRotationChanged(bool isRight)
-    {
-
-    }
-
     private void HandleOnPlayerHealthPlayerTakeDamage(object sender, PlayerHealth.OnPlayerTakeDamageArgs e)
     {
         playerRagdollEnabler.HandleOnPlayerTakeDamage(sender, e);
     }
+
+    private void HandleOnPlayerAnimatorCrossfadeFinished()
+    {
+        playerSpawnItemOnHand.HandleOnCrossfadeFinished();
+    }
+
+    private void HandleOnPlayerSpawnItemOnHandItemOnHandSpawned(BaseItemThrowable throwable)
+    {
+        playerLauncher.HandleOnItemOnHandSpawned(throwable);
+    }
+
+    private void HandleOnPlayerSpawnItemOnHandItemOnHandDespawned(BaseItemThrowable throwable)
+    {
+       playerLauncher.HandleOnItemOnHandDespawned(throwable);
+    }
+
+    //---
 
     [Rpc(SendTo.Server)]
     public void InitializePlayerRpc(PlayableState playableState, Quaternion GFXRotation)

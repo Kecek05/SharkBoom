@@ -20,6 +20,7 @@ public class PlayerLauncher : NetworkBehaviour
     [SerializeField] private PlayerInventory playerInventory;
     
     private BaseItemActivableManager itemActivableManager;
+    private BaseItemThrowable lastProjectile;
 
     public void InitializeOwner()
     {
@@ -45,6 +46,19 @@ public class PlayerLauncher : NetworkBehaviour
         if (state == PlayerState.DragReleaseJump || state == PlayerState.DragReleaseItem)
         {
             //Launch();
+        }
+    }
+
+    public void HandleOnItemOnHandSpawned(BaseItemThrowable throwable)
+    {
+        lastProjectile = throwable;
+    }
+
+    public void HandleOnItemOnHandDespawned(BaseItemThrowable throwable)
+    {
+        if (throwable == lastProjectile)
+        {
+            lastProjectile = null;
         }
     }
 
@@ -120,20 +134,33 @@ public class PlayerLauncher : NetworkBehaviour
             return;
         }
 
-
-        GameObject projetctile = Instantiate(playerInventory.GetItemSOByItemSOIndex(launcherData.selectedItemSOIndex).itemClientPrefab, spawnItemPos.position, Quaternion.identity);
-
-
-        if (projetctile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
+        if (lastProjectile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
         {
             itemThrowable.ItemReleased(launcherData);
         }
 
-        if (projetctile.transform.TryGetComponent(out BaseItemThrowableActivable activable))
+        if (lastProjectile.transform.TryGetComponent(out BaseItemThrowableActivable activable))
         {
             //Get the ref to active the item
             itemActivableManager.SetItemThrowableActivableClient(activable);
         }
+
+
+        //GameObject projetctile = Instantiate(playerInventory.GetItemSOByItemSOIndex(launcherData.selectedItemSOIndex).itemClientPrefab, spawnItemPos.position, Quaternion.identity);
+
+
+        //if (projetctile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
+        //{
+        //    itemThrowable.ItemReleased(launcherData);
+        //}
+
+        //if (projetctile.transform.TryGetComponent(out BaseItemThrowableActivable activable))
+        //{
+        //    //Get the ref to active the item
+        //    itemActivableManager.SetItemThrowableActivableClient(activable);
+        //}
+
+
 
     }
 
