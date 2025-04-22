@@ -13,7 +13,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
     [SerializeField] private ItemSocket[] rightSideSockets;
 
     private ItemSocket selectedSocket;
-    private int selectedItemSOIndex;
+    private int selectedItemSOIndex = 0;
     private bool isRightSocket = false; //Rotation that the player is looking
     private BaseItemThrowable spawnedItem;
 
@@ -30,7 +30,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
     public void HandleOnPlayerInventoryItemSelected(int selectedItemSOIndex)
     {
         //Based on the item select, save the item to spawn when drag start and select the corresponding socket based on item and on rotation
-        this.selectedItemSOIndex = selectedItemSOIndex;
+        this.selectedItemSOIndex = playerInventory.GetSelectedItemSOIndex();
         UpdateSelectedSocket();
     }
 
