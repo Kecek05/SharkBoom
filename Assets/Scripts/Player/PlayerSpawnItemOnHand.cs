@@ -1,8 +1,9 @@
 using Sortify;
 using System;
+using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerSpawnItemOnHand : MonoBehaviour
+public class PlayerSpawnItemOnHand : NetworkBehaviour
 {
     public event Action<BaseItemThrowable> OnItemOnHandSpawned;
     public event Action<BaseItemThrowable> OnItemOnHandDespawned;
@@ -97,13 +98,29 @@ public class PlayerSpawnItemOnHand : MonoBehaviour
 
     private void InstantiateObj()
     {
-        spawnedItem = Instantiate(selectedItemSO.itemClientPrefab, selectedSocket.transform.position, Quaternion.identity).GetComponent<BaseItemThrowable>();
-        spawnedItem.transform.SetParent(selectedSocket.transform);
-        spawnedItem.transform.localRotation = Quaternion.identity;
+        if(!IsOwner) return; //Only the owner can spawn the item
 
-        spawnedItem.Initialize();
+        InstantiateObjServerRpc(NetworkManager.Singleton.LocalClientId);
+
+        //spawnedItem = Instantiate(selectedItemSO.itemClientPrefab, selectedSocket.transform.position, Quaternion.identity).GetComponent<BaseItemThrowable>();
+        //spawnedItem.transform.SetParent(selectedSocket.transform);
+        //spawnedItem.transform.localRotation = Quaternion.identity;
+
+        //spawnedItem.Initialize();
 
         OnItemOnHandSpawned?.Invoke(spawnedItem);
+    }
+
+    [Rpc(SendTo.Server)]
+    private void InstantiateObjServerRpc(ulong ownerClientId)
+    {
+        NetworkObject spawnedItemNetworkObject = Instantiate(selectedItemSO.itemClientPrefab, selectedSocket.transform.position, Quaternion.identity).GetComponent<NetworkObject>();
+        spawnedItemNetworkObject.Spawn();
+        spawnedItemNetworkObject.transform.SetParent(selectedSocket.transform);
+        spawnedItemNetworkObject.transform.localRotation = Quaternion.identity;
+        spawnedItemNetworkObject.ChangeOwnership(ownerClientId);
+
+        spawnedItemNetworkObject.GetComponent<BaseItemThrowable>().Initialize();
     }
 
     public void HandleOnShoot()

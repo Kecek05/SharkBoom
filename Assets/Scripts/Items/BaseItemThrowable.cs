@@ -1,8 +1,9 @@
 using Sortify;
 using System;
+using Unity.Netcode;
 using UnityEngine;
 
-public abstract class BaseItemThrowable : MonoBehaviour
+public abstract class BaseItemThrowable : NetworkBehaviour
 {
 
     public static event Action OnItemFinishedAction;
