@@ -16,6 +16,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     [SerializeField] protected GameObject[] collidersToChangeLayer;
     [SerializeField] protected DissolveShaderComponent dissolveShaderComponent;
     [SerializeField] protected LifetimeTriggerComponent lifetimeTriggerComponent;
+    [SerializeField] protected FollowTransformComponent followTransformComponent; //Used to follow the hand when the item is in hand
     protected ItemLauncherData thisItemLaucherData;
 
     protected BaseTurnManager turnManager;
@@ -24,11 +25,13 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     /// Called when the item spawns in hand
     /// </summary>
     /// <param name="itemLauncherData"></param>
-    public virtual void Initialize()
+    public virtual void Initialize(Transform parent)
     {
         //thisItemLaucherData = itemLauncherData;
         rb.bodyType = RigidbodyType2D.Static; //Statick until the item is released
 
+        followTransformComponent.SetTarget(parent);
+        followTransformComponent.EnableComponent();
         //switch (ownerPlayableState)
         //{
         //    case PlayableState.Player1Playing:
@@ -45,7 +48,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
         //        break;
         //}
 
-        if(dissolveShaderComponent != null)
+        if (dissolveShaderComponent != null)
             dissolveShaderComponent.DissolveFadeIn();
 
         //turnManager = ServiceLocator.Get<BaseTurnManager>();
@@ -60,7 +63,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     public virtual void ItemReleased(ItemLauncherData itemLauncherData)
     {
         SetCollision(itemLauncherData.ownerPlayableState);
-
+        followTransformComponent.DisableComponent();
         thisItemLaucherData = itemLauncherData;
         turnManager = ServiceLocator.Get<BaseTurnManager>();
 

@@ -119,9 +119,6 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         spawnedItemNetworkObject.Spawn();
         spawnedItemNetworkObject.ChangeOwnership(ownerClientId);
 
-        spawnedItem = spawnedItemNetworkObject.GetComponent<BaseItemThrowable>();
-        spawnedItem.Initialize();
-
         CallOnItemOnHandClientRpc(spawnedItemNetworkObject);
     }
 
@@ -139,7 +136,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
 
         if(IsOwner)
         {
-            spawnedItem.transform.SetParent(selectedSocket.transform);
+            spawnedItem.Initialize(selectedSocket.transform);
             spawnedItem.transform.localRotation = Quaternion.identity;
         }
 
@@ -151,7 +148,6 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         //Release item
         if (spawnedItem != null)
         {
-            spawnedItem.transform.SetParent(null);
             spawnedItem = null;
         }
     }

@@ -77,7 +77,7 @@ public class ItemSpawner : MonoBehaviour
 
         if (lastProjectile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
         {
-            itemThrowable.Initialize();
+            itemThrowable.Initialize(null);
             itemThrowable.ItemReleased(launcherData);
         }
 
