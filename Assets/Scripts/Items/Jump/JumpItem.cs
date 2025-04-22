@@ -12,7 +12,7 @@ public class JumpItem : BaseItemThrowable
     {
         base.ItemReleased(itemLauncherData);
 
-        if (isServerObject) return; // Jump is Client Sided. The server should not follow the player
+        if (!IsServer) return; // Jump is Client Sided. The server should not follow the player
 
         objectToFollowTransform = ServiceLocator.Get<BasePlayersPublicInfoManager>().GetPlayerObjectByPlayableState(thisItemLaucherData.ownerPlayableState).transform;
 
@@ -23,7 +23,7 @@ public class JumpItem : BaseItemThrowable
 
     protected override void ItemCallbackAction()
     {
-        if (!isServerObject) return;
+        if (!IsServer) return;
 
         turnManager.PlayerJumped(thisItemLaucherData.ownerPlayableState);
 

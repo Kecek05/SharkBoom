@@ -80,7 +80,7 @@ public class PlayerAnimatorTest : MonoBehaviour
     private void HandleOnItemSelectedSO(ItemSO itemSelectedSO)
     {
         playerAnimator.HandleOnItemSelectedSO(itemSelectedSO);
-        playerSpawnItemOnHand.HandleOnItemSelectedSO(itemSelectedSO);
+       // playerSpawnItemOnHand.HandleOnPlayerInventoryItemSelected(itemSelectedSO);
     }
 
     private void HandleOnPlayerStateMachineStateChanged(PlayerState newState)

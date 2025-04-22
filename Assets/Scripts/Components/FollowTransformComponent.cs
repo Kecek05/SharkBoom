@@ -29,4 +29,20 @@ public class FollowTransformComponent : MonoBehaviour
             if (followScale) transform.localScale = targetTransform.localScale;
         }
     }
+
+    public void SetTarget(Transform target)
+    {
+        if(target == null) return;
+        targetTransform = target;
+    }
+
+    public void EnableComponent()
+    {
+        isActive = true;
+    }
+
+    public void DisableComponent()
+    {
+        isActive = false;
+    }
 }

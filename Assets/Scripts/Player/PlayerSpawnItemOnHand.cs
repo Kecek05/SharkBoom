@@ -1,17 +1,19 @@
 using Sortify;
 using System;
+using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerSpawnItemOnHand : MonoBehaviour
+public class PlayerSpawnItemOnHand : NetworkBehaviour
 {
     public event Action<BaseItemThrowable> OnItemOnHandSpawned;
     public event Action<BaseItemThrowable> OnItemOnHandDespawned;
 
+    [SerializeField] private PlayerInventory playerInventory;
     [SerializeField] private ItemSocket[] leftSideSockets;
     [SerializeField] private ItemSocket[] rightSideSockets;
 
     private ItemSocket selectedSocket;
-    private ItemSO selectedItemSO;
+    private int selectedItemSOIndex = 0;
     private bool isRightSocket = false; //Rotation that the player is looking
     private BaseItemThrowable spawnedItem;
 
@@ -25,10 +27,10 @@ public class PlayerSpawnItemOnHand : MonoBehaviour
         SpawnItem();
     }
 
-    public void HandleOnItemSelectedSO(ItemSO itemSelectedSO)
+    public void HandleOnPlayerInventoryItemSelected(int selectedItemSOIndex)
     {
         //Based on the item select, save the item to spawn when drag start and select the corresponding socket based on item and on rotation
-        selectedItemSO = itemSelectedSO;
+        this.selectedItemSOIndex = playerInventory.GetSelectedItemSOIndex();
         UpdateSelectedSocket();
     }
 
@@ -73,11 +75,11 @@ public class PlayerSpawnItemOnHand : MonoBehaviour
         //Spawn selected Item on the selected socket
         if (!canSpawnItem) return; //Do nothing if the player is not in the right state
 
-        if (selectedItemSO == null)
-        {
-            Debug.LogWarning("Item not selected");
-            return;
-        }
+        //if (selectedInventoryIndexItem == null)
+        //{
+        //    Debug.LogWarning("Item not selected");
+        //    return;
+        //}
 
         if (spawnedItem != null)
         {
@@ -97,11 +99,46 @@ public class PlayerSpawnItemOnHand : MonoBehaviour
 
     private void InstantiateObj()
     {
-        spawnedItem = Instantiate(selectedItemSO.itemClientPrefab, selectedSocket.transform.position, Quaternion.identity).GetComponent<BaseItemThrowable>();
-        spawnedItem.transform.SetParent(selectedSocket.transform);
-        spawnedItem.transform.localRotation = Quaternion.identity;
+        if(!IsOwner) return; //Only the owner can spawn the item
 
-        spawnedItem.Initialize();
+        InstantiateObjServerRpc(NetworkManager.Singleton.LocalClientId, selectedSocket.transform.position, selectedItemSOIndex);
+
+        //spawnedItem = Instantiate(selectedItemSO.itemClientPrefab, selectedSocket.transform.position, Quaternion.identity).GetComponent<BaseItemThrowable>();
+        //spawnedItem.transform.SetParent(selectedSocket.transform);
+        //spawnedItem.transform.localRotation = Quaternion.identity;
+
+        //spawnedItem.Initialize();
+
+
+    }
+
+    [Rpc(SendTo.Server)]
+    private void InstantiateObjServerRpc(ulong ownerClientId, Vector3 selectedSocketPos, int itemSOIndex)
+    {
+        NetworkObject spawnedItemNetworkObject = Instantiate(playerInventory.GetItemSOByItemSOIndex(itemSOIndex).itemClientPrefab, selectedSocket.transform.position, Quaternion.identity).GetComponent<NetworkObject>();
+        spawnedItemNetworkObject.Spawn();
+        spawnedItemNetworkObject.ChangeOwnership(ownerClientId);
+
+        CallOnItemOnHandClientRpc(spawnedItemNetworkObject);
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void CallOnItemOnHandClientRpc(NetworkObjectReference itemNetworkObject)
+    {
+        if(itemNetworkObject.TryGet(out NetworkObject itemNetworkObjectRef))
+        {
+            spawnedItem = itemNetworkObjectRef.GetComponent<BaseItemThrowable>();
+        } else
+        {
+            Debug.LogWarning("Item not found");
+            return;
+        }
+
+        if(IsOwner)
+        {
+            spawnedItem.Initialize(selectedSocket.transform);
+            spawnedItem.transform.localRotation = Quaternion.identity;
+        }
 
         OnItemOnHandSpawned?.Invoke(spawnedItem);
     }
@@ -111,7 +148,6 @@ public class PlayerSpawnItemOnHand : MonoBehaviour
         //Release item
         if (spawnedItem != null)
         {
-            spawnedItem.transform.SetParent(null);
             spawnedItem = null;
         }
     }
@@ -133,17 +169,17 @@ public class PlayerSpawnItemOnHand : MonoBehaviour
 
     private void UpdateSelectedSocket()
     {
-        if(selectedItemSO == null)
-        {
-            Debug.LogWarning("Item not selected");
-            return;
-        }
+        //if(selectedInventoryIndexItem == null)
+        //{
+        //    Debug.LogWarning("Item not selected");
+        //    return;
+        //}
 
         if (isRightSocket)
         {
             foreach (ItemSocket socket in rightSideSockets)
             {
-                if (socket.ItemSO == selectedItemSO)
+                if (socket.ItemSO == playerInventory.GetItemSOByItemSOIndex(selectedItemSOIndex))
                 {
                     //Found the corresponding socket
                     selectedSocket = socket;
@@ -153,7 +189,7 @@ public class PlayerSpawnItemOnHand : MonoBehaviour
         {
             foreach (ItemSocket socket in leftSideSockets)
             {
-                if (socket.ItemSO == selectedItemSO)
+                if (socket.ItemSO == playerInventory.GetItemSOByItemSOIndex(selectedItemSOIndex))
                 {
                     //Found the corresponding socket
                     selectedSocket = socket;

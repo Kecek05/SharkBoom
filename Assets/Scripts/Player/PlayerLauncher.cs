@@ -78,7 +78,7 @@ public class PlayerLauncher : NetworkBehaviour
             ownerPlayableState = ServiceLocator.Get<BaseTurnManager>().LocalPlayableState,
         };
 
-        SpawnProjectileServerRpc(itemLauncherData); //Spawn real projectile on server need to send the speed and force values through the network
+        //SpawnProjectileServerRpc(itemLauncherData); //Spawn real projectile on server need to send the speed and force values through the network
 
         SpawnDummyProjectile(itemLauncherData); //Spawn fake projectile on client
     
