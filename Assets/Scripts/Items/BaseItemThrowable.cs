@@ -10,7 +10,6 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     public static event Action<Transform> OnItemReleasedAction;
 
     [BetterHeader("Base Item References")]
-    [SerializeField] protected bool isServerObject;
     [SerializeField] protected ItemSO itemSO;
     [SerializeField] protected Rigidbody2D rb;
     [SerializeField] protected GameObject[] collidersToChangeLayer;
@@ -96,7 +95,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
 
     protected virtual void ItemCallbackAction()
     {
-        if(!isServerObject) return; // Only the server should call the callback action
+        if(!IsServer) return; // Only the server should call the callback action
 
         turnManager.PlayerPlayed(thisItemLaucherData.ownerPlayableState);
     }
@@ -121,7 +120,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
         }
     }
 
-    protected void OnDestroy()
+    public override void OnDestroy()
     {
         DestroyItem();
     }
