@@ -10,20 +10,15 @@ public class StuckTransformComponent : NetworkBehaviour
     {
         if (!IsOwner) return;
 
-        if (collision.collider.gameObject.TryGetComponent(out IDamageable damageable))
-        {
-            Stuck(collision.gameObject.transform);
-        }
+        Stuck(collision.gameObject.transform);
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (!IsOwner) return;
 
-        if (collision.gameObject.TryGetComponent(out IDamageable damageable))
-        {
-            Stuck(collision.gameObject.transform);
-        }
+        Stuck(collision.gameObject.transform);
     }
 
     private void Stuck(Transform stuckTo)
