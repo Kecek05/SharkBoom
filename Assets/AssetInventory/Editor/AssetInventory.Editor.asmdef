@@ -1,0 +1,46 @@
+{
+    "name": "AssetInventory.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:478a2357cc57436488a56e564b08d223",
+        "GUID:f82f873437909ef4fb0deb8005903f14",
+        "GUID:c579267770062bf448e75eb160330b7f",
+        "GUID:d20df05e15e8e874d9af2c92c72f14b4",
+        "GUID:18a3ee135d24342f7ae628142b5114cb",
+        "GUID:234b356a69de64fa79f48940000c93ef",
+        "GUID:f2f9fbb8654eff343bf4a94f2a688687",
+        "GUID:5c605a9c9e9b6421a8d175d64aaa4beb",
+        "GUID:498d02e03062b2649b108f31a9668c56",
+        "GUID:b344fc90df84f5a4f968af99d3b862a9",
+        "GUID:ae052f549db434c89af6d304e7f1a8ed",
+        "GUID:73ee7612e773b45fe8fb2afaaa592cb3",
+        "GUID:7d09123d01ea404d96206140da7a1307"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.render-pipelines.universal",
+            "expression": "14.0.0",
+            "define": "USE_URP_CONVERTER"
+        },
+        {
+            "name": "com.unity.cloud.assets",
+            "expression": "1.4.0",
+            "define": "USE_ASSET_MANAGER"
+        },
+        {
+            "name": "com.unity.cloud.identity",
+            "expression": "1.3.0",
+            "define": "USE_CLOUD_IDENTITY"
+        }
+    ],
+    "noEngineReferences": false
+}

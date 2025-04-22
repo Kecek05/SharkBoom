@@ -9,31 +9,41 @@ public class CameraFollowing : NetworkBehaviour
     [SerializeField] private CameraManager cameraManager;
 
     [Header("Settings")]
-    [Tooltip("Time to pause camera on item finish position")]
     [SerializeField] private float cameraZPosOnFollowing = -12f;
 
-    private WaitForSeconds waitToStopFollowing = new(3f);
+    private WaitForSeconds waitTimeToStopFollowing = new(3f);
     private Transform itemLaunched;
     private Vector3 lastCameraObjectToFollowPos;
+
     private Coroutine followObject;
     private Coroutine resetCam;
+
+
 
     public void InitializeOwner()
     {
         if(!IsOwner) return;
 
-        BaseItemThrowable.OnItemReleasedAction += BaseItemThrowable_OnItemReleasedAction;
-        BaseItemThrowable.OnItemFinishedAction += BaseItemThrowable_OnItemFinishedAction;
+        BaseItemThrowable.OnItemReleasedAction += HandleOnItemReleasedAction;
+        BaseItemThrowable.OnItemFinishedAction += HandleOnItemFinishedAction;
     }
 
-    private void BaseItemThrowable_OnItemReleasedAction(Transform itemLaunched)
+
+
+    private void HandleOnItemReleasedAction(Transform itemLaunched)
     {
         lastCameraObjectToFollowPos = cameraManager.CameraObjectToFollow.position; // store current position of the camera before the item is launched
-        SetTarget(itemLaunched);
+        SetTarget(itemLaunched, true);
+    }
+
+    private void HandleOnItemFinishedAction()
+    {
+        if (resetCam == null)
+            resetCam = StartCoroutine(ResetCam());
     }
 
 
-    public void SetTarget(Transform itemLaunched) // Here we set the target and start the coroutine to follow the object
+    public void SetTarget(Transform itemLaunched, bool stopOnNull, float duration = 5f)
     {
         if (itemLaunched == null) return;
 
@@ -45,32 +55,45 @@ public class CameraFollowing : NetworkBehaviour
             StopCoroutine(followObject);
         }
 
-        followObject = StartCoroutine(FollowObject()); 
-
+        followObject = StartCoroutine(FollowObjectCoroutine(duration, stopOnNull)); 
     }
 
-    private IEnumerator FollowObject()
+
+    private IEnumerator FollowObjectCoroutine(float duration, bool stopOnNull = true)    
     {
-        while (itemLaunched != null) // while the itemLaunched is not destroyed
-        {
-            cameraManager.CameraObjectToFollow.position = new Vector3(itemLaunched.position.x, itemLaunched.position.y, cameraZPosOnFollowing);
-            yield return null;
-        }
+        float timer = 0f;
 
-        followObject = null;
+        if (stopOnNull)
+        {
+            while (itemLaunched != null) // while the itemLaunched is not destroyed
+            {
+                cameraManager.CameraObjectToFollow.position = new Vector3(itemLaunched.position.x, itemLaunched.position.y, cameraZPosOnFollowing);
+                yield return null;
+            }
+            followObject = null;
+        }
+        else
+        {
+            while (timer < duration)
+            {
+                if (itemLaunched != null)
+                {
+                    cameraManager.CameraObjectToFollow.position = new Vector3(itemLaunched.position.x, itemLaunched.position.y, cameraZPosOnFollowing);
+                }
+
+                timer += Time.deltaTime;
+                yield return null;
+            }
+
+            followObject = null;
+        }
     }
 
-    private void BaseItemThrowable_OnItemFinishedAction()
-    {
-        if (resetCam == null)
-        {
-            resetCam = StartCoroutine(ResetCam()); // when the item finished their action, we start the coroutine to reset the camera
-        }
-    }
 
     private IEnumerator ResetCam()
     {
-        yield return waitToStopFollowing;
+        yield return waitTimeToStopFollowing;
+        cameraManager.CameraObjectToFollow.position = lastCameraObjectToFollowPos;
         resetCam = null;
     }
 
@@ -78,8 +101,8 @@ public class CameraFollowing : NetworkBehaviour
     public void UnInitializeOwner()
     {
         if (!IsOwner) return;
-        BaseItemThrowable.OnItemReleasedAction -= BaseItemThrowable_OnItemReleasedAction;
-        BaseItemThrowable.OnItemFinishedAction -= BaseItemThrowable_OnItemFinishedAction;
+        BaseItemThrowable.OnItemReleasedAction -= HandleOnItemReleasedAction;
+        BaseItemThrowable.OnItemFinishedAction -= HandleOnItemFinishedAction;
     }
 
 }

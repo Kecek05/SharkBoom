@@ -20,7 +20,8 @@ MonoBehaviour:
     rid: 3134501520405692440
   m_OverrideGlobalSceneList: 0
   m_Scenes: []
-  m_ScriptingDefines: []
+  m_ScriptingDefines:
+  - MOREMOUNTAINS_NICEVIBRATIONS_INSTALLED
   m_PlayerSettingsYaml:
     m_Settings:
     - line: '| PlayerSettings:'
@@ -163,7 +164,7 @@ MonoBehaviour:
     - line: '|   loadStoreDebugModeEnabled: 0'
     - line: '|   visionOSBundleVersion: 1.0'
     - line: '|   tvOSBundleVersion: 1.0'
-    - line: '|   bundleVersion: 1.0.6'
+    - line: '|   bundleVersion: 1.0.8'
     - line: '|   preloadedAssets:'
     - line: '|   - {instanceID: 0}'
     - line: '|   - {instanceID: 0}'
@@ -289,7 +290,7 @@ MonoBehaviour:
     - line: '|   useCustomGradlePropertiesTemplate: 1'
     - line: '|   useCustomGradleSettingsTemplate: 1'
     - line: '|   useCustomProguardFile: 0'
-    - line: '|   AndroidTargetArchitectures: 2'
+    - line: '|   AndroidTargetArchitectures: 0'
     - line: '|   AndroidSplashScreenScale: 0'
     - line: '|   androidSplashScreen: {instanceID: 0}'
     - line: '|   AndroidKeystoreName: ''{inproject}: Assets/user.keystore'''
@@ -843,7 +844,7 @@ MonoBehaviour:
     - line: '|   webGLCloseOnQuit: 0'
     - line: '|   webWasm2023: 0'
     - line: '|   scriptingDefineSymbols:'
-    - line: '|     Android: SORTIFY;SORTIFY_ATTRIBUTES;SORTIFY_COLLECTIONS;SORTIFY_HIGHLIGHT;DOTWEEN;UNITY_ANDROID;UNITY_CLIENT'
+    - line: '|     Android: SORTIFY;SORTIFY_ATTRIBUTES;SORTIFY_COLLECTIONS;SORTIFY_HIGHLIGHT;DOTWEEN;UNITY_ANDROID;UNITY_CLIENT;ASSET_INVENTORY'
     - line: '|     EmbeddedLinux: SORTIFY;SORTIFY_ATTRIBUTES;SORTIFY_COLLECTIONS;SORTIFY_HIGHLIGHT;DOTWEEN'
     - line: '|     GameCoreScarlett: DOTWEEN'
     - line: '|     GameCoreXboxOne: SORTIFY;SORTIFY_ATTRIBUTES;SORTIFY_COLLECTIONS;SORTIFY_HIGHLIGHT;DOTWEEN'

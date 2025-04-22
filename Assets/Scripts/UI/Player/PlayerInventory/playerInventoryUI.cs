@@ -21,6 +21,7 @@ public class PlayerInventoryUI : NetworkBehaviour
     [SerializeField] private GameObject playerItemSingleUIPrefab;
     [SerializeField] private Button jumpButton;
     [SerializeField] private Button openInventoryButton;
+    [SerializeField] private Image selectedItemImage;
     [SerializeField] private GameObject openInventoryBackground;
     [SerializeField] private ItemsListSO itemsListSO;
     //[SerializeField] private PlayerInventory playerInventory;
@@ -92,6 +93,7 @@ public class PlayerInventoryUI : NetworkBehaviour
             }
         }
 
+        HideInventory();
         //UpdateOpenInventoryButton();
     }
 
@@ -134,7 +136,7 @@ public class PlayerInventoryUI : NetworkBehaviour
         OnItemSelectedByUI?.Invoke(itemInventoryIndex); //Notify the player that an item was selected by UI
 
         //UpdateOpenInventoryButton();
-        HideInventory(); //hide only when selecting an item
+        //HideInventory(); //hide only when selecting an item
 
         Debug.Log($"Item Selected By UI - Item Inventory index: {itemInventoryIndex}");
     }
@@ -143,7 +145,7 @@ public class PlayerInventoryUI : NetworkBehaviour
     {
         if(!IsOwner) return;
 
-        openInventoryButton.image.sprite = itemIcon; //Show Icon of selected item
+        selectedItemImage.sprite = itemIcon; //Show Icon of selected item
     }
 
     private void ToggleInventory()

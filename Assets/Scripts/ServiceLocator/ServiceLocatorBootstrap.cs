@@ -34,7 +34,7 @@ public class ServiceLocatorBootstrap : MonoBehaviour
         BaseGameOverManager gameOverManager = gameObject.AddComponent<GameOverManager>();
         BasePearlsManager pearlsManager = gameObject.AddComponent<PearlsManager>();
 
-        cameraObjectToFollow.gameObject.transform.position = new Vector3(0, 0, 0);
+        cameraObjectToFollow.gameObject.transform.position = new Vector3(12, 0, -20);
 
         ServiceLocator.Register(turnManager);
         ServiceLocator.Register(timerManager);

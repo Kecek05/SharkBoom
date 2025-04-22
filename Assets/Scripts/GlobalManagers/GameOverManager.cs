@@ -16,11 +16,11 @@ public class GameOverManager : BaseGameOverManager
     {
         if (losedPlayer.Value == turnManager.LocalPlayableState)
         {
-            TriggerOnLose();
+            TriggerOnLose(false);
         }
         else if (losedPlayer.Value == PlayableState.Tie)
         {
-            TriggerOnLose();
+            TriggerOnLose(true);
         }
         else
         {

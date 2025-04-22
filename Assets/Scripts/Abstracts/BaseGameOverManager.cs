@@ -5,7 +5,8 @@ public abstract class BaseGameOverManager : NetworkBehaviour
 {
     //Events
     public event Action OnWin;
-    public event Action OnLose;
+    public event Action<bool> OnLose;
+
 
     //Variables
 
@@ -19,7 +20,7 @@ public abstract class BaseGameOverManager : NetworkBehaviour
 
     protected void TriggerOnWin() => OnWin?.Invoke();
 
-    protected void TriggerOnLose() => OnLose?.Invoke();
+    protected void TriggerOnLose(bool isDraw) => OnLose?.Invoke(isDraw);
 
     public abstract void DefineTheWinner();
 

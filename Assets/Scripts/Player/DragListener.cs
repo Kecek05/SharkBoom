@@ -20,7 +20,7 @@ public abstract class DragListener : NetworkBehaviour
     {
         if (!IsOwner) return; //only owner
 
-        if (newState == PlayerState.DragReleaseItem && newState == PlayerState.DraggingJump)
+        if (newState == PlayerState.DragReleaseItem || newState == PlayerState.DragReleaseJump)
         {
             Debug.Log("Drag Release Item");
             DoOnDragRelease();

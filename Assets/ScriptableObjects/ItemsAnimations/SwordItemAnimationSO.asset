@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a1102b562888f243957578745fdf472, type: 3}
+  m_Name: SwordItemAnimationSO
+  m_EditorClassIdentifier: 
+  aimItemData:
+    animationL: 22
+    animationR: 23
+    crossFade: 0.3
+    crossFadeBetweenSides: 0
+  shootItemData:
+    animationL: 44
+    animationR: 45
+    crossFade: 0
+    crossFadeBetweenSides: 0

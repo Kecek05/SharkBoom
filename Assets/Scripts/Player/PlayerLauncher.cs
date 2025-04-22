@@ -13,7 +13,6 @@ public class PlayerLauncher : NetworkBehaviour
     /// </summary>
     public event Action<int> OnItemLaunched; 
 
-
     [BetterHeader("References")]
     [SerializeField] private InputReader inputReader;
     [SerializeField] private Transform spawnItemPos;
@@ -21,6 +20,7 @@ public class PlayerLauncher : NetworkBehaviour
     [SerializeField] private PlayerInventory playerInventory;
     
     private BaseItemActivableManager itemActivableManager;
+    private BaseItemThrowable lastProjectile;
 
     public void InitializeOwner()
     {
@@ -45,13 +45,27 @@ public class PlayerLauncher : NetworkBehaviour
 
         if (state == PlayerState.DragReleaseJump || state == PlayerState.DragReleaseItem)
         {
-            Launch();
+            //Launch();
+        }
+    }
+
+    public void HandleOnItemOnHandSpawned(BaseItemThrowable throwable)
+    {
+        lastProjectile = throwable;
+    }
+
+    public void HandleOnItemOnHandDespawned(BaseItemThrowable throwable)
+    {
+        if (throwable == lastProjectile)
+        {
+            lastProjectile = null;
         }
     }
 
 
-    private void Launch()
+    public void Launch()
     {
+        if (!IsOwner) return;
 
         itemActivableManager.ResetItemActivable();
 
@@ -64,7 +78,7 @@ public class PlayerLauncher : NetworkBehaviour
             ownerPlayableState = ServiceLocator.Get<BaseTurnManager>().LocalPlayableState,
         };
 
-        SpawnProjectileServerRpc(itemLauncherData); //Spawn real projectile on server need to send the speed and force values through the network
+        //SpawnProjectileServerRpc(itemLauncherData); //Spawn real projectile on server need to send the speed and force values through the network
 
         SpawnDummyProjectile(itemLauncherData); //Spawn fake projectile on client
     
@@ -89,7 +103,7 @@ public class PlayerLauncher : NetworkBehaviour
 
         if (projetctile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
         {
-            itemThrowable.Initialize(launcherData);
+            itemThrowable.ItemReleased(launcherData);
         }
 
         if (projetctile.transform.TryGetComponent(out BaseItemThrowableActivable activable))
@@ -120,20 +134,33 @@ public class PlayerLauncher : NetworkBehaviour
             return;
         }
 
-
-        GameObject projetctile = Instantiate(playerInventory.GetItemSOByItemSOIndex(launcherData.selectedItemSOIndex).itemClientPrefab, spawnItemPos.position, Quaternion.identity);
-
-
-        if (projetctile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
+        if (lastProjectile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
         {
-            itemThrowable.Initialize(launcherData);
+            itemThrowable.ItemReleased(launcherData);
         }
 
-        if (projetctile.transform.TryGetComponent(out BaseItemThrowableActivable activable))
+        if (lastProjectile.transform.TryGetComponent(out BaseItemThrowableActivable activable))
         {
             //Get the ref to active the item
             itemActivableManager.SetItemThrowableActivableClient(activable);
         }
+
+
+        //GameObject projetctile = Instantiate(playerInventory.GetItemSOByItemSOIndex(launcherData.selectedItemSOIndex).itemClientPrefab, spawnItemPos.position, Quaternion.identity);
+
+
+        //if (projetctile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
+        //{
+        //    itemThrowable.ItemReleased(launcherData);
+        //}
+
+        //if (projetctile.transform.TryGetComponent(out BaseItemThrowableActivable activable))
+        //{
+        //    //Get the ref to active the item
+        //    itemActivableManager.SetItemThrowableActivableClient(activable);
+        //}
+
+
 
     }
 

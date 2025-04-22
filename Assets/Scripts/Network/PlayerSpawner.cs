@@ -11,6 +11,7 @@ public class PlayerSpawner : IPlayerSpawner
     public static event Action<int> OnPlayerSpawned;
 
     private readonly NetworkObject playerPrefab;
+    private readonly bool switchOrder;
 
     private int playerSpawned = 0;
 
@@ -19,6 +20,7 @@ public class PlayerSpawner : IPlayerSpawner
     public PlayerSpawner(NetworkObject _playerPrefab)
     {
         playerPrefab = _playerPrefab;
+        switchOrder = UnityEngine.Random.value > 0.5f; // Randomly switching the value false or true for bool basead on 50% chance
     }
 
 
@@ -39,12 +41,34 @@ public class PlayerSpawner : IPlayerSpawner
 
         NetworkObject playerInstance = GameObject.Instantiate(playerPrefab, randomSpawnPointSelected.position, Quaternion.identity);
 
+        
 
         playerInstance.Spawn(true);
         playerInstance.DontDestroyWithOwner = true;
 
         playerInstance.GetComponent<PlayerThrower>().InitializePlayerRpc(GetPlayableStateByCount(), randomSpawnPointSelected.rotation);
 
+        PlayerRandomizeVisual visual = playerInstance.GetComponentInChildren<PlayerRandomizeVisual>();
+
+        if (visual == null)
+        {
+            Debug.LogError("PlayerRandomizeVisual is null");
+        }
+        else
+        {
+            PlayerVisualType visualType;
+
+            if (PlayerCount == 1)
+            {
+                visualType = switchOrder ? PlayerVisualType.Orca : PlayerVisualType.Shark;
+                visual.SetVisualNetworked(visualType);
+            }
+            else if (PlayerCount == 2)
+            {
+                visualType = switchOrder ? PlayerVisualType.Shark : PlayerVisualType.Orca;
+                visual.SetVisualNetworked(visualType);
+            }
+        }
         //PlayerData playerData = NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.ClientIdToPlayerData[clientId];
 
         //playerData.gameObject = playerInstance.gameObject;
