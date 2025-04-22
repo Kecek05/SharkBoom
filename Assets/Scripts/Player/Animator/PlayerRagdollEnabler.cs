@@ -21,8 +21,10 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     {
         if (!IsOwner) return;
 
-        CacheRagdollComponents();
-        DisableRagdoll();
+        ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>(true);
+        ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>(true);
+
+        RequestRagdollDisableServerRpc();
         // not align and disable ragdoll
     }
 
@@ -46,9 +48,10 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     public void HandleOnPlayerStateChanged(PlayerState state)
     {
-        if (state == PlayerState.IdleMyTurn || state == PlayerState.IdleEnemyTurn)
+        if (state == PlayerState.IdleEnemyTurn || state == PlayerState.IdleMyTurn)
         {
             RequestRagdollDisableServerRpc();
+            Debug.Log("Event for disable ragdoll");
         }
     }
 
@@ -82,7 +85,8 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     {
         animator.enabled = false;
 
-        CacheRagdollComponents();
+        ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>(true);
+        ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>(true);
 
         verticalOffset = hipsTransform.position.y - rootTransform.position.y;
 
@@ -93,7 +97,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
         foreach (Collider ragdollCollider in ragdollColliders)
         {
-            ragdollCollider.enabled = true;
+           ragdollCollider.enabled = true;
         }
 
         Debug.Log("Ragdoll enable");
@@ -132,6 +136,9 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     {
         animator.enabled = true;
 
+        ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>(true);
+        ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>(true);
+
         foreach (Rigidbody ragdollRb in ragdollRbs)
         {
             ragdollRb.isKinematic = true;
@@ -146,11 +153,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         Debug.Log("Ragdoll disable");
     }
 
-    private void CacheRagdollComponents()
-    {
-        ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
-        ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>();
-    }
 
     public void UnInitializeOwner()
     {
