@@ -7,6 +7,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
 {
     public event Action<BaseItemThrowable> OnItemOnHandSpawned;
     public event Action<BaseItemThrowable> OnItemOnHandDespawned;
+    public event Action<ItemSocket> OnItemSocketSelected;
 
     [SerializeField] private PlayerInventory playerInventory;
     [SerializeField] private ItemSocket[] leftSideSockets;
@@ -169,11 +170,6 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
 
     private void UpdateSelectedSocket()
     {
-        //if(selectedInventoryIndexItem == null)
-        //{
-        //    Debug.LogWarning("Item not selected");
-        //    return;
-        //}
 
         if (isRightSocket)
         {
@@ -183,6 +179,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
                 {
                     //Found the corresponding socket
                     selectedSocket = socket;
+                    OnItemSocketSelected?.Invoke(selectedSocket);
                 }
             }
         } else
@@ -193,6 +190,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
                 {
                     //Found the corresponding socket
                     selectedSocket = socket;
+                    OnItemSocketSelected?.Invoke(selectedSocket);
                 }
             }
         }

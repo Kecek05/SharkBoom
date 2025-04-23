@@ -30,7 +30,6 @@ public class PlayerDetectFacingDirection : DragListener
 
     protected override void DoOnDragChange(float forcePercent, float andlePercent)
     {
-        Debug.Log($"Pos: {playerGfxTransform.position.x} - AngleOffset: {angleOffset} - Result: {playerGfxTransform.position.x + angleOffset} - Finger Pos: {playerDragController.GetOpositeFingerPos().x}");
 
         if (playerDragController.GetOpositeFingerPos().x > playerGfxTransform.position.x + angleOffset)
         {
@@ -51,6 +50,8 @@ public class PlayerDetectFacingDirection : DragListener
 
             OnRotationChanged?.Invoke(false);
         }
+
+        Debug.Log($"Right: {isDirectionRight} ");
     }
 
     protected override void DoOnDragRelease()

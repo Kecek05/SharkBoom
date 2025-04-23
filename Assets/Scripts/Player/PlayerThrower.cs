@@ -25,6 +25,7 @@ public class PlayerThrower : NetworkBehaviour
     [SerializeField] private Collider2D playerTouchColl;
     [SerializeField] private GameObject[] playerColliders;
     [SerializeField] private PlayerSpawnItemOnHand playerSpawnItemOnHand;
+    [SerializeField] private FollowSelectedSocketComponent followSelectedSocketComponent;
     private PlayerStateMachine playerStateMachine;
 
     private NetworkVariable<PlayableState> thisPlayableState = new();
@@ -134,7 +135,7 @@ public class PlayerThrower : NetworkBehaviour
 
         playerSpawnItemOnHand.OnItemOnHandSpawned += HandleOnPlayerSpawnItemOnHandItemOnHandSpawned;
         playerSpawnItemOnHand.OnItemOnHandDespawned += HandleOnPlayerSpawnItemOnHandItemOnHandDespawned;
-
+        playerSpawnItemOnHand.OnItemSocketSelected += OnPlayerSpawnItemOnHandItemSocketSelected;
     }
 
     private void UnHandleEvents()
@@ -164,6 +165,7 @@ public class PlayerThrower : NetworkBehaviour
 
         playerSpawnItemOnHand.OnItemOnHandSpawned -= HandleOnPlayerSpawnItemOnHandItemOnHandSpawned;
         playerSpawnItemOnHand.OnItemOnHandDespawned -= HandleOnPlayerSpawnItemOnHandItemOnHandDespawned;
+        playerSpawnItemOnHand.OnItemSocketSelected -= OnPlayerSpawnItemOnHandItemSocketSelected;
 
         cameraManager.UnInitializeOwner();
         playerLauncher.UnInitializeOwner();
@@ -278,6 +280,11 @@ public class PlayerThrower : NetworkBehaviour
     private void HandleOnPlayerSpawnItemOnHandItemOnHandDespawned(BaseItemThrowable throwable)
     {
        playerLauncher.HandleOnItemOnHandDespawned(throwable);
+    }
+
+    private void OnPlayerSpawnItemOnHandItemSocketSelected(ItemSocket selectedSocket)
+    {
+        followSelectedSocketComponent.HandleOnPlayerSpawnItemOnHandOnItemSocketSelected(selectedSocket);
     }
 
     //---

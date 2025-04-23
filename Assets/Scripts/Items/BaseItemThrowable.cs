@@ -20,6 +20,8 @@ public abstract class BaseItemThrowable : NetworkBehaviour
 
     protected BaseTurnManager turnManager;
 
+    protected bool itemReleased = false;
+
     /// <summary>
     /// Called when the item spawns in hand
     /// </summary>
@@ -61,6 +63,8 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     /// <param name="direction"></param>
     public virtual void ItemReleased(ItemLauncherData itemLauncherData)
     {
+        itemReleased = true;
+
         SetCollision(itemLauncherData.ownerPlayableState);
         followTransformComponent.DisableComponent();
         thisItemLaucherData = itemLauncherData;
@@ -103,7 +107,9 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     public virtual void DestroyItem(Action destroyedCallback = null)
     {
         OnItemFinishedAction?.Invoke();
-        ItemCallbackAction();
+
+        if(itemReleased)
+            ItemCallbackAction();
 
         if(dissolveShaderComponent != null)
         {
