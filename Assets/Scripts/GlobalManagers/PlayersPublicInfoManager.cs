@@ -31,6 +31,21 @@ public class PlayersPublicInfoManager : BasePlayersPublicInfoManager
         }
     }
 
+    public override GameObject GetOtherPlayerByMyPlayableState(PlayableState myPlayableState)
+    {
+
+        foreach (PlayableState playableState in playerStateToGameObject.Keys)
+        {
+            if (playableState != myPlayableState)
+            {
+                return playerStateToGameObject[playableState];
+            }
+        }
+
+        Debug.LogWarning("Not found the other player");
+        return null;
+    }
+
     public override Dictionary<PlayableState, GameObject> GetAllPlayers()
     {
         return playerStateToGameObject;
@@ -73,7 +88,6 @@ public class PlayersPublicInfoManager : BasePlayersPublicInfoManager
     {
         spawnPointsPos.Add(transformToAdd);
     }
-
 }
 
 

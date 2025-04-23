@@ -18,6 +18,7 @@ public abstract class BasePlayersPublicInfoManager : MonoBehaviour
 
     public abstract GameObject GetPlayerObjectByPlayableState(PlayableState playerPlayableState);
 
+    public abstract GameObject GetOtherPlayerByMyPlayableState(PlayableState myPlayableState);
     public abstract Dictionary<PlayableState, GameObject> GetAllPlayers();
     /// <summary>
     /// Call this to randomize and give items to players
