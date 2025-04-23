@@ -8,10 +8,24 @@ public class GameOverUI : MonoBehaviour
 {
     [BetterHeader("References")]
     [SerializeField] private GameObject gameOverBackground;
+    [SerializeField] private TextMeshProUGUI playerResultTitleText;
     [SerializeField] private TextMeshProUGUI playerResultText;
     [SerializeField] private TextMeshProUGUI pearlsResultText;
+    [SerializeField] private Image pearlsBackground;
     [SerializeField] private Button returnButton;
-    [SerializeField] private Color drawColor;
+    [Space(5)]
+    [BetterHeader("Win")]
+    [SerializeField] private Sprite winBackground;
+    [SerializeField] private Sprite winPearlsBackground;
+    [SerializeField] private Sprite winReturnButton;
+    [BetterHeader("Lose")]
+    [SerializeField] private Sprite loseBackground;
+    [SerializeField] private Sprite losePearlsBackground;
+    [SerializeField] private Sprite loseReturnButton;
+    [BetterHeader("Tie")]
+    [SerializeField] private Sprite tieBackground;
+    [SerializeField] private Sprite tiePearlsBackground;
+    [SerializeField] private Sprite tieReturnButton;
 
     private bool alreadyChanged = false; //Prevent double change when losting connection
 
@@ -77,9 +91,7 @@ public class GameOverUI : MonoBehaviour
         alreadyChanged = true;
 
         //Win UI Code
-
-        playerResultText.text = "You Win!";
-        playerResultText.color = Color.green;
+        Win();
 
         Debug.Log("Change GameOverUI to WIN");
     }
@@ -93,13 +105,11 @@ public class GameOverUI : MonoBehaviour
         //Lose UI Code
         if (isDraw)
         {
-            playerResultText.text = "Draw!";
-            playerResultText.color = drawColor;
+            Tie();
         }
         else
         {
-            playerResultText.text = "You Lose!";
-            playerResultText.color = Color.red;
+            Lose();
         }
 
         Debug.Log("Change GameOverUI to Lose");
@@ -114,6 +124,24 @@ public class GameOverUI : MonoBehaviour
     private void Show()
     {
         gameOverBackground.SetActive(true);
+    }
+
+    private void Win()
+    {
+        playerResultText.text = "You Win!";
+        playerResultText.color = Color.green;
+    }
+
+    private void Lose()
+    {
+        playerResultText.text = "You Lose!";
+        playerResultText.color = Color.red;
+    }
+
+    private void Tie()
+    {
+        playerResultText.text = "Tie!";
+
     }
 
     private void OnDestroy()
