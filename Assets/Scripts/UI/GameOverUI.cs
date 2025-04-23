@@ -8,11 +8,13 @@ public class GameOverUI : MonoBehaviour
 {
     [BetterHeader("References")]
     [SerializeField] private GameObject gameOverBackground;
-    [SerializeField] private TextMeshProUGUI playerResultTitleText;
-    [SerializeField] private TextMeshProUGUI playerResultText;
+    [SerializeField] private TextMeshProUGUI resultTitleText;
+    [SerializeField] private TextMeshProUGUI resultText;
     [SerializeField] private TextMeshProUGUI pearlsResultText;
     [SerializeField] private Image pearlsBackground;
-    [SerializeField] private Button returnButton;
+    [SerializeField] private Image gameOverImage;
+    [SerializeField] private Image returnBtnImage;
+    [SerializeField] private Button returnBtn;
     [Space(5)]
     [BetterHeader("Win")]
     [SerializeField] private Sprite winBackground;
@@ -38,7 +40,7 @@ public class GameOverUI : MonoBehaviour
 
         alreadyChanged = false;
 
-        returnButton.onClick.AddListener(() =>
+        returnBtn.onClick.AddListener(() =>
         {
             //Return to main menu
 
@@ -128,20 +130,26 @@ public class GameOverUI : MonoBehaviour
 
     private void Win()
     {
-        playerResultText.text = "You Win!";
-        playerResultText.color = Color.green;
+        ChangeUI("You Win!", "VICTORY!", winBackground, winPearlsBackground, winReturnButton);
     }
 
     private void Lose()
     {
-        playerResultText.text = "You Lose!";
-        playerResultText.color = Color.red;
+        ChangeUI("You Lose!", "DEFEAT!", loseBackground, losePearlsBackground, loseReturnButton);
     }
 
     private void Tie()
     {
-        playerResultText.text = "Tie!";
+        ChangeUI("Time's Up!", "TIE!", tieBackground, tiePearlsBackground, tieReturnButton);
+    }
 
+    private void ChangeUI(string resultTxt, string resultTitleTxt, Sprite backgroundSprite, Sprite pearlsSprite, Sprite buttonSprite)
+    {
+        resultText.text = resultTxt;
+        resultTitleText.text = resultTitleTxt;
+        gameOverImage.sprite = backgroundSprite;
+        pearlsBackground.sprite = pearlsSprite;
+        returnBtnImage.sprite = buttonSprite;
     }
 
     private void OnDestroy()

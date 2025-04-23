@@ -5352,7 +5352,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4845276930943762971, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000030517578
+      value: -0.000061035156
       objectReference: {fileID: 0}
     - target: {fileID: 4845637959249703711, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchorMax.y
@@ -6599,11 +6599,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameOverBackground: {fileID: 531838780}
-  playerResultTitleText: {fileID: 670449973}
-  playerResultText: {fileID: 990962346}
+  resultTitleText: {fileID: 670449973}
+  resultText: {fileID: 990962346}
   pearlsResultText: {fileID: 497846544}
   pearlsBackground: {fileID: 218046337}
-  returnButton: {fileID: 1741645481}
+  gameOverImage: {fileID: 531838782}
+  returnBtnImage: {fileID: 1741645482}
+  returnBtn: {fileID: 1741645481}
   winBackground: {fileID: 21300000, guid: adb1d1a7a2844764c9ad82a4c09d0618, type: 3}
   winPearlsBackground: {fileID: 21300000, guid: 78ee5836f37dd4748bc58339da2ec79e, type: 3}
   winReturnButton: {fileID: 21300000, guid: e0a58850144f4a7478f1c73724db2d87, type: 3}
