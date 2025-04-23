@@ -16,8 +16,11 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [SerializeField] private Collider[] ragdollColliders;
 
     private float verticalOffset = 0f;
+
     private Quaternion originalHipRotation;
     private Quaternion originalRootRotation;
+    private Quaternion ragdollRootRotation;
+
     private bool isFallen = false;
 
     public void InitializeOwner()
@@ -92,6 +95,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     {
         originalHipRotation = hipsTransform.rotation;
         originalRootRotation = rootTransform.rotation;
+        ragdollRootRotation = ragdollRoot.rotation;
 
         if (ragdollRbs == null)
         {
@@ -177,6 +181,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         // Send gfx for original pos 
         rootTransform.SetPositionAndRotation(newPosition, originalRootRotation);
         hipsTransform.rotation = originalHipRotation;
+        ragdollRoot.rotation = ragdollRootRotation;
     }
 
     public void UnInitializeOwner()
