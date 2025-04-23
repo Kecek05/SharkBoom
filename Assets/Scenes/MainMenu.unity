@@ -333,7 +333,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4845276930943762971, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.000045776367
+      value: -0.000015258789
       objectReference: {fileID: 0}
     - target: {fileID: 4845637959249703711, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1599,7 +1599,7 @@ MonoBehaviour:
   cancelMatchmakingBtn: {fileID: 417580243}
   matchmakingPanel: {fileID: 633795556}
   matchmakingTime: {fileID: 1617116381}
-  matchmakingText: {fileID: 0}
+  matchmakingText: {fileID: 1142119266}
 --- !u!4 &413971047
 Transform:
   m_ObjectHideFlags: 0
@@ -4159,7 +4159,7 @@ GameObject:
   - component: {fileID: 1142119267}
   - component: {fileID: 1142119266}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: MatchmakingStatusTxt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

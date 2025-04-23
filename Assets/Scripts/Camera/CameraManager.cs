@@ -52,7 +52,10 @@ public class CameraManager : NetworkBehaviour
                 CameraMove();
                 break;
             case PlayerState.MyTurnStarted:
-                IdleReposOnPlayer();
+                ReposOnPlayer();
+                break;
+            case PlayerState.MyTurnEnded:
+                ReposOnEnemy();
                 break;
             case PlayerState.IdleEnemyTurn:
                 CameraMove();
@@ -74,9 +77,6 @@ public class CameraManager : NetworkBehaviour
                 break;
             case PlayerState.PlayerWatching:
                 Following();
-                break;
-            case PlayerState.MyTurnEnded:
-                CameraReset();
                 break;
             case PlayerState.PlayerGameOver:
                 CameraTurnOff();
@@ -102,11 +102,18 @@ public class CameraManager : NetworkBehaviour
     private void Following() => SetCameraModules(false, false, true);
     private void CameraReset() => SetCameraModules(true, true, true);
 
-    private void IdleReposOnPlayer()
+    private void ReposOnPlayer()
     {
         SetCameraModules(false, false, true);
         cameraFollowing.SetTarget(playerTransform, false, 3f);
     }
+
+    private void ReposOnEnemy()
+    {
+        SetCameraModules(false, false, true);
+        cameraFollowing.SetTarget(playerTransform, false, 3f); // change for enemy reference
+    }
+
     private void CameraTurnOff()
     {
         SetCameraModules(false, false, false);
