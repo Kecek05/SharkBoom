@@ -92,7 +92,7 @@ public interface IDetectDragRelease
 public interface IDetectEndedTurn
 {
     /// <summary>
-    /// Called when My turn ends.
+    /// Called when My turn ends.   
     /// </summary>
     public void DoOnEndedTurn();
 }
