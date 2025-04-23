@@ -143,24 +143,19 @@ public class MainMenuMatchmaking : MonoBehaviour
         switch (result)
         {
             case MatchmakerPollingResult.Success:
-                // Debug.Log("Match Found Success!");
                 matchmakingText.text = "Match Found Success!";
                 break;
             case MatchmakerPollingResult.MatchAssignmentError:
-                // Debug.Log("MatchAssignmentError Error!");
-                matchmakingText.text = "MatchAssignmentError Error!";
+                matchmakingText.text = "Failed to join the match!";
                 break;
             case MatchmakerPollingResult.TicketCreationError:
-                // Debug.Log("TicketCreationError Error");
-                matchmakingText.text = "TicketCreationError Error";
+                matchmakingText.text = "Failed to start matchmaking!";
                 break;
             case MatchmakerPollingResult.TicketRetrievalError:
-                // Debug.Log("TicketRetrievalError Error!");
-                matchmakingText.text = "TicketRetrievalError Error!";
+                matchmakingText.text = "Match Canceled!";
                 break;
             case MatchmakerPollingResult.TicketCancellationError:
-                // Debug.Log("TicketCancellationError Error!");
-                matchmakingText.text = "TicketCancellationError Error!";
+                matchmakingText.text = "Match can't be canceled!";
                 break;
         }
     }

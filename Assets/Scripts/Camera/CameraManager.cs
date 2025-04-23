@@ -100,7 +100,6 @@ public class CameraManager : NetworkBehaviour
     private void CameraMove() => SetCameraModules(true, true, false);
     private void Dragging() => SetCameraModules(false, false, true);
     private void Following() => SetCameraModules(false, false, true);
-    private void CameraReset() => SetCameraModules(true, true, true);
 
     private void ReposOnPlayer()
     {
