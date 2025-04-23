@@ -26,7 +26,8 @@ public class CameraManager : NetworkBehaviour
     {
         if(!IsOwner) return;
 
-        cameraObjectToFollow = ServiceLocator.Get<CameraObjectToFollow>().transform;
+        if (cameraObjectToFollow == null)
+            cameraObjectToFollow = ServiceLocator.Get<CameraObjectToFollow>().transform;
 
         if (cinemachineCamera == null)
         {
@@ -57,7 +58,7 @@ public class CameraManager : NetworkBehaviour
                 CameraMove();
                 break;
             case PlayerState.IdleMyTurn:
-                IdleReposOnPlayer();
+                CameraMove();
                 break;
             case PlayerState.DraggingJump:
                 Dragging();
@@ -78,54 +79,38 @@ public class CameraManager : NetworkBehaviour
                 CameraReset();
                 break;
             case PlayerState.PlayerGameOver:
-                //turn off camera and focus on the dead player
                 CameraTurnOff();
                 break;
         }
-        Debug.Log($"Player State On The Camera: {playerState}");
     }
 
-    private void CameraMove()
+    /// <summary>
+    /// Disable or Active modules of the camera
+    /// </summary>
+    /// <param name="movement">CameraMovement Script</param>
+    /// <param name="zoom">CameraZoom Script</param>
+    /// <param name="following">Camera following</param>
+    private void SetCameraModules(bool movement, bool zoom, bool following)
     {
-        cameraMovement.enabled = true;
-        cameraZoom.enabled = true;
-        cameraFollowing.enabled = false;
+        cameraMovement.enabled = movement;
+        cameraZoom.enabled = zoom;
+        cameraFollowing.enabled = following;
     }
+
+    private void CameraMove() => SetCameraModules(true, true, false);
+    private void Dragging() => SetCameraModules(false, false, true);
+    private void Following() => SetCameraModules(false, false, true);
+    private void CameraReset() => SetCameraModules(true, true, true);
 
     private void IdleReposOnPlayer()
     {
-        cameraMovement.enabled = false;
-        cameraZoom.enabled = false;
-        cameraFollowing.enabled = true;
-        cameraFollowing.SetTarget(playerTransform, false, 3f); // passing the object that we want to follow, false for stop until the item is null, and pass the duration of the follow
-        CameraMove();
+        SetCameraModules(false, false, true);
+        cameraFollowing.SetTarget(playerTransform, false, 3f);
     }
-
-    private void Dragging()
-    {
-        cameraZoom.enabled = true;
-        cameraMovement.enabled = false;
-        cameraFollowing.enabled = false; 
-    }
-    private void Following()
-    {
-        cameraFollowing.enabled = true;
-        cameraMovement.enabled = false;
-        cameraZoom.enabled = false;
-    }
-
-    private void CameraReset()
-    {
-        cameraMovement.enabled = true;
-        cameraZoom.enabled = true;
-        cameraFollowing.enabled = true;
-    }
-
     private void CameraTurnOff()
     {
-        cameraMovement.enabled = false;
-        cameraZoom.enabled = false;
-        cameraFollowing.enabled = false;
+        SetCameraModules(false, false, false);
+        cameraFollowing.SetTarget(playerTransform, false, 3f);
     }
 
     public void UnInitializeOwner()
