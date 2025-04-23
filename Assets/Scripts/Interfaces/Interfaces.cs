@@ -64,3 +64,35 @@ public interface IPlayerSpawner
 
     PlayableState GetPlayableStateByCount();
 }
+
+public interface IInitializeOnwer
+{
+    /// <summary>
+    /// Called when the object is spawned and its the owner
+    /// </summary>
+    public void DoOnInitializeOnwer();
+}
+
+public interface IDetectDragChange
+{
+    /// <summary>
+    /// Called when the finger changes position
+    /// </summary>
+    public void DoOnDragChange(float forcePercent, float andlePercent);
+}
+
+public interface IDetectDragRelease
+{
+    /// <summary>
+    /// Called when the drag is released, the object is launched.
+    /// </summary>
+    public void DoOnDragRelease();
+}
+
+public interface IDetectEndedTurn
+{
+    /// <summary>
+    /// Called when My turn ends.
+    /// </summary>
+    public void DoOnEndedTurn();
+}

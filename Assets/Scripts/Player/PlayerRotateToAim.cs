@@ -1,7 +1,7 @@
 using Sortify;
 using UnityEngine;
 
-public class PlayerRotateToAim : DragListener
+public class PlayerRotateToAim : DragListener, IInitializeOnwer, IDetectDragChange, IDetectEndedTurn
 {
     [BetterHeader("References")]
     [SerializeField] private Transform aimTransform;
@@ -10,12 +10,12 @@ public class PlayerRotateToAim : DragListener
 
     protected override void DoOnInitializeOnwer()
     {
-        aimTransform.position = aimDefaultPosition.position;
+
     }
 
     protected override void DoOnDragChange(float forcePercent, float angle)
     {
-        aimTransform.position = playerDragController.GetOpositeFingerPos();
+
     }
 
     protected override void DoOnDragRelease()
@@ -24,6 +24,21 @@ public class PlayerRotateToAim : DragListener
     }
 
     protected override void DoOnEndedTurn()
+    {
+        
+    }
+
+    void IInitializeOnwer.DoOnInitializeOnwer()
+    {
+        aimTransform.position = aimDefaultPosition.position;
+    }
+
+    void IDetectDragChange.DoOnDragChange(float forcePercent, float andlePercent)
+    {
+        aimTransform.position = playerDragController.GetOpositeFingerPos();
+    }
+
+    void IDetectEndedTurn.DoOnEndedTurn()
     {
         aimTransform.position = aimDefaultPosition.position;
     }
