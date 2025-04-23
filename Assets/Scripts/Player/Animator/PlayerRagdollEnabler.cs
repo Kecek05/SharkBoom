@@ -16,6 +16,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [SerializeField] private Collider[] ragdollColliders;
 
     private float verticalOffset = 0f;
+    private bool isFallen = false;
 
     public void InitializeOwner()
     {
@@ -29,6 +30,21 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         // not align and disable ragdoll
     }
 
+    // Just for debug on ragdoll scene
+    private void Awake()
+    {
+        ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
+        ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>();
+        DisableRagdoll();
+    }
+
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            DisableRagdoll();
+        }
+    }
 
     public void HandleOnPlayerTakeDamage(object sender, PlayerHealth.OnPlayerTakeDamageArgs e)
     {
@@ -52,11 +68,15 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         {
             if(IsOwner)
             {
-                RequestRagdollDisableServerRpc();
-                Debug.Log("Ragdoll - Call the function for disable on HandleOnPlayerStateChange");
+                if (isFallen)
+                {
+                    RequestRagdollDisableServerRpc();
+                    Debug.Log("Ragdoll - Call the function for disable on HandleOnPlayerStateChange");
+                }
             }
         }
     }
+
 
     public void TriggerRagdoll(Vector3 force, Vector3 hitPoint)
     {
@@ -105,6 +125,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
            ragdollCollider.enabled = true;
         }
 
+        isFallen = true;
         animator.enabled = false;
     }
 
@@ -140,8 +161,11 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             ragdollCollider.enabled = false;
         }
 
-        // AlignPositionToHips();
-        
+        if(isFallen == true)
+        {
+            AlignPositionToHips();
+        }
+        isFallen = false;
         Debug.Log("Ragdoll - Call the function for disable on final function");
     }
 
@@ -149,8 +173,14 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     {
         Vector3 newPosition = hipsTransform.position; // create a new pos basead on actual hips transform position
         newPosition.y -= verticalOffset;  // correcting the y axis to align with the root transform
-        rootTransform.position = newPosition;
-        rootTransform.rotation = Quaternion.LookRotation(ragdollRoot.forward, Vector3.up);
+
+        Vector3 flatForward = ragdollRoot.forward;
+        flatForward.y = 0f;
+
+        if (flatForward != Vector3.zero)
+        {
+            rootTransform.rotation = Quaternion.LookRotation(flatForward);
+        }
 
         // Send gfx for original pos 
         ragdollRoot.localPosition = Vector3.zero;
