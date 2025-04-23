@@ -82,18 +82,7 @@ public class MainMenuMatchmaking : MonoBehaviour
 
         cancelButtonCoroutine = null;
     }
-    private void OnApplicationPause(bool pauseStatus)
-    {
-        if (pauseStatus)
-        {
-            _ = ClientSingleton.Instance.GameManager.CancelMatchmakingAsync();
-        }
-    }
-
-    private void OnApplicationQuit()
-    {
-        _ = ClientSingleton.Instance.GameManager.CancelMatchmakingAsync();
-    }
+    
     private void StartMatchmakingTimer()
     {
         if (matchmakingTimerCoroutine != null)
