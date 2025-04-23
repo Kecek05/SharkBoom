@@ -82,7 +82,18 @@ public class MainMenuMatchmaking : MonoBehaviour
 
         cancelButtonCoroutine = null;
     }
+    private void OnApplicationPause(bool pauseStatus)
+    {
+        if (pauseStatus)
+        {
+            _ = ClientSingleton.Instance.GameManager.CancelMatchmakingAsync();
+        }
+    }
 
+    private void OnApplicationQuit()
+    {
+        _ = ClientSingleton.Instance.GameManager.CancelMatchmakingAsync();
+    }
     private void StartMatchmakingTimer()
     {
         if (matchmakingTimerCoroutine != null)
@@ -136,6 +147,8 @@ public class MainMenuMatchmaking : MonoBehaviour
 
     private void OnMatchMade(MatchmakerPollingResult result)
     {
+        if(this == null) return; // Check for cancel this function if the object is destroyed
+
         StopMatchmakingTimer();
 
         switch (result)
