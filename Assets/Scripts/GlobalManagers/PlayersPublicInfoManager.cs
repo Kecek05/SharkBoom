@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayersPublicInfoManager : BasePlayersPublicInfoManager
@@ -28,6 +29,11 @@ public class PlayersPublicInfoManager : BasePlayersPublicInfoManager
             Debug.LogWarning("Player not found in dictionary");
             return null;
         }
+    }
+
+    public override Dictionary<PlayableState, GameObject> GetAllPlayers()
+    {
+        return playerStateToGameObject;
     }
 
     public override void RandomizePlayerItems()
@@ -67,6 +73,7 @@ public class PlayersPublicInfoManager : BasePlayersPublicInfoManager
     {
         spawnPointsPos.Add(transformToAdd);
     }
+
 }
 
 
