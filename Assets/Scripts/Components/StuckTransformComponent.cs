@@ -34,6 +34,7 @@ public class StuckTransformComponent : NetworkBehaviour
             Rigidbody stuckTo = rigidBodies.OrderBy(Rigidbody => Vector3.Distance(Rigidbody.position, transform.position)).First(); // we order all rbs by distance to hitpoint and take the first one
 
             followTransformComponent.SetTarget(stuckTo.transform);
+            followTransformComponent.SetFollowRotation(false);
             followTransformComponent.EnableComponent();
             Debug.Log($"Stuck to {stuckTo.name}");
         }
