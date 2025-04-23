@@ -24,9 +24,8 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
         ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
         ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>();
-
-        DisableRagdoll();
-        Debug.Log("Ragdoll - Call the function for disable on InitializeOwner");
+        DisableRagdoll();   
+        // RequestRagdollDisableServerRpc();
         // not align and disable ragdoll
     }
 
@@ -79,7 +78,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost)]
     private void EnableRagdollClientRpc()
     {
-        if (IsServer && IsHost) return;
         EnableRagdoll();
     }
 
@@ -121,7 +119,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost)]
     private void DisableRagdollClientRpc()
     {
-        if (IsServer && IsHost) return;
 
         DisableRagdoll();
         Debug.Log("Ragdoll - Call the function for disable Clients and Hosts");
@@ -131,7 +128,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     private void DisableRagdoll()
     {
-        AlignPositionToHips();
 
         foreach (Rigidbody ragdollRb in ragdollRbs)
         {
@@ -143,7 +139,9 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             ragdollCollider.enabled = false;
         }
 
+        // AlignPositionToHips();
         animator.enabled = true;
+
         Debug.Log("Ragdoll - Call the function for disable on final function");
     }
 
