@@ -119,7 +119,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost)]
     private void DisableRagdollClientRpc()
     {
-
         DisableRagdoll();
         Debug.Log("Ragdoll - Call the function for disable Clients and Hosts");
         // align to hips
@@ -128,6 +127,8 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     private void DisableRagdoll()
     {
+
+        animator.enabled = true;
 
         foreach (Rigidbody ragdollRb in ragdollRbs)
         {
@@ -140,8 +141,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         }
 
         // AlignPositionToHips();
-        animator.enabled = true;
-
+        
         Debug.Log("Ragdoll - Call the function for disable on final function");
     }
 
