@@ -16,7 +16,13 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [SerializeField] private Collider[] ragdollColliders;
 
     private float verticalOffset = 0f;
+
+    private Quaternion originalHipRotation;
+    private Quaternion originalRootRotation;
+    private Quaternion ragdollRootRotation;
+
     private bool isFallen = false;
+
 
     public void InitializeOwner()
     {
@@ -26,25 +32,9 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
         ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>();
         DisableRagdoll();   
-        // RequestRagdollDisableServerRpc();
         // not align and disable ragdoll
     }
 
-    // Just for debug on ragdoll scene
-    private void Awake()
-    {
-        ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
-        ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>();
-        DisableRagdoll();
-    }
-
-    private void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.Space))
-        {
-            DisableRagdoll();
-        }
-    }
 
     public void HandleOnPlayerTakeDamage(object sender, PlayerHealth.OnPlayerTakeDamageArgs e)
     {
@@ -71,7 +61,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
                 if (isFallen)
                 {
                     RequestRagdollDisableServerRpc();
-                    Debug.Log("Ragdoll - Call the function for disable on HandleOnPlayerStateChange");
                 }
             }
         }
@@ -81,11 +70,9 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     public void TriggerRagdoll(Vector3 force, Vector3 hitPoint)
     {
         RequestRagdollServerRpc();
-        Debug.Log("Ragdoll - Call the function for disable on Trigger");
 
         Rigidbody hitRigidbody = ragdollRbs.OrderBy(Rigidbody => Vector3.Distance(Rigidbody.position, hitPoint)).First(); // we order all rbs by distance to hitpoint and take the first one
         hitRigidbody.AddForceAtPosition(force, hitPoint, ForceMode.Impulse);
-        // set the state anim for ragdoll (after
     }
 
 
@@ -103,6 +90,10 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     private void EnableRagdoll()
     {
+        originalHipRotation = hipsTransform.rotation;
+        originalRootRotation = rootTransform.rotation;
+        ragdollRootRotation = ragdollRoot.rotation;
+
         if (ragdollRbs == null)
         {
             ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
@@ -134,15 +125,12 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     private void RequestRagdollDisableServerRpc()
     {
         DisableRagdollClientRpc();
-        Debug.Log("Ragdoll - Call the function for disable RPC");
     }
 
     [Rpc(SendTo.ClientsAndHost)]
     private void DisableRagdollClientRpc()
     {
         DisableRagdoll();
-        Debug.Log("Ragdoll - Call the function for disable Clients and Hosts");
-        // align to hips
     }
 
 
@@ -165,27 +153,29 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         {
             AlignPositionToHips();
         }
+
         isFallen = false;
-        Debug.Log("Ragdoll - Call the function for disable on final function");
     }
 
     private void AlignPositionToHips()
     {
-        Vector3 newPosition = hipsTransform.position; // create a new pos basead on actual hips transform position
-        newPosition.y -= verticalOffset;  // correcting the y axis to align with the root transform
+        Vector3 newPosition = hipsTransform.position; 
+        newPosition.y -= verticalOffset;  // correcting the y axis 
 
-        Vector3 flatForward = ragdollRoot.forward;
-        flatForward.y = 0f;
-
-        if (flatForward != Vector3.zero)
+        if (Physics.Raycast(hipsTransform.position, Vector3.down, out RaycastHit hit, 5f)) // check if we hit the ground for not reset in the ground
         {
-            rootTransform.rotation = Quaternion.LookRotation(flatForward);
+            float groundY = hit.point.y;
+
+            if (newPosition.y < groundY)
+            {
+                newPosition.y = groundY;
+            }
         }
 
-        // Send gfx for original pos 
-        ragdollRoot.localPosition = Vector3.zero;
-        ragdollRoot.localRotation = Quaternion.identity;
-
+        // Send all for original rotation, basead on new position
+        rootTransform.SetPositionAndRotation(newPosition, originalRootRotation);
+        hipsTransform.rotation = originalHipRotation;
+        ragdollRoot.rotation = ragdollRootRotation;
     }
 
     public void UnInitializeOwner()
