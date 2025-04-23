@@ -17,15 +17,12 @@ public class PlayerDetectFacingDirection : DragListener
     [Tooltip("Value to be add to not rotate the object to close to the 90 degrees")]
     [SerializeField] private float angleOffset = 0.5f;
 
-    //Based on the direction of the other player, the default direction is right is true when the enemy is on the right side
-    private bool isDefaultDirectionRight = false;
-
+    private BaseTurnManager turnManager;
     private bool isDirectionRight = false;
 
-    protected override void DoOnSpawn()
+    protected override void DoOnInitializeOnwer()
     {
-        //reset to default direction
-        isDirectionRight = isDefaultDirectionRight;
+        turnManager = ServiceLocator.Get<BaseTurnManager>();
     }
 
     protected override void DoOnDragChange(float forcePercent, float andlePercent)
@@ -36,9 +33,9 @@ public class PlayerDetectFacingDirection : DragListener
             //right
             if(isDirectionRight) return; //do nothing if the direction is already right
 
-            OnRotationChanged?.Invoke(true);
-
             isDirectionRight = true;
+
+            OnRotationChanged?.Invoke(true);
 
         }
         else if (playerDragController.GetOpositeFingerPos().x < playerGfxTransform.position.x - angleOffset)
@@ -50,19 +47,18 @@ public class PlayerDetectFacingDirection : DragListener
 
             OnRotationChanged?.Invoke(false);
         }
-
-        Debug.Log($"Right: {isDirectionRight} ");
     }
 
     protected override void DoOnDragRelease()
     {
-        StartCoroutine(DelayToChangeRotationToDefault());
+        //StartCoroutine(DelayToChangeRotationToDefault());
     }
 
-    private IEnumerator DelayToChangeRotationToDefault()
+    protected override void DoOnEndedTurn()
     {
 
-        yield return null;
-    }
+        isDirectionRight = LocateOtherPlayer.OtherPlayerIsOnMyRight(turnManager.LocalPlayableState);
 
+        OnRotationChanged?.Invoke(isDirectionRight);
+    }
 }

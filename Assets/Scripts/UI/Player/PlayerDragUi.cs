@@ -12,7 +12,6 @@ public class PlayerDragUi : DragListener
 
     public override void OnNetworkSpawn()
     {
-        base.OnNetworkSpawn();
         HideText(); //hide enemy ui
     }
 
@@ -31,7 +30,7 @@ public class PlayerDragUi : DragListener
 
     }
 
-    protected override void DoOnSpawn()
+    protected override void DoOnInitializeOnwer()
     {
         HideText();
     }
@@ -69,4 +68,8 @@ public class PlayerDragUi : DragListener
         lookAtCamera.enabled = false;
     }
 
+    protected override void DoOnEndedTurn()
+    {
+
+    }
 }

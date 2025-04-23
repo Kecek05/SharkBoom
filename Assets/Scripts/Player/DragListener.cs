@@ -7,7 +7,7 @@ public abstract class DragListener : NetworkBehaviour
     public void InitializeOwner()
     {
         if (!IsOwner) return;
-        DoOnSpawn();
+        DoOnInitializeOnwer();
     }
 
     public void HandleOnPlayerDragControllerDragChange(float forcePercent, float angle)
@@ -24,13 +24,16 @@ public abstract class DragListener : NetworkBehaviour
         {
             Debug.Log("Drag Release Item");
             DoOnDragRelease();
+        } else if (newState == PlayerState.MyTurnEnded)
+        {
+            DoOnEndedTurn();
         }
     }
 
     /// <summary>
     /// Called when the object is spawned and its the owner
     /// </summary>
-    protected abstract void DoOnSpawn();
+    protected abstract void DoOnInitializeOnwer();
 
     /// <summary>
     /// Called when the finger changes position
@@ -42,4 +45,5 @@ public abstract class DragListener : NetworkBehaviour
     /// </summary>
     protected abstract void DoOnDragRelease();
 
+    protected abstract void DoOnEndedTurn();
 }

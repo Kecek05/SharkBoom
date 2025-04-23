@@ -8,7 +8,7 @@ public class PlayerRotateToAim : DragListener
     [SerializeField] private Transform aimDefaultPosition;
     [SerializeField] private PlayerDragController playerDragController;
 
-    protected override void DoOnSpawn()
+    protected override void DoOnInitializeOnwer()
     {
         aimTransform.position = aimDefaultPosition.position;
     }
@@ -20,7 +20,11 @@ public class PlayerRotateToAim : DragListener
 
     protected override void DoOnDragRelease()
     {
-        aimTransform.position = aimDefaultPosition.position;
+
     }
 
+    protected override void DoOnEndedTurn()
+    {
+        aimTransform.position = aimDefaultPosition.position;
+    }
 }
