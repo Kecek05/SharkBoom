@@ -25,7 +25,8 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
         ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>();
 
-        // RequestRagdollDisableServerRpc();
+        DisableRagdoll();
+        Debug.Log("Ragdoll - Call the function for disable on InitializeOwner");
         // not align and disable ragdoll
     }
 
@@ -38,7 +39,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         {
             // turn on ragdoll
             RequestRagdollServerRpc();
-            Debug.Log("Ragdoll - Event for enable");
         }
     }
 
@@ -54,7 +54,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             if(IsOwner)
             {
                 RequestRagdollDisableServerRpc();
-                Debug.Log("Ragdoll - Event for disable ragdoll");
+                Debug.Log("Ragdoll - Call the function for disable on HandleOnPlayerStateChange");
             }
         }
     }
@@ -62,12 +62,11 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     public void TriggerRagdoll(Vector3 force, Vector3 hitPoint)
     {
         RequestRagdollServerRpc();
+        Debug.Log("Ragdoll - Call the function for disable on Trigger");
 
         Rigidbody hitRigidbody = ragdollRbs.OrderBy(Rigidbody => Vector3.Distance(Rigidbody.position, hitPoint)).First(); // we order all rbs by distance to hitpoint and take the first one
         hitRigidbody.AddForceAtPosition(force, hitPoint, ForceMode.Impulse);
-
-        Debug.Log("Ragdoll - Trigger Ragdoll");
-        // set the state anim for ragdoll (after)
+        // set the state anim for ragdoll (after
     }
 
 
@@ -75,15 +74,13 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     private void RequestRagdollServerRpc()
     {
         EnableRagdollClientRpc();
-        Debug.Log("Ragdoll - enable SEND TO RPC");
     }
 
     [Rpc(SendTo.ClientsAndHost)]
     private void EnableRagdollClientRpc()
     {
-        Debug.Log("Ragdoll - enable RPC2");
+        if (IsServer && IsHost) return;
         EnableRagdoll();
-        Debug.Log("Ragdoll - enable RPC");
     }
 
     private void EnableRagdoll()
@@ -98,8 +95,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>();
         }
 
-        Debug.Log($"Ragdoll - Found {ragdollRbs.Length} rigidbodies and {ragdollColliders.Length} colliders");
-
         verticalOffset = hipsTransform.position.y - rootTransform.position.y;
 
         foreach (Rigidbody ragdollRb in ragdollRbs)
@@ -113,7 +108,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         }
 
         animator.enabled = false;
-        Debug.Log("Ragdoll - enable finish");
     }
 
 
@@ -121,15 +115,36 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     private void RequestRagdollDisableServerRpc()
     {
         DisableRagdollClientRpc();
-        Debug.Log("Ragdoll - Disable Ragdoll SEND TO RPC");
+        Debug.Log("Ragdoll - Call the function for disable RPC");
     }
 
     [Rpc(SendTo.ClientsAndHost)]
     private void DisableRagdollClientRpc()
     {
+        if (IsServer && IsHost) return;
+
         DisableRagdoll();
+        Debug.Log("Ragdoll - Call the function for disable Clients and Hosts");
         // align to hips
-        Debug.Log("Ragdoll - Disable Ragdoll RPC");
+    }
+
+
+    private void DisableRagdoll()
+    {
+        AlignPositionToHips();
+
+        foreach (Rigidbody ragdollRb in ragdollRbs)
+        {
+            ragdollRb.isKinematic = true;
+        }
+
+        foreach (Collider ragdollCollider in ragdollColliders)
+        {
+            ragdollCollider.enabled = false;
+        }
+
+        animator.enabled = true;
+        Debug.Log("Ragdoll - Call the function for disable on final function");
     }
 
     private void AlignPositionToHips()
@@ -144,25 +159,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         ragdollRoot.localRotation = Quaternion.identity;
 
     }
-
-    private void DisableRagdoll()
-    {
-        
-
-        foreach (Rigidbody ragdollRb in ragdollRbs)
-        {
-            ragdollRb.isKinematic = true;
-        }
-
-        foreach (Collider ragdollCollider in ragdollColliders)
-        {
-            ragdollCollider.enabled = false;
-        }
-
-        animator.enabled = true;
-        Debug.Log("Ragdoll - Ragdoll disable finish");
-    }
-
 
     public void UnInitializeOwner()
     {
