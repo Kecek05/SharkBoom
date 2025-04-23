@@ -130,7 +130,6 @@ GameObject:
   - component: {fileID: 75692722}
   - component: {fileID: 75692725}
   - component: {fileID: 75692724}
-  - component: {fileID: 75692723}
   m_Layer: 5
   m_Name: CodeText
   m_TagString: Untagged
@@ -145,31 +144,18 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 75692721}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 227239974}
+  m_Father: {fileID: 347299927}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -162.8}
+  m_AnchoredPosition: {x: 0, y: -51.906357}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &75692723
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 75692721}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 83dd487c98331bb47974bca86a0cca20, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  codeTextUI: {fileID: 75692724}
 --- !u!114 &75692724
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -190,7 +176,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 00000
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 39ec0e304d5138e439cf7887d13c821c, type: 2}
   m_sharedMaterial: {fileID: -5130788614859905338, guid: 39ec0e304d5138e439cf7887d13c821c, type: 2}
@@ -776,6 +762,7 @@ GameObject:
   - component: {fileID: 227239974}
   - component: {fileID: 227239973}
   - component: {fileID: 227239972}
+  - component: {fileID: 227239975}
   m_Layer: 5
   m_Name: CodeCanvas
   m_TagString: Untagged
@@ -842,7 +829,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 347299927}
-  - {fileID: 75692722}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -850,6 +836,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &227239975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 227239971}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83dd487c98331bb47974bca86a0cca20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  codeTextUI: {fileID: 75692724}
+  codeUIBackground: {fileID: 347299926}
 --- !u!1 &238265057
 GameObject:
   m_ObjectHideFlags: 0
@@ -1106,7 +1106,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 75692722}
   m_Father: {fileID: 227239974}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -5352,7 +5353,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4845276930943762971, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000061035156
+      value: 0.000030517578
       objectReference: {fileID: 0}
     - target: {fileID: 4845637959249703711, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchorMax.y
@@ -5883,10 +5884,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a95e66ef2043c3f4bad44416d40d676f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player1Image: {fileID: 0}
-  player2Image: {fileID: 0}
-  player1HealthSlider: {fileID: 0}
-  player2HealthSlider: {fileID: 0}
+  player1Image: {fileID: 207119421}
+  player2Image: {fileID: 1402149508}
+  player1HealthSlider: {fileID: 209522333}
+  player2HealthSlider: {fileID: 1772873053}
   tweenDuration: 0.3
 --- !u!114 &1455302046
 MonoBehaviour:
@@ -5915,8 +5916,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player1Turn: {fileID: 664085634}
   player2Turn: {fileID: 538374394}
-  player1You: {fileID: 0}
-  player2You: {fileID: 0}
+  player1You: {fileID: 1988717368}
+  player2You: {fileID: 692907288}
 --- !u!114 &1455302048
 MonoBehaviour:
   m_ObjectHideFlags: 0

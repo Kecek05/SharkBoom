@@ -5,6 +5,7 @@ using UnityEngine;
 public class CodeUI : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI codeTextUI;
+    [SerializeField] private GameObject codeUIBackground;
 
     private BaseGameStateManager gameStateManager;
 
@@ -27,7 +28,19 @@ public class CodeUI : MonoBehaviour
         while (true)
         {
             if (HostSingleton.Instance != null)
-                codeTextUI.text = HostSingleton.Instance.GameManager.JoinCode;
+            {
+                if(HostSingleton.Instance.GameManager.JoinCode == string.Empty || HostSingleton.Instance.GameManager.JoinCode == null)
+                {
+                    //No lobby game
+                    codeUIBackground.gameObject.SetActive(false);
+                } else
+                {
+                    codeTextUI.text = HostSingleton.Instance.GameManager.JoinCode;
+                    codeUIBackground.gameObject.SetActive(true);
+                }
+
+            }
+                
 
             yield return waitUpdate;
         }
@@ -39,7 +52,7 @@ public class CodeUI : MonoBehaviour
         {
             StopCoroutine(updateCodeTextUICoroutine);
 
-            codeTextUI.gameObject.SetActive(false);
+            codeUIBackground.gameObject.SetActive(false);
         }
     }
 

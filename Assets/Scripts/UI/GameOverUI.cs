@@ -73,6 +73,7 @@ public class GameOverUI : MonoBehaviour
         {
             //Relay game, no pearls to show
             pearlsResultText.gameObject.SetActive(false);
+            pearlsBackground.gameObject.SetActive(false);
         }
         else if (pearlsDelta > 0)
         {
