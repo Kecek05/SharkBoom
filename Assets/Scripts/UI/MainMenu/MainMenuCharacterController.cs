@@ -5,7 +5,7 @@ public class MainMenuCharacterController : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private GameObject[] charactersPrefabs;
-    private int[] animations =
+    [SerializeField] private readonly int[] animations =
     {
         Animator.StringToHash("Idle_L"),
         Animator.StringToHash("Idle_R"),
@@ -25,9 +25,9 @@ public class MainMenuCharacterController : MonoBehaviour
         {
             int randomIndex = Random.Range(0, charactersPrefabs.Length);
             GameObject character = Instantiate(charactersPrefabs[randomIndex], transform.position, Quaternion.identity);
-            animator = character.GetComponent<Animator>();
+            animator = character.GetComponentInChildren<Animator>();
 
-            if(animator != null)
+            if (animator != null)
             {
                 StartCoroutine(RandomAnimation());
             }
@@ -40,13 +40,14 @@ public class MainMenuCharacterController : MonoBehaviour
         {
             float delay = Random.Range(minDelay, maxDelay);
 
-            yield return new WaitForSeconds(delay);
-
             if (animations != null && animations.Length > 0)
             {
                 int stateIndex = Random.Range(0, animations.Length);
                 animator.Play(animations[stateIndex]);
+                Debug.Log($"Animation {animations[stateIndex]} played.");
             }
+
+            yield return new WaitForSeconds(delay);
 
         }
     }
