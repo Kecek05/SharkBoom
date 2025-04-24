@@ -205,6 +205,7 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleOnDragChange(float forcePercent, float angle)
     {
+        Debug.Log("HandleOnDragChange");
         playerDetectFacingDirection.HandleOnPlayerDragControllerDragChange(forcePercent, angle);
         playerDragUi.HandleOnPlayerDragControllerDragChange(forcePercent, angle);
         playerRotateToAim.HandleOnPlayerDragControllerDragChange(forcePercent, angle);
