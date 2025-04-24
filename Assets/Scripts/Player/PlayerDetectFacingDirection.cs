@@ -1,9 +1,8 @@
 using Sortify;
 using System;
-using System.Collections;
 using UnityEngine;
 
-public class PlayerDetectFacingDirection : DragListener
+public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDetectDragChange, IDetectEndedTurn
 {
     /// <summary>
     /// Called when the look orientation is changed. Pass if is looking right
@@ -20,18 +19,17 @@ public class PlayerDetectFacingDirection : DragListener
     private BaseTurnManager turnManager;
     private bool isDirectionRight = false;
 
-    protected override void DoOnInitializeOnwer()
+    public void DoOnInitializeOnwer()
     {
         turnManager = ServiceLocator.Get<BaseTurnManager>();
     }
 
-    protected override void DoOnDragChange(float forcePercent, float andlePercent)
+    public void DoOnDragChange(float forcePercent, float andlePercent)
     {
-
         if (playerDragController.GetOpositeFingerPos().x > playerGfxTransform.position.x + angleOffset)
         {
             //right
-            if(isDirectionRight) return; //do nothing if the direction is already right
+            if (isDirectionRight) return; //do nothing if the direction is already right
 
             isDirectionRight = true;
 
@@ -41,7 +39,7 @@ public class PlayerDetectFacingDirection : DragListener
         else if (playerDragController.GetOpositeFingerPos().x < playerGfxTransform.position.x - angleOffset)
         {
             //left
-            if(!isDirectionRight) return; //do nothing if the direction is already left
+            if (!isDirectionRight) return; //do nothing if the direction is already left
 
             isDirectionRight = false;
 
@@ -49,16 +47,53 @@ public class PlayerDetectFacingDirection : DragListener
         }
     }
 
-    protected override void DoOnDragRelease()
+    public void DoOnEndedTurn()
     {
-        //StartCoroutine(DelayToChangeRotationToDefault());
-    }
-
-    protected override void DoOnEndedTurn()
-    {
-
         isDirectionRight = LocateOtherPlayer.OtherPlayerIsOnMyRight(turnManager.LocalPlayableState);
 
         OnRotationChanged?.Invoke(isDirectionRight);
     }
+
+    //protected override void DoOnInitializeOnwer()
+    //{
+    //    turnManager = ServiceLocator.Get<BaseTurnManager>();
+    //}
+
+    //protected override void DoOnDragChange(float forcePercent, float andlePercent)
+    //{
+
+    //    if (playerDragController.GetOpositeFingerPos().x > playerGfxTransform.position.x + angleOffset)
+    //    {
+    //        //right
+    //        if (isDirectionRight) return; //do nothing if the direction is already right
+
+    //        isDirectionRight = true;
+
+    //        OnRotationChanged?.Invoke(true);
+
+    //    }
+    //    else if (playerDragController.GetOpositeFingerPos().x < playerGfxTransform.position.x - angleOffset)
+    //    {
+    //        //left
+    //        if (!isDirectionRight) return; //do nothing if the direction is already left
+
+    //        isDirectionRight = false;
+
+    //        OnRotationChanged?.Invoke(false);
+    //    }
+    //}
+
+    ////protected override void DoOnDragRelease()
+    ////{
+    ////    //StartCoroutine(DelayToChangeRotationToDefault());
+    ////}
+
+    //protected override void DoOnEndedTurn()
+    //{
+
+    //    isDirectionRight = LocateOtherPlayer.OtherPlayerIsOnMyRight(turnManager.LocalPlayableState);
+
+    //    OnRotationChanged?.Invoke(isDirectionRight);
+    //}
+
 }

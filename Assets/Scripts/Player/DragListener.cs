@@ -1,19 +1,96 @@
 using Unity.Netcode;
-using UnityEngine;
 
 public abstract class DragListener : NetworkBehaviour
 {
+    private IInitializeOnwer initializeOnwer;
+    private IDetectDragChange detectDragChange;
+    private IDetectDragRelease detectDragRelease;
+    private IDetectEndedTurn detectEndedTurn;
+    private IDetectDragCancelable detectDragCancelable;
+    private IDetectDragStart detectDragStart;
+
+    public override void OnNetworkSpawn()
+    {
+        if(initializeOnwer == null)
+        {
+            if (this.TryGetComponent(out IInitializeOnwer _initializeOnwer))
+            {
+                initializeOnwer = _initializeOnwer;
+            }
+        }
+
+        if (detectDragChange == null)
+        {
+            if (this.TryGetComponent(out IDetectDragChange _detectDragChange))
+            {
+                detectDragChange = _detectDragChange;
+            }
+        }
+
+        if (detectDragRelease == null)
+        {
+            if (this.TryGetComponent(out IDetectDragRelease _detectDragRelease))
+            {
+                detectDragRelease = _detectDragRelease;
+            }
+        }
+
+        if (detectEndedTurn == null)
+        {
+            if (this.TryGetComponent(out IDetectEndedTurn _detectEndedTurn))
+            {
+                detectEndedTurn = _detectEndedTurn;
+            }
+        }
+
+        if (detectDragCancelable == null)
+        {
+            if (this.TryGetComponent(out IDetectDragCancelable _detectDragCancelable))
+            {
+                detectDragCancelable = _detectDragCancelable;
+            }
+        }
+
+        if (detectDragStart == null)
+        {
+            if (this.TryGetComponent(out IDetectDragStart _detectDragStart))
+            {
+                detectDragStart = _detectDragStart;
+            }
+        }
+    }
 
     public void InitializeOwner()
     {
         if (!IsOwner) return;
-        DoOnInitializeOnwer();
+
+
+        initializeOnwer?.DoOnInitializeOnwer();
+
+        //DoOnInitializeOnwer();
+    }
+
+    public void HandleOnPlayerDragControllerDragStart()
+    {
+        if (!IsOwner) return; //only owner
+
+        detectDragStart?.DoOnDragStart();
+    }
+
+    public void HandleOnPlayerDragControllerDragCancelable(bool isCancelable)
+    {
+        if (!IsOwner) return; //only owner
+        detectDragCancelable?.DoOnDragCancelable(isCancelable);
+        //DoOnDragCancelable(isCancelable);
     }
 
     public void HandleOnPlayerDragControllerDragChange(float forcePercent, float angle)
     {
         if(!IsOwner) return; //only owner
-        DoOnDragChange(forcePercent, angle);
+
+        detectDragChange?.DoOnDragChange(forcePercent, angle);
+
+        //DoOnDragChange(forcePercent, angle);
     }
 
     public void HandleOnPlayerStateMachineStateChanged(PlayerState newState)
@@ -22,28 +99,32 @@ public abstract class DragListener : NetworkBehaviour
 
         if (newState == PlayerState.DragReleaseItem || newState == PlayerState.DragReleaseJump)
         {
-            Debug.Log("Drag Release Item");
-            DoOnDragRelease();
+
+            detectDragRelease?.DoOnDragRelease();
+
+            //DoOnDragRelease();
         } else if (newState == PlayerState.MyTurnEnded)
         {
-            DoOnEndedTurn();
+
+            detectEndedTurn?.DoOnEndedTurn();
+            //DoOnEndedTurn();
         }
     }
 
-    /// <summary>
-    /// Called when the object is spawned and its the owner
-    /// </summary>
-    protected abstract void DoOnInitializeOnwer();
+    ///// <summary>
+    ///// Called when the object is spawned and its the owner
+    ///// </summary>
+    //protected abstract void DoOnInitializeOnwer();
 
-    /// <summary>
-    /// Called when the finger changes position
-    /// </summary>
-    protected abstract void DoOnDragChange(float forcePercent, float andlePercent);
+    ///// <summary>
+    ///// Called when the finger changes position
+    ///// </summary>
+    //protected abstract void DoOnDragChange(float forcePercent, float andlePercent);
 
-    /// <summary>
-    /// Called when the drag is released, the object is launched.
-    /// </summary>
-    protected abstract void DoOnDragRelease();
+    ///// <summary>
+    ///// Called when the drag is released, the object is launched.
+    ///// </summary>
+    //protected abstract void DoOnDragRelease();
 
-    protected abstract void DoOnEndedTurn();
+    //protected abstract void DoOnEndedTurn();
 }

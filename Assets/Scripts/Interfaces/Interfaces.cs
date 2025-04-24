@@ -96,3 +96,19 @@ public interface IDetectEndedTurn
     /// </summary>
     public void DoOnEndedTurn();
 }
+
+public interface IDetectDragCancelable
+{
+    /// <summary>
+    /// Called when the drag can be canceled.
+    /// </summary>
+    public void DoOnDragCancelable(bool cancelable);
+}
+
+public interface IDetectDragStart
+{
+    /// <summary>
+    /// Called when the drag starts.
+    /// </summary>
+    public void DoOnDragStart();
+}

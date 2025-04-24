@@ -8,37 +8,37 @@ public class PlayerRotateToAim : DragListener, IInitializeOnwer, IDetectDragChan
     [SerializeField] private Transform aimDefaultPosition;
     [SerializeField] private PlayerDragController playerDragController;
 
-    protected override void DoOnInitializeOnwer()
-    {
+    //protected override void DoOnInitializeOnwer()
+    //{
 
-    }
+    //}
 
-    protected override void DoOnDragChange(float forcePercent, float angle)
-    {
+    //protected override void DoOnDragChange(float forcePercent, float angle)
+    //{
 
-    }
+    //}
 
-    protected override void DoOnDragRelease()
-    {
+    //protected override void DoOnDragRelease()
+    //{
 
-    }
+    //}
 
-    protected override void DoOnEndedTurn()
-    {
+    //protected override void DoOnEndedTurn()
+    //{
         
-    }
+    //}
 
-    void IInitializeOnwer.DoOnInitializeOnwer()
+    public void DoOnInitializeOnwer()
     {
         aimTransform.position = aimDefaultPosition.position;
     }
 
-    void IDetectDragChange.DoOnDragChange(float forcePercent, float andlePercent)
+    public void DoOnDragChange(float forcePercent, float andlePercent)
     {
         aimTransform.position = playerDragController.GetOpositeFingerPos();
     }
 
-    void IDetectEndedTurn.DoOnEndedTurn()
+    public void DoOnEndedTurn()
     {
         aimTransform.position = aimDefaultPosition.position;
     }

@@ -1,57 +1,43 @@
 using Sortify;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UIElements;
 
-public class PlayerDragUi : DragListener
+public class PlayerDragUi : DragListener, IDetectDragStart, IDetectDragChange, IDetectDragRelease, IDetectDragCancelable
 {
     [BetterHeader("References")]
     [SerializeField] private TextMeshProUGUI forceText;
     [SerializeField] private TextMeshProUGUI directionText;
-    [SerializeField] private PlayerThrower player;
     [SerializeField] private LookAtCameraComponent lookAtCamera;
 
     public override void OnNetworkSpawn()
     {
+        base.OnNetworkSpawn();
         HideText(); //hide enemy ui
     }
 
-    public void HandleOnPlayerDragControllerDragCancelable(bool isCancelable)
+    public void DoOnDragStart()
     {
-        if(!IsOwner) return; //only owner
+        ShowText();
+    }
 
-        if (isCancelable)
+    public void DoOnDragCancelable(bool cancelable)
+    {
+        if (cancelable)
         {
             HideText();
-        } else if(!isCancelable && player.PlayerStateMachine.CurrentState == player.PlayerStateMachine.draggingItem || player.PlayerStateMachine.CurrentState == player.PlayerStateMachine.draggingJump)
+        }
+        else
         {
             //cant cancell and its dragging
             ShowText();
         }
-
     }
 
-    protected override void DoOnInitializeOnwer()
-    {
-        HideText();
-    }
-
-
-    public void HandleOnPlayerDragControllerDragStart()
-    {
-        if (!IsOwner) return; //only owner
-
-        ShowText();
-    }
-
-    protected override void DoOnDragChange(float forcePercent, float angle)
+    public void DoOnDragChange(float forcePercent, float andlePercent)
     {
         forceText.text = $"Force: {Mathf.RoundToInt(forcePercent)}";
-        directionText.text = $"Direction: {Mathf.RoundToInt(angle)}°";
-    }
-
-    protected override void DoOnDragRelease()
-    {
-        HideText();
+        directionText.text = $"Direction: {Mathf.RoundToInt(andlePercent)}°";
     }
 
     private void ShowText()
@@ -68,8 +54,8 @@ public class PlayerDragUi : DragListener
         lookAtCamera.enabled = false;
     }
 
-    protected override void DoOnEndedTurn()
+    public void DoOnDragRelease()
     {
-
+        HideText();
     }
 }
