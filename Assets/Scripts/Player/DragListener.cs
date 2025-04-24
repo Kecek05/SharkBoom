@@ -67,7 +67,6 @@ public abstract class DragListener : NetworkBehaviour
 
         initializeOnwer?.DoOnInitializeOnwer();
 
-        //DoOnInitializeOnwer();
     }
 
     public void HandleOnPlayerDragControllerDragStart()
@@ -81,7 +80,6 @@ public abstract class DragListener : NetworkBehaviour
     {
         if (!IsOwner) return; //only owner
         detectDragCancelable?.DoOnDragCancelable(isCancelable);
-        //DoOnDragCancelable(isCancelable);
     }
 
     public void HandleOnPlayerDragControllerDragChange(float forcePercent, float angle)
@@ -90,7 +88,6 @@ public abstract class DragListener : NetworkBehaviour
 
         detectDragChange?.DoOnDragChange(forcePercent, angle);
 
-        //DoOnDragChange(forcePercent, angle);
     }
 
     public void HandleOnPlayerStateMachineStateChanged(PlayerState newState)
@@ -99,32 +96,12 @@ public abstract class DragListener : NetworkBehaviour
 
         if (newState == PlayerState.DragReleaseItem || newState == PlayerState.DragReleaseJump)
         {
-
             detectDragRelease?.DoOnDragRelease();
 
-            //DoOnDragRelease();
         } else if (newState == PlayerState.MyTurnEnded)
         {
 
             detectEndedTurn?.DoOnEndedTurn();
-            //DoOnEndedTurn();
         }
     }
-
-    ///// <summary>
-    ///// Called when the object is spawned and its the owner
-    ///// </summary>
-    //protected abstract void DoOnInitializeOnwer();
-
-    ///// <summary>
-    ///// Called when the finger changes position
-    ///// </summary>
-    //protected abstract void DoOnDragChange(float forcePercent, float andlePercent);
-
-    ///// <summary>
-    ///// Called when the drag is released, the object is launched.
-    ///// </summary>
-    //protected abstract void DoOnDragRelease();
-
-    //protected abstract void DoOnEndedTurn();
 }

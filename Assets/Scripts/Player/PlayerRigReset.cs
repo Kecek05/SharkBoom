@@ -40,36 +40,4 @@ public class PlayerRigReset : DragListener, IInitializeOnwer, IDetectEndedTurn
     {
         ResetPose();
     }
-
-   
-    //protected override void DoOnInitializeOnwer()
-    //{
-    //    Debug.Log("Testing Spawn");
-    //    boneTransforms = boneRenderes.transforms;
-
-    //    boneInitialPosition = new Vector3[boneTransforms.Length];
-    //    boneInitialRotation = new Quaternion[boneTransforms.Length];
-
-    //    for (int i = 0; i < boneTransforms.Length; i++) // Using the for because we need to save the initial position and rotation for all bones
-    //    {
-    //        boneInitialPosition[i] = boneTransforms[i].localPosition;
-    //        boneInitialRotation[i] = boneTransforms[i].localRotation;
-    //    }
-    //}
-
-    //protected override void DoOnDragChange(float forcePercent, float andlePercent)
-    //{
-    //    Debug.Log("Testing reset");
-    //}
-
-    //protected override void DoOnDragRelease()
-    //{
-    //    Debug.Log("Testing release");
-    //}
-
-
-    //protected override void DoOnEndedTurn()
-    //{
-    //    ResetPose();
-    //}
 }
