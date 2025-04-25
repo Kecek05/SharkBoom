@@ -17,6 +17,7 @@ public class PlayerSpawner : IPlayerSpawner
 
     public int PlayerCount => playerSpawned;
 
+    private BasePlayersPublicInfoManager playersPublicInfo;
     public PlayerSpawner(NetworkObject _playerPrefab)
     {
         playerPrefab = _playerPrefab;
@@ -37,7 +38,8 @@ public class PlayerSpawner : IPlayerSpawner
 
         playerSpawned++;
 
-        Transform randomSpawnPointSelected = ServiceLocator.Get<BasePlayersPublicInfoManager>().GetRandomSpawnPoint();
+        playersPublicInfo = ServiceLocator.Get<BasePlayersPublicInfoManager>();
+        Transform randomSpawnPointSelected = playersPublicInfo.GetRandomSpawnPoint();
 
         NetworkObject playerInstance = GameObject.Instantiate(playerPrefab, randomSpawnPointSelected.position, Quaternion.identity);
 
@@ -50,6 +52,7 @@ public class PlayerSpawner : IPlayerSpawner
 
         PlayerRandomizeVisual visual = playerInstance.GetComponentInChildren<PlayerRandomizeVisual>();
 
+
         if (visual == null)
         {
             Debug.LogError("PlayerRandomizeVisual is null");
@@ -61,18 +64,16 @@ public class PlayerSpawner : IPlayerSpawner
             if (PlayerCount == 1)
             {
                 visualType = switchOrder ? PlayerVisualType.Orca : PlayerVisualType.Shark;
+                playersPublicInfo.SetPlayerVisualType(GetPlayableStateByCount(), visualType);
                 visual.SetVisualNetworked(visualType);
             }
             else if (PlayerCount == 2)
             {
                 visualType = switchOrder ? PlayerVisualType.Shark : PlayerVisualType.Orca;
+                playersPublicInfo.SetPlayerVisualType(GetPlayableStateByCount(), visualType);
                 visual.SetVisualNetworked(visualType);
             }
         }
-        //PlayerData playerData = NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.ClientIdToPlayerData[clientId];
-
-        //playerData.gameObject = playerInstance.gameObject;
-        //playerData.playableState = GetPlayableStateByCount();
 
         Debug.Log($"Spawning Player, PlayableState: {GetPlayableStateByCount()} Selected Random SpawnPoint: {randomSpawnPointSelected.name} - Player Spawned: {PlayerCount}");
 
