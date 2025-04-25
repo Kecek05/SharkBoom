@@ -8,19 +8,20 @@ public class CameraManager : NetworkBehaviour
     [SerializeField] private CameraMovement cameraMovement;
     [SerializeField] private CameraZoom cameraZoom;
     [SerializeField] private CameraFollowing cameraFollowing;
-    [SerializeField] private Transform playerTransform;
+    [SerializeField] private GameObject playerObj;
+    [SerializeField] private GameObject enemyObj;
+    [SerializeField] private PlayerThrower player;
     
     private CinemachineCamera cinemachineCamera;
     private Camera cameraMain; // Cache camera main for all scripts that need it
     private Transform cameraObjectToFollow;
 
     public Transform CameraObjectToFollow => cameraObjectToFollow;
-    public Transform PlayerTransform => playerTransform;
+    public GameObject PlayerObj => playerObj;
     public CameraZoom CameraZoom => cameraZoom;
     public CameraMovement CameraMovement => cameraMovement;
     public CinemachineCamera CinemachineCamera => cinemachineCamera;
     public Camera CameraMain => cameraMain;
-
 
     public void InitializeOwner()
     {
@@ -46,7 +47,25 @@ public class CameraManager : NetworkBehaviour
     {
         if(!IsOwner) return;
 
-        switch(playerState)
+        BasePlayersPublicInfoManager playersPublicInfoManager = ServiceLocator.Get<PlayersPublicInfoManager>();
+
+        if (CheckPlayer1())
+        {
+            playerObj = playersPublicInfoManager.GetPlayerObjectByPlayableState(PlayableState.Player1Played) 
+                ?? playersPublicInfoManager.GetPlayerObjectByPlayableState(PlayableState.Player1Playing);
+            enemyObj = playersPublicInfoManager.GetPlayerObjectByPlayableState(PlayableState.Player2Played)
+                ?? playersPublicInfoManager.GetPlayerObjectByPlayableState(PlayableState.Player2Playing);
+        }
+        else
+        {
+            playerObj = playersPublicInfoManager.GetPlayerObjectByPlayableState(PlayableState.Player2Played)
+                ?? playersPublicInfoManager.GetPlayerObjectByPlayableState(PlayableState.Player2Playing);
+            enemyObj = playersPublicInfoManager.GetPlayerObjectByPlayableState(PlayableState.Player1Played)
+                ?? playersPublicInfoManager.GetPlayerObjectByPlayableState(PlayableState.Player1Playing);
+        }
+
+
+        switch (playerState)
         {
             default:
                 CameraMove();
@@ -104,19 +123,25 @@ public class CameraManager : NetworkBehaviour
     private void ReposOnPlayer()
     {
         SetCameraModules(false, false, true);
-        cameraFollowing.SetTarget(playerTransform, false, 3f);
+        cameraFollowing.SetTarget(playerObj.transform, false, 3f);
     }
 
     private void ReposOnEnemy()
     {
         SetCameraModules(false, false, true);
-        cameraFollowing.SetTarget(playerTransform, false, 3f); // change for enemy reference
+        cameraFollowing.SetTarget(enemyObj.transform, false, 3f); // change for enemy reference
     }
 
     private void CameraTurnOff()
     {
         SetCameraModules(false, false, false);
-        cameraFollowing.SetTarget(playerTransform, false, 3f);
+        cameraFollowing.SetTarget(playerObj.transform, false, 3f);
+    }
+
+    private bool CheckPlayer1()
+    {
+        return player.ThisPlayableState.Value == PlayableState.Player1Playing ||
+               player.ThisPlayableState.Value == PlayableState.Player1Played;
     }
 
     public void UnInitializeOwner()
