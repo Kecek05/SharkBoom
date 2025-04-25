@@ -16,12 +16,18 @@ public class LoadingPlayersUI : NetworkBehaviour
     [BetterHeader("References Player 1")]
     [SerializeField] private TextMeshProUGUI player1NameText;
     [SerializeField] private TextMeshProUGUI player1PearlsText;
+    [SerializeField] private Transform player1VisualSpawnpoint;
 
     [BetterHeader("References Player 2")]
     [SerializeField] private TextMeshProUGUI player2NameText;
     [SerializeField] private TextMeshProUGUI player2PearlsText;
+    [SerializeField] private Transform player2VisualSpawnpoint;
+
+    [SerializeField] private GameObject sharkPrefab;
+    [SerializeField] private GameObject orcaPrefab;
 
     private BaseGameStateManager gameStateManager;
+    private BasePlayersPublicInfoManager basePlayerPublicInfoManager;
 
     private int updatedPlayersInfoOnClient = 0;
 
@@ -29,6 +35,7 @@ public class LoadingPlayersUI : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
+        basePlayerPublicInfoManager = ServiceLocator.Get<BasePlayersPublicInfoManager>();
 
         HidePlayersInfo();
         ShowWaitingForPlayers();
@@ -59,7 +66,7 @@ public class LoadingPlayersUI : NetworkBehaviour
                 foreach (PlayerData playerData in NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas)
                 {
                     Debug.Log($"GameState_OnValueChanged on Loading Players UI - Player Data: {playerData.userData.userAuthId} - Client Id: {playerData.clientId}");
-                    UpdatePlayersInfoClientRpc(playerData.userData.userName, playerData.userData.userPearls, playerData.playableState);
+                    UpdatePlayersInfoClientRpc(playerData.userData.userName, playerData.userData.userPearls, playerData.playableState, );
                 }
             }
 
@@ -86,10 +93,12 @@ public class LoadingPlayersUI : NetworkBehaviour
             case PlayableState.Player1Playing:
                 player1NameText.text = playerName.ToString();
                 player1PearlsText.text = playerPearls.ToString();
+                SpawnPlayerVisual(basePlayerPublicInfoManager.GetPlayerVisualTypes()[playableState], player1VisualSpawnpoint);
                 break;
             case PlayableState.Player2Playing:
                 player2NameText.text = playerName.ToString();
                 player2PearlsText.text = playerPearls.ToString();
+                SpawnPlayerVisual(basePlayerPublicInfoManager.GetPlayerVisualTypes()[playableState], player2VisualSpawnpoint);
                 break;
         }
 
@@ -97,6 +106,26 @@ public class LoadingPlayersUI : NetworkBehaviour
         {
             ShowPlayersInfo();
             HideWaitingForPlayers();
+        }
+    }
+
+    private void SpawnPlayerVisual(PlayerVisualType visualType, Transform spawnPoint)
+    {
+        GameObject prefabToSpawn = null;
+
+        switch (visualType)
+        {
+            case PlayerVisualType.Shark:
+                prefabToSpawn = sharkPrefab;
+                break;
+            case PlayerVisualType.Orca:
+                prefabToSpawn = orcaPrefab;
+                break;
+        }
+
+        if (prefabToSpawn != null)
+        {
+            Instantiate(prefabToSpawn, spawnPoint.position, spawnPoint.rotation);
         }
     }
 

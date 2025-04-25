@@ -13,6 +13,7 @@ public abstract class BasePlayersPublicInfoManager : MonoBehaviour
     public abstract void Initialize(ItemsListSO itemsListSO);
 
     protected Dictionary<PlayableState, GameObject> playerStateToGameObject = new Dictionary<PlayableState, GameObject>();
+    protected Dictionary<PlayableState, PlayerVisualType> playerVisualByState = new Dictionary<PlayableState, PlayerVisualType>();
 
     public abstract void AddPlayerToPlayersDictionary(PlayableState playerPlayableState, GameObject playerGameObject);
 

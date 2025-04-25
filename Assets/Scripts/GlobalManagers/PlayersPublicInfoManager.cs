@@ -88,6 +88,16 @@ public class PlayersPublicInfoManager : BasePlayersPublicInfoManager
     {
         spawnPointsPos.Add(transformToAdd);
     }
+
+    public override Dictionary<PlayableState, PlayerVisualType> GetPlayerVisualTypes()
+    {
+        return playerVisualByState;
+    }
+
+    public override void SetPlayerVisualType(PlayableState playerPlayableState, PlayerVisualType playerVisualType)
+    {
+        playerVisualByState[playerPlayableState] = playerVisualType;
+    }
 }
 
 
