@@ -2416,6 +2416,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 633795557}
+  - component: {fileID: 633795558}
   m_Layer: 5
   m_Name: MatchmakingPanelUI
   m_TagString: Untagged
@@ -2443,6 +2444,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &633795558
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 633795556}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f70158088a14393488867c91bb813f32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainMenuCharacter: {fileID: 12395208}
 --- !u!1 &664665108
 GameObject:
   m_ObjectHideFlags: 0
@@ -2855,7 +2869,7 @@ Transform:
   m_GameObject: {fileID: 716111716}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.25881955, z: -0, w: 0.96592575}
-  m_LocalPosition: {x: -1, y: 2.1, z: -5}
+  m_LocalPosition: {x: -2.08, y: 1.9, z: -4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3041,6 +3055,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 805607074}
+  - component: {fileID: 805607075}
   m_Layer: 5
   m_Name: CreditsScreen
   m_TagString: Untagged
@@ -3070,6 +3085,19 @@ RectTransform:
   m_AnchoredPosition: {x: -0.00048828125, y: 0}
   m_SizeDelta: {x: 0, y: 0.00012207031}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &805607075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 805607073}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f70158088a14393488867c91bb813f32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainMenuCharacter: {fileID: 12395208}
 --- !u!1 &814645009
 GameObject:
   m_ObjectHideFlags: 0
@@ -3079,6 +3107,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 814645010}
+  - component: {fileID: 814645011}
   m_Layer: 5
   m_Name: SettingsScreen
   m_TagString: Untagged
@@ -3107,6 +3136,19 @@ RectTransform:
   m_AnchoredPosition: {x: -0.00048828125, y: 0}
   m_SizeDelta: {x: 0, y: 0.00012207031}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &814645011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 814645009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f70158088a14393488867c91bb813f32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainMenuCharacter: {fileID: 12395208}
 --- !u!1 &839539255
 GameObject:
   m_ObjectHideFlags: 0
@@ -7161,6 +7203,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1936369040}
+  - component: {fileID: 1936369041}
   m_Layer: 5
   m_Name: ExitScreen
   m_TagString: Untagged
@@ -7189,6 +7232,19 @@ RectTransform:
   m_AnchoredPosition: {x: -0.00048828125, y: 0}
   m_SizeDelta: {x: -820.71, y: -488}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1936369041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1936369039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f70158088a14393488867c91bb813f32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainMenuCharacter: {fileID: 12395208}
 --- !u!1 &1964855585
 GameObject:
   m_ObjectHideFlags: 0
@@ -7767,6 +7823,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2059564258}
+  - component: {fileID: 2059564259}
   m_Layer: 5
   m_Name: VsFriendsPanelUI
   m_TagString: Untagged
@@ -7794,6 +7851,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2059564259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2059564257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f70158088a14393488867c91bb813f32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainMenuCharacter: {fileID: 12395208}
 --- !u!1 &2082991916
 GameObject:
   m_ObjectHideFlags: 0

@@ -126,6 +126,5 @@ public class CameraManager : NetworkBehaviour
         cameraMovement.UnInitializeOwner();
         cameraZoom.UnInitializeOwner();
         cameraFollowing.UnInitializeOwner();
-
     }
 }

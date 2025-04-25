@@ -19,12 +19,16 @@ public class MainMenuCharacterController : MonoBehaviour
 
     private Animator animator;
 
+    private GameObject character;
+
+    public GameObject Character => character;
+
     private void Start()
     {
         if(charactersPrefabs != null && charactersPrefabs.Length > 0)
         {
             int randomIndex = Random.Range(0, charactersPrefabs.Length);
-            GameObject character = Instantiate(charactersPrefabs[randomIndex], transform.position, Quaternion.identity);
+            character = Instantiate(charactersPrefabs[randomIndex], transform.position, Quaternion.identity);
             animator = character.GetComponentInChildren<Animator>();
 
             if (animator != null)
