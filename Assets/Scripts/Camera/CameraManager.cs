@@ -53,46 +53,35 @@ public class CameraManager : NetworkBehaviour
                 break;
             case PlayerState.MyTurnStarted:
                 ReposOnPlayer();
-                Debug.Log($"CAMERA - ReposOnPlayer");
                 break;
             case PlayerState.MyTurnEnded:
                 ReposOnEnemy();
-                Debug.Log($"CAMERA - ReposOnEnemy");
                 break;
             case PlayerState.IdleEnemyTurn:
                 CameraMove();
-                Debug.Log($"CAMERA - CameraMove");
                 break;
             case PlayerState.IdleMyTurn:
                 CameraMove();
-                Debug.Log($"CAMERA - CameraMove");
                 break;
             case PlayerState.DraggingJump:
                 Dragging();
-                Debug.Log($"CAMERA - Dragging");
                 break;
             case PlayerState.DraggingItem:
                 Dragging();
-                Debug.Log($"CAMERA - Dragging");
                 break;
             case PlayerState.DragReleaseJump:
                 Following();
-                Debug.Log($"CAMERA - Following");
                 break;
             case PlayerState.DragReleaseItem:
                 Following();
-                Debug.Log($"CAMERA - Following");
                 break;
             case PlayerState.PlayerWatching:
                 Following();
-                Debug.Log($"CAMERA - Following");
                 break;
             case PlayerState.PlayerGameOver:
                 CameraTurnOff();
-                Debug.Log($"CAMERA - Turn off");
                 break;
         }
-        Debug.Log($"CAMERA - PlayerState {playerState}");
     }
 
     /// <summary>
