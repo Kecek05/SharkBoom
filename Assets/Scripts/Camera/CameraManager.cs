@@ -4,20 +4,20 @@ using UnityEngine;
 
 public class CameraManager : NetworkBehaviour
 {
-
     [SerializeField] private CameraMovement cameraMovement;
     [SerializeField] private CameraZoom cameraZoom;
     [SerializeField] private CameraFollowing cameraFollowing;
-    [SerializeField] private GameObject playerObj;
-    [SerializeField] private GameObject enemyObj;
     [SerializeField] private PlayerThrower player;
     
     private CinemachineCamera cinemachineCamera;
     private Camera cameraMain; // Cache camera main for all scripts that need it
     private Transform cameraObjectToFollow;
 
+    private GameObject playerObj;
+    private GameObject enemyObj;
+
+
     public Transform CameraObjectToFollow => cameraObjectToFollow;
-    public GameObject PlayerObj => playerObj;
     public CameraZoom CameraZoom => cameraZoom;
     public CameraMovement CameraMovement => cameraMovement;
     public CinemachineCamera CinemachineCamera => cinemachineCamera;
@@ -47,23 +47,18 @@ public class CameraManager : NetworkBehaviour
     {
         if(!IsOwner) return;
 
-        BasePlayersPublicInfoManager playersPublicInfoManager = ServiceLocator.Get<PlayersPublicInfoManager>();
+        BasePlayersPublicInfoManager playersPublicInfoManager = ServiceLocator.Get<BasePlayersPublicInfoManager>();
 
         if (CheckPlayer1())
         {
-            playerObj = playersPublicInfoManager.GetPlayerObjectByPlayableState(PlayableState.Player1Played) 
-                ?? playersPublicInfoManager.GetPlayerObjectByPlayableState(PlayableState.Player1Playing);
-            enemyObj = playersPublicInfoManager.GetPlayerObjectByPlayableState(PlayableState.Player2Played)
-                ?? playersPublicInfoManager.GetPlayerObjectByPlayableState(PlayableState.Player2Playing);
+            playerObj = GetPlayerObject(PlayableState.Player1Played, PlayableState.Player1Playing);
+            enemyObj = GetPlayerObject(PlayableState.Player2Played, PlayableState.Player2Playing);
         }
         else
         {
-            playerObj = playersPublicInfoManager.GetPlayerObjectByPlayableState(PlayableState.Player2Played)
-                ?? playersPublicInfoManager.GetPlayerObjectByPlayableState(PlayableState.Player2Playing);
-            enemyObj = playersPublicInfoManager.GetPlayerObjectByPlayableState(PlayableState.Player1Played)
-                ?? playersPublicInfoManager.GetPlayerObjectByPlayableState(PlayableState.Player1Playing);
+            playerObj = GetPlayerObject(PlayableState.Player2Played, PlayableState.Player2Playing);
+            enemyObj = GetPlayerObject(PlayableState.Player1Played, PlayableState.Player1Playing);
         }
-
 
         switch (playerState)
         {
@@ -142,6 +137,13 @@ public class CameraManager : NetworkBehaviour
     {
         return player.ThisPlayableState.Value == PlayableState.Player1Playing ||
                player.ThisPlayableState.Value == PlayableState.Player1Played;
+    }
+
+    private GameObject GetPlayerObject(PlayableState playedState, PlayableState playingState)
+    {
+        BasePlayersPublicInfoManager manager = ServiceLocator.Get<BasePlayersPublicInfoManager>();
+        return manager.GetPlayerObjectByPlayableState(playedState)
+            ?? manager.GetPlayerObjectByPlayableState(playingState);
     }
 
     public void UnInitializeOwner()
