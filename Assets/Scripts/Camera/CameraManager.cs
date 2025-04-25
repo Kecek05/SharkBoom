@@ -16,6 +16,9 @@ public class CameraManager : NetworkBehaviour
     private GameObject playerObj;
     private GameObject enemyObj;
 
+    private BaseTurnManager turnManager;
+    private BasePlayersPublicInfoManager publicInfoManager;
+
     public Transform CameraObjectToFollow => cameraObjectToFollow;
     public CameraZoom CameraZoom => cameraZoom;
     public CameraMovement CameraMovement => cameraMovement;
@@ -37,6 +40,9 @@ public class CameraManager : NetworkBehaviour
             cameraMain = ServiceLocator.Get<Camera>();
         }
 
+        turnManager = ServiceLocator.Get<BaseTurnManager>();
+        publicInfoManager = ServiceLocator.Get<BasePlayersPublicInfoManager>();
+
         cameraMovement.InitializeOwner();
         cameraZoom.InitializeOwner();
         cameraFollowing.InitializeOwner();
@@ -47,43 +53,33 @@ public class CameraManager : NetworkBehaviour
     {
         if(!IsOwner) return;
 
-        BasePlayersPublicInfoManager playersPublicInfoManager = ServiceLocator.Get<BasePlayersPublicInfoManager>();
-
-        if (CheckPlayer1())
-        {
-            playerObj = GetPlayerObject(ServiceLocator.Get<BaseTurnManager>().LocalPlayableState);
-            enemyObj = GetPlayerObject(PlayableState.Player2Playing);
-        }
+        playerObj = publicInfoManager.GetPlayerObjectByPlayableState(turnManager.LocalPlayableState);
+        enemyObj = publicInfoManager.GetOtherPlayerByMyPlayableState(turnManager.LocalPlayableState);
 
         switch (playerState)
         {
             default:
                 CameraMove();
                 break;
-
             case PlayerState.MyTurnStarted:
                 ReposOnPlayer();
                 break;
             case PlayerState.MyTurnEnded:
                 ReposOnEnemy();
                 break;
-
             case PlayerState.IdleEnemyTurn:
             case PlayerState.IdleMyTurn:
                 CameraMove();
                 break;
-
             case PlayerState.DraggingJump:
             case PlayerState.DraggingItem:
                 Dragging();
                 break;
-
             case PlayerState.DragReleaseJump:
             case PlayerState.DragReleaseItem:
             case PlayerState.PlayerWatching:
                 Following();
                 break;
-
             case PlayerState.PlayerGameOver:
                 CameraTurnOff();
                 break;
@@ -123,17 +119,6 @@ public class CameraManager : NetworkBehaviour
     {
         cameraFollowing.SetTarget(playerObj.transform, false, 3f);
         SetCameraModules(false, false, false);
-    }
-
-    private bool CheckPlayer1()
-    {
-        return player.ThisPlayableState.Value == PlayableState.Player1Playing;
-    }
-
-    private GameObject GetPlayerObject(PlayableState playingState)
-    {
-        BasePlayersPublicInfoManager manager = ServiceLocator.Get<BasePlayersPublicInfoManager>();
-        return manager.GetPlayerObjectByPlayableState(playingState);
     }
 
     public void UnInitializeOwner()
