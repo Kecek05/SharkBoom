@@ -303,7 +303,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4138560099368875656}
   - component: {fileID: 1395142749047318013}
-  - component: {fileID: 964839364522880536}
   - component: {fileID: 4426540835157296268}
   m_Layer: 0
   m_Name: PlayerAnimationTest
@@ -327,6 +326,7 @@ Transform:
   m_Children:
   - {fileID: 6366321255086139297}
   - {fileID: 3212050485680639541}
+  - {fileID: 6355352804660044878}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1395142749047318013
@@ -354,24 +354,6 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &964839364522880536
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3453084934751554821}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04e9aae765411e54295079d7c6652233, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  leftSideSockets:
-  - {fileID: 5278958500852761623}
-  - {fileID: 7850489012215887899}
-  rightSideSockets:
-  - {fileID: 5310388967461320567}
-  - {fileID: 2568940315530586949}
 --- !u!114 &4426540835157296268
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -467,6 +449,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4597460729006054972}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4269985469824313882
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6355352804660044878}
+  m_Layer: 0
+  m_Name: SpawnPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 7866945982896999795, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6355352804660044878
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4269985469824313882}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 2.23, z: -3.66}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4138560099368875656}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &4607327847850011813
 GameObject:
   m_ObjectHideFlags: 0
@@ -942,10 +955,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf644bdc984b14b488da57721e71c0ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   playerAnimator: {fileID: 3217823194244817449}
-  playerSpawnItemOnHand: {fileID: 964839364522880536}
+  playerSpawnItemOnHand: {fileID: 0}
   playerLauncherTest: {fileID: 4426540835157296268}
   itemSOList: {fileID: 11400000, guid: 0512cb21a29af2e4b88962e2cb6a1605, type: 2}
+  spawnPos: {fileID: 6355352804660044878}
 --- !u!1 &6857045355972327651
 GameObject:
   m_ObjectHideFlags: 0
@@ -2372,7 +2387,7 @@ MonoBehaviour:
     OnAnimationEvent:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 964839364522880536}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: PlayerSpawnItemOnHand, Assembly-CSharp
           m_MethodName: HandleOnShoot
           m_Mode: 1
