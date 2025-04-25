@@ -13,6 +13,9 @@ public class MainMenuVsFriends : MonoBehaviour
     [SerializeField] private TMP_InputField lobbyCodeInputField;
     [SerializeField] private Button quickJoinBtn;
     [SerializeField] private GameObject vsFriendsPanel;
+    [SerializeField] private GameObject lobbyCodeErrorPanel;
+    [SerializeField] private Button closeLobyCodeErrorPanelBtn;
+
 
     private bool isBusy = false;
 
@@ -27,7 +30,7 @@ public class MainMenuVsFriends : MonoBehaviour
 
         closeVsFriendsPanelBtn.onClick.AddListener(() =>
         {
-            if(isBusy) return;
+            if (isBusy) return;
 
             Hide();
         });
@@ -45,11 +48,19 @@ public class MainMenuVsFriends : MonoBehaviour
 
         joinGameBtn.onClick.AddListener(async () =>
         {
-            if(isBusy) return;
+            if (isBusy) return;
 
             isBusy = true;
             lobbyCodeInputField.interactable = false;
-            await ClientSingleton.Instance.GameManager.StartRelayClientAsync(lobbyCodeInputField.text);
+            bool joinedSuccessfully = await ClientSingleton.Instance.GameManager.StartRelayClientAsync(lobbyCodeInputField.text);
+
+            if (!joinedSuccessfully)
+            {
+                lobbyCodeErrorPanel.SetActive(true);
+                isBusy = false;
+                lobbyCodeInputField.text = "";
+                lobbyCodeInputField.interactable = true;
+            }
             //lobbyCodeInputField.interactable = true;
             isBusy = false;
 
@@ -64,8 +75,12 @@ public class MainMenuVsFriends : MonoBehaviour
             isBusy = false;
         });
 
+        closeLobyCodeErrorPanelBtn.onClick.AddListener(() =>
+        {
+            lobbyCodeErrorPanel.SetActive(false);
+        });
     }
-
+    
 
     private void Hide()
     {

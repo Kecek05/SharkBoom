@@ -1120,7 +1120,9 @@ MonoBehaviour:
   cameraMovement: {fileID: 8450544055641021374}
   cameraZoom: {fileID: 2903552973942911587}
   cameraFollowing: {fileID: 1764359340906761994}
-  playerTransform: {fileID: 2927350467601940059}
+  playerObj: {fileID: 0}
+  enemyObj: {fileID: 0}
+  player: {fileID: 2871544100916734757}
 --- !u!114 &1764359340906761994
 MonoBehaviour:
   m_ObjectHideFlags: 0

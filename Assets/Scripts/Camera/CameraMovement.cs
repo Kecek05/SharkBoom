@@ -58,13 +58,14 @@ public class CameraMovement : NetworkBehaviour
         {
             Vector2 currentTouchPosition = context.ReadValue<Vector2>(); // Get the current position of the finger while the finger is on the screen
 
-            if (lastTouchPosition != Vector2.zero) // if the touch is moving
+            if (lastTouchPosition == Vector2.zero)
             {
-                Vector2 movementDelta = currentTouchPosition - lastTouchPosition;
-                MoveCamera(movementDelta); // move the camera with the diffence between the last touch position and the current touch position
-
+                lastTouchPosition = currentTouchPosition;
+                return;
             }
 
+            Vector2 delta = currentTouchPosition - lastTouchPosition;
+            MoveCamera(delta);
             lastTouchPosition = currentTouchPosition;
         }
     }

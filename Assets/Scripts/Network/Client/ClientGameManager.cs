@@ -102,9 +102,9 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         Loader.LoadClient();
     }
 
-    public async Task StartRelayClientAsync(string joinCode)
+    public async Task<bool> StartRelayClientAsync(string joinCode)
     {
-        if (joinCode == null || joinCode == string.Empty) return;
+        if (joinCode == null || joinCode == string.Empty) return false;
 
         SetIsDedicatedServerGame(false);
 
@@ -114,7 +114,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         } catch (Exception ex)
         {
             Debug.LogException(ex);
-            return;
+            return false;
         }
 
         UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
@@ -127,6 +127,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         Debug.Log("Code Relay:" + this.joinCode);
 
         Loader.LoadClient();
+        return true;
     }
 
     public void ConnectClient()
