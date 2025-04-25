@@ -2,10 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class UIDetectionComponent : MonoBehaviour
+public class UIDetection
 {
-    // Debug.
-    public bool IsPointerOverUI()
+    public static bool IsPointerOverUI()
     {
         PointerEventData eventData = new PointerEventData(EventSystem.current); // We create a new event data for get the tocuh position
         eventData.position = Input.mousePosition; // we dont need to use touch position, because unity converts automatically for us

@@ -32,7 +32,6 @@ public class DragAndShoot : NetworkBehaviour
     [SerializeField] private Trajectory trajectory;
     [SerializeField] private InputReader inputReader;
     [SerializeField] private GameObject areaOfStartDrag;
-    [SerializeField] private UIDetectionComponent uiDetectionHelper;
     [Tooltip("Center position of the drag")]
     [SerializeField] private Transform startTrajectoryPos;
     [SerializeField] private LayerMask touchLayer;
@@ -135,7 +134,7 @@ public class DragAndShoot : NetworkBehaviour
 
         if (context.started) // capture the first frame when the touch is pressed
         {
-            if(uiDetectionHelper.IsPointerOverUI()) return; // check if the touch is over a UI object
+            if(UIDetection.IsPointerOverUI()) return; // check if the touch is over a UI object
 
             Ray rayStart = cameraManager.CameraMain.ScreenPointToRay(Input.mousePosition); // here we get a ray on screen point basead on touch pos
             Plane plane = new Plane(cameraManager.CameraMain.transform.forward, Vector3.zero); // we create a plane for calculate the distance between the touch and the camera

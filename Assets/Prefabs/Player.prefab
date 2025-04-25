@@ -544,7 +544,6 @@ GameObject:
   - component: {fileID: 1987240186612080187}
   - component: {fileID: 5120579722876303172}
   - component: {fileID: 800024870368675109}
-  - component: {fileID: 1153067105674216560}
   - component: {fileID: 2518838509862417992}
   - component: {fileID: 5846641034301650373}
   m_Layer: 0
@@ -763,7 +762,7 @@ MonoBehaviour:
   trajectory: {fileID: 800024870368675109}
   inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
   areaOfStartDrag: {fileID: 5504225720282205400}
-  uiDetectionHelper: {fileID: 1153067105674216560}
+  uiDetectionHelper: {fileID: 0}
   startTrajectoryPos: {fileID: 1265534911540065886}
   touchLayer:
     serializedVersion: 2
@@ -794,18 +793,6 @@ MonoBehaviour:
   dotsNumber: 20
   dotSpacing: 0.049999997
   forceChangeThreshold: 0.1
---- !u!114 &1153067105674216560
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1244250245066138330}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 162ba78a9b41a574cb4209d023f11e10, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &2518838509862417992
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1120,8 +1107,6 @@ MonoBehaviour:
   cameraMovement: {fileID: 8450544055641021374}
   cameraZoom: {fileID: 2903552973942911587}
   cameraFollowing: {fileID: 1764359340906761994}
-  playerObj: {fileID: 0}
-  enemyObj: {fileID: 0}
   player: {fileID: 2871544100916734757}
 --- !u!114 &1764359340906761994
 MonoBehaviour:
@@ -2454,7 +2439,6 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   forceText: {fileID: 1986637986843361798}
   directionText: {fileID: 3866401291948903226}
-  player: {fileID: 2871544100916734757}
   lookAtCamera: {fileID: 1936632160531986622}
 --- !u!1 &6876821067432169200
 GameObject:
