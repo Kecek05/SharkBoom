@@ -25,7 +25,6 @@ public class CameraFollowing : NetworkBehaviour
         if(!IsOwner) return;
 
         BaseItemThrowable.OnItemReleasedAction += HandleOnItemReleasedAction;
-        BaseItemThrowable.OnItemFinishedAction += HandleOnItemFinishedAction;
     }
 
 
@@ -34,12 +33,6 @@ public class CameraFollowing : NetworkBehaviour
     {
         lastCameraObjectToFollowPos = cameraManager.CameraObjectToFollow.position; // store current position of the camera before the item is launched
         SetTarget(itemLaunched, true);
-    }
-
-    private void HandleOnItemFinishedAction()
-    {
-        if (resetCam == null)
-            resetCam = StartCoroutine(ResetCam());
     }
 
 
@@ -90,19 +83,10 @@ public class CameraFollowing : NetworkBehaviour
     }
 
 
-    private IEnumerator ResetCam()
-    {
-        yield return waitTimeToStopFollowing;
-        cameraManager.CameraObjectToFollow.position = lastCameraObjectToFollowPos;
-        resetCam = null;
-    }
-
-
     public void UnInitializeOwner()
     {
         if (!IsOwner) return;
         BaseItemThrowable.OnItemReleasedAction -= HandleOnItemReleasedAction;
-        BaseItemThrowable.OnItemFinishedAction -= HandleOnItemFinishedAction;
     }
 
 }
