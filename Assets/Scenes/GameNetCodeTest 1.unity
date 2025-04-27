@@ -1758,7 +1758,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &358991112
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2021,7 +2021,7 @@ RectTransform:
   m_Father: {fileID: 1681911116}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 4.893, y: 4.122}
   m_SizeDelta: {x: -13.337, y: 1.385}
   m_Pivot: {x: 0, y: 1}
@@ -6289,7 +6289,8 @@ MonoBehaviour:
   pearlsResultText: {fileID: 2018305641}
   pearlsBackground: {fileID: 0}
   gameOverImage: {fileID: 0}
-  returnButton: {fileID: 332473843}
+  returnBtnImage: {fileID: 0}
+  returnBtn: {fileID: 0}
   winBackground: {fileID: 0}
   winPearlsBackground: {fileID: 0}
   winReturnButton: {fileID: 0}
@@ -7084,7 +7085,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4845276930943762971, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000015258789
+      value: -0.000030517578
       objectReference: {fileID: 0}
     - target: {fileID: 4845637959249703711, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchorMax.y
@@ -7497,10 +7498,14 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   backgroundPlayersInfo: {fileID: 338105849}
   backgroundWaitingForPlayers: {fileID: 417808136}
+  sharkPrefab: {fileID: 0}
+  orcaPrefab: {fileID: 0}
   player1NameText: {fileID: 1533290173}
   player1PearlsText: {fileID: 1628977046}
+  player1VisualSpawnpoint: {fileID: 0}
   player2NameText: {fileID: 500863383}
   player2PearlsText: {fileID: 39395182}
+  player2VisualSpawnpoint: {fileID: 0}
 --- !u!114 &1417789130
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8441,7 +8446,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 1.8124181, y: -11.780718}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1581069107
@@ -8466,8 +8471,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 30
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 39ec0e304d5138e439cf7887d13c821c, type: 2}
+  m_sharedMaterial: {fileID: -5130788614859905338, guid: 39ec0e304d5138e439cf7887d13c821c, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -8491,8 +8496,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 91.1
-  m_fontSizeBase: 91.1
+  m_fontSize: 100
+  m_fontSizeBase: 100
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -8829,7 +8834,8 @@ MonoBehaviour:
   pearlsResultText: {fileID: 257195408}
   pearlsBackground: {fileID: 0}
   gameOverImage: {fileID: 0}
-  returnButton: {fileID: 298473520}
+  returnBtnImage: {fileID: 0}
+  returnBtn: {fileID: 0}
   winBackground: {fileID: 0}
   winPearlsBackground: {fileID: 0}
   winReturnButton: {fileID: 0}
@@ -9407,7 +9413,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1711650476
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10217,6 +10223,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   codeTextUI: {fileID: 1989706599}
+  codeUIBackground: {fileID: 0}
 --- !u!1 &2018305639
 GameObject:
   m_ObjectHideFlags: 0
@@ -10386,7 +10393,7 @@ RectTransform:
   m_Father: {fileID: 900940527}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 2.049, y: -3.449}
   m_SizeDelta: {x: -13.86, y: -6.526}
   m_Pivot: {x: 0, y: 1}
@@ -11073,7 +11080,8 @@ MonoBehaviour:
   pearlsResultText: {fileID: 927509008}
   pearlsBackground: {fileID: 0}
   gameOverImage: {fileID: 0}
-  returnButton: {fileID: 571196655}
+  returnBtnImage: {fileID: 0}
+  returnBtn: {fileID: 0}
   winBackground: {fileID: 0}
   winPearlsBackground: {fileID: 0}
   winReturnButton: {fileID: 0}
