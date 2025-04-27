@@ -49,7 +49,6 @@ public class ServiceLocatorBootstrap : MonoBehaviour
         ServiceLocator.Register(cameraMain);
 
 
-
         OnServiceLocatorInitialized?.Invoke();
     }
 

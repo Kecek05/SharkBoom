@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8379730067978457469}
   - component: {fileID: 8104980272527296498}
   - component: {fileID: 405844151340449578}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: InventoryButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -841,7 +841,7 @@ GameObject:
   - component: {fileID: 3129780423812430651}
   - component: {fileID: 3222283215369270763}
   - component: {fileID: 4882372458947561154}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: PlayerInventoryCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -877,7 +877,7 @@ Canvas:
   m_GameObject: {fileID: 1348648853730134369}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -889,7 +889,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -80
   m_TargetDisplay: 0
 --- !u!114 &3222283215369270763
 MonoBehaviour:
@@ -1172,7 +1172,7 @@ GameObject:
   - component: {fileID: 770099976245203709}
   - component: {fileID: 1705995384829575891}
   - component: {fileID: 8101142939162384478}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: JumpButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1291,7 +1291,7 @@ GameObject:
   - component: {fileID: 5913404985729619612}
   - component: {fileID: 2431052711063713342}
   - component: {fileID: 6653718117231751915}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: BackgroundButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1545,7 +1545,7 @@ GameObject:
   - component: {fileID: 3048060028184846068}
   - component: {fileID: 7707578037517434450}
   - component: {fileID: 3586585799661393402}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: InventoryItemHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1799,7 +1799,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3330725078028108188}
   - component: {fileID: 5233387307745232000}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: PlayerInventoryUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1848,6 +1848,7 @@ MonoBehaviour:
   selectedItemImage: {fileID: 1070127664333934888}
   openInventoryBackground: {fileID: 2497608634792934175}
   itemsListSO: {fileID: 11400000, guid: 0512cb21a29af2e4b88962e2cb6a1605, type: 2}
+  inventoryCanvas: {fileID: 3129780423812430651}
 --- !u!1 &4696550841688773867
 GameObject:
   m_ObjectHideFlags: 0
@@ -1909,7 +1910,7 @@ GameObject:
   - component: {fileID: 5115547117714943326}
   - component: {fileID: 4708927048927263090}
   - component: {fileID: 1070127664333934888}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: ItemSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2633,7 +2634,7 @@ GameObject:
   - component: {fileID: 4477729431695094856}
   - component: {fileID: 5330454977958495046}
   - component: {fileID: 7092833399193746260}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
