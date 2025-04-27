@@ -5353,7 +5353,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4845276930943762971, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000015258789
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4845637959249703711, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchorMax.y
@@ -5647,7 +5647,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1392331536}
   m_Layer: 5
-  m_Name: PlayerSpawn2
+  m_Name: PlayerSpawnVisual2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5662,7 +5662,7 @@ Transform:
   m_GameObject: {fileID: 1392331535}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -15.93}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5797,14 +5797,14 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   backgroundPlayersInfo: {fileID: 1541578205}
   backgroundWaitingForPlayers: {fileID: 723245789}
+  sharkPrefab: {fileID: 8886103626180288013, guid: 6a3597bffb305d34bbb23d7b2af5a38f, type: 3}
+  orcaPrefab: {fileID: 2727447199128346878, guid: 60ae93c107b325e49aec1756377e27c9, type: 3}
   player1NameText: {fileID: 1180111431}
   player1PearlsText: {fileID: 986318364}
   player1VisualSpawnpoint: {fileID: 1582328815}
   player2NameText: {fileID: 899461494}
   player2PearlsText: {fileID: 1290317328}
   player2VisualSpawnpoint: {fileID: 1392331536}
-  sharkPrefab: {fileID: 8886103626180288013, guid: 6a3597bffb305d34bbb23d7b2af5a38f, type: 3}
-  orcaPrefab: {fileID: 2727447199128346878, guid: 60ae93c107b325e49aec1756377e27c9, type: 3}
 --- !u!114 &1417789130
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6461,7 +6461,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1582328815}
   m_Layer: 5
-  m_Name: PlayerSpawn1
+  m_Name: PlayerSpawnVisual1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6476,7 +6476,7 @@ Transform:
   m_GameObject: {fileID: 1582328814}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -9.3, y: 0, z: -13.46}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8448,6 +8448,8 @@ SceneRoots:
   - {fileID: 358991114}
   - {fileID: 1506362365}
   - {fileID: 1934400097}
+  - {fileID: 1582328815}
+  - {fileID: 1392331536}
   - {fileID: 1765298814}
   - {fileID: 1020074381}
   - {fileID: 1839435340}
@@ -8455,5 +8457,3 @@ SceneRoots:
   - {fileID: 591296031}
   - {fileID: 1593195153}
   - {fileID: 1322338049}
-  - {fileID: 1582328815}
-  - {fileID: 1392331536}
