@@ -12,6 +12,8 @@ public class LoadingPlayersUI : NetworkBehaviour
     [BetterHeader("References")]
     [SerializeField] private GameObject backgroundPlayersInfo;
     [SerializeField] private GameObject backgroundWaitingForPlayers;
+    [SerializeField] private GameObject sharkPrefab;
+    [SerializeField] private GameObject orcaPrefab;
 
     [BetterHeader("References Player 1")]
     [SerializeField] private TextMeshProUGUI player1NameText;
@@ -23,14 +25,15 @@ public class LoadingPlayersUI : NetworkBehaviour
     [SerializeField] private TextMeshProUGUI player2PearlsText;
     [SerializeField] private Transform player2VisualSpawnpoint;
 
-    [SerializeField] private GameObject sharkPrefab;
-    [SerializeField] private GameObject orcaPrefab;
+    
 
     private BaseGameStateManager gameStateManager;
     private BasePlayersPublicInfoManager basePlayerPublicInfoManager;
 
     private int updatedPlayersInfoOnClient = 0;
 
+    private GameObject player1GameObject;
+    private GameObject player2GameObject;
 
     public override void OnNetworkSpawn()
     {
@@ -93,12 +96,12 @@ public class LoadingPlayersUI : NetworkBehaviour
             case PlayableState.Player1Playing:
                 player1NameText.text = playerName.ToString();
                 player1PearlsText.text = playerPearls.ToString();
-                SpawnPlayerVisual(basePlayerPublicInfoManager.GetPlayerVisualTypes()[playableState], player1VisualSpawnpoint);
+                player1GameObject = SpawnPlayerVisual(basePlayerPublicInfoManager.GetPlayerVisualTypes()[playableState], player1VisualSpawnpoint);
                 break;
             case PlayableState.Player2Playing:
                 player2NameText.text = playerName.ToString();
                 player2PearlsText.text = playerPearls.ToString();
-                SpawnPlayerVisual(basePlayerPublicInfoManager.GetPlayerVisualTypes()[playableState], player2VisualSpawnpoint);
+                player2GameObject = SpawnPlayerVisual(basePlayerPublicInfoManager.GetPlayerVisualTypes()[playableState], player2VisualSpawnpoint);
                 break;
         }
 
@@ -109,7 +112,7 @@ public class LoadingPlayersUI : NetworkBehaviour
         }
     }
 
-    private void SpawnPlayerVisual(PlayerVisualType visualType, Transform spawnPoint)
+    private GameObject SpawnPlayerVisual(PlayerVisualType visualType, Transform spawnPoint)
     {
         GameObject prefabToSpawn = null;
 
@@ -125,14 +128,18 @@ public class LoadingPlayersUI : NetworkBehaviour
 
         if (prefabToSpawn != null)
         {
-            Instantiate(prefabToSpawn, spawnPoint.position, spawnPoint.rotation);
+            return Instantiate(prefabToSpawn, spawnPoint.position, spawnPoint.rotation);
         }
+
+        return null;
     }
 
     [Command("hidePlayersInfo")]
     private void HidePlayersInfo()
     {
         backgroundPlayersInfo.SetActive(false);
+        Destroy(player1GameObject);
+        Destroy(player2GameObject);
     }
 
     [Command("showPlayersInfo")]
