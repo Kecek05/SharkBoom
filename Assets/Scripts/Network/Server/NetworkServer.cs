@@ -190,21 +190,15 @@ public class NetworkServer : IDisposable
             if(networkManager.SceneManager != null)
                 networkManager.SceneManager.OnLoadComplete -= SceneManager_OnLoadComplete;
         }
-        else
-        {
-            Debug.Log("NETMANAGER - Network manager is null");
-        }
 
         if (networkManager.IsListening)
         {
             networkManager.Shutdown();
-            Debug.Log("NETMANAGER - Network manager shutdown");
-        }
-        else
-        {
-            Debug.Log("NETMANAGER - IS NOT LISTENING");
         }
 
-        Debug.Log(" NETMANAGER - Network manager dispose");
+        if (NetworkServerProvider.Instance.CurrentNetworkServer != null)
+        {
+            NetworkServerProvider.Instance.DestroyCurrentServer();
+        }
     }
 }

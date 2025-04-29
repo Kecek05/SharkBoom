@@ -69,7 +69,9 @@ public class ServerAuthenticationService : IServerAuthenticationService
             authToClientId.Remove(authId);
             clientIdToAuth.Remove(clientId);
             authIdToPlayerData.Remove(authId);
+            Debug.Log("NETMANAGER - unregister client id");
         }
+        Debug.Log("NETMANAGER - Trying to unregister client id");
     }
 
     public PlayerData GetPlayerDataByClientId(ulong clientId)
