@@ -1,7 +1,7 @@
-using System;
+using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerAnimatorTest : MonoBehaviour
+public class PlayerAnimatorTest : NetworkBehaviour
 {
     [SerializeField] private PlayerAnimator playerAnimator;
     [SerializeField] private PlayerSpawnItemOnHand playerSpawnItemOnHand;
@@ -11,20 +11,73 @@ public class PlayerAnimatorTest : MonoBehaviour
 
     private ItemSO itemSelectedSO;
 
-    private void Start()
+    [SerializeField] private Transform spawnPos;
+
+    private GameObject lastGameObject;
+
+    public override void OnNetworkSpawn()
     {
         playerAnimator.OnCrossfadeFinished += HandleOnPlayerAnimatorCrossfadeFinished;
-        playerSpawnItemOnHand.OnItemOnHandSpawned += HandleOnPlayerSpawnItemOnHandItemOnHandSpawned;
-        playerSpawnItemOnHand.OnItemOnHandDespawned += HandleOnPlayerSpawnItemOnHandItemOnHandDespawned;
+        //playerSpawnItemOnHand.OnItemOnHandSpawned += HandleOnPlayerSpawnItemOnHandItemOnHandSpawned;
+        //playerSpawnItemOnHand.OnItemOnHandDespawned += HandleOnPlayerSpawnItemOnHandItemOnHandDespawned;
         Debug.Log("PlayerAnimatorTest started");
         //Start with Idle
         SetIsRight(false);
         SetPlayerStateByIndex(0);
     }
 
+    private void InstantiateObj()
+    {
+        if (!IsOwner) return; //Only the owner can spawn the item
+
+        if(lastGameObject != null)
+        {
+            lastGameObject.GetComponent<NetworkObject>().Despawn();
+            lastGameObject = null;
+        }
+
+        InstantiateObjServerRpc(NetworkManager.Singleton.LocalClientId, spawnPos.position);
+
+        //spawnedItem = Instantiate(selectedItemSO.itemClientPrefab, selectedSocket.transform.position, Quaternion.identity).GetComponent<BaseItemThrowable>();
+        //spawnedItem.transform.SetParent(selectedSocket.transform);
+        //spawnedItem.transform.localRotation = Quaternion.identity;
+
+        //spawnedItem.Initialize();
+
+
+    }
+
+    [Rpc(SendTo.Server)]
+    private void InstantiateObjServerRpc(ulong ownerClientId, Vector3 selectedSocketPos)
+    {
+        NetworkObject spawnedItemNetworkObject = Instantiate(itemSelectedSO.itemClientPrefab, selectedSocketPos, Quaternion.identity).GetComponent<NetworkObject>();
+        lastGameObject = spawnedItemNetworkObject.gameObject;
+        spawnedItemNetworkObject.Spawn();
+        spawnedItemNetworkObject.ChangeOwnership(ownerClientId);
+
+        CallOnItemOnHandClientRpc(spawnedItemNetworkObject);
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void CallOnItemOnHandClientRpc(NetworkObjectReference itemNetworkObject)
+    {
+        if (itemNetworkObject.TryGet(out NetworkObject itemNetworkObjectRef))
+        {
+            BaseItemThrowable item = itemNetworkObjectRef.GetComponent<BaseItemThrowable>();
+
+
+            if (IsOwner)
+            {
+                item.Initialize(spawnPos);
+                item.transform.localRotation = Quaternion.identity;
+            }
+        }
+    }
+
+
     private void HandleOnPlayerAnimatorCrossfadeFinished()
     {
-        playerSpawnItemOnHand.HandleOnCrossfadeFinished();
+        //playerSpawnItemOnHand.HandleOnCrossfadeFinished();
     }
 
     public void ButtonSelectItem(int index)
@@ -36,6 +89,7 @@ public class PlayerAnimatorTest : MonoBehaviour
         }
         itemSelectedSO = itemSOList.allItemsSOList[index];
         HandleOnItemSelectedSO(itemSelectedSO);
+        InstantiateObj();
     }
 
 
@@ -86,13 +140,13 @@ public class PlayerAnimatorTest : MonoBehaviour
     private void HandleOnPlayerStateMachineStateChanged(PlayerState newState)
     {
         playerAnimator.HandleOnPlayerStateMachineStateChanged(newState);
-        playerSpawnItemOnHand.HandleOnPlayerStateChanged(newState);
+        //playerSpawnItemOnHand.HandleOnPlayerStateChanged(newState);
     }
 
     private void HandleOnRotationChanged(bool isRight)
     {
         playerAnimator.HandleOnRotationChanged(isRight);
-        playerSpawnItemOnHand.HandleOnRotationChanged(isRight);
+        //playerSpawnItemOnHand.HandleOnRotationChanged(isRight);
     }
 
     private void HandleOnPlayerSpawnItemOnHandItemOnHandSpawned(BaseItemThrowable throwable)
