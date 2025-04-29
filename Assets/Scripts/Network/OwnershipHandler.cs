@@ -41,9 +41,12 @@ public static class OwnershipHandler
             playerData.clientId = clientId;
 
             //Change Onwership
-            ServiceLocator.Get<BasePlayersPublicInfoManager>().GetPlayerObjectByPlayableState(playerData.playableState).GetComponent<NetworkObject>().ChangeOwnership(clientId);
 
-            Debug.Log($"Changing the Ownership of the object: {ServiceLocator.Get<BasePlayersPublicInfoManager>().GetPlayerObjectByPlayableState(playerData.playableState).name} to ClientId: {clientId}");
+            BasePlayersPublicInfoManager playersPublicInfoManager = ServiceLocator.Get<BasePlayersPublicInfoManager>();
+
+            if (playersPublicInfoManager != null)
+                playersPublicInfoManager.GetPlayerObjectByPlayableState(playerData.playableState).GetComponent<NetworkObject>().ChangeOwnership(clientId);
+
 
             OnClientGainOwnership?.Invoke(clientId);
         }
