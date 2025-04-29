@@ -98,6 +98,7 @@ public class PlayersPublicInfoManager : BasePlayersPublicInfoManager
     {
         playerVisualByState[playerPlayableState] = playerVisualType;
     }
+
 }
 
 

@@ -13,50 +13,38 @@ public abstract class DragListener : NetworkBehaviour
     {
         if(initializeOnwer == null)
         {
-            if (this.TryGetComponent(out IInitializeOnwer _initializeOnwer))
-            {
-                initializeOnwer = _initializeOnwer;
-            }
+            if(this is IInitializeOnwer initializeOnwer)
+                this.initializeOnwer = initializeOnwer;
         }
 
         if (detectDragChange == null)
         {
-            if (this.TryGetComponent(out IDetectDragChange _detectDragChange))
-            {
-                detectDragChange = _detectDragChange;
-            }
+            if(this is IDetectDragChange detectDragChange)
+                this.detectDragChange = detectDragChange;
         }
 
         if (detectDragRelease == null)
         {
-            if (this.TryGetComponent(out IDetectDragRelease _detectDragRelease))
-            {
-                detectDragRelease = _detectDragRelease;
-            }
+            if(this is IDetectDragRelease detectDragRelease)
+                this.detectDragRelease = detectDragRelease;
         }
 
         if (detectEndedTurn == null)
         {
-            if (this.TryGetComponent(out IDetectEndedTurn _detectEndedTurn))
-            {
-                detectEndedTurn = _detectEndedTurn;
-            }
+            if(this is IDetectEndedTurn detectEndedTurn)
+                this.detectEndedTurn = detectEndedTurn;
         }
 
         if (detectDragCancelable == null)
         {
-            if (this.TryGetComponent(out IDetectDragCancelable _detectDragCancelable))
-            {
-                detectDragCancelable = _detectDragCancelable;
-            }
+            if(this is IDetectDragCancelable detectDragCancelable)
+                this.detectDragCancelable = detectDragCancelable;
         }
 
         if (detectDragStart == null)
         {
-            if (this.TryGetComponent(out IDetectDragStart _detectDragStart))
-            {
-                detectDragStart = _detectDragStart;
-            }
+            if(this is IDetectDragStart detectDragStart)
+                this.detectDragStart = detectDragStart;
         }
     }
 

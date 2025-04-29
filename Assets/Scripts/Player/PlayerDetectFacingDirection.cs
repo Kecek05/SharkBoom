@@ -26,7 +26,6 @@ public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDete
 
     public void DoOnDragChange(float forcePercent, float andlePercent)
     {
-        Debug.Log("Player Detect direction Do on Drag Change");
         if (playerDragController.GetOpositeFingerPos().x > playerGfxTransform.position.x + angleOffset)
         {
             //right

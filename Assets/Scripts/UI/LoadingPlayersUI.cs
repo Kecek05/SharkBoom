@@ -69,6 +69,8 @@ public class LoadingPlayersUI : NetworkBehaviour
                 foreach (PlayerData playerData in NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas)
                 {
                     Debug.Log($"GameState_OnValueChanged on Loading Players UI - Player Data: {playerData.userData.userAuthId} - Client Id: {playerData.clientId}");
+                    BasePlayersPublicInfoManager playersPublicInfoManager = ServiceLocator.Get<BasePlayersPublicInfoManager>();
+                    UpdatePlayerVisualTypeClientRpc(playerData.playableState, playersPublicInfoManager.GetPlayerVisualTypes()[playerData.playableState]);
                     UpdatePlayersInfoClientRpc(playerData.userData.userName, playerData.userData.userPearls, playerData.playableState);
                 }
             }
@@ -81,6 +83,14 @@ public class LoadingPlayersUI : NetworkBehaviour
             HidePlayersInfo();
             HideWaitingForPlayers();
         }
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void UpdatePlayerVisualTypeClientRpc(PlayableState playableState, PlayerVisualType playerVisualType)
+    {
+        BasePlayersPublicInfoManager playersPublicInfoManager = ServiceLocator.Get<BasePlayersPublicInfoManager>();
+        playersPublicInfoManager.SetPlayerVisualType(playableState, playerVisualType);
+        Debug.Log("UpdatePlayerVisualTypeClientRpc - PlayerVisualType: " + playerVisualType + " PlayableState: " + playableState + " ClientId: " + NetworkManager.LocalClientId);
     }
 
     [Rpc(SendTo.ClientsAndHost)]
