@@ -99,6 +99,7 @@ public class NetworkClient : IDisposable //Actual Client Game Logic
         }
 
         if(networkManager.IsConnectedClient)
+            Debug.Log("NETCLIENT - Call shutdown on manager, but network client");
             networkManager.Shutdown();
 
         if (SceneManager.GetActiveScene().name != Loader.Scene.MainMenu.ToString())

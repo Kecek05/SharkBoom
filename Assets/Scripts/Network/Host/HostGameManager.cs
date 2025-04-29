@@ -191,6 +191,7 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
         PearlsManager.OnFinishedCalculationsOnServer -= PearlsManager_OnFinishedCalculationsOnServer;
 
         networkServer?.Dispose();
+        Debug.Log("NETMANAGER - Call network dispose on Host game manager");
     }
 
     private void PearlsManager_OnFinishedCalculationsOnServer()

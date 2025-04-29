@@ -53,6 +53,7 @@ public class NetworkServer : IDisposable
         {
             OwnershipHandler.HandleOwnership(serverAuthenticationService.ClientIdToUserData[clientId].userAuthId, clientId);
             Debug.Log("SceneManager_OnLoadComplete, Player Reconnecting");
+            Debug.Log($"NETMANAGER - ownership is {OwnershipHandler.IsReconnecting(serverAuthenticationService.ClientIdToUserData[clientId].userAuthId)}");
         }
         else
         {
@@ -189,10 +190,21 @@ public class NetworkServer : IDisposable
             if(networkManager.SceneManager != null)
                 networkManager.SceneManager.OnLoadComplete -= SceneManager_OnLoadComplete;
         }
+        else
+        {
+            Debug.Log("NETMANAGER - Network manager is null");
+        }
 
         if (networkManager.IsListening)
         {
             networkManager.Shutdown();
+            Debug.Log("NETMANAGER - Network manager shutdown");
         }
+        else
+        {
+            Debug.Log("NETMANAGER - IS NOT LISTENING");
+        }
+
+        Debug.Log(" NETMANAGER - Network manager dispose");
     }
 }
