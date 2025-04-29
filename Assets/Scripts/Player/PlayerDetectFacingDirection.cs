@@ -49,6 +49,7 @@ public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDete
 
             Debug.Log("Left");
         }
+        Debug.Log($"DragChange Oposite Finger Pos X: {playerDragController.GetOpositeFingerPos().x} - PlayerGFX Pos X: {playerGfxTransform.position.x} - isRight: {isDirectionRight}");
     }
 
     public void DoOnEndedTurn()
