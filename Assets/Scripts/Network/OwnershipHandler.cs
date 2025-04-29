@@ -45,10 +45,31 @@ public static class OwnershipHandler
             BasePlayersPublicInfoManager playersPublicInfoManager = ServiceLocator.Get<BasePlayersPublicInfoManager>();
 
             if (playersPublicInfoManager != null)
-                playersPublicInfoManager.GetPlayerObjectByPlayableState(playerData.playableState).GetComponent<NetworkObject>().ChangeOwnership(clientId);
+            {
+                GameObject playerObj = playersPublicInfoManager.GetPlayerObjectByPlayableState(playerData.playableState);
 
-
-            OnClientGainOwnership?.Invoke(clientId);
+                if (playerObj != null)
+                {
+                    NetworkObject netObj = playerObj.GetComponent<NetworkObject>();
+                    if (netObj != null)
+                    {
+                        netObj.ChangeOwnership(clientId);
+                        OnClientGainOwnership?.Invoke(clientId);
+                    }
+                    else
+                    {
+                        Debug.LogError("NetworkObject not found on player object.");
+                    }
+                }
+                else
+                {
+                    Debug.LogError($"playerObj is null for playableState: {playerData.playableState}");
+                }
+            }
+            else
+            {
+                Debug.LogError("playersPublicInfoManager is null (not found in ServiceLocator).");
+            }
         }
         else
         {
