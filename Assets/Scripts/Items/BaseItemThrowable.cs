@@ -116,6 +116,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
             dissolveShaderComponent.DissolveFadeOut(() =>
             {
                 destroyedCallback?.Invoke();
+                dissolveShaderComponent = null;
                 Destroy(this.gameObject);
             });
         }

@@ -33,7 +33,7 @@ public class StuckTransformComponent : NetworkBehaviour
 
             if(rigidBodies == null || rigidBodies.Length == 0)
             {
-                Debug.LogError("No rigidbodies found in the parent");
+                Debug.Log("No rigidbodies found in the parent");
                 return;
             }
 

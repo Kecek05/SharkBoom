@@ -46,6 +46,7 @@ public class DissolveShaderComponent : MonoBehaviour
 
     public void DissolveFadeOut(Action dissolverCallback = null)
     {
-        StartCoroutine(Dissolver(false, dissolverCallback));
+        if(gameObject.activeInHierarchy)
+            StartCoroutine(Dissolver(false, dissolverCallback));
     }
 }
