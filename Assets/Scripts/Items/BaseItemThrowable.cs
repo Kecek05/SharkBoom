@@ -16,6 +16,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     [SerializeField] protected DissolveShaderComponent dissolveShaderComponent;
     [SerializeField] protected LifetimeTriggerComponent lifetimeTriggerComponent;
     [SerializeField] protected FollowTransformComponent followTransformComponent; //Used to follow the hand when the item is in hand
+    [SerializeField] protected NetworkObject myNetworkObject;
     protected ItemLauncherData thisItemLaucherData;
 
     protected BaseTurnManager turnManager;
@@ -117,14 +118,20 @@ public abstract class BaseItemThrowable : NetworkBehaviour
             {
                 destroyedCallback?.Invoke();
                 dissolveShaderComponent = null;
-                Destroy(this.gameObject);
+                DestroyOnServerRpc();
             });
         }
         else
         {
             destroyedCallback?.Invoke();
-            Destroy(this.gameObject);
+            DestroyOnServerRpc();
         }
+    }
+
+    [Rpc(SendTo.Server)]
+    private void DestroyOnServerRpc()
+    {
+        myNetworkObject.Despawn(true); // Pass 'true' to also destroy the GameObject
     }
 
     public override void OnDestroy()

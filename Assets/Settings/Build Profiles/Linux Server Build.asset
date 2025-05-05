@@ -20,7 +20,8 @@ MonoBehaviour:
     rid: 7347402241917321312
   m_OverrideGlobalSceneList: 0
   m_Scenes: []
-  m_ScriptingDefines: []
+  m_ScriptingDefines:
+  - MOREMOUNTAINS_NICEVIBRATIONS_INSTALLED
   m_PlayerSettingsYaml:
     m_Settings:
     - line: '| PlayerSettings:'
@@ -35,7 +36,7 @@ MonoBehaviour:
     - line: '|   useOnDemandResources: 0'
     - line: '|   accelerometerFrequency: 60'
     - line: '|   companyName: Cherry Bay'
-    - line: '|   productName: BattleOcean'
+    - line: '|   productName: Shark''Boom'
     - line: '|   defaultCursor: {instanceID: 0}'
     - line: '|   cursorHotspot: {x: 0, y: 0}'
     - line: '|   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b:
@@ -163,7 +164,7 @@ MonoBehaviour:
     - line: '|   loadStoreDebugModeEnabled: 0'
     - line: '|   visionOSBundleVersion: 1.0'
     - line: '|   tvOSBundleVersion: 1.0'
-    - line: '|   bundleVersion: 1.0.5'
+    - line: '|   bundleVersion: 1.0.9'
     - line: '|   preloadedAssets:'
     - line: '|   - {instanceID: 0}'
     - line: '|   - {instanceID: 0}'
@@ -854,8 +855,8 @@ MonoBehaviour:
     - line: '|     PS5: SORTIFY;SORTIFY_ATTRIBUTES;SORTIFY_COLLECTIONS;SORTIFY_HIGHLIGHT'
     - line: '|     QNX: SORTIFY;SORTIFY_ATTRIBUTES;SORTIFY_COLLECTIONS;SORTIFY_HIGHLIGHT'
     - line: '|     ReservedCFE: SORTIFY;SORTIFY_ATTRIBUTES;SORTIFY_COLLECTIONS;SORTIFY_HIGHLIGHT'
-    - line: '|     Server: SORTIFY;SORTIFY_ATTRIBUTES;SORTIFY_COLLECTIONS;SORTIFY_HIGHLIGHT;DOTWEEN;UNITY_SERVER'
-    - line: '|     Standalone: SORTIFY;SORTIFY_ATTRIBUTES;SORTIFY_COLLECTIONS;SORTIFY_HIGHLIGHT'
+    - line: '|     Server: SORTIFY;SORTIFY_ATTRIBUTES;SORTIFY_COLLECTIONS;SORTIFY_HIGHLIGHT;DOTWEEN;UNITY_SERVER;MOREMOUNTAINS_NICEVIBRATIONS_INSTALLED'
+    - line: '|     Standalone: SORTIFY;SORTIFY_ATTRIBUTES;SORTIFY_COLLECTIONS;SORTIFY_HIGHLIGHT;ASSET_INVENTORY'
     - line: '|     VisionOS: SORTIFY;SORTIFY_ATTRIBUTES;SORTIFY_COLLECTIONS;SORTIFY_HIGHLIGHT'
     - line: '|     WebGL: SORTIFY;SORTIFY_ATTRIBUTES;SORTIFY_COLLECTIONS;SORTIFY_HIGHLIGHT'
     - line: '|     XboxOne: SORTIFY;SORTIFY_ATTRIBUTES;SORTIFY_COLLECTIONS;SORTIFY_HIGHLIGHT'

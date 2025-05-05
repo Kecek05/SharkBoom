@@ -170,6 +170,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 633f60b4376dd944aacd07902762ba7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2590630615956071341 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5263959955919774353, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+  m_PrefabInstance: {fileID: 7709761659009139004}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4139059953487484834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4139059953487484834 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
@@ -196,6 +207,7 @@ MonoBehaviour:
   dissolveShaderComponent: {fileID: 6491132570511820881}
   lifetimeTriggerComponent: {fileID: 3629289230113130547}
   followTransformComponent: {fileID: 2492626997076712017}
+  myNetworkObject: {fileID: 2590630615956071341}
   rotateTowardsVelocityComponent: {fileID: 8460017691892430961}
 --- !u!114 &8460017691892430961
 MonoBehaviour:
