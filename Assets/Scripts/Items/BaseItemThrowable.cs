@@ -57,6 +57,11 @@ public abstract class BaseItemThrowable : NetworkBehaviour
         //ItemReleased(thisItemLaucherData.dragForce, thisItemLaucherData.dragDirection);
     }
 
+    public virtual void ChangeFollowTransform(Transform follow)
+    {
+        followTransformComponent.SetTarget(follow);
+    }
+
     /// <summary>
     /// Called when the item should stop following the hand and will be released
     /// </summary>

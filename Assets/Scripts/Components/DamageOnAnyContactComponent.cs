@@ -19,6 +19,7 @@ public class DamageOnAnyContactComponent : NetworkBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        Debug.LogWarning($"TriggerEnger, is Server? {IsServer}");
         if (!IsServer) return;
 
         if (collision.gameObject.TryGetComponent(out IDamageable damageable))

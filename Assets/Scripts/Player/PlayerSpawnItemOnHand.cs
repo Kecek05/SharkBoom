@@ -25,7 +25,15 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         //Used to select the right side socket
         isRightSocket = isRight;
         UpdateSelectedSocket();
-        SpawnItem();
+
+        if(spawnedItem != null)
+        {
+            spawnedItem.ChangeFollowTransform(selectedSocket.transform);
+        } else
+        {
+            //it's null
+            SpawnItem();
+        }
     }
 
     public void HandleOnPlayerInventoryItemSelected(int selectedItemSOIndex)
@@ -76,12 +84,6 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         //Spawn selected Item on the selected socket
         if (!canSpawnItem) return; //Do nothing if the player is not in the right state
 
-        //if (selectedInventoryIndexItem == null)
-        //{
-        //    Debug.LogWarning("Item not selected");
-        //    return;
-        //}
-
         if (spawnedItem != null)
         {
             Debug.LogWarning("Item already spawned, destroying it");
@@ -104,13 +106,6 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
 
         InstantiateObjServerRpc(NetworkManager.Singleton.LocalClientId, selectedSocket.transform.position, selectedItemSOIndex);
 
-        //spawnedItem = Instantiate(selectedItemSO.itemClientPrefab, selectedSocket.transform.position, Quaternion.identity).GetComponent<BaseItemThrowable>();
-        //spawnedItem.transform.SetParent(selectedSocket.transform);
-        //spawnedItem.transform.localRotation = Quaternion.identity;
-
-        //spawnedItem.Initialize();
-
-
     }
 
     [Rpc(SendTo.Server)]
@@ -128,6 +123,9 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
     {
         if(itemNetworkObject.TryGet(out NetworkObject itemNetworkObjectRef))
         {
+            if (spawnedItem != null)
+                spawnedItem.DestroyItem();
+
             spawnedItem = itemNetworkObjectRef.GetComponent<BaseItemThrowable>();
         } else
         {
@@ -140,7 +138,6 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
             spawnedItem.Initialize(selectedSocket.transform);
             spawnedItem.transform.localRotation = Quaternion.identity;
         }
-
         OnItemOnHandSpawned?.Invoke(spawnedItem);
     }
 
@@ -163,9 +160,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
                 OnItemOnHandDespawned?.Invoke(spawnedItem);
                 spawnedItem = null;
             });
-            
         }
-
     }
 
     private void UpdateSelectedSocket()
@@ -194,7 +189,5 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
                 }
             }
         }
-
-
     }
 }
