@@ -14,7 +14,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     [SerializeField] protected Rigidbody2D rb;
     [SerializeField] protected GameObject[] collidersToChangeLayer;
     [SerializeField] protected DissolveShaderComponent dissolveShaderComponent;
-    [SerializeField] protected LifetimeTriggerComponent lifetimeTriggerComponent;
+    [SerializeField] protected LifetimeTriggerItemComponent lifetimeTriggerItemComponent;
     [SerializeField] protected FollowTransformComponent followTransformComponent; //Used to follow the hand when the item is in hand
     [SerializeField] protected NetworkObject myNetworkObject;
     protected ItemLauncherData thisItemLaucherData;
@@ -75,8 +75,8 @@ public abstract class BaseItemThrowable : NetworkBehaviour
         rb.bodyType = RigidbodyType2D.Dynamic; //Statick until the item is released
         rb.AddForce(itemLauncherData.dragDirection * itemLauncherData.dragForce, ForceMode2D.Impulse);
 
-        if(lifetimeTriggerComponent)
-            lifetimeTriggerComponent.StartLifetime();
+        if(lifetimeTriggerItemComponent)
+            lifetimeTriggerItemComponent.StartLifetime();
     }
 
     private void SetCollision(PlayableState playableState)
@@ -116,21 +116,22 @@ public abstract class BaseItemThrowable : NetworkBehaviour
         {
             dissolveShaderComponent.DissolveFadeOut(() =>
             {
+                DestroyOnServerRpc();
                 destroyedCallback?.Invoke();
                 dissolveShaderComponent = null;
-                DestroyOnServerRpc();
             });
         }
         else
         {
-            destroyedCallback?.Invoke();
             DestroyOnServerRpc();
+            destroyedCallback?.Invoke();
         }
     }
 
     [Rpc(SendTo.Server)]
     private void DestroyOnServerRpc()
     {
+        Debug.Log("DESTROY ITEM");
         myNetworkObject.Despawn(true); // Pass 'true' to also destroy the GameObject
     }
 
