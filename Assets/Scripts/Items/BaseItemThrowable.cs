@@ -89,14 +89,12 @@ public abstract class BaseItemThrowable : NetworkBehaviour
         if(lifetimeTriggerItemComponent)
             lifetimeTriggerItemComponent.StartLifetime();
         
-        Debug.Log("ItemReleased");
         ItemReleasedServerRpc(itemLauncherData);
     }
 
     [Rpc(SendTo.Server)]
     private void ItemReleasedServerRpc(ItemLauncherData itemLauncherData)
     {
-        Debug.Log("ItemReleasedServerRpc");
         itemReleased = true;
 
         SetCollision(itemLauncherData.ownerPlayableState);
@@ -116,13 +114,10 @@ public abstract class BaseItemThrowable : NetworkBehaviour
 
         OnItemReleasedAction?.Invoke(this.transform);
         rb.bodyType = RigidbodyType2D.Dynamic;
-
-        Debug.Log("ItemReleasedClientRpc");
     }
 
     private void SetCollision(PlayableState playableState)
     {
-        Debug.Log($"SetCollision, {playableState}");
         switch (playableState)
         {
             case PlayableState.Player1Playing:

@@ -8,7 +8,6 @@ public class DamageOnAnyContactComponent : NetworkBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log($"CollisionEnter, is Server? {IsServer}");
         if (!IsServer) return;
 
         if (collision.collider.gameObject.TryGetComponent(out IDamageable damageable))
@@ -19,7 +18,6 @@ public class DamageOnAnyContactComponent : NetworkBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.LogWarning($"TriggerEnger, is Server? {IsServer}");
         if (!IsServer) return;
 
         if (collision.gameObject.TryGetComponent(out IDamageable damageable))
@@ -35,7 +33,6 @@ public class DamageOnAnyContactComponent : NetworkBehaviour
         {
             damaged = true;
             damageable.TakeDamage(damageableSO);
-            Debug.Log($"Dealt {damageableSO.damage} ");
         }
     }
 }
