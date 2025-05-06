@@ -127,17 +127,15 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
                 spawnedItem.DestroyItem();
 
             spawnedItem = itemNetworkObjectRef.GetComponent<BaseItemThrowable>();
+            spawnedItem.Initialize(selectedSocket.transform);
+            spawnedItem.transform.localRotation = Quaternion.identity;
+
         } else
         {
             Debug.LogWarning("Item not found");
             return;
         }
 
-        if(IsOwner)
-        {
-            spawnedItem.Initialize(selectedSocket.transform);
-            spawnedItem.transform.localRotation = Quaternion.identity;
-        }
         OnItemOnHandSpawned?.Invoke(spawnedItem);
     }
 

@@ -29,32 +29,14 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     /// <param name="itemLauncherData"></param>
     public virtual void Initialize(Transform parent)
     {
-        //thisItemLaucherData = itemLauncherData;
         rb.bodyType = RigidbodyType2D.Static; //Statick until the item is released
 
         followTransformComponent.SetTarget(parent);
         followTransformComponent.EnableComponent();
-        //switch (ownerPlayableState)
-        //{
-        //    case PlayableState.Player1Playing:
-        //        foreach(GameObject gameObject in collidersToChangeLayer)
-        //        {
-        //            gameObject.layer = PlayersPublicInfoManager.PLAYER_1_LAYER;
-        //        }
-        //        break;
-        //    case PlayableState.Player2Playing:
-        //        foreach (GameObject gameObject in collidersToChangeLayer)
-        //        {
-        //            gameObject.layer = PlayersPublicInfoManager.PLAYER_2_LAYER;
-        //        }
-        //        break;
-        //}
 
         if (dissolveShaderComponent != null)
             dissolveShaderComponent.DissolveFadeIn();
 
-        //turnManager = ServiceLocator.Get<BaseTurnManager>();
-        //ItemReleased(thisItemLaucherData.dragForce, thisItemLaucherData.dragDirection);
     }
 
     public virtual void ChangeFollowTransform(Transform follow)

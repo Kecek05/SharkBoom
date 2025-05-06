@@ -78,7 +78,7 @@ public class PlayerLauncher : NetworkBehaviour
             ownerPlayableState = ServiceLocator.Get<BaseTurnManager>().LocalPlayableState,
         };
 
-        SpawnProjectile(itemLauncherData); //Spawn fake projectile on client
+        SpawnProjectile(itemLauncherData); 
     
         OnItemLaunched?.Invoke(playerInventory.SelectedItemInventoryIndex); //pass itemInventoryIndex
          
