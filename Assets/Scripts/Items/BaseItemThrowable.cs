@@ -142,13 +142,15 @@ public abstract class BaseItemThrowable : NetworkBehaviour
 
     protected virtual void ItemCallbackAction()
     {
-        if(!IsServer) return; // Only the server should call the callback action
+        if(!IsOwner) return; // Only the server should call the callback action
 
         turnManager.PlayerPlayed(thisItemLaucherData.ownerPlayableState);
     }
 
     public virtual void DestroyItem(Action destroyedCallback = null)
     {
+        if(!IsOwner) return; //Only the owner can destroy the item
+
         OnItemFinishedAction?.Invoke();
 
         if(itemReleased)
@@ -175,10 +177,5 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     {
         Debug.Log("DESTROY ITEM");
         myNetworkObject.Despawn(true); // Pass 'true' to also destroy the GameObject
-    }
-
-    public override void OnDestroy()
-    {
-        DestroyItem();
     }
 }

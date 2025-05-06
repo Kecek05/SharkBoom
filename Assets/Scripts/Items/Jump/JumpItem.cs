@@ -12,24 +12,22 @@ public class JumpItem : BaseItemThrowable
     {
         base.ItemReleased(itemLauncherData);
 
-        if (!IsServer) return; // Jump is Client Sided. The server should not follow the player
+        if (!IsOwner) return;
 
         objectToFollowTransform = ServiceLocator.Get<BasePlayersPublicInfoManager>().GetPlayerObjectByPlayableState(thisItemLaucherData.ownerPlayableState).transform;
 
-        turnManager = ServiceLocator.Get<BaseTurnManager>();
-
-        StartCoroutine(PlayerFollowFirework());
+        StartCoroutine(PlayerFollowJump());
     }
 
     protected override void ItemCallbackAction()
     {
-        if (!IsServer) return;
+        if (!IsOwner) return;
 
         turnManager.PlayerJumped(thisItemLaucherData.ownerPlayableState);
 
     }
 
-    private IEnumerator PlayerFollowFirework()
+    private IEnumerator PlayerFollowJump()
     {
         if(objectToFollowTransform == null) yield break; // if object to follow is null, isnt the owner
 
