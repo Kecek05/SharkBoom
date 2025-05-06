@@ -32,6 +32,8 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     /// <param name="itemLauncherData"></param>
     public virtual void Initialize(Transform parent)
     {
+        if(!IsOwner) return; //Only the owner can initialize the item
+
         rb.bodyType = RigidbodyType2D.Static; //Statick until the item is released
 
         followTransformComponent.SetTarget(parent);
@@ -40,7 +42,24 @@ public abstract class BaseItemThrowable : NetworkBehaviour
         if (dissolveShaderComponent != null)
             dissolveShaderComponent.DissolveFadeIn();
 
+        InitializeUpdateRbTypeServerRpc(RigidbodyType2D.Static);
+
     }
+
+    [Rpc(SendTo.Server)]
+    private void InitializeUpdateRbTypeServerRpc(RigidbodyType2D rigidbodyType2D)
+    {
+        InitializeUpdateRbTypeClientRpc(rigidbodyType2D);
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void InitializeUpdateRbTypeClientRpc(RigidbodyType2D rigidbodyType2D)
+    {
+        if(IsOwner) return; //Ownler already changed
+
+        rb.bodyType = rigidbodyType2D;
+    }
+
 
     public virtual void ChangeFollowTransform(Transform follow)
     {
@@ -54,6 +73,8 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     /// <param name="direction"></param>
     public virtual void ItemReleased(ItemLauncherData itemLauncherData)
     {
+        if(!IsOwner) return; //Only the owner can release the item
+
         itemReleased = true;
 
         SetCollision(itemLauncherData.ownerPlayableState);
@@ -62,15 +83,46 @@ public abstract class BaseItemThrowable : NetworkBehaviour
         turnManager = ServiceLocator.Get<BaseTurnManager>();
 
         OnItemReleasedAction?.Invoke(this.transform);
-        rb.bodyType = RigidbodyType2D.Dynamic; //Statick until the item is released
+        rb.bodyType = RigidbodyType2D.Dynamic;
         rb.AddForce(itemLauncherData.dragDirection * itemLauncherData.dragForce, ForceMode2D.Impulse);
 
         if(lifetimeTriggerItemComponent)
             lifetimeTriggerItemComponent.StartLifetime();
+        
+        Debug.Log("ItemReleased");
+        ItemReleasedServerRpc(itemLauncherData);
+    }
+
+    [Rpc(SendTo.Server)]
+    private void ItemReleasedServerRpc(ItemLauncherData itemLauncherData)
+    {
+        Debug.Log("ItemReleasedServerRpc");
+        itemReleased = true;
+
+        SetCollision(itemLauncherData.ownerPlayableState);
+        thisItemLaucherData = itemLauncherData;
+        ItemReleasedClientRpc(itemLauncherData);
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void ItemReleasedClientRpc(ItemLauncherData itemLauncherData)
+    {
+        if(IsOwner) return; //Owner already released
+
+        itemReleased = true;
+
+        SetCollision(itemLauncherData.ownerPlayableState);
+        thisItemLaucherData = itemLauncherData;
+
+        OnItemReleasedAction?.Invoke(this.transform);
+        rb.bodyType = RigidbodyType2D.Dynamic;
+
+        Debug.Log("ItemReleasedClientRpc");
     }
 
     private void SetCollision(PlayableState playableState)
     {
+        Debug.Log($"SetCollision, {playableState}");
         switch (playableState)
         {
             case PlayableState.Player1Playing:

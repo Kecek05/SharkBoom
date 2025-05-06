@@ -22,22 +22,16 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
 
     public void HandleOnRotationChanged(bool isRight)
     {
+        if (!IsOwner) return;
         //Used to select the right side socket
         isRightSocket = isRight;
         UpdateSelectedSocket();
-
-        if(spawnedItem != null)
-        {
-            spawnedItem.ChangeFollowTransform(selectedSocket.transform);
-        } else
-        {
-            //it's null
-            SpawnItem();
-        }
+        SpawnItem();
     }
 
     public void HandleOnPlayerInventoryItemSelected(int selectedItemSOIndex)
     {
+        if (!IsOwner) return;
         //Based on the item select, save the item to spawn when drag start and select the corresponding socket based on item and on rotation
         this.selectedItemSOIndex = playerInventory.GetSelectedItemSOIndex();
         UpdateSelectedSocket();
@@ -45,36 +39,31 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
 
     public void HandleOnCrossfadeFinished()
     {
-        Debug.Log("HandleOnPlayerAnimatorCrossfadeFinished");
+        if (!IsOwner) return;
         SpawnItem();
     }
 
     public void HandleOnPlayerStateChanged(PlayerState newState)
     {
-        Debug.Log($"HandleOnPlayerStateMachineStateChanged: {newState}");
-
-
+        if (!IsOwner) return;
         canSpawnItem = false;
 
         switch (newState)
         {
             case PlayerState.IdleMyTurn:
-                //Despawn item
                 DespawnItem();
                 break;
             case PlayerState.DraggingItem:
-                //Spawn Item
                 canSpawnItem = true;
                 break;
             case PlayerState.DraggingJump:
                 canSpawnItem = true;
-                //Do nothing
                 break;
             case PlayerState.DragReleaseItem:
-                //Do nothing
+                HandleOnShoot();
                 break;
             case PlayerState.DragReleaseJump:
-                //Do nothing
+                HandleOnShoot();
                 break;
         }
     }
@@ -86,15 +75,11 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
 
         if (spawnedItem != null)
         {
-            Debug.LogWarning("Item already spawned, destroying it");
-            spawnedItem.DestroyItem(() =>
-            {
-                spawnedItem = null;
-                InstantiateObj();
-                return;
-            });
-        } else
+            spawnedItem.ChangeFollowTransform(selectedSocket.transform);
+        }
+        else
         {
+            //it's null
             InstantiateObj();
         }
         
@@ -103,7 +88,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
     private void InstantiateObj()
     {
         if(!IsOwner) return; //Only the owner can spawn the item
-
+        UpdateSelectedSocket();
         InstantiateObjServerRpc(NetworkManager.Singleton.LocalClientId, selectedSocket.transform.position, selectedItemSOIndex);
 
     }
@@ -127,8 +112,12 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
                 spawnedItem.DestroyItem();
 
             spawnedItem = itemNetworkObjectRef.GetComponent<BaseItemThrowable>();
-            spawnedItem.Initialize(selectedSocket.transform);
-            spawnedItem.transform.localRotation = Quaternion.identity;
+
+            if(IsOwner)
+            {
+                spawnedItem.Initialize(selectedSocket.transform);
+                spawnedItem.transform.localRotation = Quaternion.identity;
+            }
 
         } else
         {
