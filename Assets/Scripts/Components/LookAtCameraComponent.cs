@@ -10,7 +10,7 @@ public class LookAtCameraComponent : MonoBehaviour
     private enum Mode
     {
         LookAt,
-        LateAtInverted,
+        LookAtInverted,
         CameraForward,
         CameraForwardInverted
     }
@@ -27,7 +27,7 @@ public class LookAtCameraComponent : MonoBehaviour
                 case Mode.LookAt:
                     canvasTransform.LookAt(mainCamera.transform);
                     break;
-                case Mode.LateAtInverted:
+                case Mode.LookAtInverted:
                     Vector3 dirFromCamera = canvasTransform.position - mainCamera.transform.position;
                     canvasTransform.LookAt(canvasTransform.position + dirFromCamera);
                     break;

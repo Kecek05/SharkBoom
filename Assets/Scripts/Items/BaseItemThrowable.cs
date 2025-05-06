@@ -23,6 +23,9 @@ public abstract class BaseItemThrowable : NetworkBehaviour
 
     protected bool itemReleased = false;
 
+    //DEBUG
+    public bool IsItemReleased => itemReleased;
+
     /// <summary>
     /// Called when the item spawns in hand
     /// </summary>
