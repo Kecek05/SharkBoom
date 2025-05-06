@@ -370,6 +370,7 @@ public class PlayerThrower : NetworkBehaviour
            
         }
 
+
         if (newValue == PlayableState.Player1Playing)
         {
 
@@ -386,6 +387,7 @@ public class PlayerThrower : NetworkBehaviour
             }
         }
 
+        Debug.Log($"PlayableStateInitialize, NewValue: {newValue} | Layer: {playerColliders[0].layer}");
 
         ServiceLocator.Get<BasePlayersPublicInfoManager>().AddPlayerToPlayersDictionary(newValue, gameObject);
 

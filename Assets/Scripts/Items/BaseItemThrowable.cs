@@ -95,6 +95,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     [Rpc(SendTo.Server)]
     private void ItemReleasedServerRpc(ItemLauncherData itemLauncherData)
     {
+        Debug.Log("ItemReleasedServerRpc");
         itemReleased = true;
 
         SetCollision(itemLauncherData.ownerPlayableState);
@@ -133,6 +134,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
                 }
                 break;
         }
+        Debug.Log($"SetCollision: {playableState} | Layer: {gameObject.layer}");
     }
 
     protected virtual void ItemCallbackAction()
