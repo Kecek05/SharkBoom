@@ -409,4 +409,42 @@ public class PlayerThrower : NetworkBehaviour
 
         UnHandleEvents();
     }
+    private InventoryManager inventoryManager;
+
+    public void ItemSelected(int itemIndex)
+    {
+        inventoryManager.UpdateInventoryIndex(itemIndex);
+    }
+
+}
+
+public class UIManager : MonoBehaviour
+{
+    [SerializeField] private PlayerInventoryUI playerInventoryUI;
+    [SerializeField] private PlayerInventory playerInventory;
+    [SerializeField] private PlayerThrower playerThrower;
+
+    private void Start()
+    {
+        playerInventoryUI.OnItemSelectedByUI += PlayerInventoryUI_OnItemSelectedByUI;
+    }
+
+    private void PlayerInventoryUI_OnItemSelectedByUI(int itemIndex)
+    {
+        //Call Item Index on Inv
+        playerThrower.ItemSelected(itemIndex);
+
+    }
+}
+
+public class InventoryManager : MonoBehaviour
+{
+    [SerializeField] private PlayerInventory playerInventory;
+
+
+
+    public void UpdateInventoryIndex(int itemIndex)
+    {
+        playerInventory.SelectItemDataByItemInventoryIndex(itemIndex);
+    }
 }
