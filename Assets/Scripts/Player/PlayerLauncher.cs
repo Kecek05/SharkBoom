@@ -21,12 +21,14 @@ public class PlayerLauncher : NetworkBehaviour
     
     private BaseItemActivableManager itemActivableManager;
     private BaseItemThrowable lastProjectile;
+    private BaseTimerManager timerManager;
 
     public void InitializeOwner()
     {
         if (!IsOwner) return;
 
         itemActivableManager = ServiceLocator.Get<BaseItemActivableManager>();
+        timerManager = ServiceLocator.Get<BaseTimerManager>();
 
         inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
     }
@@ -45,7 +47,8 @@ public class PlayerLauncher : NetworkBehaviour
 
         if (state == PlayerState.DragReleaseJump || state == PlayerState.DragReleaseItem)
         {
-            //Launch();
+            // Released, pause timer
+            timerManager.TogglePauseTimer(true);
         }
     }
 
@@ -63,7 +66,7 @@ public class PlayerLauncher : NetworkBehaviour
     }
 
 
-    public void Launch()
+    public void Launch() //Called by the script on animator
     {
         if (!IsOwner) return;
 

@@ -8,6 +8,15 @@ public class JumpItem : BaseItemThrowable
     private float currentFollowingTime = 0f;
     private Transform objectToFollowTransform;
 
+    private BaseTimerManager timerManager;
+
+    public override void Initialize(Transform parent)
+    {
+        base.Initialize(parent);
+
+        timerManager = ServiceLocator.Get<BaseTimerManager>();
+    }
+
     public override void ItemReleased(ItemLauncherData itemLauncherData)
     {
         base.ItemReleased(itemLauncherData);
@@ -23,6 +32,7 @@ public class JumpItem : BaseItemThrowable
     {
         if (!IsOwner) return;
 
+        timerManager.TogglePauseTimer(false); //unpause
         turnManager.PlayerJumped(thisItemLaucherData.ownerPlayableState);
 
     }
