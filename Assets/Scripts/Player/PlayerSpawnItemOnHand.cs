@@ -100,6 +100,8 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         spawnedItemNetworkObject.Spawn();
         spawnedItemNetworkObject.ChangeOwnership(ownerClientId);
 
+        spawnedItem = spawnedItemNetworkObject.GetComponent<BaseItemThrowable>();
+
         CallOnItemOnHandClientRpc(spawnedItemNetworkObject);
     }
 

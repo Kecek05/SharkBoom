@@ -75,15 +75,10 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     {
         if(!IsOwner) return; //Only the owner can release the item
 
-        itemReleased = true;
+        UpdateOnRelease(itemLauncherData);
 
-        SetCollision(itemLauncherData.ownerPlayableState);
         followTransformComponent.DisableComponent();
-        thisItemLaucherData = itemLauncherData;
         turnManager = ServiceLocator.Get<BaseTurnManager>();
-
-        OnItemReleasedAction?.Invoke(this.transform);
-        rb.bodyType = RigidbodyType2D.Dynamic;
         rb.AddForce(itemLauncherData.dragDirection * itemLauncherData.dragForce, ForceMode2D.Impulse);
 
         if(lifetimeTriggerItemComponent)
@@ -96,10 +91,9 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     private void ItemReleasedServerRpc(ItemLauncherData itemLauncherData)
     {
         Debug.Log("ItemReleasedServerRpc");
-        itemReleased = true;
+        
+        UpdateOnRelease(itemLauncherData);
 
-        SetCollision(itemLauncherData.ownerPlayableState);
-        thisItemLaucherData = itemLauncherData;
         ItemReleasedClientRpc(itemLauncherData);
     }
 
@@ -108,6 +102,11 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     {
         if(IsOwner) return; //Owner already released
 
+        UpdateOnRelease(itemLauncherData);
+    }
+
+    private void UpdateOnRelease(ItemLauncherData itemLauncherData)
+    {
         itemReleased = true;
 
         SetCollision(itemLauncherData.ownerPlayableState);
