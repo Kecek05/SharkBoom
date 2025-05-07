@@ -100,7 +100,8 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         spawnedItemNetworkObject.Spawn();
         spawnedItemNetworkObject.ChangeOwnership(ownerClientId);
 
-        spawnedItem = spawnedItemNetworkObject.GetComponent<BaseItemThrowable>();
+        if(IsServer && !IsHost) //Only DS, cuz host will get the ref in the CallOnItemOnHandClientRpc
+            spawnedItem = spawnedItemNetworkObject.GetComponent<BaseItemThrowable>();
 
         CallOnItemOnHandClientRpc(spawnedItemNetworkObject);
     }
