@@ -98,9 +98,17 @@ public class PlayerInventory : NetworkBehaviour
                 break;
             case PlayerState.DraggingJump:
             case PlayerState.DraggingItem:
+                SetCanInteractWithInventory(false);
+                if (state == PlayerState.DragReleaseJump)
+                {
+                    // Jumped, can shoot
+                    SetPlayerCanJumpRpc(false);
+                }
+                break;
             case PlayerState.DragReleaseItem:
             case PlayerState.DragReleaseJump:
                 SetCanInteractWithInventory(false);
+                UseItemByInventoryIndexRpc(selectedItemInventoryIndex); //item released, use item
                 if (state == PlayerState.DragReleaseJump)
                 {
                     // Jumped, can shoot
@@ -110,7 +118,6 @@ public class PlayerInventory : NetworkBehaviour
             case PlayerState.MyTurnEnded:
                 SetCanInteractWithInventory(false);
                 DecreaseAllItemsCooldownRpc();
-                UseItemByInventoryIndexRpc(selectedItemInventoryIndex);
                 SetPlayerCanJumpRpc(true); // Can jump, set before next round to be able to select
                 break;
             case PlayerState.PlayerGameOver:
