@@ -1,5 +1,6 @@
 using Sortify;
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDetectDragChange, IDetectEndedTurn
@@ -19,9 +20,19 @@ public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDete
     private BaseTurnManager turnManager;
     private bool isDirectionRight = false;
 
+    private Coroutine delayStartFaceOtherPlayerCoroutine;
+
     public void DoOnInitializeOnwer()
     {
         turnManager = ServiceLocator.Get<BaseTurnManager>();
+
+        if(delayStartFaceOtherPlayerCoroutine != null)
+        {
+            StopCoroutine(delayStartFaceOtherPlayerCoroutine);
+            delayStartFaceOtherPlayerCoroutine = null;
+        }
+
+        delayStartFaceOtherPlayerCoroutine = StartCoroutine(DelayStartFaceOtherPlayer());
     }
 
     public void DoOnDragChange(float forcePercent, float andlePercent)
@@ -52,11 +63,25 @@ public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDete
         Debug.Log($"DragChange Oposite Finger Pos X: {playerDragController.GetOpositeFingerPos().x} - PlayerGFX Pos X: {playerGfxTransform.position.x} - isRight: {isDirectionRight}");
     }
 
-    public void DoOnEndedTurn()
+    private IEnumerator DelayStartFaceOtherPlayer()
+    {
+        //Wait for the end of the frame before executing the code to ensure that all scripts subscribe to the event OnRotationChanged
+        yield return new WaitForEndOfFrame();
+        FaceOtherPlayer();
+    }
+
+    private void FaceOtherPlayer()
     {
         isDirectionRight = LocateOtherPlayer.OtherPlayerIsOnMyRight(turnManager.LocalPlayableState);
 
         OnRotationChanged?.Invoke(isDirectionRight);
+
+        Debug.Log("Is Direction Right: " + isDirectionRight);
+    }
+
+    public void DoOnEndedTurn()
+    {
+        FaceOtherPlayer();
     }
 
 }
