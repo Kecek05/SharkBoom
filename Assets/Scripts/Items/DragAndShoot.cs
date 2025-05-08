@@ -103,6 +103,8 @@ public class DragAndShoot : NetworkBehaviour
     private int roundedLastDragDistance = 0; //cache
     private int roundedDragDistance = 0; //cache
 
+    //DEBUG
+    public bool isLocked = false; //to release the finger and the player still holding the item
 
     public void InitializeOwner(Rigidbody2D rb)
     {
@@ -126,7 +128,6 @@ public class DragAndShoot : NetworkBehaviour
     {
         selectedRb = rb;
     }
-
 
     protected void InputReader_OnTouchPressEvent(InputAction.CallbackContext context)
     {
@@ -164,7 +165,8 @@ public class DragAndShoot : NetworkBehaviour
                 }
             }
         }
-    
+
+        if (isLocked) return; //DEBUG
 
         if (context.canceled && isDragging)
         {
