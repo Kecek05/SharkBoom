@@ -3,7 +3,7 @@ public class FollowSelectedSocketComponent : FollowTransformComponent
 {
     public void HandleOnPlayerSpawnItemOnHandOnItemSocketSelected(ItemSocket selectedSocket)
     {
-        SetTarget(selectedSocket.transform);
+        SetTarget(selectedSocket.TrajectoryTransform.transform);
         EnableComponent();
     }
 }
