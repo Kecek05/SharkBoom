@@ -28,7 +28,7 @@ public class MainMenuCharacterController : MonoBehaviour
         if(charactersPrefabs != null && charactersPrefabs.Length > 0)
         {
             int randomIndex = Random.Range(0, charactersPrefabs.Length);
-            character = Instantiate(charactersPrefabs[randomIndex], transform.position, Quaternion.identity);
+            character = Instantiate(charactersPrefabs[randomIndex], transform.position, transform.rotation);
             animator = character.GetComponentInChildren<Animator>();
 
             if (animator != null)
