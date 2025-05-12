@@ -11,7 +11,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [SerializeField] private Transform rootTransform;
     [SerializeField] private Transform hipsTransform;
 
-    [SerializeField] private PlayerHealth playerHealth;
     [SerializeField] private Rigidbody[] ragdollRbs;
     [SerializeField] private Collider[] ragdollColliders;
 
@@ -35,23 +34,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         // not align and disable ragdoll
     }
 
-
-    public void HandleOnPlayerTakeDamage(object sender, PlayerHealth.OnPlayerTakeDamageArgs e)
-    {
-        if (sender != playerHealth) return;
-
-        if (IsOwner)
-        {
-            // turn on ragdoll
-            RequestRagdollServerRpc();
-        }
-    }
-
-    private void HandleItemCallback()
-    {
-
-    }
-
     public void HandleOnPlayerStateChanged(PlayerState state)
     {
         if (state == PlayerState.IdleEnemyTurn || state == PlayerState.IdleMyTurn)
@@ -60,18 +42,20 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             {
                 if (isFallen)
                 {
+                    DisableRagdoll();
                     RequestRagdollDisableServerRpc();
                 }
             }
         }
     }
 
-
-    public void TriggerRagdoll(Vector3 force, Vector3 hitPoint)
+    public void TriggerRagdoll(Vector3 force, Vector3 hitPoint, Action<Rigidbody> hittedCallback)
     {
+        EnableRagdoll();
         RequestRagdollServerRpc();
 
         Rigidbody hitRigidbody = ragdollRbs.OrderBy(Rigidbody => Vector3.Distance(Rigidbody.position, hitPoint)).First(); // we order all rbs by distance to hitpoint and take the first one
+        hittedCallback?.Invoke(hitRigidbody); // callback to the hitted rb
         hitRigidbody.AddForceAtPosition(force, hitPoint, ForceMode.Impulse);
     }
 
@@ -85,6 +69,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost)]
     private void EnableRagdollClientRpc()
     {
+        if(IsOwner) return; //already enabled in owner
         EnableRagdoll();
     }
 
@@ -130,6 +115,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost)]
     private void DisableRagdollClientRpc()
     {
+        if(IsOwner) return; //already disabled in owner
         DisableRagdoll();
     }
 
@@ -176,12 +162,5 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         rootTransform.SetPositionAndRotation(newPosition, originalRootRotation);
         hipsTransform.rotation = originalHipRotation;
         ragdollRoot.rotation = ragdollRootRotation;
-    }
-
-    public void UnInitializeOwner()
-    {
-        if (!IsOwner) return;
-
-        PlayerHealth.OnPlayerTakeDamage -= HandleOnPlayerTakeDamage;
     }
 }

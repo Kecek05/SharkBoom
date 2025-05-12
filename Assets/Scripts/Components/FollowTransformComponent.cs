@@ -64,4 +64,9 @@ public class FollowTransformComponent : MonoBehaviour
     {
         followScale = value;
     }
+
+    public void SetPositionOffset(Vector3 offset)
+    {
+        positionOffset = offset;
+    }
 }

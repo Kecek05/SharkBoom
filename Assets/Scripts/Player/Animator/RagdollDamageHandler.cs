@@ -32,7 +32,7 @@ public class RagdollDamageHandler : MonoBehaviour
                     forceDirection.Normalize();
 
                     Vector3 force = forceMagnitude * forceDirection;
-                    playerRagdollEnabler.TriggerRagdoll(force, hitInfo.point);
+                   // playerRagdollEnabler.TriggerRagdoll(force, hitInfo.point);
                 }
             }
         }

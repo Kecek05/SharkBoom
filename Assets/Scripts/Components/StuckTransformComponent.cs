@@ -11,7 +11,12 @@ public class StuckTransformComponent : NetworkBehaviour
     {
         if (!IsOwner) return;
 
-        Stuck(collision.transform);
+        PlayerRagdollEnabler playerRagdollEnabler = collision.gameObject.transform.parent.GetComponentInChildren<PlayerRagdollEnabler>();
+
+        if (playerRagdollEnabler)
+        {
+            Stuck(collision.transform, playerRagdollEnabler);
+        }
 
     }
 
@@ -19,31 +24,41 @@ public class StuckTransformComponent : NetworkBehaviour
     {
         if (!IsOwner) return;
 
-        Stuck(collision.transform);
+        PlayerRagdollEnabler playerRagdollEnabler = collision.gameObject.transform.parent.GetComponentInChildren<PlayerRagdollEnabler>();
+
+        if (playerRagdollEnabler)
+        {
+            Stuck(collision.transform, playerRagdollEnabler);
+        }
     }
 
-    private void Stuck(Transform stuckParent)
+    private void Stuck(Transform collidedTransform, PlayerRagdollEnabler playerRagdollEnabler)
     {
         if(!stucked)
         {
             stucked = true;
 
-            //FIX THAT
-            Rigidbody[] rigidBodies = stuckParent.GetComponentsInChildren<Rigidbody>();
+            GameObject objectToStuck = null;
+            playerRagdollEnabler.TriggerRagdoll(new Vector3(50,5,0), collidedTransform.position, (rb) => { objectToStuck = rb.gameObject; });
 
-            if(rigidBodies == null || rigidBodies.Length == 0)
+            if(objectToStuck == null)
             {
-                Debug.Log("No rigidbodies found in the parent");
+                Debug.Log("Object to stuck is null");
                 return;
             }
 
-            Rigidbody stuckTo = rigidBodies.OrderBy(Rigidbody => Vector3.Distance(Rigidbody.position, transform.position)).First(); // we order all rbs by distance to hitpoint and take the first one
-
-            followTransformComponent.SetTarget(stuckTo.transform);
+            CalculateStuckOffset(objectToStuck.transform.position);
+            followTransformComponent.SetTarget(objectToStuck.transform);
             followTransformComponent.SetFollowRotation(false);
             followTransformComponent.EnableComponent();
-            Debug.Log($"Stuck to {stuckTo.name}");
+            Debug.Log($"Stuck to {objectToStuck.name}");
         }
+    }
+
+    private void CalculateStuckOffset(Vector3 touchedPos)
+    {
+        Vector3 offset = transform.position - touchedPos;
+        followTransformComponent.SetPositionOffset(offset);
     }
 
 }
