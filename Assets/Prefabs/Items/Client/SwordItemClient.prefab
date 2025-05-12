@@ -11,7 +11,7 @@ PrefabInstance:
     - target: {fileID: 1148033323730379617, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 34e8f2490cc6a604b9c646c1cf996118, type: 2}
+      objectReference: {fileID: 2100000, guid: cd4eea5105e7fae40bb438a7b1815d2c, type: 2}
     - target: {fileID: 1561311604723099721, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
@@ -126,9 +126,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2942010050083629636, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5507073573842170898}
-    - targetCorrespondingSourceObject: {fileID: 851746441201601633, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8364025788999008896}
   m_SourcePrefab: {fileID: 100100000, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
 --- !u!114 &2492626997076712017 stripped
 MonoBehaviour:
@@ -175,7 +172,7 @@ MonoBehaviour:
   collidersToChangeLayer:
   - {fileID: 4139059953487484834}
   - {fileID: 4767779204118326136}
-  dissolveShaderComponent: {fileID: 8364025788999008896}
+  dissolveShaderComponent: {fileID: 0}
   lifetimeTriggerItemComponent: {fileID: 8567296822537084226}
   followTransformComponent: {fileID: 2492626997076712017}
   myNetworkObject: {fileID: 2590630615956071341}
@@ -207,6 +204,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   damageableSO: {fileID: 11400000, guid: 5c108174f738b9b4d81e171a89b58721, type: 2}
+  itemColls2D:
+  - {fileID: 338955412849477496}
+  - {fileID: 5507073573842170898}
 --- !u!114 &6045030263605648018
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -235,6 +235,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lifetime: 5
   itemThrowable: {fileID: 8753510293822866115}
+  isActive: 0
 --- !u!1 &4767779204118326136 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2942010050083629636, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
@@ -349,22 +350,3 @@ Rigidbody2D:
   m_CorrespondingSourceObject: {fileID: 2597735930550134298, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
   m_PrefabInstance: {fileID: 7709761659009139004}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &7002131505479470429 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 851746441201601633, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
-  m_PrefabInstance: {fileID: 7709761659009139004}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &8364025788999008896
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7002131505479470429}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 44cf99f5c3b370e43a2855c9c2e1c811, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dissolveDurationFadeIn: 0.5
-  dissolveDurationFadeOut: 0

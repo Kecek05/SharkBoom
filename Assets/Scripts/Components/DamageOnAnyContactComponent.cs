@@ -4,11 +4,11 @@ using UnityEngine;
 public class DamageOnAnyContactComponent : NetworkBehaviour
 {
     [SerializeField] private DamageableSO damageableSO;
+    [SerializeField] private Collider2D[] itemColls2D;
     private bool damaged = false; //damage only once
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log($"Collision: {collision.gameObject.name}");
         if (!IsServer) return;
 
         if (collision.collider.gameObject.TryGetComponent(out IDamageable damageable))
@@ -19,7 +19,6 @@ public class DamageOnAnyContactComponent : NetworkBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log($"Trigger: {collision.gameObject.name}");
         if (!IsServer) return;
 
         if (collision.gameObject.TryGetComponent(out IDamageable damageable))
@@ -33,6 +32,11 @@ public class DamageOnAnyContactComponent : NetworkBehaviour
     {
         if (!damaged)
         {
+            foreach(Collider2D itemCol in itemColls2D)
+            {
+                itemCol.enabled = false;
+            }
+
             damaged = true;
             damageable.TakeDamage(damageableSO);
         }
