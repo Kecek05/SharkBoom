@@ -52,6 +52,8 @@ public class CameraManager : NetworkBehaviour
 
     private void HandleOnItemFinishedAction()
     {
+        enemyObj = publicInfoManager.GetOtherPlayerByMyPlayableState(turnManager.LocalPlayableState);
+
         CameraReposOnEnemy(); 
     }
 
@@ -60,16 +62,15 @@ public class CameraManager : NetworkBehaviour
         if(!IsOwner) return;
 
         playerObj = publicInfoManager.GetPlayerObjectByPlayableState(turnManager.LocalPlayableState);
-        enemyObj = publicInfoManager.GetOtherPlayerByMyPlayableState(turnManager.LocalPlayableState);
 
         switch (playerState)
         {
             default:
                 CameraMove();
                 break;
-            //case PlayerState.MyTurnStarted:
-            //    CameraReposOnPlayer();
-            //    break;
+            case PlayerState.MyTurnStarted:
+                CameraReposOnPlayer();
+                break;
             case PlayerState.IdleEnemyTurn:
             case PlayerState.IdleMyTurn:
                 CameraMove();
