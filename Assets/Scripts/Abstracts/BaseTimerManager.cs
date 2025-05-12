@@ -13,6 +13,7 @@ public abstract class BaseTimerManager : NetworkBehaviour
 
     protected Coroutine timerCoroutine;
     protected WaitForSeconds timerDelay = new WaitForSeconds(1f); //cache
+    protected bool isPaused = false;
 
     public NetworkVariable<int> TimerTurn => timerTurn;
 
@@ -27,4 +28,5 @@ public abstract class BaseTimerManager : NetworkBehaviour
 
     protected abstract void TriggerOnTurnTimesUpClient();
 
+    public abstract void TogglePauseTimer(bool isPaused);
 }

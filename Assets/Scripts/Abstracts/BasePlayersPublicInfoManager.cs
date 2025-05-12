@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public abstract class BasePlayersPublicInfoManager : MonoBehaviour
@@ -13,11 +14,18 @@ public abstract class BasePlayersPublicInfoManager : MonoBehaviour
     public abstract void Initialize(ItemsListSO itemsListSO);
 
     protected Dictionary<PlayableState, GameObject> playerStateToGameObject = new Dictionary<PlayableState, GameObject>();
+    protected Dictionary<PlayableState, PlayerVisualType> playerVisualByState = new Dictionary<PlayableState, PlayerVisualType>();
 
     public abstract void AddPlayerToPlayersDictionary(PlayableState playerPlayableState, GameObject playerGameObject);
 
     public abstract GameObject GetPlayerObjectByPlayableState(PlayableState playerPlayableState);
 
+    public abstract GameObject GetOtherPlayerByMyPlayableState(PlayableState myPlayableState);
+    public abstract Dictionary<PlayableState, GameObject> GetAllPlayers();
+
+    public abstract Dictionary<PlayableState, PlayerVisualType> GetPlayerVisualTypes();
+
+    public abstract void SetPlayerVisualType(PlayableState playerPlayableState, PlayerVisualType playerVisualType);
     /// <summary>
     /// Call this to randomize and give items to players
     /// </summary>

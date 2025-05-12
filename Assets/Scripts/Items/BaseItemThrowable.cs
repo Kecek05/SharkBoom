@@ -14,11 +14,17 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     [SerializeField] protected Rigidbody2D rb;
     [SerializeField] protected GameObject[] collidersToChangeLayer;
     [SerializeField] protected DissolveShaderComponent dissolveShaderComponent;
-    [SerializeField] protected LifetimeTriggerComponent lifetimeTriggerComponent;
+    [SerializeField] protected LifetimeTriggerItemComponent lifetimeTriggerItemComponent;
     [SerializeField] protected FollowTransformComponent followTransformComponent; //Used to follow the hand when the item is in hand
+    [SerializeField] protected NetworkObject myNetworkObject;
     protected ItemLauncherData thisItemLaucherData;
 
     protected BaseTurnManager turnManager;
+
+    protected bool itemReleased = false;
+
+    //DEBUG
+    public bool IsItemReleased => itemReleased;
 
     /// <summary>
     /// Called when the item spawns in hand
@@ -26,32 +32,38 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     /// <param name="itemLauncherData"></param>
     public virtual void Initialize(Transform parent)
     {
-        //thisItemLaucherData = itemLauncherData;
+        if(!IsOwner) return; //Only the owner can initialize the item
+
         rb.bodyType = RigidbodyType2D.Static; //Statick until the item is released
 
         followTransformComponent.SetTarget(parent);
         followTransformComponent.EnableComponent();
-        //switch (ownerPlayableState)
-        //{
-        //    case PlayableState.Player1Playing:
-        //        foreach(GameObject gameObject in collidersToChangeLayer)
-        //        {
-        //            gameObject.layer = PlayersPublicInfoManager.PLAYER_1_LAYER;
-        //        }
-        //        break;
-        //    case PlayableState.Player2Playing:
-        //        foreach (GameObject gameObject in collidersToChangeLayer)
-        //        {
-        //            gameObject.layer = PlayersPublicInfoManager.PLAYER_2_LAYER;
-        //        }
-        //        break;
-        //}
 
         if (dissolveShaderComponent != null)
             dissolveShaderComponent.DissolveFadeIn();
 
-        //turnManager = ServiceLocator.Get<BaseTurnManager>();
-        //ItemReleased(thisItemLaucherData.dragForce, thisItemLaucherData.dragDirection);
+        InitializeUpdateRbTypeServerRpc(RigidbodyType2D.Static);
+
+    }
+
+    [Rpc(SendTo.Server)]
+    private void InitializeUpdateRbTypeServerRpc(RigidbodyType2D rigidbodyType2D)
+    {
+        InitializeUpdateRbTypeClientRpc(rigidbodyType2D);
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void InitializeUpdateRbTypeClientRpc(RigidbodyType2D rigidbodyType2D)
+    {
+        if(IsOwner) return; //Ownler already changed
+
+        rb.bodyType = rigidbodyType2D;
+    }
+
+
+    public virtual void ChangeFollowTransform(Transform follow)
+    {
+        followTransformComponent.SetTarget(follow);
     }
 
     /// <summary>
@@ -61,17 +73,47 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     /// <param name="direction"></param>
     public virtual void ItemReleased(ItemLauncherData itemLauncherData)
     {
-        SetCollision(itemLauncherData.ownerPlayableState);
-        followTransformComponent.DisableComponent();
-        thisItemLaucherData = itemLauncherData;
-        turnManager = ServiceLocator.Get<BaseTurnManager>();
+        if(!IsOwner) return; //Only the owner can release the item
 
-        OnItemReleasedAction?.Invoke(this.transform);
-        rb.bodyType = RigidbodyType2D.Dynamic; //Statick until the item is released
+        UpdateOnRelease(itemLauncherData);
+
+        followTransformComponent.DisableComponent();
+        turnManager = ServiceLocator.Get<BaseTurnManager>();
         rb.AddForce(itemLauncherData.dragDirection * itemLauncherData.dragForce, ForceMode2D.Impulse);
 
-        if(lifetimeTriggerComponent)
-            lifetimeTriggerComponent.StartLifetime();
+        if(lifetimeTriggerItemComponent)
+            lifetimeTriggerItemComponent.StartLifetime();
+        
+        ItemReleasedServerRpc(itemLauncherData);
+    }
+
+    [Rpc(SendTo.Server)]
+    private void ItemReleasedServerRpc(ItemLauncherData itemLauncherData)
+    {
+        Debug.Log("ItemReleasedServerRpc");
+        
+        UpdateOnRelease(itemLauncherData);
+
+        ItemReleasedClientRpc(itemLauncherData);
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void ItemReleasedClientRpc(ItemLauncherData itemLauncherData)
+    {
+        if(IsOwner) return; //Owner already released
+
+        UpdateOnRelease(itemLauncherData);
+    }
+
+    private void UpdateOnRelease(ItemLauncherData itemLauncherData)
+    {
+        itemReleased = true;
+
+        SetCollision(itemLauncherData.ownerPlayableState);
+        thisItemLaucherData = itemLauncherData;
+
+        OnItemReleasedAction?.Invoke(this.transform);
+        rb.bodyType = RigidbodyType2D.Dynamic;
     }
 
     private void SetCollision(PlayableState playableState)
@@ -91,37 +133,45 @@ public abstract class BaseItemThrowable : NetworkBehaviour
                 }
                 break;
         }
+        Debug.Log($"SetCollision: {playableState} | Layer: {gameObject.layer}");
     }
 
     protected virtual void ItemCallbackAction()
     {
-        if(!IsServer) return; // Only the server should call the callback action
+        if(!IsOwner) return; // Only the server should call the callback action
 
         turnManager.PlayerPlayed(thisItemLaucherData.ownerPlayableState);
     }
 
     public virtual void DestroyItem(Action destroyedCallback = null)
     {
+        if(!IsOwner) return; //Only the owner can destroy the item
+
         OnItemFinishedAction?.Invoke();
-        ItemCallbackAction();
+
+        if(itemReleased)
+            ItemCallbackAction();
 
         if(dissolveShaderComponent != null)
         {
             dissolveShaderComponent.DissolveFadeOut(() =>
             {
+                DestroyOnServerRpc();
                 destroyedCallback?.Invoke();
-                Destroy(this.gameObject);
+                dissolveShaderComponent = null;
             });
         }
         else
         {
+            DestroyOnServerRpc();
             destroyedCallback?.Invoke();
-            Destroy(this.gameObject);
         }
     }
 
-    public override void OnDestroy()
+    [Rpc(SendTo.Server)]
+    private void DestroyOnServerRpc()
     {
-        DestroyItem();
+        Debug.Log("DESTROY ITEM");
+        myNetworkObject.Despawn(true); // Pass 'true' to also destroy the GameObject
     }
 }

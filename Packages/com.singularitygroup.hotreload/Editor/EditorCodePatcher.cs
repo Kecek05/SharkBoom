@@ -156,7 +156,6 @@ namespace SingularityGroup.HotReload.Editor {
             };
             DetectEditorStart();
             DetectVersionUpdate();
-            RecordActiveDaysForRateApp();
             CodePatcher.I.fieldHandler = new FieldHandler(FieldDrawerUtil.StoreField, UnityFieldHelper.HideField, UnityFieldHelper.RegisterInspectorFieldAttributes);
             if (EditorApplication.isPlayingOrWillChangePlaymode) {
                 CodePatcher.I.InitPatchesBlocked(patchesFilePath);
@@ -201,6 +200,8 @@ namespace SingularityGroup.HotReload.Editor {
                 ClearPersistence();
                 HotReloadState.EditorCodePatcherInit = true;
             }
+
+            CodePatcher.I.debuggerCompatibilityEnabled = !HotReloadPrefs.AutoDisableHotReloadWithDebugger;
         }
 
         static void ResetSettingsOnQuit() {
@@ -410,6 +411,7 @@ namespace SingularityGroup.HotReload.Editor {
         }
         
         internal static bool firstPatchAttempted;
+        internal static bool loggedDebuggerRecompile;
         static void OnIntervalMainThread() {
             HotReloadSuggestionsHelper.Check();
             
@@ -428,6 +430,27 @@ namespace SingularityGroup.HotReload.Editor {
             if (!running && !StartedServerRecently()) {
                 // Reset startup progress
                 startupProgress = null;
+            }
+
+            if (HotReloadPrefs.AutoDisableHotReloadWithDebugger && Debugger.IsAttached) {
+                if (!HotReloadState.ShowedDebuggerCompatibility) {
+                    HotReloadSuggestionsHelper.SetSuggestionActive(HotReloadSuggestionKind.HotReloadWhileDebuggerIsAttached);
+                    HotReloadState.ShowedDebuggerCompatibility = true;
+                }
+                if (CodePatcher.I.OriginalPatchMethods.Count() > 0) {
+                    if (!Application.isPlaying) {
+                        if (!loggedDebuggerRecompile) {
+                            Log.Info("Debugger was attached. Hot Reload may interfere with your debugger session. Recompiling in order to get full debugger experience.");
+                            loggedDebuggerRecompile = true;
+                        }
+                        HotReloadRunTab.Recompile();
+                        HotReloadSuggestionsHelper.SetSuggestionInactive(HotReloadSuggestionKind.HotReloadedMethodsWhenDebuggerIsAttached);
+                    } else {
+                        HotReloadSuggestionsHelper.SetSuggestionActive(HotReloadSuggestionKind.HotReloadedMethodsWhenDebuggerIsAttached);
+                    }
+                }
+            } else if (HotReloadSuggestionsHelper.CheckSuggestionActive(HotReloadSuggestionKind.HotReloadedMethodsWhenDebuggerIsAttached)) {
+                HotReloadSuggestionsHelper.SetSuggestionInactive(HotReloadSuggestionKind.HotReloadedMethodsWhenDebuggerIsAttached);
             }
             
             if(ServerHealthCheck.I.IsServerHealthy) {
@@ -987,6 +1010,7 @@ namespace SingularityGroup.HotReload.Editor {
             var isReleaseMode = RequestHelper.IsReleaseMode();
             var detailedErrorReporting = !HotReloadPrefs.DisableDetailedErrorReporting;
             CodePatcher.I.ClearPatchedMethods();
+            RecordActiveDaysForRateApp();
             try {
                 requestingStart = true;
                 startupProgress = Tuple.Create(0f, "Starting Hot Reload");

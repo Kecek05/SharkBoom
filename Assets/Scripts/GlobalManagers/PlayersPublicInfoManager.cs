@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayersPublicInfoManager : BasePlayersPublicInfoManager
@@ -28,6 +29,26 @@ public class PlayersPublicInfoManager : BasePlayersPublicInfoManager
             Debug.LogWarning("Player not found in dictionary");
             return null;
         }
+    }
+
+    public override GameObject GetOtherPlayerByMyPlayableState(PlayableState myPlayableState)
+    {
+
+        foreach (PlayableState playableState in playerStateToGameObject.Keys)
+        {
+            if (playableState != myPlayableState)
+            {
+                return playerStateToGameObject[playableState];
+            }
+        }
+
+        Debug.LogWarning("Not found the other player");
+        return null;
+    }
+
+    public override Dictionary<PlayableState, GameObject> GetAllPlayers()
+    {
+        return playerStateToGameObject;
     }
 
     public override void RandomizePlayerItems()
@@ -67,6 +88,17 @@ public class PlayersPublicInfoManager : BasePlayersPublicInfoManager
     {
         spawnPointsPos.Add(transformToAdd);
     }
+
+    public override Dictionary<PlayableState, PlayerVisualType> GetPlayerVisualTypes()
+    {
+        return playerVisualByState;
+    }
+
+    public override void SetPlayerVisualType(PlayableState playerPlayableState, PlayerVisualType playerVisualType)
+    {
+        playerVisualByState[playerPlayableState] = playerVisualType;
+    }
+
 }
 
 

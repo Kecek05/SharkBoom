@@ -60,6 +60,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: JumpItemClient
       objectReference: {fileID: 0}
+    - target: {fileID: 6091596160473946369, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: item
+      value: 
+      objectReference: {fileID: -793818038911944659}
+    - target: {fileID: 6091596160473946369, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: followTransformComponent
+      value: 
+      objectReference: {fileID: 2492626997076712017}
+    - target: {fileID: 6091596160473946369, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: lifetimeTriggerItemComponent
+      value: 
+      objectReference: {fileID: 7163195315664444835}
     - target: {fileID: 6717943621661333620, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_Drag
       value: 2
@@ -71,6 +83,14 @@ PrefabInstance:
     - target: {fileID: 6717943621661333620, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_Constraints
       value: 48
+      objectReference: {fileID: 0}
+    - target: {fileID: 8843573594692602520, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: SyncRotAngleX
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8843573594692602520, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: SyncRotAngleY
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9045194971483600297, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_Radius
@@ -90,7 +110,7 @@ PrefabInstance:
       addedObject: {fileID: -793818038911944659}
     - targetCorrespondingSourceObject: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1244850087737009721}
+      addedObject: {fileID: 7163195315664444835}
     - targetCorrespondingSourceObject: {fileID: 2942010050083629636, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6578615526759772596}
@@ -104,6 +124,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 633f60b4376dd944aacd07902762ba7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2590630615956071341 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5263959955919774353, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+  m_PrefabInstance: {fileID: 7709761659009139004}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4139059953487484834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &4139059953487484834 stripped
@@ -124,17 +155,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  isServerObject: 0
   itemSO: {fileID: 11400000, guid: c4047f17a9430314ab9b65ede680009f, type: 2}
   rb: {fileID: 5689049572469319462}
   collidersToChangeLayer:
   - {fileID: 4139059953487484834}
   - {fileID: 4767779204118326136}
   dissolveShaderComponent: {fileID: 0}
-  lifetimeTriggerComponent: {fileID: 1244850087737009721}
+  lifetimeTriggerItemComponent: {fileID: 7163195315664444835}
   followTransformComponent: {fileID: 2492626997076712017}
+  myNetworkObject: {fileID: 2590630615956071341}
   followingTime: 4
---- !u!114 &1244850087737009721
+--- !u!114 &7163195315664444835
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -143,10 +174,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 4139059953487484834}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3caf081c6641695409b5761689dd36f9, type: 3}
+  m_Script: {fileID: 11500000, guid: b91fa934de67dab46912e6325f3d074a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   lifetime: 5
+  itemThrowable: {fileID: -793818038911944659}
 --- !u!1 &4767779204118326136 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2942010050083629636, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}

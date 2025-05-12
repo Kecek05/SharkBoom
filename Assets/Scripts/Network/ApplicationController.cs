@@ -12,6 +12,7 @@ public class ApplicationController : MonoBehaviour //Responsable of launching th
     [SerializeField] private HostSingleton hostPrefab;
     [SerializeField] private ServerSingleton serverPrefab;
     [SerializeField] private NetworkServerProvider networkServerProvider;
+    [SerializeField] private ApplicationLifecycle applicationLifecyclePrefab;
 
     [BetterHeader("Settings", 12)]
     [SerializeField] private NetworkObject playerPrefab;
@@ -57,6 +58,8 @@ public class ApplicationController : MonoBehaviour //Responsable of launching th
 
             ClientSingleton clientSingleton = Instantiate(clientPrefab);
             clientSingleton.CreateClient();
+
+            ApplicationLifecycle applicationLifecycle = Instantiate(applicationLifecyclePrefab);
 
             //Go to main menu
             Loader.LoadNoLoadingScreen(Loader.Scene.AuthBootstrap);

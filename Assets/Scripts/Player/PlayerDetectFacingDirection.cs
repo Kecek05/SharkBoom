@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class PlayerDetectFacingDirection : DragListener
+public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDetectDragChange, IDetectEndedTurn
 {
     /// <summary>
     /// Called when the look orientation is changed. Pass if is looking right
@@ -17,51 +17,71 @@ public class PlayerDetectFacingDirection : DragListener
     [Tooltip("Value to be add to not rotate the object to close to the 90 degrees")]
     [SerializeField] private float angleOffset = 0.5f;
 
-    //Based on the direction of the other player, the default direction is right is true when the enemy is on the right side
-    private bool isDefaultDirectionRight = false;
-
+    private BaseTurnManager turnManager;
     private bool isDirectionRight = false;
 
-    protected override void DoOnSpawn()
+    private Coroutine delayStartFaceOtherPlayerCoroutine;
+
+    public void DoOnInitializeOnwer()
     {
-        //reset to default direction
-        isDirectionRight = isDefaultDirectionRight;
+        turnManager = ServiceLocator.Get<BaseTurnManager>();
+
+        if(delayStartFaceOtherPlayerCoroutine != null)
+        {
+            StopCoroutine(delayStartFaceOtherPlayerCoroutine);
+            delayStartFaceOtherPlayerCoroutine = null;
+        }
+
+        delayStartFaceOtherPlayerCoroutine = StartCoroutine(DelayStartFaceOtherPlayer());
     }
 
-    protected override void DoOnDragChange(float forcePercent, float andlePercent)
+    public void DoOnDragChange(float forcePercent, float andlePercent)
     {
-        Debug.Log($"Pos: {playerGfxTransform.position.x} - AngleOffset: {angleOffset} - Result: {playerGfxTransform.position.x + angleOffset} - Finger Pos: {playerDragController.GetOpositeFingerPos().x}");
-
         if (playerDragController.GetOpositeFingerPos().x > playerGfxTransform.position.x + angleOffset)
         {
             //right
-            if(isDirectionRight) return; //do nothing if the direction is already right
+            if (isDirectionRight) return; //do nothing if the direction is already right
+
+            isDirectionRight = true;
 
             OnRotationChanged?.Invoke(true);
 
-            isDirectionRight = true;
+            Debug.Log("Right");
 
         }
         else if (playerDragController.GetOpositeFingerPos().x < playerGfxTransform.position.x - angleOffset)
         {
             //left
-            if(!isDirectionRight) return; //do nothing if the direction is already left
+            if (!isDirectionRight) return; //do nothing if the direction is already left
 
             isDirectionRight = false;
 
             OnRotationChanged?.Invoke(false);
+
+            Debug.Log("Left");
         }
+        Debug.Log($"DragChange Oposite Finger Pos X: {playerDragController.GetOpositeFingerPos().x} - PlayerGFX Pos X: {playerGfxTransform.position.x} - isRight: {isDirectionRight}");
     }
 
-    protected override void DoOnDragRelease()
+    private IEnumerator DelayStartFaceOtherPlayer()
     {
-        StartCoroutine(DelayToChangeRotationToDefault());
+        //Wait for the end of the frame before executing the code to ensure that all scripts subscribe to the event OnRotationChanged
+        yield return new WaitForEndOfFrame();
+        FaceOtherPlayer();
     }
 
-    private IEnumerator DelayToChangeRotationToDefault()
+    private void FaceOtherPlayer()
     {
+        isDirectionRight = LocateOtherPlayer.OtherPlayerIsOnMyRight(turnManager.LocalPlayableState);
 
-        yield return null;
+        OnRotationChanged?.Invoke(isDirectionRight);
+
+        Debug.Log("Is Direction Right: " + isDirectionRight);
+    }
+
+    public void DoOnEndedTurn()
+    {
+        FaceOtherPlayer();
     }
 
 }

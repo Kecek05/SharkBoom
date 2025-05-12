@@ -34,6 +34,7 @@ public class TimerManager : BaseTimerManager
         if (newValue == PlayableState.Player1Playing || newValue == PlayableState.Player2Playing)
         {
             timerTurn.Value = turnTime;
+            isPaused = false; //unpause
 
             if (timerCoroutine == null)
             {
@@ -52,11 +53,33 @@ public class TimerManager : BaseTimerManager
         }
     }
 
+    public override void TogglePauseTimer(bool isPaused)
+    {
+       PauseTimerServerRpc(isPaused);
+    }
+
+    [Rpc(SendTo.Server)]
+    private void PauseTimerServerRpc(bool pause)
+    {
+        if (pause)
+        {
+            isPaused = true;
+        }
+        else
+        {
+            isPaused = false;
+        }
+    }
+    
+
     protected override IEnumerator Timer()
     {
         while (timerTurn.Value > 0)
         {
             yield return timerDelay;
+
+            if (isPaused) continue; //paused, skip
+
             timerTurn.Value--;
         }
 

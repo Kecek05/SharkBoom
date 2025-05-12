@@ -92,6 +92,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: HarpoonItemClient
       objectReference: {fileID: 0}
+    - target: {fileID: 6091596160473946369, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: item
+      value: 
+      objectReference: {fileID: 9087582636431070139}
+    - target: {fileID: 6091596160473946369, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: followTransformComponent
+      value: 
+      objectReference: {fileID: 2492626997076712017}
+    - target: {fileID: 6091596160473946369, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: lifetimeTriggerItemComponent
+      value: 
+      objectReference: {fileID: 2957073883870968353}
     - target: {fileID: 6717943621661333620, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_Mass
       value: 2
@@ -122,11 +134,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8843573594692602520, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: SyncRotAngleX
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8843573594692602520, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: SyncRotAngleY
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5150134811526336966, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
@@ -145,13 +157,13 @@ PrefabInstance:
       addedObject: {fileID: 8460017691892430961}
     - targetCorrespondingSourceObject: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 3629289230113130547}
-    - targetCorrespondingSourceObject: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 6888215236319363805}
     - targetCorrespondingSourceObject: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6033220186475682638}
+    - targetCorrespondingSourceObject: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2957073883870968353}
     - targetCorrespondingSourceObject: {fileID: 2942010050083629636, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7886338144231321574}
@@ -168,6 +180,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 633f60b4376dd944aacd07902762ba7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2590630615956071341 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5263959955919774353, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+  m_PrefabInstance: {fileID: 7709761659009139004}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4139059953487484834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &4139059953487484834 stripped
@@ -194,8 +217,9 @@ MonoBehaviour:
   - {fileID: 4139059953487484834}
   - {fileID: 4767779204118326136}
   dissolveShaderComponent: {fileID: 6491132570511820881}
-  lifetimeTriggerComponent: {fileID: 3629289230113130547}
+  lifetimeTriggerItemComponent: {fileID: 2957073883870968353}
   followTransformComponent: {fileID: 2492626997076712017}
+  myNetworkObject: {fileID: 2590630615956071341}
   rotateTowardsVelocityComponent: {fileID: 8460017691892430961}
 --- !u!114 &8460017691892430961
 MonoBehaviour:
@@ -211,19 +235,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotationSpeed: 10
   rb: {fileID: 5689049572469319462}
---- !u!114 &3629289230113130547
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4139059953487484834}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3caf081c6641695409b5761689dd36f9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lifetime: 6
 --- !u!114 &6888215236319363805
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -252,6 +263,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   followTransformComponent: {fileID: 2492626997076712017}
+--- !u!114 &2957073883870968353
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4139059953487484834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b91fa934de67dab46912e6325f3d074a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lifetime: 6
+  itemThrowable: {fileID: 9087582636431070139}
 --- !u!1 &4767779204118326136 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2942010050083629636, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}

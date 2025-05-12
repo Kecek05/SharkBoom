@@ -8,10 +8,26 @@ public class GameOverUI : MonoBehaviour
 {
     [BetterHeader("References")]
     [SerializeField] private GameObject gameOverBackground;
-    [SerializeField] private TextMeshProUGUI playerResultText;
+    [SerializeField] private TextMeshProUGUI resultTitleText;
+    [SerializeField] private TextMeshProUGUI resultText;
     [SerializeField] private TextMeshProUGUI pearlsResultText;
-    [SerializeField] private Button returnButton;
-    [SerializeField] private Color drawColor;
+    [SerializeField] private Image pearlsBackground;
+    [SerializeField] private Image gameOverImage;
+    [SerializeField] private Image returnBtnImage;
+    [SerializeField] private Button returnBtn;
+    [Space(5)]
+    [BetterHeader("Win")]
+    [SerializeField] private Sprite winBackground;
+    [SerializeField] private Sprite winPearlsBackground;
+    [SerializeField] private Sprite winReturnButton;
+    [BetterHeader("Lose")]
+    [SerializeField] private Sprite loseBackground;
+    [SerializeField] private Sprite losePearlsBackground;
+    [SerializeField] private Sprite loseReturnButton;
+    [BetterHeader("Tie")]
+    [SerializeField] private Sprite tieBackground;
+    [SerializeField] private Sprite tiePearlsBackground;
+    [SerializeField] private Sprite tieReturnButton;
 
     private bool alreadyChanged = false; //Prevent double change when losting connection
 
@@ -24,7 +40,7 @@ public class GameOverUI : MonoBehaviour
 
         alreadyChanged = false;
 
-        returnButton.onClick.AddListener(() =>
+        returnBtn.onClick.AddListener(() =>
         {
             //Return to main menu
 
@@ -57,6 +73,7 @@ public class GameOverUI : MonoBehaviour
         {
             //Relay game, no pearls to show
             pearlsResultText.gameObject.SetActive(false);
+            pearlsBackground.gameObject.SetActive(false);
         }
         else if (pearlsDelta > 0)
         {
@@ -77,9 +94,7 @@ public class GameOverUI : MonoBehaviour
         alreadyChanged = true;
 
         //Win UI Code
-
-        playerResultText.text = "You Win!";
-        playerResultText.color = Color.green;
+        Win();
 
         Debug.Log("Change GameOverUI to WIN");
     }
@@ -93,13 +108,11 @@ public class GameOverUI : MonoBehaviour
         //Lose UI Code
         if (isDraw)
         {
-            playerResultText.text = "Draw!";
-            playerResultText.color = drawColor;
+            Tie();
         }
         else
         {
-            playerResultText.text = "You Lose!";
-            playerResultText.color = Color.red;
+            Lose();
         }
 
         Debug.Log("Change GameOverUI to Lose");
@@ -114,6 +127,30 @@ public class GameOverUI : MonoBehaviour
     private void Show()
     {
         gameOverBackground.SetActive(true);
+    }
+
+    private void Win()
+    {
+        ChangeUI("You Win!", "VICTORY!", winBackground, winPearlsBackground, winReturnButton);
+    }
+
+    private void Lose()
+    {
+        ChangeUI("You Lose!", "DEFEAT!", loseBackground, losePearlsBackground, loseReturnButton);
+    }
+
+    private void Tie()
+    {
+        ChangeUI("Time's Up!", "TIE!", tieBackground, tiePearlsBackground, tieReturnButton);
+    }
+
+    private void ChangeUI(string resultTxt, string resultTitleTxt, Sprite backgroundSprite, Sprite pearlsSprite, Sprite buttonSprite)
+    {
+        resultText.text = resultTxt;
+        resultTitleText.text = resultTitleTxt;
+        gameOverImage.sprite = backgroundSprite;
+        pearlsBackground.sprite = pearlsSprite;
+        returnBtnImage.sprite = buttonSprite;
     }
 
     private void OnDestroy()

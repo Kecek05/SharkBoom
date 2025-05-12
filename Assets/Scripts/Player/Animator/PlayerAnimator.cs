@@ -122,6 +122,7 @@ public class PlayerAnimator : NetworkBehaviour
     private void RotationChanged()
     {
         PlayAnimationData(currentAnimationData);
+        Debug.Log("Rotation Changed on Animation");
     }
 
     private void PlayAnimationData(AnimationData animationData)

@@ -1,44 +1,42 @@
-using Unity.Netcode;
 using UnityEngine;
 
-public class LookAtCameraComponent : NetworkBehaviour
+public class LookAtCameraComponent : MonoBehaviour
 {
 
     [SerializeField] private Mode mode;
     [SerializeField] private Transform canvasTransform;
-    [SerializeField] private CameraManager cameraManager;
-
+    private Camera mainCamera;
 
     private enum Mode
     {
         LookAt,
-        LateAtInverted,
+        LookAtInverted,
         CameraForward,
         CameraForwardInverted
     }
 
+    private void Start()
+    {
+        mainCamera = Camera.main;
+    }
+
     private void LateUpdate() // we put in late update for performance reasons
     {
-
-        // Debuglog
-        if (IsOwner)
-        {
             switch (mode)
             {
                 case Mode.LookAt:
-                    canvasTransform.LookAt(cameraManager.CameraMain.transform);
+                    canvasTransform.LookAt(mainCamera.transform);
                     break;
-                case Mode.LateAtInverted:
-                    Vector3 dirFromCamera = canvasTransform.position - cameraManager.CameraMain.transform.position;
+                case Mode.LookAtInverted:
+                    Vector3 dirFromCamera = canvasTransform.position - mainCamera.transform.position;
                     canvasTransform.LookAt(canvasTransform.position + dirFromCamera);
                     break;
                 case Mode.CameraForward:
-                    canvasTransform.forward = cameraManager.CameraMain.transform.forward;
+                    canvasTransform.forward = mainCamera.transform.forward;
                     break;
                 case Mode.CameraForwardInverted:
-                    canvasTransform.forward = -cameraManager.CameraMain.transform.forward;
+                    canvasTransform.forward = -mainCamera.transform.forward;
                     break;
             }
-        }
     }
 }

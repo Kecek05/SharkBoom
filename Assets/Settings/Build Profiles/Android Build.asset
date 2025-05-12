@@ -36,7 +36,7 @@ MonoBehaviour:
     - line: '|   useOnDemandResources: 0'
     - line: '|   accelerometerFrequency: 60'
     - line: '|   companyName: Cherry Bay'
-    - line: '|   productName: BattleOcean'
+    - line: '|   productName: Shark''Boom'
     - line: '|   defaultCursor: {instanceID: 0}'
     - line: '|   cursorHotspot: {x: 0, y: 0}'
     - line: '|   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b:
@@ -164,7 +164,7 @@ MonoBehaviour:
     - line: '|   loadStoreDebugModeEnabled: 0'
     - line: '|   visionOSBundleVersion: 1.0'
     - line: '|   tvOSBundleVersion: 1.0'
-    - line: '|   bundleVersion: 1.0.8'
+    - line: '|   bundleVersion: 1.1.1'
     - line: '|   preloadedAssets:'
     - line: '|   - {instanceID: 0}'
     - line: '|   - {instanceID: 0}'
@@ -201,7 +201,7 @@ MonoBehaviour:
     - line: '|   overrideDefaultApplicationIdentifier: 1'
     - line: '|   AndroidBundleVersionCode: 1'
     - line: '|   AndroidMinSdkVersion: 23'
-    - line: '|   AndroidTargetSdkVersion: 34'
+    - line: '|   AndroidTargetSdkVersion: 0'
     - line: '|   AndroidPreferredInstallLocation: 1'
     - line: '|   aotOptions: '
     - line: '|   stripEngineCode: 1'
@@ -290,7 +290,7 @@ MonoBehaviour:
     - line: '|   useCustomGradlePropertiesTemplate: 1'
     - line: '|   useCustomGradleSettingsTemplate: 1'
     - line: '|   useCustomProguardFile: 0'
-    - line: '|   AndroidTargetArchitectures: 0'
+    - line: '|   AndroidTargetArchitectures: 2'
     - line: '|   AndroidSplashScreenScale: 0'
     - line: '|   androidSplashScreen: {instanceID: 0}'
     - line: '|   AndroidKeystoreName: ''{inproject}: Assets/user.keystore'''
@@ -552,7 +552,7 @@ MonoBehaviour:
     - line: '|     m_APIs: 10000000'
     - line: '|     m_Automatic: 1'
     - line: '|   - m_BuildTarget: AndroidPlayer'
-    - line: '|     m_APIs: 150000000b000000'
+    - line: '|     m_APIs: 0b00000015000000'
     - line: '|     m_Automatic: 0'
     - line: '|   m_BuildTargetVRSettings: []'
     - line: '|   m_DefaultShaderChunkSizeInMB: 16'
@@ -844,7 +844,7 @@ MonoBehaviour:
     - line: '|   webGLCloseOnQuit: 0'
     - line: '|   webWasm2023: 0'
     - line: '|   scriptingDefineSymbols:'
-    - line: '|     Android: SORTIFY;SORTIFY_ATTRIBUTES;SORTIFY_COLLECTIONS;SORTIFY_HIGHLIGHT;DOTWEEN;UNITY_ANDROID;UNITY_CLIENT;ASSET_INVENTORY'
+    - line: '|     Android: SORTIFY;SORTIFY_ATTRIBUTES;SORTIFY_COLLECTIONS;SORTIFY_HIGHLIGHT;DOTWEEN;UNITY_ANDROID;UNITY_CLIENT;ASSET_INVENTORY;MOREMOUNTAINS_NICEVIBRATIONS_INSTALLED'
     - line: '|     EmbeddedLinux: SORTIFY;SORTIFY_ATTRIBUTES;SORTIFY_COLLECTIONS;SORTIFY_HIGHLIGHT;DOTWEEN'
     - line: '|     GameCoreScarlett: DOTWEEN'
     - line: '|     GameCoreXboxOne: SORTIFY;SORTIFY_ATTRIBUTES;SORTIFY_COLLECTIONS;SORTIFY_HIGHLIGHT;DOTWEEN'
@@ -982,7 +982,7 @@ MonoBehaviour:
     - rid: 3134501520405692440
       type: {class: AndroidPlatformBuildSettings, ns: UnityEditor.Android, asm: UnityEditor.Android.Extensions}
       data:
-        m_Development: 0
+        m_Development: 1
         m_ConnectProfiler: 0
         m_BuildWithDeepProfilingSupport: 0
         m_AllowDebugging: 0
@@ -998,8 +998,8 @@ MonoBehaviour:
         m_ExportAsGoogleAndroidProject: 0
         m_DebugSymbolLevel: 1
         m_DebugSymbolFormat: 5
-        m_CurrentDeploymentTargetId: RQCX701VA1W
-        m_BuildType: 2
+        m_CurrentDeploymentTargetId: __builtin__target_default
+        m_BuildType: 1
         m_BuildAppBundle: 0
         m_IPAddressToConnect: 
         m_SymlinkSources: 0

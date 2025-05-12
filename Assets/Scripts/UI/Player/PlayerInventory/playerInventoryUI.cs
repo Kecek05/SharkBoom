@@ -2,9 +2,11 @@ using NUnit.Framework.Interfaces;
 using QFSW.QC;
 using Sortify;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
 public class PlayerInventoryUI : NetworkBehaviour
@@ -24,6 +26,10 @@ public class PlayerInventoryUI : NetworkBehaviour
     [SerializeField] private Image selectedItemImage;
     [SerializeField] private GameObject openInventoryBackground;
     [SerializeField] private ItemsListSO itemsListSO;
+    [SerializeField] private Canvas inventoryCanvas;
+
+    private Camera mainCam;
+    private Camera cameraUi;
     //[SerializeField] private PlayerInventory playerInventory;
 
     private List<PlayerItemSingleUI> playerItemSingleUIs = new();
@@ -31,7 +37,6 @@ public class PlayerInventoryUI : NetworkBehaviour
 
     private void Awake()
     {
-
         jumpButton.onClick.AddListener(() =>
         {
             SelecItem(0); //Jump Index
@@ -47,6 +52,22 @@ public class PlayerInventoryUI : NetworkBehaviour
         HideInventory();
         HideInventoryButton();
 
+        mainCam = ServiceLocator.Get<Camera>();
+
+        UniversalAdditionalCameraData data = mainCam.GetComponent<UniversalAdditionalCameraData>();
+        List<Camera> stack = data.cameraStack;
+
+        if (stack != null)
+        {
+            foreach (var overlayCam in stack)
+                cameraUi = overlayCam;
+        }
+
+        inventoryCanvas.worldCamera = cameraUi;
+
+        //Get the camera that renders the UI
+
+        //inventoryCanvas.worldCamera = 
         //if (!IsOwner)
         //{
 

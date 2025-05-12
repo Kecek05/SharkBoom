@@ -18,7 +18,7 @@ public class PlayerRandomizeVisual : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         playerVisualType.OnValueChanged += HandleOnVisualChanged;
-        HandleOnVisualChanged(PlayerVisualType.Null, playerVisualType.Value);
+        HandleOnVisualChanged(PlayerVisualType.None, playerVisualType.Value);
     }
 
     private void HandleOnVisualChanged(PlayerVisualType previousValue, PlayerVisualType newValue)
@@ -71,7 +71,7 @@ public class PlayerRandomizeVisual : NetworkBehaviour
 
 public enum PlayerVisualType : byte
 {
-    Null,
+    None,
     Orca,
     Shark
 }

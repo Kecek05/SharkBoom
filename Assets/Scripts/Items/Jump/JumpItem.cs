@@ -8,28 +8,36 @@ public class JumpItem : BaseItemThrowable
     private float currentFollowingTime = 0f;
     private Transform objectToFollowTransform;
 
+    private BaseTimerManager timerManager;
+
+    public override void Initialize(Transform parent)
+    {
+        base.Initialize(parent);
+
+        timerManager = ServiceLocator.Get<BaseTimerManager>();
+    }
+
     public override void ItemReleased(ItemLauncherData itemLauncherData)
     {
         base.ItemReleased(itemLauncherData);
 
-        if (!IsServer) return; // Jump is Client Sided. The server should not follow the player
+        if (!IsOwner) return;
 
         objectToFollowTransform = ServiceLocator.Get<BasePlayersPublicInfoManager>().GetPlayerObjectByPlayableState(thisItemLaucherData.ownerPlayableState).transform;
 
-        turnManager = ServiceLocator.Get<BaseTurnManager>();
-
-        StartCoroutine(PlayerFollowFirework());
+        StartCoroutine(PlayerFollowJump());
     }
 
     protected override void ItemCallbackAction()
     {
-        if (!IsServer) return;
+        if (!IsOwner) return;
 
+        timerManager.TogglePauseTimer(false); //unpause
         turnManager.PlayerJumped(thisItemLaucherData.ownerPlayableState);
 
     }
 
-    private IEnumerator PlayerFollowFirework()
+    private IEnumerator PlayerFollowJump()
     {
         if(objectToFollowTransform == null) yield break; // if object to follow is null, isnt the owner
 

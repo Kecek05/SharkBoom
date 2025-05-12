@@ -7,6 +7,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
 {
     public event Action<BaseItemThrowable> OnItemOnHandSpawned;
     public event Action<BaseItemThrowable> OnItemOnHandDespawned;
+    public event Action<ItemSocket> OnItemSocketSelected;
 
     [SerializeField] private PlayerInventory playerInventory;
     [SerializeField] private ItemSocket[] leftSideSockets;
@@ -21,6 +22,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
 
     public void HandleOnRotationChanged(bool isRight)
     {
+        if (!IsOwner) return;
         //Used to select the right side socket
         isRightSocket = isRight;
         UpdateSelectedSocket();
@@ -29,6 +31,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
 
     public void HandleOnPlayerInventoryItemSelected(int selectedItemSOIndex)
     {
+        if (!IsOwner) return;
         //Based on the item select, save the item to spawn when drag start and select the corresponding socket based on item and on rotation
         this.selectedItemSOIndex = playerInventory.GetSelectedItemSOIndex();
         UpdateSelectedSocket();
@@ -36,36 +39,31 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
 
     public void HandleOnCrossfadeFinished()
     {
-        Debug.Log("HandleOnPlayerAnimatorCrossfadeFinished");
+        if (!IsOwner) return;
         SpawnItem();
     }
 
     public void HandleOnPlayerStateChanged(PlayerState newState)
     {
-        Debug.Log($"HandleOnPlayerStateMachineStateChanged: {newState}");
-
-
+        if (!IsOwner) return;
         canSpawnItem = false;
 
         switch (newState)
         {
             case PlayerState.IdleMyTurn:
-                //Despawn item
                 DespawnItem();
                 break;
             case PlayerState.DraggingItem:
-                //Spawn Item
                 canSpawnItem = true;
                 break;
             case PlayerState.DraggingJump:
                 canSpawnItem = true;
-                //Do nothing
                 break;
             case PlayerState.DragReleaseItem:
-                //Do nothing
+                HandleOnShoot();
                 break;
             case PlayerState.DragReleaseJump:
-                //Do nothing
+                HandleOnShoot();
                 break;
         }
     }
@@ -75,23 +73,13 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         //Spawn selected Item on the selected socket
         if (!canSpawnItem) return; //Do nothing if the player is not in the right state
 
-        //if (selectedInventoryIndexItem == null)
-        //{
-        //    Debug.LogWarning("Item not selected");
-        //    return;
-        //}
-
         if (spawnedItem != null)
         {
-            Debug.LogWarning("Item already spawned, destroying it");
-            spawnedItem.DestroyItem(() =>
-            {
-                spawnedItem = null;
-                InstantiateObj();
-                return;
-            });
-        } else
+            spawnedItem.ChangeFollowTransform(selectedSocket.transform);
+        }
+        else
         {
+            //it's null
             InstantiateObj();
         }
         
@@ -100,24 +88,20 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
     private void InstantiateObj()
     {
         if(!IsOwner) return; //Only the owner can spawn the item
-
+        UpdateSelectedSocket();
         InstantiateObjServerRpc(NetworkManager.Singleton.LocalClientId, selectedSocket.transform.position, selectedItemSOIndex);
-
-        //spawnedItem = Instantiate(selectedItemSO.itemClientPrefab, selectedSocket.transform.position, Quaternion.identity).GetComponent<BaseItemThrowable>();
-        //spawnedItem.transform.SetParent(selectedSocket.transform);
-        //spawnedItem.transform.localRotation = Quaternion.identity;
-
-        //spawnedItem.Initialize();
-
 
     }
 
     [Rpc(SendTo.Server)]
     private void InstantiateObjServerRpc(ulong ownerClientId, Vector3 selectedSocketPos, int itemSOIndex)
     {
-        NetworkObject spawnedItemNetworkObject = Instantiate(playerInventory.GetItemSOByItemSOIndex(itemSOIndex).itemClientPrefab, selectedSocket.transform.position, Quaternion.identity).GetComponent<NetworkObject>();
+        NetworkObject spawnedItemNetworkObject = Instantiate(playerInventory.GetItemSOByItemSOIndex(itemSOIndex).itemClientPrefab, selectedSocketPos, Quaternion.identity).GetComponent<NetworkObject>();
         spawnedItemNetworkObject.Spawn();
         spawnedItemNetworkObject.ChangeOwnership(ownerClientId);
+
+        if(IsServer && !IsHost) //Only DS, cuz host will get the ref in the CallOnItemOnHandClientRpc
+            spawnedItem = spawnedItemNetworkObject.GetComponent<BaseItemThrowable>();
 
         CallOnItemOnHandClientRpc(spawnedItemNetworkObject);
     }
@@ -127,17 +111,21 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
     {
         if(itemNetworkObject.TryGet(out NetworkObject itemNetworkObjectRef))
         {
+            if (spawnedItem != null)
+                spawnedItem.DestroyItem();
+
             spawnedItem = itemNetworkObjectRef.GetComponent<BaseItemThrowable>();
+
+            if(IsOwner)
+            {
+                spawnedItem.Initialize(selectedSocket.transform);
+                spawnedItem.transform.localRotation = Quaternion.identity;
+            }
+
         } else
         {
             Debug.LogWarning("Item not found");
             return;
-        }
-
-        if(IsOwner)
-        {
-            spawnedItem.Initialize(selectedSocket.transform);
-            spawnedItem.transform.localRotation = Quaternion.identity;
         }
 
         OnItemOnHandSpawned?.Invoke(spawnedItem);
@@ -162,18 +150,11 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
                 OnItemOnHandDespawned?.Invoke(spawnedItem);
                 spawnedItem = null;
             });
-            
         }
-
     }
 
     private void UpdateSelectedSocket()
     {
-        //if(selectedInventoryIndexItem == null)
-        //{
-        //    Debug.LogWarning("Item not selected");
-        //    return;
-        //}
 
         if (isRightSocket)
         {
@@ -183,6 +164,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
                 {
                     //Found the corresponding socket
                     selectedSocket = socket;
+                    OnItemSocketSelected?.Invoke(selectedSocket);
                 }
             }
         } else
@@ -193,10 +175,9 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
                 {
                     //Found the corresponding socket
                     selectedSocket = socket;
+                    OnItemSocketSelected?.Invoke(selectedSocket);
                 }
             }
         }
-
-
     }
 }

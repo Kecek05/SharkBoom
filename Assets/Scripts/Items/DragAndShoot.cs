@@ -32,7 +32,6 @@ public class DragAndShoot : NetworkBehaviour
     [SerializeField] private Trajectory trajectory;
     [SerializeField] private InputReader inputReader;
     [SerializeField] private GameObject areaOfStartDrag;
-    [SerializeField] private UIDetectionComponent uiDetectionHelper;
     [Tooltip("Center position of the drag")]
     [SerializeField] private Transform startTrajectoryPos;
     [SerializeField] private LayerMask touchLayer;
@@ -104,6 +103,8 @@ public class DragAndShoot : NetworkBehaviour
     private int roundedLastDragDistance = 0; //cache
     private int roundedDragDistance = 0; //cache
 
+    //DEBUG
+    public bool isLocked = false; //to release the finger and the player still holding the item
 
     public void InitializeOwner(Rigidbody2D rb)
     {
@@ -128,14 +129,13 @@ public class DragAndShoot : NetworkBehaviour
         selectedRb = rb;
     }
 
-
     protected void InputReader_OnTouchPressEvent(InputAction.CallbackContext context)
     {
         if (!canDrag) return;
 
         if (context.started) // capture the first frame when the touch is pressed
         {
-            if(uiDetectionHelper.IsPointerOverUI()) return; // check if the touch is over a UI object
+            if(UIDetection.IsPointerOverUI()) return; // check if the touch is over a UI object
 
             Ray rayStart = cameraManager.CameraMain.ScreenPointToRay(Input.mousePosition); // here we get a ray on screen point basead on touch pos
             Plane plane = new Plane(cameraManager.CameraMain.transform.forward, Vector3.zero); // we create a plane for calculate the distance between the touch and the camera
@@ -165,7 +165,8 @@ public class DragAndShoot : NetworkBehaviour
                 }
             }
         }
-    
+
+        if (isLocked) return; //DEBUG
 
         if (context.canceled && isDragging)
         {

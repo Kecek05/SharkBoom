@@ -16,6 +16,10 @@ public class FollowTransformComponent : MonoBehaviour
     [Space(3)]
     [SerializeField] private Vector3 positionOffset;
 
+    //DEBUG
+    public bool IsActive => isActive;
+    public Transform TargetTransform => targetTransform;
+
     private void LateUpdate()
     {
         if(!isActive) return;
@@ -44,5 +48,20 @@ public class FollowTransformComponent : MonoBehaviour
     public void DisableComponent()
     {
         isActive = false;
+    }
+
+    public void SetFollowPosition(bool value)
+    {
+        followPosition = value;
+    }
+
+    public void SetFollowRotation(bool value)
+    {
+        followRotation = value;
+    }
+
+    public void SetFollowScale(bool value)
+    {
+        followScale = value;
     }
 }

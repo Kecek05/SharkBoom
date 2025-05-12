@@ -4,18 +4,22 @@ using UnityEngine;
 
 public class CameraManager : NetworkBehaviour
 {
-
     [SerializeField] private CameraMovement cameraMovement;
     [SerializeField] private CameraZoom cameraZoom;
     [SerializeField] private CameraFollowing cameraFollowing;
-    [SerializeField] private Transform playerTransform;
+    [SerializeField] private PlayerThrower player;
     
     private CinemachineCamera cinemachineCamera;
     private Camera cameraMain; // Cache camera main for all scripts that need it
     private Transform cameraObjectToFollow;
 
+    private GameObject playerObj;
+    private GameObject enemyObj;
+
+    private BaseTurnManager turnManager;
+    private BasePlayersPublicInfoManager publicInfoManager;
+
     public Transform CameraObjectToFollow => cameraObjectToFollow;
-    public Transform PlayerTransform => playerTransform;
     public CameraZoom CameraZoom => cameraZoom;
     public CameraMovement CameraMovement => cameraMovement;
     public CinemachineCamera CinemachineCamera => cinemachineCamera;
@@ -26,7 +30,8 @@ public class CameraManager : NetworkBehaviour
     {
         if(!IsOwner) return;
 
-        cameraObjectToFollow = ServiceLocator.Get<CameraObjectToFollow>().transform;
+        if (cameraObjectToFollow == null)
+            cameraObjectToFollow = ServiceLocator.Get<CameraObjectToFollow>().transform;
 
         if (cinemachineCamera == null)
         {
@@ -34,6 +39,9 @@ public class CameraManager : NetworkBehaviour
             cinemachineCamera.Target.TrackingTarget = cameraObjectToFollow;
             cameraMain = ServiceLocator.Get<Camera>();
         }
+
+        turnManager = ServiceLocator.Get<BaseTurnManager>();
+        publicInfoManager = ServiceLocator.Get<BasePlayersPublicInfoManager>();
 
         cameraMovement.InitializeOwner();
         cameraZoom.InitializeOwner();
@@ -45,87 +53,72 @@ public class CameraManager : NetworkBehaviour
     {
         if(!IsOwner) return;
 
-        switch(playerState)
+        playerObj = publicInfoManager.GetPlayerObjectByPlayableState(turnManager.LocalPlayableState);
+        enemyObj = publicInfoManager.GetOtherPlayerByMyPlayableState(turnManager.LocalPlayableState);
+
+        switch (playerState)
         {
             default:
                 CameraMove();
                 break;
             case PlayerState.MyTurnStarted:
-                IdleReposOnPlayer();
+                ReposOnPlayer();
+                break;
+            case PlayerState.MyTurnEnded:
+                ReposOnEnemy();
                 break;
             case PlayerState.IdleEnemyTurn:
+            case PlayerState.IdleMyTurn:
                 CameraMove();
                 break;
-            case PlayerState.IdleMyTurn:
-                IdleReposOnPlayer();
-                break;
             case PlayerState.DraggingJump:
-                Dragging();
-                break;
             case PlayerState.DraggingItem:
                 Dragging();
                 break;
             case PlayerState.DragReleaseJump:
-                Following();
-                break;
             case PlayerState.DragReleaseItem:
-                Following();
-                break;
             case PlayerState.PlayerWatching:
                 Following();
                 break;
-            case PlayerState.MyTurnEnded:
-                CameraReset();
-                break;
             case PlayerState.PlayerGameOver:
-                //turn off camera and focus on the dead player
                 CameraTurnOff();
                 break;
         }
-        Debug.Log($"Player State On The Camera: {playerState}");
     }
 
-    private void CameraMove()
+    /// <summary>
+    /// Disable or Active modules of the camera
+    /// </summary>
+    /// <param name="movement">CameraMovement Script</param>
+    /// <param name="zoom">CameraZoom Script</param>
+    /// <param name="following">Camera following</param>
+    private void SetCameraModules(bool movement, bool zoom, bool following)
     {
-        cameraMovement.enabled = true;
-        cameraZoom.enabled = true;
-        cameraFollowing.enabled = false;
+        cameraMovement.enabled = movement;
+        cameraZoom.enabled = zoom;
+        cameraFollowing.enabled = following;
     }
 
-    private void IdleReposOnPlayer()
+    private void CameraMove() => SetCameraModules(true, true, false);
+    private void Dragging() => SetCameraModules(false, true, false);
+    private void Following() => SetCameraModules(false, false, true);
+
+    private void ReposOnPlayer()
     {
-        cameraMovement.enabled = false;
-        cameraZoom.enabled = false;
-        cameraFollowing.enabled = true;
-        cameraFollowing.SetTarget(playerTransform, false, 3f); // passing the object that we want to follow, false for stop until the item is null, and pass the duration of the follow
-        CameraMove();
+        SetCameraModules(false, false, true);
+        cameraFollowing.SetTarget(playerObj.transform, false, 3f);
     }
 
-    private void Dragging()
+    private void ReposOnEnemy()
     {
-        cameraZoom.enabled = true;
-        cameraMovement.enabled = false;
-        cameraFollowing.enabled = false; 
-    }
-    private void Following()
-    {
-        cameraFollowing.enabled = true;
-        cameraMovement.enabled = false;
-        cameraZoom.enabled = false;
-    }
-
-    private void CameraReset()
-    {
-        cameraMovement.enabled = true;
-        cameraZoom.enabled = true;
-        cameraFollowing.enabled = true;
+        SetCameraModules(false, false, true);
+        cameraFollowing.SetTarget(enemyObj.transform, false, 3f); // change for enemy reference
     }
 
     private void CameraTurnOff()
     {
-        cameraMovement.enabled = false;
-        cameraZoom.enabled = false;
-        cameraFollowing.enabled = false;
+        cameraFollowing.SetTarget(playerObj.transform, false, 3f);
+        SetCameraModules(false, false, false);
     }
 
     public void UnInitializeOwner()
@@ -135,6 +128,5 @@ public class CameraManager : NetworkBehaviour
         cameraMovement.UnInitializeOwner();
         cameraZoom.UnInitializeOwner();
         cameraFollowing.UnInitializeOwner();
-
     }
 }
