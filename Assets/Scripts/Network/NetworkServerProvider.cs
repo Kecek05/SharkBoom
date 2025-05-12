@@ -60,4 +60,8 @@ public class NetworkServerProvider : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    public void DestroyCurrentServer()
+    {
+        currentNetworkServer = null;
+    }
 }

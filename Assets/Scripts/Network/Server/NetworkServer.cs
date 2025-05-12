@@ -53,6 +53,7 @@ public class NetworkServer : IDisposable
         {
             OwnershipHandler.HandleOwnership(serverAuthenticationService.ClientIdToUserData[clientId].userAuthId, clientId);
             Debug.Log("SceneManager_OnLoadComplete, Player Reconnecting");
+            Debug.Log($"NETMANAGER - ownership is {OwnershipHandler.IsReconnecting(serverAuthenticationService.ClientIdToUserData[clientId].userAuthId)}");
         }
         else
         {
@@ -193,6 +194,11 @@ public class NetworkServer : IDisposable
         if (networkManager.IsListening)
         {
             networkManager.Shutdown();
+        }
+
+        if (NetworkServerProvider.Instance.CurrentNetworkServer != null)
+        {
+            NetworkServerProvider.Instance.DestroyCurrentServer();
         }
     }
 }
