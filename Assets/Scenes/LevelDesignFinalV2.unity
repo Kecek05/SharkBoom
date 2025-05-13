@@ -3762,6 +3762,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 372611224}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &383536724
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 383536725}
+  m_Layer: 0
+  m_Name: ===TerrainDecoration===
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &383536725
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 383536724}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &391545778
 GameObject:
   m_ObjectHideFlags: 0
@@ -12303,7 +12334,7 @@ Transform:
   m_GameObject: {fileID: 1235622408}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -100, y: -2.4, z: -31.4}
+  m_LocalPosition: {x: -100, y: -2.8, z: -31.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -13185,7 +13216,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4845276930943762971, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000045776367
+      value: -0.000030517578
       objectReference: {fileID: 0}
     - target: {fileID: 4845637959249703711, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchorMax.y
@@ -14381,10 +14412,14 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   backgroundPlayersInfo: {fileID: 338105849}
   backgroundWaitingForPlayers: {fileID: 417808136}
+  sharkPrefab: {fileID: 0}
+  orcaPrefab: {fileID: 0}
   player1NameText: {fileID: 1533290173}
   player1PearlsText: {fileID: 1628977046}
+  player1VisualSpawnpoint: {fileID: 0}
   player2NameText: {fileID: 500863383}
   player2PearlsText: {fileID: 39395182}
+  player2VisualSpawnpoint: {fileID: 0}
 --- !u!114 &1417789130
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15621,10 +15656,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameOverBackground: {fileID: 531838780}
-  playerResultText: {fileID: 1555018307}
+  resultTitleText: {fileID: 0}
+  resultText: {fileID: 0}
   pearlsResultText: {fileID: 257195408}
-  returnButton: {fileID: 298473520}
-  drawColor: {r: 0, g: 0, b: 0, a: 0}
+  pearlsBackground: {fileID: 0}
+  gameOverImage: {fileID: 0}
+  returnBtnImage: {fileID: 0}
+  returnBtn: {fileID: 0}
+  winBackground: {fileID: 0}
+  winPearlsBackground: {fileID: 0}
+  winReturnButton: {fileID: 0}
+  loseBackground: {fileID: 0}
+  losePearlsBackground: {fileID: 0}
+  loseReturnButton: {fileID: 0}
+  tieBackground: {fileID: 0}
+  tiePearlsBackground: {fileID: 0}
+  tieReturnButton: {fileID: 0}
 --- !u!1 &1595910222
 GameObject:
   m_ObjectHideFlags: 0
@@ -18822,6 +18869,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   codeTextUI: {fileID: 1989706599}
+  codeUIBackground: {fileID: 0}
 --- !u!1 &2023486245
 GameObject:
   m_ObjectHideFlags: 0
@@ -20474,3 +20522,4 @@ SceneRoots:
   - {fileID: 736522631}
   - {fileID: 346681897}
   - {fileID: 3339232758248555214}
+  - {fileID: 383536725}
