@@ -584,6 +584,7 @@ GameObject:
   - component: {fileID: 800024870368675109}
   - component: {fileID: 2518838509862417992}
   - component: {fileID: 5846641034301650373}
+  - component: {fileID: 8602736365488720538}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -868,6 +869,19 @@ MonoBehaviour:
   - {fileID: 3483073630956616346}
   - {fileID: 4723577276168246319}
   - {fileID: 5999375251617233547}
+--- !u!114 &8602736365488720538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1244250245066138330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fd295b811e221e4187c6e7de22ca952, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerRagdollEnabler: {fileID: 8406327557363343199}
 --- !u!1 &1348648853730134369
 GameObject:
   m_ObjectHideFlags: 0
@@ -3257,7 +3271,6 @@ MonoBehaviour:
   ragdollRoot: {fileID: 4870725441017383592}
   rootTransform: {fileID: 2498330595957626671}
   hipsTransform: {fileID: 6415793643202986417}
-  playerHealth: {fileID: 2518838509862417992}
   ragdollRbs: []
   ragdollColliders: []
 --- !u!1 &9060422909739577700

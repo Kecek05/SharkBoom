@@ -1,10 +1,14 @@
 using Unity.Netcode;
 using UnityEngine;
 
+[RequireComponent(typeof(CanDoDamageComponent), typeof(FollowTransformComponent), typeof(ItemCollisionDisablerComponent))]
 public class ItemCollisionController : NetworkBehaviour
 {
-    [SerializeField] private DamageOnAnyContactComponent damageOnAnyContactComponent;
+    [SerializeField] private CanDoDamageComponent canDoDamage;
+    [SerializeField] private FollowTransformComponent followTransformComponent;
     [SerializeField] private ItemCollisionDisablerComponent itemCollisionDisablerComponent;
+    [SerializeField] private GameObject gfx;
+    [SerializeField] private Vector3 knockback;
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -20,17 +24,27 @@ public class ItemCollisionController : NetworkBehaviour
     {
         if (collidedObject.TryGetComponent(out IDamageable damageable) || IsServer)
         {
-            damageOnAnyContactComponent.TakeDamage(damageable);
+            canDoDamage.TakeDamage(damageable);
         }
 
         if (collidedObject.TryGetComponent(out IRecieveKnockback knockable))
         {
-            knockable.DoOnRecieveKnockback(new Vector3(100,0,0), transform.position); // need to get the contact point TODO
+            knockable.DoOnRecieveKnockback(knockback, collidedObject.transform.position);
         }
 
         if(itemCollisionDisablerComponent != null)
         {
             itemCollisionDisablerComponent.DisableCollisions();
         }
+
+        if(IsOwner)
+        {
+            followTransformComponent.SetTarget(collidedObject.transform);
+            followTransformComponent.SetFollowRotation(false);
+            followTransformComponent.EnableComponent();
+        }
+
+
+        gfx.SetActive(false);
     }
 }
