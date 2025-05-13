@@ -28,7 +28,7 @@ public class DamageOnAnyContactComponent : NetworkBehaviour
     }
 
 
-    private void TakeDamage(IDamageable damageable)
+    public void TakeDamage(IDamageable damageable)
     {
         if (!damaged)
         {

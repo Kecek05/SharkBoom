@@ -48,7 +48,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         }
     }
 
-    public void TriggerRagdoll(Vector3 force, Vector3 hitPoint, Action<Rigidbody> hittedCallback)
+    public void TriggerRagdoll(Vector3 force, Vector3 hitPoint)
     {
         RequestRagdollServerRpc();
 
@@ -73,7 +73,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             return;
         }
 
-        hittedCallback?.Invoke(hitRigidbody); // callback to the hitted rb
+
         AddForceToOtherServerRpc(closestIndex, force, hitPoint);
     }
 

@@ -221,6 +221,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   followTransformComponent: {fileID: 2492626997076712017}
+  gfx: {fileID: 7002131505479470429}
+  knockback: {x: 150, y: 50, z: 0}
 --- !u!114 &8567296822537084226
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -348,5 +350,10 @@ PolygonCollider2D:
 --- !u!50 &5689049572469319462 stripped
 Rigidbody2D:
   m_CorrespondingSourceObject: {fileID: 2597735930550134298, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+  m_PrefabInstance: {fileID: 7709761659009139004}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7002131505479470429 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 851746441201601633, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
   m_PrefabInstance: {fileID: 7709761659009139004}
   m_PrefabAsset: {fileID: 0}

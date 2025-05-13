@@ -6,6 +6,8 @@ public class StuckTransformComponent : NetworkBehaviour
 {
     [SerializeField] private FollowTransformComponent followTransformComponent;
     private bool stucked = false; //stuck only once
+    [SerializeField] private GameObject gfx;
+    [SerializeField] private Vector3 knockback;
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -43,7 +45,7 @@ public class StuckTransformComponent : NetworkBehaviour
             stucked = true;
 
             GameObject objectToStuck = null;
-            playerRagdollEnabler.TriggerRagdoll(new Vector3(150,20,0), collidedTransform.position, (rb) => { objectToStuck = rb.gameObject; });
+            playerRagdollEnabler.TriggerRagdoll(knockback, collidedTransform.position, (rb) => { objectToStuck = rb.gameObject; });
 
             if(objectToStuck == null)
             {
@@ -51,18 +53,23 @@ public class StuckTransformComponent : NetworkBehaviour
                 return;
             }
 
-            CalculateStuckOffset(objectToStuck.transform.position);
             followTransformComponent.SetTarget(objectToStuck.transform);
             followTransformComponent.SetFollowRotation(false);
             followTransformComponent.EnableComponent();
             Debug.Log($"Stuck to {objectToStuck.name}");
+            HideGfxServerRpc();
+
         }
     }
-
-    private void CalculateStuckOffset(Vector3 touchedPos)
+    [Rpc(SendTo.Server)]
+    private void HideGfxServerRpc()
     {
-        Vector3 offset = transform.position - touchedPos;
-        followTransformComponent.SetPositionOffset(offset);
+        HideGfxClientRpc();
+    }
+    [Rpc(SendTo.ClientsAndHost)]
+    private void HideGfxClientRpc()
+    {
+        gfx.SetActive(false);
     }
 
 }
