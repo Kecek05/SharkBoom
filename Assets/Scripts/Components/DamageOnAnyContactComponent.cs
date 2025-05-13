@@ -32,13 +32,26 @@ public class DamageOnAnyContactComponent : NetworkBehaviour
     {
         if (!damaged)
         {
-            foreach(Collider2D itemCol in itemColls2D)
-            {
-                itemCol.enabled = false;
-            }
+            TurnOffCollServerRpc();
 
             damaged = true;
             damageable.TakeDamage(damageableSO);
         }
+    }
+
+    [Rpc(SendTo.Server)]
+    private void TurnOffCollServerRpc()
+    {
+        TurnOffCollClientRpc();
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void TurnOffCollClientRpc()
+    {
+        foreach (Collider2D itemCol in itemColls2D)
+        {
+            itemCol.enabled = false;
+        }
+        Debug.Log("Item Coll OFF");
     }
 }

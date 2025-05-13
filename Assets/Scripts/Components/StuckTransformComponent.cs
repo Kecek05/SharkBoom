@@ -11,7 +11,9 @@ public class StuckTransformComponent : NetworkBehaviour
     {
         if (!IsOwner) return;
 
-        PlayerRagdollEnabler playerRagdollEnabler = collision.gameObject.transform.parent.GetComponentInChildren<PlayerRagdollEnabler>();
+        if(stucked) return;
+
+        PlayerRagdollEnabler playerRagdollEnabler = collision.gameObject.GetComponentInChildren<PlayerRagdollEnabler>();
 
         if (playerRagdollEnabler)
         {
@@ -24,7 +26,9 @@ public class StuckTransformComponent : NetworkBehaviour
     {
         if (!IsOwner) return;
 
-        PlayerRagdollEnabler playerRagdollEnabler = collision.gameObject.transform.parent.GetComponentInChildren<PlayerRagdollEnabler>();
+        if (stucked) return;
+
+        PlayerRagdollEnabler playerRagdollEnabler = collision.gameObject.GetComponentInChildren<PlayerRagdollEnabler>();
 
         if (playerRagdollEnabler)
         {
@@ -39,7 +43,7 @@ public class StuckTransformComponent : NetworkBehaviour
             stucked = true;
 
             GameObject objectToStuck = null;
-            playerRagdollEnabler.TriggerRagdoll(new Vector3(50,5,0), collidedTransform.position, (rb) => { objectToStuck = rb.gameObject; });
+            playerRagdollEnabler.TriggerRagdoll(new Vector3(150,20,0), collidedTransform.position, (rb) => { objectToStuck = rb.gameObject; });
 
             if(objectToStuck == null)
             {

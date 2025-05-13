@@ -42,7 +42,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             {
                 if (isFallen)
                 {
-                    DisableRagdoll();
                     RequestRagdollDisableServerRpc();
                 }
             }
@@ -51,11 +50,43 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     public void TriggerRagdoll(Vector3 force, Vector3 hitPoint, Action<Rigidbody> hittedCallback)
     {
-        EnableRagdoll();
         RequestRagdollServerRpc();
 
-        Rigidbody hitRigidbody = ragdollRbs.OrderBy(Rigidbody => Vector3.Distance(Rigidbody.position, hitPoint)).First(); // we order all rbs by distance to hitpoint and take the first one
+        Rigidbody hitRigidbody = null;
+        float closestDistance = float.MaxValue;
+        int index = 0;
+        int closestIndex = -1;
+        foreach (Rigidbody ragdollRb in ragdollRbs)
+        {
+            if(Vector3.Distance(ragdollRb.position, hitPoint) < closestDistance)
+            {
+                closestDistance = Vector3.Distance(ragdollRb.position, hitPoint);
+                hitRigidbody = ragdollRb;
+                closestIndex = index;
+            }
+            index++;
+        }
+
+        if(closestIndex == -1)
+        {
+            Debug.LogError("No ragdoll rb found");
+            return;
+        }
+
         hittedCallback?.Invoke(hitRigidbody); // callback to the hitted rb
+        AddForceToOtherServerRpc(closestIndex, force, hitPoint);
+    }
+
+    [Rpc(SendTo.Server)]
+    private void AddForceToOtherServerRpc(int hitRigidbodyIndex, Vector3 force, Vector3 hitPoint)
+    {
+        AddForceToOtherClientRpc(hitRigidbodyIndex, force, hitPoint);
+    }
+
+    [Rpc(SendTo.Owner)]
+    private void AddForceToOtherClientRpc(int hitRigidbodyIndex, Vector3 force, Vector3 hitPoint)
+    {
+        Rigidbody hitRigidbody = ragdollRbs[hitRigidbodyIndex]; // get the rb we hit
         hitRigidbody.AddForceAtPosition(force, hitPoint, ForceMode.Impulse);
     }
 
@@ -69,7 +100,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost)]
     private void EnableRagdollClientRpc()
     {
-        if(IsOwner) return; //already enabled in owner
         EnableRagdoll();
     }
 
@@ -115,7 +145,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost)]
     private void DisableRagdollClientRpc()
     {
-        if(IsOwner) return; //already disabled in owner
         DisableRagdoll();
     }
 

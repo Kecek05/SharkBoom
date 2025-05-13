@@ -1,9 +1,7 @@
 using QFSW.QC;
 using Sortify;
-using System;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.InputSystem.LowLevel;
 
 public class PlayerThrower : NetworkBehaviour
 {
@@ -121,7 +119,6 @@ public class PlayerThrower : NetworkBehaviour
         playerInventoryUI.OnItemSelectedByUI += HandleOnItemSelectedByUI;
 
         playerDetectFacingDirection.OnRotationChanged += HandleOnPlayerDetectFacingDirectionRotationChanged;
-        PlayerHealth.OnPlayerTakeDamage += HandleOnPlayerHealthPlayerTakeDamage;
 
         playerAnimator.OnCrossfadeFinished += HandleOnPlayerAnimatorCrossfadeFinished;
 
@@ -150,7 +147,6 @@ public class PlayerThrower : NetworkBehaviour
         playerInventoryUI.OnItemSelectedByUI -= HandleOnItemSelectedByUI;
 
         playerDetectFacingDirection.OnRotationChanged -= HandleOnPlayerDetectFacingDirectionRotationChanged;
-        PlayerHealth.OnPlayerTakeDamage -= HandleOnPlayerHealthPlayerTakeDamage;
 
         playerAnimator.OnCrossfadeFinished -= HandleOnPlayerAnimatorCrossfadeFinished;
 
@@ -161,7 +157,6 @@ public class PlayerThrower : NetworkBehaviour
         cameraManager.UnInitializeOwner();
         playerLauncher.UnInitializeOwner();
         playerInventoryUI.UnHandleInitializeOwner();
-        playerRagdollEnabler.UnInitializeOwner();
     }
 
     private void HandleOnPlayerDetectFacingDirectionRotationChanged(bool isRight)
@@ -253,11 +248,6 @@ public class PlayerThrower : NetworkBehaviour
         }
     }
 
-    private void HandleOnPlayerHealthPlayerTakeDamage(object sender, PlayerHealth.OnPlayerTakeDamageArgs e)
-    {
-        playerRagdollEnabler.HandleOnPlayerTakeDamage(sender, e);
-    }
-
     private void HandleOnPlayerAnimatorCrossfadeFinished()
     {
         playerSpawnItemOnHand.HandleOnCrossfadeFinished();
@@ -277,8 +267,6 @@ public class PlayerThrower : NetworkBehaviour
     {
         followSelectedSocketComponent.HandleOnPlayerSpawnItemOnHandOnItemSocketSelected(selectedSocket);
     }
-
-    //---
 
     [Rpc(SendTo.Server)]
     public void InitializePlayerRpc(PlayableState playableState, Quaternion GFXRotation)
