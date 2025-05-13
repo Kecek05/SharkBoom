@@ -8,7 +8,7 @@ public class CameraManager : NetworkBehaviour
     [SerializeField] private CameraMovement cameraMovement;
     [SerializeField] private CameraZoom cameraZoom;
     [SerializeField] private CameraFollowing cameraFollowing;
-    [SerializeField] private PlayerThrower player;
+    [SerializeField] private PlayerThrower playerReference;
     
     private CinemachineCamera cinemachineCamera;
     private Camera cameraMain; // Cache camera main for all scripts that need it
@@ -52,16 +52,23 @@ public class CameraManager : NetworkBehaviour
 
     private void HandleOnPlayableStateChanged(PlayableState previousValue, PlayableState newValue)
     {
+        Debug.Log($"HandleOnPlayableStateChanged: {previousValue} -> {newValue}");
+
         enemyObj = publicInfoManager.GetOtherPlayerByMyPlayableState(turnManager.LocalPlayableState);
         playerObj = publicInfoManager.GetPlayerObjectByPlayableState(turnManager.LocalPlayableState);
+
+        PlayerThrower player = playerObj.GetComponent<PlayerThrower>();
+        PlayerThrower enemy = playerObj.GetComponent<PlayerThrower>();
 
         if (newValue == player.ThisPlayableState.Value)
         {
             CameraReposOnPlayer();
+            Debug.Log("REPOS - On Player");
         }
-        else
+        else if(newValue == enemy.ThisPlayableState.Value)
         {
             CameraReposOnEnemy();
+            Debug.Log("REPOS - On Enemy");
         }
     }
 
@@ -69,12 +76,10 @@ public class CameraManager : NetworkBehaviour
     {
         switch (playerState)
         {
-            default:
-                CameraMove();
-                break;
             case PlayerState.IdleEnemyTurn:
             case PlayerState.IdleMyTurn:
                 CameraMove();
+                Debug.Log("REPOS - Ficou CameraMove");
                 break;
             case PlayerState.DraggingJump:
             case PlayerState.DraggingItem:
