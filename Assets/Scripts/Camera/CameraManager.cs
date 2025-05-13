@@ -47,14 +47,14 @@ public class CameraManager : NetworkBehaviour
         cameraZoom.InitializeOwner();
         cameraFollowing.InitializeOwner();
 
-        BaseItemThrowable.OnItemFinishedAction += HandleOnItemFinishedAction;
+        BaseItemThrowable.OnItemFinishedAction += HandleOnItemFinishedActionRpc;
     }
 
-    private void HandleOnItemFinishedAction()
+    private void HandleOnItemFinishedActionRpc()
     {
         enemyObj = publicInfoManager.GetOtherPlayerByMyPlayableState(turnManager.LocalPlayableState);
 
-        CameraReposOnEnemy(); 
+        CameraReposOnEnemy();
     }
 
     public void HandleOnPlayerStateMachineStateChanged(PlayerState playerState)
