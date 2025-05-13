@@ -141,6 +141,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
         if(!IsOwner) return; // Only the server should call the callback action
 
         turnManager.PlayerPlayed(thisItemLaucherData.ownerPlayableState);
+
     }
 
 
@@ -148,7 +149,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     {
         if (!IsOwner) return; //Only the owner can destroy the item
 
-        OnItemFinishedObjectRpc();
+        OnItemFinishedAction?.Invoke();
 
         if (itemReleased)
             ItemCallbackAction();
@@ -167,12 +168,6 @@ public abstract class BaseItemThrowable : NetworkBehaviour
             DestroyOnServerRpc();
             destroyedCallback?.Invoke();
         }
-    }
-
-    [Rpc(SendTo.ClientsAndHost)]
-    private void OnItemFinishedObjectRpc()
-    {
-        OnItemFinishedAction?.Invoke();
     }
 
 

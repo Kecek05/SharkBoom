@@ -1,3 +1,4 @@
+using System;
 using Unity.Cinemachine;
 using Unity.Netcode;
 using UnityEngine;
@@ -46,30 +47,30 @@ public class CameraManager : NetworkBehaviour
         cameraMovement.InitializeOwner();
         cameraZoom.InitializeOwner();
         cameraFollowing.InitializeOwner();
-
-        BaseItemThrowable.OnItemFinishedAction += HandleOnItemFinishedActionRpc;
+        turnManager.CurrentPlayableState.OnValueChanged += HandleOnPlayableStateChanged;
     }
 
-    private void HandleOnItemFinishedActionRpc()
+    private void HandleOnPlayableStateChanged(PlayableState previousValue, PlayableState newValue)
     {
         enemyObj = publicInfoManager.GetOtherPlayerByMyPlayableState(turnManager.LocalPlayableState);
+        playerObj = publicInfoManager.GetPlayerObjectByPlayableState(turnManager.LocalPlayableState);
 
-        CameraReposOnEnemy();
+        if (newValue == player.ThisPlayableState.Value)
+        {
+            CameraReposOnPlayer();
+        }
+        else
+        {
+            CameraReposOnEnemy();
+        }
     }
 
     public void HandleOnPlayerStateMachineStateChanged(PlayerState playerState)
     {
-        if(!IsOwner) return;
-
-        playerObj = publicInfoManager.GetPlayerObjectByPlayableState(turnManager.LocalPlayableState);
-
         switch (playerState)
         {
             default:
                 CameraMove();
-                break;
-            case PlayerState.MyTurnStarted:
-                CameraReposOnPlayer();
                 break;
             case PlayerState.IdleEnemyTurn:
             case PlayerState.IdleMyTurn:
@@ -109,18 +110,21 @@ public class CameraManager : NetworkBehaviour
 
     private void CameraReposOnPlayer()
     {
+        Debug.Log("CAMERA TEST - Repos on player");
         SetCameraModules(false, false, true);
         cameraFollowing.SetTarget(playerObj.transform, false, 3f);
     }
 
     private void CameraReposOnEnemy()
     {
+        Debug.Log("CAMERA TEST - Repos on ENEMY");
         SetCameraModules(false, false, true);
         cameraFollowing.SetTarget(enemyObj.transform, false, 3f); // change for enemy reference
     }
 
     private void CameraTurnOff()
     {
+        Debug.Log("CAMERA TEST - TURN OFF");
         cameraFollowing.SetTarget(playerObj.transform, false, 3f);
         SetCameraModules(false, false, false);
     }
