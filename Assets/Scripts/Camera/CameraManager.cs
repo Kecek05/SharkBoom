@@ -26,7 +26,6 @@ public class CameraManager : NetworkBehaviour
     public CinemachineCamera CinemachineCamera => cinemachineCamera;
     public Camera CameraMain => cameraMain;
 
-
     public void InitializeOwner()
     {
         if (!IsOwner) return;
@@ -52,23 +51,16 @@ public class CameraManager : NetworkBehaviour
 
     private void HandleOnPlayableStateChanged(PlayableState previousValue, PlayableState newValue)
     {
-        Debug.Log($"HandleOnPlayableStateChanged: {previousValue} -> {newValue}");
-
         enemyObj = publicInfoManager.GetOtherPlayerByMyPlayableState(turnManager.LocalPlayableState);
         playerObj = publicInfoManager.GetPlayerObjectByPlayableState(turnManager.LocalPlayableState);
 
-        PlayerThrower player = playerObj.GetComponent<PlayerThrower>();
-        PlayerThrower enemy = playerObj.GetComponent<PlayerThrower>();
-
-        if (newValue == player.ThisPlayableState.Value)
+        if (IsMyTurn(newValue))
         {
             CameraReposOnPlayer();
-            Debug.Log("REPOS - On Player");
         }
-        else if(newValue == enemy.ThisPlayableState.Value)
+        else if (IsEnemyTurn(newValue))
         {
             CameraReposOnEnemy();
-            Debug.Log("REPOS - On Enemy");
         }
     }
 
@@ -76,10 +68,12 @@ public class CameraManager : NetworkBehaviour
     {
         switch (playerState)
         {
+            default:
+                CameraMove();
+                break;
             case PlayerState.IdleEnemyTurn:
             case PlayerState.IdleMyTurn:
                 CameraMove();
-                Debug.Log("REPOS - Ficou CameraMove");
                 break;
             case PlayerState.DraggingJump:
             case PlayerState.DraggingItem:
@@ -115,23 +109,31 @@ public class CameraManager : NetworkBehaviour
 
     private void CameraReposOnPlayer()
     {
-        Debug.Log("CAMERA TEST - Repos on player");
         SetCameraModules(false, false, true);
-        cameraFollowing.SetTarget(playerObj.transform, false, 3f);
+        cameraFollowing.SetTarget(playerObj.transform, false, 3f, onComplete: CameraMove);
     }
 
     private void CameraReposOnEnemy()
     {
-        Debug.Log("CAMERA TEST - Repos on ENEMY");
         SetCameraModules(false, false, true);
-        cameraFollowing.SetTarget(enemyObj.transform, false, 3f); // change for enemy reference
+        cameraFollowing.SetTarget(enemyObj.transform, false, 3f, onComplete: CameraMove);
     }
 
     private void CameraTurnOff()
     {
-        Debug.Log("CAMERA TEST - TURN OFF");
         cameraFollowing.SetTarget(playerObj.transform, false, 3f);
         SetCameraModules(false, false, false);
+    }
+
+    private bool IsMyTurn(PlayableState state)
+    {
+        return state == PlayableState.Player1Playing && turnManager.LocalPlayableState == PlayableState.Player1Playing
+            || state == PlayableState.Player2Playing && turnManager.LocalPlayableState == PlayableState.Player2Playing;
+    }
+    private bool IsEnemyTurn(PlayableState state)
+    {
+        return state == PlayableState.Player1Playing && turnManager.LocalPlayableState == PlayableState.Player2Playing
+            || state == PlayableState.Player2Playing && turnManager.LocalPlayableState == PlayableState.Player1Playing;
     }
 
     public void UnInitializeOwner()

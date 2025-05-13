@@ -1,10 +1,14 @@
 
+using System;
 using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
 public class CameraFollowing : NetworkBehaviour
 {
+
+    private Action OnComplete;
+
     [Header("References")]
     [SerializeField] private CameraManager cameraManager;
 
@@ -36,7 +40,7 @@ public class CameraFollowing : NetworkBehaviour
     }
 
 
-    public void SetTarget(Transform itemLaunched, bool stopOnNull, float duration = 5f)
+    public void SetTarget(Transform itemLaunched, bool stopOnNull, float duration = 5f, Action onComplete = null)
     {
         if (itemLaunched == null) return;
 
@@ -64,6 +68,7 @@ public class CameraFollowing : NetworkBehaviour
                 yield return null;
             }
             followObject = null;
+            OnComplete?.Invoke();
         }
         else
         {
@@ -79,6 +84,7 @@ public class CameraFollowing : NetworkBehaviour
             }
 
             followObject = null;
+            OnComplete?.Invoke();
         }
     }
 
