@@ -584,7 +584,7 @@ GameObject:
   - component: {fileID: 800024870368675109}
   - component: {fileID: 2518838509862417992}
   - component: {fileID: 5846641034301650373}
-  - component: {fileID: 8602736365488720538}
+  - component: {fileID: 1296947738144562440}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -753,6 +753,8 @@ MonoBehaviour:
   - {fileID: 1244250245066138330}
   playerSpawnItemOnHand: {fileID: 5846641034301650373}
   followSelectedSocketComponent: {fileID: 7649801925086215586}
+  knockbackComponent: {fileID: 0}
+  playerHealth: {fileID: 0}
 --- !u!114 &6377254783256832976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -869,7 +871,7 @@ MonoBehaviour:
   - {fileID: 3483073630956616346}
   - {fileID: 4723577276168246319}
   - {fileID: 5999375251617233547}
---- !u!114 &8602736365488720538
+--- !u!114 &1296947738144562440
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -878,10 +880,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1244250245066138330}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2fd295b811e221e4187c6e7de22ca952, type: 3}
+  m_Script: {fileID: 11500000, guid: d2dbe6d86524568499cf03c39bf9a7d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerRagdollEnabler: {fileID: 8406327557363343199}
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &1348648853730134369
 GameObject:
   m_ObjectHideFlags: 0
