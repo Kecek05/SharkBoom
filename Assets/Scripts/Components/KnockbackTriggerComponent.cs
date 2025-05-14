@@ -19,7 +19,8 @@ public class KnockbackTriggerComponent : MonoBehaviour
     {
         if(collidedObject.TryGetComponent(out IRecieveKnockback knockbackReceiver))
         {
-            knockbackReceiver.DoOnRecieveKnockback(knockbackForce, transform.position, null); //get the rigidbody somehow
+            //Not working yet. Need to make a way to get the rigidbody of the collided object
+            //knockbackReceiver.DoOnRecieveKnockback(knockbackForce, transform.position, null); //get the rigidbody somehow
         }
     }
 

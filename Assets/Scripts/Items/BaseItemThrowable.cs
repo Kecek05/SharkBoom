@@ -12,7 +12,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     [BetterHeader("Base Item References")]
     [SerializeField] protected ItemSO itemSO;
     [SerializeField] protected Rigidbody2D rb;
-    [SerializeField] protected GameObject[] collidersToChangeLayer;
+    [SerializeField] protected GameObject[] objectsToChangeLayer;
     [SerializeField] protected DissolveShaderComponent dissolveShaderComponent;
     [SerializeField] protected LifetimeTriggerItemComponent lifetimeTriggerItemComponent;
     [SerializeField] protected FollowTransformComponent followTransformComponent; //Used to follow the hand when the item is in hand
@@ -121,13 +121,13 @@ public abstract class BaseItemThrowable : NetworkBehaviour
         switch (playableState)
         {
             case PlayableState.Player1Playing:
-                foreach (GameObject gameObject in collidersToChangeLayer)
+                foreach (GameObject gameObject in objectsToChangeLayer)
                 {
                     gameObject.layer = PlayersPublicInfoManager.PLAYER_1_LAYER;
                 }
                 break;
             case PlayableState.Player2Playing:
-                foreach (GameObject gameObject in collidersToChangeLayer)
+                foreach (GameObject gameObject in objectsToChangeLayer)
                 {
                     gameObject.layer = PlayersPublicInfoManager.PLAYER_2_LAYER;
                 }
