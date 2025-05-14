@@ -4,9 +4,10 @@ using Unity.Netcode;
 
 public class CanDoDamageComponent : NetworkBehaviour
 {
+    [Header("References")]
     [SerializeField] private DamageableSO damageableSO;
     [SerializeField] private BaseCollisionController baseCollisionController;
-    [SerializeField] private bool canDoDamage;
+
     private bool damaged = false; //damage only once
 
     public override void OnNetworkSpawn()
@@ -15,15 +16,8 @@ public class CanDoDamageComponent : NetworkBehaviour
         baseCollisionController.OnCollided += baseCollisionController_OnItemCollided;
     }
 
-    public override void OnNetworkDespawn()
-    {
-        if (!IsServer) return; // Only the server should handle the damage
-        baseCollisionController.OnCollided -= baseCollisionController_OnItemCollided;
-    }
-
     private void baseCollisionController_OnItemCollided(GameObject collidedObj)
     {
-        if (!canDoDamage) return;
 
         if(collidedObj.TryGetComponent(out IDamageable damageable)) //Only on server
         {
@@ -38,5 +32,11 @@ public class CanDoDamageComponent : NetworkBehaviour
             damaged = true;
             damageable.TakeDamage(damageableSO);
         }
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        if (!IsServer) return; // Only the server should handle the damage
+        baseCollisionController.OnCollided -= baseCollisionController_OnItemCollided;
     }
 }

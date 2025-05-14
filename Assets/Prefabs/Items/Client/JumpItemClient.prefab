@@ -76,10 +76,6 @@ PrefabInstance:
       propertyPath: followTransformComponent
       value: 
       objectReference: {fileID: 2492626997076712017}
-    - target: {fileID: 6091596160473946369, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
-      propertyPath: lifetimeTriggerItemComponent
-      value: 
-      objectReference: {fileID: 7163195315664444835}
     - target: {fileID: 6717943621661333620, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_Drag
       value: 2
@@ -114,9 +110,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}
-    - {fileID: 4368214002554539844, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
-    - {fileID: 5150134811526336966, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+    - {fileID: 0}
+    - {fileID: 0}
     - {fileID: 1388381339307784563, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+    - {fileID: 5820956104283226963, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+    - {fileID: 1868905055028384091, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+    - {fileID: 117008883776457251, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+    - {fileID: 1885482181452041628, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+    - {fileID: 3848686669126779873, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+    - {fileID: 8089614718808125593, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
     m_RemovedGameObjects:
     - {fileID: 851746441201601633, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
     - {fileID: 3097256904045342881, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
@@ -125,9 +127,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       insertIndex: -1
       addedObject: {fileID: -793818038911944659}
-    - targetCorrespondingSourceObject: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7163195315664444835}
     - targetCorrespondingSourceObject: {fileID: 2942010050083629636, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6578615526759772596}
@@ -154,6 +153,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2957073883870968353 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4897436337832737565, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+  m_PrefabInstance: {fileID: 7709761659009139004}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4139059953487484834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b91fa934de67dab46912e6325f3d074a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4139059953487484834 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
@@ -178,25 +188,10 @@ MonoBehaviour:
   - {fileID: 4139059953487484834}
   - {fileID: 4767779204118326136}
   dissolveShaderComponent: {fileID: 0}
-  lifetimeTriggerItemComponent: {fileID: 7163195315664444835}
+  lifetimeTriggerItemComponent: {fileID: 2957073883870968353}
   followTransformComponent: {fileID: 2492626997076712017}
   myNetworkObject: {fileID: 2590630615956071341}
   followingTime: 4
---- !u!114 &7163195315664444835
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4139059953487484834}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b91fa934de67dab46912e6325f3d074a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lifetime: 5
-  itemThrowable: {fileID: -793818038911944659}
-  isActive: 0
 --- !u!1 &4767779204118326136 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2942010050083629636, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}

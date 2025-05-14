@@ -3,9 +3,11 @@ using UnityEngine;
 
 public class HideMeshOnCollisionComponent : MonoBehaviour
 {
-    [Header("Reference")]
+    [Header("References")]
     [SerializeField] private BaseCollisionController baseCollisionController;
     [SerializeField] private GameObject meshToHide;
+    [Space(5)]
+
     [Header("Settings")]
     [SerializeField] private bool hideOnCollisionWithPlayer = true;
     [SerializeField] private bool hideOnCollisionWithAnything = true;

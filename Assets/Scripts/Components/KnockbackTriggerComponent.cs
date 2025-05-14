@@ -3,7 +3,11 @@ using UnityEngine;
 
 public class KnockbackTriggerComponent : MonoBehaviour
 {
+    [Header("References")]
     [SerializeField] private BaseCollisionController baseCollisionController;
+    [Space(5)]
+
+    [Header("Settings")]
     [SerializeField] private Vector3 knockbackForce;
 
     private void Start()

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class StuckInPlayerOnCollisionNetworkedComponent : NetworkBehaviour
 {
-    [Header("Reference")]
+    [Header("References")]
     [SerializeField] private FollowTransformComponent followTransformComponent;
     [SerializeField] private BaseCollisionController baseCollisionController;
 

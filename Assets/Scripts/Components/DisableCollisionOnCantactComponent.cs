@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class DisableCollisionOnCantactComponent : MonoBehaviour
 {
+    [Header("References")]
     [SerializeField] private Collider2D[] itemColliders;
     [SerializeField] private BaseCollisionController baseCollisionController;
-    [SerializeField] private bool canDisableCollisions;
 
     private void Start()
     {
@@ -15,8 +15,6 @@ public class DisableCollisionOnCantactComponent : MonoBehaviour
 
     private void HandleItemCollidedWithPlayer(PlayerThrower playerThrower)
     {
-        if(!canDisableCollisions) return;
-
         DisableCollisions();
     }
 

@@ -6086,6 +6086,8 @@ GameObject:
   - component: {fileID: 4441160007364297096}
   - component: {fileID: 6323861854826608193}
   - component: {fileID: 2744677372641297975}
+  - component: {fileID: 4496580671854075215}
+  - component: {fileID: 8593026206141009735}
   m_Layer: 10
   m_Name: BaseItem
   m_TagString: Untagged
@@ -6247,7 +6249,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   damageableSO: {fileID: 11400000, guid: e0983257c6630ff4ead26ac00d5d1a8d, type: 2}
-  baseCollisionController: {fileID: 0}
+  baseCollisionController: {fileID: 6323861854826608193}
   canDoDamage: 0
 --- !u!114 &7241664042849662729
 MonoBehaviour:
@@ -6278,7 +6280,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemColliders:
   - {fileID: 3804479600589895015}
-  baseCollisionController: {fileID: 0}
+  baseCollisionController: {fileID: 6323861854826608193}
   canDisableCollisions: 0
 --- !u!114 &6323861854826608193
 MonoBehaviour:
@@ -6317,6 +6319,35 @@ MonoBehaviour:
   meshToHide: {fileID: 3196075323839971445}
   hideOnCollisionWithPlayer: 1
   hideOnCollisionWithAnything: 1
+--- !u!114 &4496580671854075215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8360590805627951754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48c364087184ad84b8a15080aae1809b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseCollisionController: {fileID: 6323861854826608193}
+  knockbackForce: {x: 0, y: 0, z: 0}
+--- !u!114 &8593026206141009735
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8360590805627951754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 534fbfe2a7af99a47bbb1dfeed5bbc6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  followTransformComponent: {fileID: 8061930552208201593}
+  baseCollisionController: {fileID: 6323861854826608193}
 --- !u!1 &8505792150948004565
 GameObject:
   m_ObjectHideFlags: 0

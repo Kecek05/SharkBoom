@@ -2,15 +2,15 @@ using UnityEngine;
 
 public class ItemParticleController : MonoBehaviour
 {
-    [Header("Triggers")]
-    [SerializeField] private BaseCollisionController itemCollisionController;
+    [Header("Triggers References")]
+    [SerializeField] private BaseCollisionController baseCollisionController;
 
     [Header("Particle Systems")]
     [SerializeField] private ParticleSystem despawnParticleSystem;
 
     private void Start()
     {
-        itemCollisionController.OnCollidedWithPlayer += HandleItemCollidedWithPlayer;
+        baseCollisionController.OnCollidedWithPlayer += HandleItemCollidedWithPlayer;
     }
 
     private void HandleItemCollidedWithPlayer(PlayerThrower playerThrower)
@@ -24,6 +24,6 @@ public class ItemParticleController : MonoBehaviour
     }
     private void OnDestroy()
     {
-        itemCollisionController.OnCollidedWithPlayer -= HandleItemCollidedWithPlayer;
+        baseCollisionController.OnCollidedWithPlayer -= HandleItemCollidedWithPlayer;
     }
 }
