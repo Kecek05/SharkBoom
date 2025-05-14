@@ -56,6 +56,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         float closestDistance = float.MaxValue;
         int index = 0;
         int closestIndex = -1;
+
         foreach (Rigidbody ragdollRb in ragdollRbs)
         {
             if(Vector3.Distance(ragdollRb.position, hitPoint) < closestDistance)
