@@ -25,7 +25,6 @@ public class PlayerThrower : NetworkBehaviour
     [SerializeField] private PlayerSpawnItemOnHand playerSpawnItemOnHand;
     [SerializeField] private FollowSelectedSocketComponent followSelectedSocketComponent;
     [SerializeField] private KnockbackListenerNetworkedComponent knockbackComponent;
-    [SerializeField] private PlayerHealth playerHealth;
     private PlayerStateMachine playerStateMachine;
 
     private NetworkVariable<PlayableState> thisPlayableState = new();
@@ -34,8 +33,6 @@ public class PlayerThrower : NetworkBehaviour
     private BaseGameStateManager gameStateManager;
 
     //Publics
-
-    public PlayerHealth PlayerHealth => playerHealth;
 
     public KnockbackListenerNetworkedComponent KnockbackComponent => knockbackComponent;
     public PlayerStateMachine PlayerStateMachine => playerStateMachine;
