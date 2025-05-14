@@ -24,6 +24,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1885482181452041628, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: 'itemColliders.Array.data[0]'
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 2272018210298738645, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
@@ -32,6 +36,14 @@ PrefabInstance:
       propertyPath: m_Material
       value: 
       objectReference: {fileID: 6200000, guid: e69ea16e6ffdede4da0881ffce5bb37b, type: 2}
+    - target: {fileID: 3098171700661096899, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3098171700661096899, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.24
+      objectReference: {fileID: 0}
     - target: {fileID: 4368214002554539844, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: itemSO
       value: 
@@ -238,7 +250,7 @@ MonoBehaviour:
   canDoDamage: {fileID: 1909317506227966982}
   followTransformComponent: {fileID: 2492626997076712017}
   itemCollisionDisablerComponent: {fileID: 5408211414185875922}
-  gfx: {fileID: 7002131505479470429}
+  meshToHide: {fileID: 7002131505479470429}
   knockback: {x: 150, y: 50, z: 0}
 --- !u!114 &5408211414185875922
 MonoBehaviour:
