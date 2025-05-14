@@ -13,12 +13,11 @@ public class CanDoDamageComponent : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         if(!IsServer) return; // Only the server should handle the damage
-        baseCollisionController.OnCollided += baseCollisionController_OnItemCollided;
+        baseCollisionController.OnCollided += BaseCollisionController_OnItemCollided;
     }
 
-    private void baseCollisionController_OnItemCollided(GameObject collidedObj)
+    private void BaseCollisionController_OnItemCollided(GameObject collidedObj)
     {
-
         if(collidedObj.TryGetComponent(out IDamageable damageable)) //Only on server
         {
             TakeDamage(damageable);
@@ -37,6 +36,6 @@ public class CanDoDamageComponent : NetworkBehaviour
     public override void OnNetworkDespawn()
     {
         if (!IsServer) return; // Only the server should handle the damage
-        baseCollisionController.OnCollided -= baseCollisionController_OnItemCollided;
+        baseCollisionController.OnCollided -= BaseCollisionController_OnItemCollided;
     }
 }
