@@ -9,8 +9,6 @@ public class MainMenuCharacterController : MonoBehaviour
     {
         Animator.StringToHash("Idle_L"),
         Animator.StringToHash("Idle_R"),
-        Animator.StringToHash("Jump_L"),
-        Animator.StringToHash("Jump_R"),
     };
 
     [Header("Animation Settings")]
@@ -48,7 +46,6 @@ public class MainMenuCharacterController : MonoBehaviour
             {
                 int stateIndex = Random.Range(0, animations.Length);
                 animator.Play(animations[stateIndex]);
-                Debug.Log($"Animation {animations[stateIndex]} played.");
             }
 
             yield return new WaitForSeconds(delay);
