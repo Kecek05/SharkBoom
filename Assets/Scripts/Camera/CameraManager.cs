@@ -101,7 +101,6 @@ public class CameraManager : NetworkBehaviour
         cameraMovement.enabled = movement;
         cameraZoom.enabled = zoom;
         cameraFollowing.enabled = following;
-        Debug.Log($"Camera Movement: {movement} | Camera Zoom: {zoom} | Camera Following: {following}");
     }
 
     private void CameraMove() => SetCameraModules(true, true, false);
@@ -112,14 +111,12 @@ public class CameraManager : NetworkBehaviour
     {
         SetCameraModules(false, false, true);
         cameraFollowing.SetTarget(playerObj.transform, false, 3f, onComplete: CameraMove);
-        Debug.Log($"Camera repos on player");
     }
 
     private void CameraReposOnEnemy()
     {
         SetCameraModules(false, false, true);
         cameraFollowing.SetTarget(enemyObj.transform, false, 3f, onComplete: CameraMove);
-        Debug.Log($"Camera repos on enemy");
     }
 
     private void CameraTurnOff()
