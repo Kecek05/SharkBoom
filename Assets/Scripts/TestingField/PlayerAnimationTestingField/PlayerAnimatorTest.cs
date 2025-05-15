@@ -50,7 +50,7 @@ public class PlayerAnimatorTest : NetworkBehaviour
     [Rpc(SendTo.Server)]
     private void InstantiateObjServerRpc(ulong ownerClientId, Vector3 selectedSocketPos)
     {
-        NetworkObject spawnedItemNetworkObject = Instantiate(itemSelectedSO.itemClientPrefab, selectedSocketPos, Quaternion.identity).GetComponent<NetworkObject>();
+        NetworkObject spawnedItemNetworkObject = Instantiate(itemSelectedSO.itemPrefab, selectedSocketPos, Quaternion.identity).GetComponent<NetworkObject>();
         lastGameObject = spawnedItemNetworkObject.gameObject;
         spawnedItemNetworkObject.Spawn();
         spawnedItemNetworkObject.ChangeOwnership(ownerClientId);

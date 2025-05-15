@@ -6,8 +6,7 @@ using UnityEngine.UI;
 public class ItemSO : ScriptableObject
 {
 
-    public GameObject itemClientPrefab;
-    public GameObject itemServerPrefab;
+    public GameObject itemPrefab;
     public string itemName;
     public Sprite itemIcon;
     public Rigidbody2D rb;

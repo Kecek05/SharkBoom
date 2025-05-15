@@ -73,7 +73,7 @@ public class ItemSpawner : MonoBehaviour
     private void SpawnItemProjectile(ItemLauncherData launcherData) // on client, need to pass the prefab for the other clients instantiate it
     {
 
-        lastProjectile = Instantiate(itemToSpawnSO.itemClientPrefab, transform.position, Quaternion.identity);
+        lastProjectile = Instantiate(itemToSpawnSO.itemPrefab, transform.position, Quaternion.identity);
 
         if (lastProjectile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
         {

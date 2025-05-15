@@ -89,7 +89,7 @@ public class PlayerLauncher : NetworkBehaviour
 
     private void SpawnProjectile(ItemLauncherData launcherData) // on client, need to pass the prefab for the other clients instantiate it
     {
-        if (playerInventory.GetItemSOByItemSOIndex(launcherData.selectedItemSOIndex).itemClientPrefab == null)
+        if (playerInventory.GetItemSOByItemSOIndex(launcherData.selectedItemSOIndex).itemPrefab == null)
         {
             Debug.LogWarning($"ItemSOIndex: {launcherData.selectedItemSOIndex} has no client prefab");
             return;
