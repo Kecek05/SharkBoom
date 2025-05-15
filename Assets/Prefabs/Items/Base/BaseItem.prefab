@@ -6065,7 +6065,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 417b83d050c472246a1499f35021f71b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemCollisionController: {fileID: 6323861854826608193}
+  baseCollisionController: {fileID: 0}
   despawnParticleSystem: {fileID: 5801742186467172534}
 --- !u!1 &8360590805627951754
 GameObject:
@@ -6088,6 +6088,7 @@ GameObject:
   - component: {fileID: 2744677372641297975}
   - component: {fileID: 4496580671854075215}
   - component: {fileID: 8593026206141009735}
+  - component: {fileID: 7749704928467684002}
   m_Layer: 10
   m_Name: BaseItem
   m_TagString: Untagged
@@ -6250,7 +6251,6 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   damageableSO: {fileID: 11400000, guid: e0983257c6630ff4ead26ac00d5d1a8d, type: 2}
   baseCollisionController: {fileID: 6323861854826608193}
-  canDoDamage: 0
 --- !u!114 &7241664042849662729
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6281,7 +6281,6 @@ MonoBehaviour:
   itemColliders:
   - {fileID: 3804479600589895015}
   baseCollisionController: {fileID: 6323861854826608193}
-  canDisableCollisions: 0
 --- !u!114 &6323861854826608193
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6294,15 +6293,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 766f58c5354051842aee7c71f90575ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  followTransformComponent: {fileID: 8061930552208201593}
-  itemCollisionDisablerComponent: {fileID: 4441160007364297096}
-  meshToHide: {fileID: 3196075323839971445}
-  knockback: {x: 0, y: 0, z: 0}
-  canDetectCollisionWithPlayer: 0
-  canDoDamage: 0
-  canDoKnockback: 0
-  canDisableColliders: 0
-  canFollowTransform: 0
 --- !u!114 &2744677372641297975
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6347,6 +6337,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   followTransformComponent: {fileID: 8061930552208201593}
+  baseCollisionController: {fileID: 6323861854826608193}
+--- !u!114 &7749704928467684002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8360590805627951754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c717a077a1b6e384bb3600e107c5a2c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  rb2D: {fileID: 253816083963472398}
   baseCollisionController: {fileID: 6323861854826608193}
 --- !u!1 &8505792150948004565
 GameObject:
