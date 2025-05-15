@@ -46,6 +46,7 @@ public class CameraFollowing : NetworkBehaviour
 
         cameraManager.CinemachineCamera.Target.TrackingTarget = cameraManager.CameraObjectToFollow; // make sure the camera is following the object
         this.itemLaunched = itemLaunched;
+        this.OnComplete = onComplete;
 
         if (followObject != null) // if the coroutine is already running, stop it
         {
