@@ -14,15 +14,15 @@ public abstract class BaseCollisionController : MonoBehaviour
 
     protected void OnCollisionEnter2D(Collision2D collision)
     {
-        HandleCollision(collision.gameObject);
+        HandleCollision(collision.collider);
     }
 
     protected void OnTriggerEnter2D(Collider2D collision)
     {
-        HandleCollision(collision.gameObject);
+        HandleCollision(collision);
     }
 
-    protected abstract void HandleCollision(GameObject collidedObject);
+    protected abstract void HandleCollision(Collider2D collidedObject);
 
     protected void TriggerOnCollidedWithPlayer(PlayerThrower playerThrower)
     {
