@@ -14,7 +14,7 @@ public class CameraFollowing : NetworkBehaviour
 
     [Header("Settings")]
     [SerializeField] private float cameraZPosOnFollowing = -12f;
-
+    [SerializeField] private float followYOffsetForPlayer = 2.5f;
     private WaitForSeconds waitTimeToStopFollowing = new(3f);
     private Transform itemLaunched;
     private Vector3 lastCameraObjectToFollowPos;
@@ -63,6 +63,7 @@ public class CameraFollowing : NetworkBehaviour
 
         if (stopOnNull)
         {
+            // used for items that will be destroyed
             while (itemLaunched != null) // while the itemLaunched is not destroyed
             {
                 cameraManager.CameraObjectToFollow.position = new Vector3(itemLaunched.position.x, itemLaunched.position.y, cameraZPosOnFollowing);
@@ -73,11 +74,12 @@ public class CameraFollowing : NetworkBehaviour
         }
         else
         {
+            // used for player or other item that will not be destroyed
             while (timer < duration)
             {
                 if (itemLaunched != null)
                 {
-                    cameraManager.CameraObjectToFollow.position = new Vector3(itemLaunched.position.x, itemLaunched.position.y, cameraZPosOnFollowing);
+                    cameraManager.CameraObjectToFollow.position = new Vector3(itemLaunched.position.x, itemLaunched.position.y + followYOffsetForPlayer, cameraZPosOnFollowing);
                 }
 
                 timer += Time.deltaTime;

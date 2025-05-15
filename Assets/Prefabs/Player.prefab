@@ -1176,11 +1176,11 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   cameraManager: {fileID: 3009684404041675309}
   inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
-  dragMoveSpeed: 0.5
-  minMovX: -100
-  maxMovX: 100
-  minMovY: -100
-  maxMovY: 100
+  dragMoveSpeed: 1
+  minMovX: -90
+  maxMovX: 90
+  minMovY: -10
+  maxMovY: 90
 --- !u!114 &2903552973942911587
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1196,7 +1196,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
   cameraManager: {fileID: 3009684404041675309}
-  minZoom: -200
+  minZoom: -150
   maxZoom: 0
   zoomAmountChange: 0.5
 --- !u!1 &1731536595254416242
