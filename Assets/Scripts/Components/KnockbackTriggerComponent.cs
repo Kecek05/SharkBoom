@@ -17,10 +17,11 @@ public class KnockbackTriggerComponent : MonoBehaviour
 
     private void BaseCollisionController_OnCollided(GameObject collidedObject)
     {
-        if(collidedObject.TryGetComponent(out IRecieveKnockback knockbackReceiver))
+        if (collidedObject.transform.parent == null) return; //Check if the collided object has a parent
+
+        if (collidedObject.transform.parent.TryGetComponent(out IRecieveKnockback knockbackReceiver)) //Call on the parent
         {
-            //Not working yet. Need to make a way to get the rigidbody of the collided object
-            //knockbackReceiver.DoOnRecieveKnockback(knockbackForce, transform.position, null); //get the rigidbody somehow
+            knockbackReceiver.DoOnRecieveKnockback(knockbackForce, collidedObject.transform.position); 
         }
     }
 
