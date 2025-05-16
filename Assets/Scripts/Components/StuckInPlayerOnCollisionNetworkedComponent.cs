@@ -9,9 +9,8 @@ public class StuckInPlayerOnCollisionNetworkedComponent : NetworkBehaviour
     [SerializeField] private BaseCollisionController baseCollisionController;
     private bool isFollowing = false;
 
-    public override void OnNetworkSpawn()
+    public override void OnGainedOwnership()
     {
-        if (!IsOwner) return;
         baseCollisionController.OnCollided += BaseCollisionController_OnCollided;
     }
 
@@ -37,9 +36,9 @@ public class StuckInPlayerOnCollisionNetworkedComponent : NetworkBehaviour
         followTransformComponent.EnableComponent();
     }
 
-    public override void OnNetworkDespawn()
+    public override void OnLostOwnership()
     {
-        if(!IsOwner) return;
         baseCollisionController.OnCollided -= BaseCollisionController_OnCollided;
     }
+
 }

@@ -7,22 +7,20 @@ public class FreezeOnCollisionComponent : NetworkBehaviour
     [SerializeField] private Rigidbody2D rb2D;
     [SerializeField] private BaseCollisionController baseCollisionController;
 
-    public override void OnNetworkSpawn()
+    public override void OnGainedOwnership()
     {
-        if (!IsOwner) return;
         baseCollisionController.OnCollidedWithPlayer += BaseCollisionController_OnCollidedWithPlayer;
     }
 
     private void BaseCollisionController_OnCollidedWithPlayer(PlayerThrower playerThrower)
     {
         if (!IsOwner) return;
-
+        Debug.Log("Stop moving");
         rb2D.bodyType = RigidbodyType2D.Static; // Freeze the object
     }
 
-    public override void OnNetworkDespawn()
+    public override void OnLostOwnership()
     {
-        if (!IsOwner) return;
         baseCollisionController.OnCollidedWithPlayer -= BaseCollisionController_OnCollidedWithPlayer;
     }
 }
