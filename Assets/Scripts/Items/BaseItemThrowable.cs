@@ -141,18 +141,20 @@ public abstract class BaseItemThrowable : NetworkBehaviour
         if(!IsOwner) return; // Only the server should call the callback action
 
         turnManager.PlayerPlayed(thisItemLaucherData.ownerPlayableState);
+
     }
+
 
     public virtual void DestroyItem(Action destroyedCallback = null)
     {
-        if(!IsOwner) return; //Only the owner can destroy the item
+        if (!IsOwner) return; //Only the owner can destroy the item
 
         OnItemFinishedAction?.Invoke();
 
-        if(itemReleased)
+        if (itemReleased)
             ItemCallbackAction();
 
-        if(dissolveShaderComponent != null)
+        if (dissolveShaderComponent != null)
         {
             dissolveShaderComponent.DissolveFadeOut(() =>
             {
@@ -167,6 +169,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
             destroyedCallback?.Invoke();
         }
     }
+
 
     [Rpc(SendTo.Server)]
     private void DestroyOnServerRpc()
