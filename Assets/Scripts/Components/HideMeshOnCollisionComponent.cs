@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class HideMeshOnCollisionComponent : MonoBehaviour
 {
+    public event Action OnMeshHidden;
+
     [Header("References")]
     [SerializeField] private BaseCollisionController baseCollisionController;
     [SerializeField] private GameObject meshToHide;

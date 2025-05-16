@@ -1,29 +1,39 @@
+using System;
 using UnityEngine;
 
 public class ItemParticleController : MonoBehaviour
 {
     [Header("Triggers References")]
-    [SerializeField] private BaseCollisionController baseCollisionController;
+    [SerializeField] private HideMeshOnCollisionComponent hideMeshOnCollisionComponent;
 
     [Header("Particle Systems")]
     [SerializeField] private ParticleSystem despawnParticleSystem;
+    [SerializeField] private ParticleSystem spawnParticleSystem;
 
     private void Start()
     {
-        baseCollisionController.OnCollidedWithPlayer += HandleItemCollidedWithPlayer;
+        hideMeshOnCollisionComponent.OnMeshHidden += HideMeshOnCollisionComponent_OnMeshHidden;
+        BaseItemThrowable.OnItemInitialized += BaseItemThrowable_OnItemInitialized;
     }
 
-    private void HandleItemCollidedWithPlayer(PlayerThrower playerThrower)
+    private void BaseItemThrowable_OnItemInitialized()
     {
-        HandleItemCollidedWithPlayer();
+        PlayParticleSystem(spawnParticleSystem);
     }
 
-    private void HandleItemCollidedWithPlayer()
+    private void HideMeshOnCollisionComponent_OnMeshHidden()
     {
-        despawnParticleSystem.Play();
+        PlayParticleSystem(despawnParticleSystem);
     }
+
+    private void PlayParticleSystem(ParticleSystem particleSystem)
+    {
+        particleSystem.Play();
+    }
+
     private void OnDestroy()
     {
-        baseCollisionController.OnCollidedWithPlayer -= HandleItemCollidedWithPlayer;
+        hideMeshOnCollisionComponent.OnMeshHidden -= HideMeshOnCollisionComponent_OnMeshHidden;
+        BaseItemThrowable.OnItemInitialized -= BaseItemThrowable_OnItemInitialized;
     }
 }
