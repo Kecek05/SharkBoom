@@ -124,8 +124,6 @@ public class PlayerInventory : NetworkBehaviour
                 SetCanInteractWithInventory(false);
                 break;
         }
-
-        Debug.Log($"HandleOnPlayerStateMachineStateChanged in PlayerInventory called and its owner");
     }
 
     [Rpc(SendTo.Server)]
@@ -200,8 +198,6 @@ public class PlayerInventory : NetworkBehaviour
 
     public void SelectItemDataByItemInventoryIndex(int itemInventoryIndex = 0) // Select a item to use, UI will call this, default (0) its Jump
     {
-        Debug.Log($"SelectItemDataByItemInventoryIndex called - Item Inventory Index Selected: {itemInventoryIndex} - can interact with inventory? {canInteractWithInventory}");
-
         if (!canInteractWithInventory) return;
 
 
@@ -218,7 +214,7 @@ public class PlayerInventory : NetworkBehaviour
     [Rpc(SendTo.Server)]
     public void UseItemByInventoryIndexRpc(int itemInventoryIndex) // Use the item, Server will call this when both players ready
     {
-
+       
         if (ItemCanBeUsed(itemInventoryIndex))
         {
             //Item Can be used
