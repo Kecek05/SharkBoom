@@ -584,7 +584,7 @@ GameObject:
   - component: {fileID: 800024870368675109}
   - component: {fileID: 2518838509862417992}
   - component: {fileID: 5846641034301650373}
-  - component: {fileID: 1296947738144562440}
+  - component: {fileID: 1309247174426515081}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -626,8 +626,8 @@ Rigidbody2D:
   m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
+  m_UseAutoMass: 1
+  m_Mass: 2.7476473
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 1
@@ -753,7 +753,7 @@ MonoBehaviour:
   - {fileID: 1244250245066138330}
   playerSpawnItemOnHand: {fileID: 5846641034301650373}
   followSelectedSocketComponent: {fileID: 7649801925086215586}
-  knockbackComponent: {fileID: 1296947738144562440}
+  knockbackComponent: {fileID: 0}
 --- !u!114 &6377254783256832976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -870,7 +870,7 @@ MonoBehaviour:
   - {fileID: 3483073630956616346}
   - {fileID: 4723577276168246319}
   - {fileID: 5999375251617233547}
---- !u!114 &1296947738144562440
+--- !u!114 &1309247174426515081
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -879,7 +879,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1244250245066138330}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2dbe6d86524568499cf03c39bf9a7d0, type: 3}
+  m_Script: {fileID: 11500000, guid: 094c7774d20b0144eb983b7ed12a5697, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   playerRagdollEnabler: {fileID: 8406327557363343199}
@@ -1176,6 +1176,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   cameraManager: {fileID: 3009684404041675309}
   cameraZPosOnFollowing: -25
+  followYOffsetForPlayer: 2.5
 --- !u!114 &8450544055641021374
 MonoBehaviour:
   m_ObjectHideFlags: 0

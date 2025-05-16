@@ -81,7 +81,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             return;
         }
 
-
+        Debug.Log($"Force: {force}");
         AddForceToOtherServerRpc(closestIndex, force, hitPoint);
     }
 
