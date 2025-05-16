@@ -8,7 +8,7 @@ public class KnockbackTriggerComponent : MonoBehaviour
     [Space(5)]
 
     [Header("Settings")]
-    [SerializeField] private Vector3 knockbackForce;
+    [SerializeField] private float knockbackStrength;
 
     private void Start()
     {
@@ -21,7 +21,7 @@ public class KnockbackTriggerComponent : MonoBehaviour
 
         if (collidedObject.transform.parent.TryGetComponent(out IRecieveKnockback knockbackReceiver)) //Call on the parent
         {
-            knockbackReceiver.DoOnRecieveKnockback(knockbackForce, transform.position); //Pass the pos of the object that triggered
+            knockbackReceiver.DoOnRecieveKnockback(knockbackStrength, transform.position); //Pass the pos of the object that triggered
         }
     }
 

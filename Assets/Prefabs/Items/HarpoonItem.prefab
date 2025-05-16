@@ -60,6 +60,10 @@ PrefabInstance:
       propertyPath: knockbackForce.x
       value: 200
       objectReference: {fileID: 0}
+    - target: {fileID: 1868905055028384091, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: knockbackStrength
+      value: 300
+      objectReference: {fileID: 0}
     - target: {fileID: 1885482181452041628, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: 'itemColliders.Array.data[0]'
       value: 
@@ -118,7 +122,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_Name
-      value: HarpoonItemClient
+      value: HarpoonItem
       objectReference: {fileID: 0}
     - target: {fileID: 6091596160473946369, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: item

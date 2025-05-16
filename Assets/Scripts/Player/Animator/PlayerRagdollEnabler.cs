@@ -48,7 +48,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         }
     }
 
-    public void TriggerRagdoll(Vector3 knockbackForce, Vector3 hitPoint)
+    public void TriggerRagdoll(float knockbackStrength, Vector3 hitPoint)
     {
         RequestRagdollServerRpc();
 
@@ -56,14 +56,21 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         float closestDistance = float.MaxValue;
         int index = 0;
         int closestIndex = -1;
+        Vector3 force = Vector3.zero;
+        Vector3 direction = Vector3.zero;
 
         foreach (Rigidbody ragdollRb in ragdollRbs)
         {
-            if(Vector3.Distance(ragdollRb.position, hitPoint) < closestDistance)
+            float currentDistance = Vector3.Distance(ragdollRb.position, hitPoint);
+            if (currentDistance < closestDistance)
             {
-                closestDistance = Vector3.Distance(ragdollRb.position, hitPoint);
+                closestDistance = currentDistance;
+
                 hitRigidbody = ragdollRb;
                 closestIndex = index;
+
+                direction = (hitRigidbody.position - hitPoint).normalized;
+                force = direction * knockbackStrength;
             }
             index++;
         }
@@ -75,7 +82,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         }
 
 
-        AddForceToOtherServerRpc(closestIndex, knockbackForce, hitPoint);
+        AddForceToOtherServerRpc(closestIndex, force, hitPoint);
     }
 
     [Rpc(SendTo.Server)]

@@ -32,6 +32,10 @@ PrefabInstance:
       propertyPath: knockbackForce.y
       value: 50
       objectReference: {fileID: 0}
+    - target: {fileID: 1868905055028384091, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: knockbackStrength
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 1885482181452041628, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: itemColliders.Array.size
       value: 2
@@ -74,7 +78,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_Name
-      value: SwordItemClient
+      value: SwordItem
       objectReference: {fileID: 0}
     - target: {fileID: 6091596160473946369, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: item

@@ -118,5 +118,5 @@ public interface IRecieveKnockback
     /// <summary>
     /// Called when the object is knocked back.
     /// </summary>
-    public void DoOnRecieveKnockback(Vector3 knockback, Vector3 hitPos);
+    public void DoOnRecieveKnockback(float knockbackStrength, Vector3 hitPos);
 }
