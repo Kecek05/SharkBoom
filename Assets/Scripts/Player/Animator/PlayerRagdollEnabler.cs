@@ -22,6 +22,23 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     private bool isFallen = false;
 
+    [SerializeField] private bool debugRagdollEnabler;
+    [SerializeField] private bool debugRagdollDisabler;
+
+    private void Update()
+    {
+        if (debugRagdollEnabler)
+        {
+            debugRagdollEnabler = false;
+            DisableRagdoll();
+        }
+
+        if (debugRagdollDisabler)
+        {
+            debugRagdollDisabler = false;
+            EnableRagdoll();
+        }
+    }
 
     public void InitializeOwner()
     {
