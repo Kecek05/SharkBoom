@@ -48,7 +48,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         }
     }
 
-    public void TriggerRagdoll(Vector3 force, Vector3 hitPoint)
+    public void TriggerRagdoll(Vector3 knockbackForce, Vector3 hitPoint)
     {
         RequestRagdollServerRpc();
 
@@ -75,7 +75,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         }
 
 
-        AddForceToOtherServerRpc(closestIndex, force, hitPoint);
+        AddForceToOtherServerRpc(closestIndex, knockbackForce, hitPoint);
     }
 
     [Rpc(SendTo.Server)]

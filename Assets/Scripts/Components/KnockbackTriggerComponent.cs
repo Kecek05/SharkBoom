@@ -21,7 +21,7 @@ public class KnockbackTriggerComponent : MonoBehaviour
 
         if (collidedObject.transform.parent.TryGetComponent(out IRecieveKnockback knockbackReceiver)) //Call on the parent
         {
-            knockbackReceiver.DoOnRecieveKnockback(knockbackForce, collidedObject.transform.position); 
+            knockbackReceiver.DoOnRecieveKnockback(knockbackForce, transform.position); //Pass the pos of the object that triggered
         }
     }
 
