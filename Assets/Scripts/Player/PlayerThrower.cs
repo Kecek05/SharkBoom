@@ -98,7 +98,6 @@ public class PlayerThrower : NetworkBehaviour
         playerInventory.InitializeOwner();
         playerLauncher.InitializeOwner();
         playerDragController.InitializeOwner(playerInventory.GetItemSOByItemSOIndex(0).rb);
-        playerRagdollEnabler.InitializeOwner();
     }
 
     private void HandleEvents()
