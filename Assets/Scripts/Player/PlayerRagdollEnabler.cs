@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerRagdollEnabler : NetworkBehaviour
 {
     [Header("References")]
+    [SerializeField] private PlayerGetUp playerGetUp;
     [SerializeField] private Animator animator;
     [SerializeField] private Transform ragdollRoot;
     [SerializeField] private Transform rootTransform;
@@ -22,28 +23,37 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     private bool isFallen = false;
 
+    [SerializeField] private bool debugRagdollEnabler;
+    [SerializeField] private bool debugRagdollDisabler;
 
-    public void InitializeOwner()
+    public override void OnNetworkSpawn()
     {
-        if (!IsOwner) return;
-
-
         ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
         ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>();
-        DisableRagdoll();   
-        // not align and disable ragdoll
     }
 
-    public void HandleOnPlayerStateChanged(PlayerState state)
+    private void Update()
     {
-        if (state == PlayerState.IdleEnemyTurn || state == PlayerState.IdleMyTurn)
+        if (debugRagdollEnabler)
         {
-            if(IsOwner)
+            debugRagdollEnabler = false;
+            DisableRagdoll();
+        }
+
+        if (debugRagdollDisabler)
+        {
+            debugRagdollDisabler = false;
+            EnableRagdoll();
+        }
+    }
+
+    private void HandleOnItemCallbackAction()
+    {
+        if (IsOwner)
+        {
+            if (isFallen)
             {
-                if (isFallen)
-                {
-                    RequestRagdollDisableServerRpc();
-                }
+                RequestRagdollDisableServerRpc();
             }
         }
     }
@@ -117,16 +127,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         originalRootRotation = rootTransform.rotation;
         ragdollRootRotation = ragdollRoot.rotation;
 
-        if (ragdollRbs == null)
-        {
-            ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
-        }
-
-        if(ragdollColliders == null)
-        {
-            ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>();
-        }
-
         verticalOffset = hipsTransform.position.y - rootTransform.position.y;
 
         foreach (Rigidbody ragdollRb in ragdollRbs)
@@ -194,6 +194,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
                 newPosition.y = groundY;
             }
         }
+
 
         // Send all for original rotation, basead on new position
         rootTransform.SetPositionAndRotation(newPosition, originalRootRotation);
