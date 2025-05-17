@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerRagdollEnabler : NetworkBehaviour
 {
     [Header("References")]
+    [SerializeField] private PlayerGetUp playerGetUp;
     [SerializeField] private Animator animator;
     [SerializeField] private Transform ragdollRoot;
     [SerializeField] private Transform rootTransform;
