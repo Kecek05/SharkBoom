@@ -7,6 +7,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
 {
     public static event Action OnItemFinishedAction;
     public static event Action<Transform> OnItemReleasedAction;
+    public static event Action OnItemCallbackAction;
 
     [BetterHeader("Base Item References")]
     [SerializeField] protected ItemSO itemSO;
@@ -140,7 +141,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
         if(!IsOwner) return; // Only the server should call the callback action
 
         turnManager.PlayerPlayed(thisItemLaucherData.ownerPlayableState);
-
+        OnItemCallbackAction?.Invoke();
     }
 
 

@@ -24,6 +24,7 @@ public class PlayerThrower : NetworkBehaviour
     [SerializeField] private PlayerSpawnItemOnHand playerSpawnItemOnHand;
     [SerializeField] private FollowSelectedSocketComponent followSelectedSocketComponent;
     [SerializeField] private PlayerKnockbackListenerNetworked knockbackComponent;
+    [SerializeField] private PlayerRagdollEnabler playerRagdollEnabler;
     private PlayerStateMachine playerStateMachine;
 
     private NetworkVariable<PlayableState> thisPlayableState = new();
@@ -98,6 +99,8 @@ public class PlayerThrower : NetworkBehaviour
         playerInventory.InitializeOwner();
         playerLauncher.InitializeOwner();
         playerDragController.InitializeOwner(playerInventory.GetItemSOByItemSOIndex(0).rb);
+        playerRagdollEnabler.IniatilizeOwner();
+
     }
 
     private void HandleEvents()
@@ -158,6 +161,7 @@ public class PlayerThrower : NetworkBehaviour
         cameraManager.UnInitializeOwner();
         playerLauncher.UnInitializeOwner();
         playerInventoryUI.UnHandleInitializeOwner();
+        playerRagdollEnabler.UnInitializeOwner();
     }
 
     private void HandleOnPlayerDetectFacingDirectionRotationChanged(bool isRight)

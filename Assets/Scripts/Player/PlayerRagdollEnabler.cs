@@ -9,17 +9,9 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [SerializeField] private PlayerGetUp playerGetUp;
     [SerializeField] private Animator animator;
     [SerializeField] private Transform ragdollRoot;
-    [SerializeField] private Transform rootTransform;
-    [SerializeField] private Transform hipsTransform;
 
     [SerializeField] private Rigidbody[] ragdollRbs;
     [SerializeField] private Collider[] ragdollColliders;
-
-    private float verticalOffset = 0f;
-
-    private Quaternion originalHipRotation;
-    private Quaternion originalRootRotation;
-    private Quaternion ragdollRootRotation;
 
     private bool isFallen = false;
 
@@ -27,6 +19,13 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [SerializeField] private bool debugRagdollDisabler;
 
     public override void OnNetworkSpawn()
+    {
+        ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
+        ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>();
+    }
+
+    // JUST FOR DEBUG ON RAGDOLL SCENE
+    private void Awake()
     {
         ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
         ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>();
@@ -47,14 +46,16 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         }
     }
 
+    public void IniatilizeOwner()
+    {
+        BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
+    }
+
     private void HandleOnItemCallbackAction()
     {
         if (IsOwner)
         {
-            if (isFallen)
-            {
-                RequestRagdollDisableServerRpc();
-            }
+            RequestRagdollDisableServerRpc();
         }
     }
 
@@ -85,7 +86,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             index++;
         }
 
-        if(closestIndex == -1)
+        if (closestIndex == -1)
         {
             Debug.LogError("No ragdoll rb found");
             return;
@@ -123,11 +124,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     private void EnableRagdoll()
     {
-        originalHipRotation = hipsTransform.rotation;
-        originalRootRotation = rootTransform.rotation;
-        ragdollRootRotation = ragdollRoot.rotation;
-
-        verticalOffset = hipsTransform.position.y - rootTransform.position.y;
+        playerGetUp.CacheOriginalPos();
 
         foreach (Rigidbody ragdollRb in ragdollRbs)
         {
@@ -136,7 +133,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
         foreach (Collider ragdollCollider in ragdollColliders)
         {
-           ragdollCollider.enabled = true;
+            ragdollCollider.enabled = true;
         }
 
         isFallen = true;
@@ -172,33 +169,17 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             ragdollCollider.enabled = false;
         }
 
-        if(isFallen == true)
+        if (isFallen == true)
         {
-            AlignPositionToHips();
+            playerGetUp.GetUpPlayer();
         }
 
         isFallen = false;
     }
 
-    private void AlignPositionToHips()
+    public void UnInitializeOwner()
     {
-        Vector3 newPosition = hipsTransform.position; 
-        newPosition.y -= verticalOffset;  // correcting the y axis 
-
-        if (Physics.Raycast(hipsTransform.position, Vector3.down, out RaycastHit hit, 5f)) // check if we hit the ground for not reset in the ground
-        {
-            float groundY = hit.point.y;
-
-            if (newPosition.y < groundY)
-            {
-                newPosition.y = groundY;
-            }
-        }
-
-
-        // Send all for original rotation, basead on new position
-        rootTransform.SetPositionAndRotation(newPosition, originalRootRotation);
-        hipsTransform.rotation = originalHipRotation;
-        ragdollRoot.rotation = ragdollRootRotation;
+        BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
     }
+
 }

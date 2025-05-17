@@ -655,7 +655,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3530755430
+  GlobalObjectIdHash: 3543492314
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -745,7 +745,6 @@ MonoBehaviour:
   playerDragController: {fileID: 5120579722876303172}
   playerLauncher: {fileID: 1987240186612080187}
   playerDetectFacingDirection: {fileID: 8219345119279371754}
-  playerRagdollEnabler: {fileID: 8406327557363343199}
   playerTouchColl: {fileID: 227282763038740262}
   playerColliders:
   - {fileID: 3077044857443190407}
@@ -754,7 +753,8 @@ MonoBehaviour:
   - {fileID: 1244250245066138330}
   playerSpawnItemOnHand: {fileID: 5846641034301650373}
   followSelectedSocketComponent: {fileID: 7649801925086215586}
-  knockbackComponent: {fileID: 0}
+  knockbackComponent: {fileID: 1309247174426515081}
+  playerRagdollEnabler: {fileID: 0}
 --- !u!114 &6377254783256832976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -896,6 +896,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0e4d858381b56c448d132c03c5c771a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rootTransform: {fileID: 2498330595957626671}
+  hipsTransform: {fileID: 6415793643202986417}
+  ragdollRoot: {fileID: 4870725441017383592}
 --- !u!1 &1348648853730134369
 GameObject:
   m_ObjectHideFlags: 0
@@ -3285,8 +3288,6 @@ MonoBehaviour:
   playerGetUp: {fileID: 1152150937057589655}
   animator: {fileID: 3092204672454369017}
   ragdollRoot: {fileID: 4870725441017383592}
-  rootTransform: {fileID: 2498330595957626671}
-  hipsTransform: {fileID: 6415793643202986417}
   ragdollRbs: []
   ragdollColliders: []
   debugRagdollEnabler: 0
