@@ -1,5 +1,6 @@
 using QFSW.QC;
 using Sortify;
+using System;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -25,6 +26,9 @@ public class PlayerThrower : NetworkBehaviour
     [SerializeField] private FollowSelectedSocketComponent followSelectedSocketComponent;
     [SerializeField] private PlayerKnockbackListenerNetworked knockbackComponent;
     [SerializeField] private PlayerRagdollEnabler playerRagdollEnabler;
+    [SerializeField] private HitRecieve hitRecieve;
+    [SerializeField] private PlayerGetUp playerGetUp;
+
     private PlayerStateMachine playerStateMachine;
 
     private NetworkVariable<PlayableState> thisPlayableState = new();
@@ -57,7 +61,11 @@ public class PlayerThrower : NetworkBehaviour
 
         //DEBUG
         gameObject.name = "Player " + UnityEngine.Random.Range(0, 10000);
+
+        hitRecieve.OnHitRecieve += HandleOnHitRecieved;
     }
+
+    
 
     private void HandleOnClientOwnershipChanged(ulong newOwnerClientId)
     {
@@ -73,6 +81,11 @@ public class PlayerThrower : NetworkBehaviour
             playerInventory.HandleOnGainOwnership();
             playerInventoryUI.HandleOnGainOwnership();
         }
+    }
+
+    private void HandleOnHitRecieved()
+    {
+        playerGetUp.CacheOriginalPos();
     }
 
     private void InitializeOwner()
@@ -162,6 +175,7 @@ public class PlayerThrower : NetworkBehaviour
         playerLauncher.UnInitializeOwner();
         playerInventoryUI.UnHandleInitializeOwner();
         playerRagdollEnabler.UnInitializeOwner();
+
     }
 
     private void HandleOnPlayerDetectFacingDirectionRotationChanged(bool isRight)
@@ -389,7 +403,7 @@ public class PlayerThrower : NetworkBehaviour
             UnHandleEvents();
         }
 
-
+        hitRecieve.OnHitRecieve -= HandleOnHitRecieved;
 
     }
 

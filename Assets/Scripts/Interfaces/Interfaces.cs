@@ -120,3 +120,12 @@ public interface IRecieveKnockback
     /// </summary>
     public void DoOnRecieveKnockback(float knockbackStrength, Vector3 hitPos);
 }
+
+
+public interface IRecieveHit
+{
+    /// <summary>
+    /// Called when the object is hit.
+    /// </summary>
+    public void Hit();
+}

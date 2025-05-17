@@ -6,14 +6,11 @@ using UnityEngine;
 public class PlayerRagdollEnabler : NetworkBehaviour
 {
     [Header("References")]
-    [SerializeField] private PlayerGetUp playerGetUp;
     [SerializeField] private Animator animator;
     [SerializeField] private Transform ragdollRoot;
 
     [SerializeField] private Rigidbody[] ragdollRbs;
     [SerializeField] private Collider[] ragdollColliders;
-
-    private bool isFallen = false;
 
     [SerializeField] private bool debugRagdollEnabler;
     [SerializeField] private bool debugRagdollDisabler;
@@ -124,7 +121,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     private void EnableRagdoll()
     {
-        playerGetUp.CacheOriginalPos();
 
         foreach (Rigidbody ragdollRb in ragdollRbs)
         {
@@ -136,7 +132,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             ragdollCollider.enabled = true;
         }
 
-        isFallen = true;
         animator.enabled = false;
     }
 
@@ -156,7 +151,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     private void DisableRagdoll()
     {
-
         animator.enabled = true;
 
         foreach (Rigidbody ragdollRb in ragdollRbs)
@@ -169,12 +163,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             ragdollCollider.enabled = false;
         }
 
-        if (isFallen == true)
-        {
-            playerGetUp.GetUpPlayer();
-        }
-
-        isFallen = false;
     }
 
     public void UnInitializeOwner()
