@@ -5,7 +5,6 @@ using UnityEngine;
 
 public abstract class BaseItemThrowable : NetworkBehaviour
 {
-    public static event Action OnItemInitialized;
     public static event Action OnItemFinishedAction;
     public static event Action<Transform> OnItemReleasedAction;
 
@@ -42,8 +41,6 @@ public abstract class BaseItemThrowable : NetworkBehaviour
         if (dissolveShaderComponent != null)
             dissolveShaderComponent.DissolveFadeIn();
 
-        OnItemInitialized?.Invoke();
-
         InitializeUpdateRbTypeServerRpc(RigidbodyType2D.Static);
 
     }
@@ -60,7 +57,6 @@ public abstract class BaseItemThrowable : NetworkBehaviour
         if(IsOwner) return; //Ownler already changed
 
         rb.bodyType = rigidbodyType2D;
-        OnItemInitialized?.Invoke();
     }
 
 

@@ -12,12 +12,8 @@ public class ItemParticleController : MonoBehaviour
 
     private void Start()
     {
+        Debug.Log("ItemParticleController Start");
         hideMeshOnCollisionComponent.OnMeshHidden += HideMeshOnCollisionComponent_OnMeshHidden;
-        BaseItemThrowable.OnItemInitialized += BaseItemThrowable_OnItemInitialized;
-    }
-
-    private void BaseItemThrowable_OnItemInitialized()
-    {
         PlayParticleSystem(spawnParticleSystem);
     }
 
@@ -28,12 +24,12 @@ public class ItemParticleController : MonoBehaviour
 
     private void PlayParticleSystem(ParticleSystem particleSystem)
     {
+        Debug.Log($"PlayParticleSystem: {particleSystem}");
         particleSystem.Play();
     }
 
     private void OnDestroy()
     {
         hideMeshOnCollisionComponent.OnMeshHidden -= HideMeshOnCollisionComponent_OnMeshHidden;
-        BaseItemThrowable.OnItemInitialized -= BaseItemThrowable_OnItemInitialized;
     }
 }
