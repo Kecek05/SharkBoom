@@ -26,6 +26,8 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [SerializeField] private bool debugRagdollEnabler;
     [SerializeField] private bool debugRagdollDisabler;
 
+    public
+
     private void Update()
     {
         if (debugRagdollEnabler)
@@ -48,20 +50,18 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
         ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
         ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>();
+        BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
         DisableRagdoll();   
         // not align and disable ragdoll
     }
 
-    public void HandleOnPlayerStateChanged(PlayerState state)
+    private void HandleOnItemCallbackAction()
     {
-        if (state == PlayerState.IdleEnemyTurn || state == PlayerState.IdleMyTurn)
+        if (IsOwner)
         {
-            if(IsOwner)
+            if (isFallen)
             {
-                if (isFallen)
-                {
-                    RequestRagdollDisableServerRpc();
-                }
+                RequestRagdollDisableServerRpc();
             }
         }
     }
@@ -212,6 +212,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
                 newPosition.y = groundY;
             }
         }
+
 
         // Send all for original rotation, basead on new position
         rootTransform.SetPositionAndRotation(newPosition, originalRootRotation);

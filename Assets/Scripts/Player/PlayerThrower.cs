@@ -19,7 +19,6 @@ public class PlayerThrower : NetworkBehaviour
     [SerializeField] private PlayerDragController playerDragController;
     [SerializeField] private PlayerLauncher playerLauncher;
     [SerializeField] private PlayerDetectFacingDirection playerDetectFacingDirection;
-    [SerializeField] private PlayerRagdollEnabler playerRagdollEnabler;
     [SerializeField] private Collider2D playerTouchColl;
     [SerializeField] private GameObject[] playerColliders;
     [SerializeField] private PlayerSpawnItemOnHand playerSpawnItemOnHand;
@@ -213,7 +212,6 @@ public class PlayerThrower : NetworkBehaviour
         playerDragUi.HandleOnPlayerStateMachineStateChanged(state);
 
         playerInventoryUI.HandleOnPlayerStateMachineStateChanged(state);
-        playerRagdollEnabler.HandleOnPlayerStateChanged(state);
 
 
         playerSpawnItemOnHand.HandleOnPlayerStateChanged(state);

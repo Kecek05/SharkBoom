@@ -46,6 +46,7 @@ public class CameraManager : NetworkBehaviour
         cameraMovement.InitializeOwner();
         cameraZoom.InitializeOwner();
         cameraFollowing.InitializeOwner();
+
         turnManager.CurrentPlayableState.OnValueChanged += HandleOnPlayableStateChanged;
     }
 

@@ -14,6 +14,7 @@ public class RagdollDamageHandler : MonoBehaviour
             timeMouseButtonDown = Time.time;
         }
 
+
         if (Input.GetMouseButtonUp(0))
         {
             Ray ray = camera.ScreenPointToRay(Input.mousePosition);
