@@ -26,7 +26,11 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [SerializeField] private bool debugRagdollEnabler;
     [SerializeField] private bool debugRagdollDisabler;
 
-    public
+    public override void OnNetworkSpawn()
+    {
+        ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
+        ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>();
+    }
 
     private void Update()
     {
@@ -41,18 +45,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             debugRagdollDisabler = false;
             EnableRagdoll();
         }
-    }
-
-    public void InitializeOwner()
-    {
-        if (!IsOwner) return;
-
-
-        ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
-        ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>();
-        BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
-        DisableRagdoll();   
-        // not align and disable ragdoll
     }
 
     private void HandleOnItemCallbackAction()
@@ -134,16 +126,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         originalHipRotation = hipsTransform.rotation;
         originalRootRotation = rootTransform.rotation;
         ragdollRootRotation = ragdollRoot.rotation;
-
-        if (ragdollRbs == null)
-        {
-            ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
-        }
-
-        if(ragdollColliders == null)
-        {
-            ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>();
-        }
 
         verticalOffset = hipsTransform.position.y - rootTransform.position.y;
 
