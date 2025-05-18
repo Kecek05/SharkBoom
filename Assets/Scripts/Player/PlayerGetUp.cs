@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerGetUp : MonoBehaviour
+public class PlayerGetUp : MonoBehaviour, IRecieveHit
 {
 
     [SerializeField] private Transform rootTransform;
@@ -13,6 +13,11 @@ public class PlayerGetUp : MonoBehaviour
     private Quaternion originalRootRotation;
     private Quaternion ragdollRootRotation;
 
+
+    public void Hit()
+    {
+        CacheOriginalPos();
+    }
 
     public void CacheOriginalPos()
     {
@@ -43,4 +48,6 @@ public class PlayerGetUp : MonoBehaviour
         hipsTransform.rotation = originalHipRotation;
         ragdollRoot.rotation = ragdollRootRotation;
     }
+
+    
 }
