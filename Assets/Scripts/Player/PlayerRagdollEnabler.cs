@@ -121,7 +121,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     private void EnableRagdoll()
     {
-
+        Debug.Log("Hit trigger - Here we be enable to cache original pos, compare if the time is the same");
         foreach (Rigidbody ragdollRb in ragdollRbs)
         {
             ragdollRb.isKinematic = false;

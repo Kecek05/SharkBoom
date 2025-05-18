@@ -8,5 +8,6 @@ public class HitRecieveNetworked : MonoBehaviour, IRecieveHit
     public void Hit()
     {
         playerGetUp.HitRecieveNotify();
+        Debug.Log("Hit trigger - Send the hit recieve notify");
     }
 }

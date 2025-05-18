@@ -36,6 +36,7 @@ public class PlayerGetUp : NetworkBehaviour
 
     private void CacheOriginalPos()
     {
+        Debug.Log("Hit trigger - Cache original Pos");
         originalHipRotation = hipsTransform.rotation;
         originalRootRotation = rootTransform.rotation;
         ragdollRootRotation = ragdollRoot.rotation;
