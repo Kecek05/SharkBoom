@@ -61,8 +61,6 @@ public class PlayerThrower : NetworkBehaviour
 
         //DEBUG
         gameObject.name = "Player " + UnityEngine.Random.Range(0, 10000);
-
-        hitRecieve.OnHitRecieve += HandleOnHitRecieved;
     }
 
     
@@ -81,11 +79,6 @@ public class PlayerThrower : NetworkBehaviour
             playerInventory.HandleOnGainOwnership();
             playerInventoryUI.HandleOnGainOwnership();
         }
-    }
-
-    private void HandleOnHitRecieved()
-    {
-        playerGetUp.CacheOriginalPos();
     }
 
     private void InitializeOwner()
@@ -402,9 +395,6 @@ public class PlayerThrower : NetworkBehaviour
 
             UnHandleEvents();
         }
-
-        hitRecieve.OnHitRecieve -= HandleOnHitRecieved;
-
     }
 
     public override void OnLostOwnership()

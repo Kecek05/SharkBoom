@@ -7,6 +7,6 @@ public class HitRecieveNetworked : MonoBehaviour, IRecieveHit
 
     public void Hit()
     {
-        playerGetUp.CacheOriginalPos();
+        playerGetUp.HitRecieveNotify();
     }
 }
