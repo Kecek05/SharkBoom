@@ -1,6 +1,7 @@
+using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerGetUp : MonoBehaviour, IRecieveHit
+public class PlayerGetUp : MonoBehaviour
 {
 
     [SerializeField] private Transform rootTransform;
@@ -14,18 +15,26 @@ public class PlayerGetUp : MonoBehaviour, IRecieveHit
     private Quaternion ragdollRootRotation;
 
 
-    public void Hit()
+    [Rpc(SendTo.Server)]
+    private void CacheOriginalPosServerRpc()
+    {
+        CacheOriginalPosClientRpc();
+    }
+
+    [Rpc(SendTo.Owner)]
+    private void CacheOriginalPosClientRpc()
     {
         CacheOriginalPos();
     }
 
     public void CacheOriginalPos()
     {
-        originalHipRotation = hipsTransform.rotation;
-        originalRootRotation = rootTransform.rotation;
-        ragdollRootRotation = ragdollRoot.rotation;
+        //originalHipRotation = hipsTransform.rotation;
+        //originalRootRotation = rootTransform.rotation;
+        //ragdollRootRotation = ragdollRoot.rotation;
 
-        verticalOffset = hipsTransform.position.y - rootTransform.position.y;
+        //verticalOffset = hipsTransform.position.y - rootTransform.position.y;
+        Debug.Log("Test Cache Pos");
     }
 
     public void GetUpPlayer()
