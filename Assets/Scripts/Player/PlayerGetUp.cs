@@ -9,9 +9,9 @@ public class PlayerGetUp : NetworkBehaviour
     [SerializeField] private Transform ragdollRoot;
 
     [Header("Settings")]
-    private float capsuleRadius = 0.5f;
-    private float capsuleHeight = 2f;
-    private LayerMask[] layersToDetectCollision;
+    [SerializeField] private float capsuleRadius = 0.5f;
+    [SerializeField] private float capsuleHeight = 2f;
+    [SerializeField] private LayerMask layersToDetectCollision;
 
     private const int MAX_ATTEMPTS = 10;
     private const float VERTICAL_STEP = 0.1f;
@@ -66,7 +66,7 @@ public class PlayerGetUp : NetworkBehaviour
 
         for(int i = 0; i < MAX_ATTEMPTS; i++)
         {
-            if (!Physics.CheckCapsule(capsuleBottom, capsuleTop, capsuleRadius, LayerMask.GetMask("Default")))
+            if (!Physics.CheckCapsule(capsuleBottom, capsuleTop, capsuleRadius, layersToDetectCollision))
             {
                 isInGoodPosition = true;
                 break;
