@@ -184,7 +184,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   itemSO: {fileID: 11400000, guid: c4047f17a9430314ab9b65ede680009f, type: 2}
-  rb: {fileID: 5689049572469319462}
+  rb: {fileID: 6921903450271284980}
   objectsToChangeLayer:
   - {fileID: 4139059953487484834}
   - {fileID: 4767779204118326136}
@@ -235,8 +235,8 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 0.1225, y: 0.2225}
   m_Direction: 0
---- !u!50 &5689049572469319462 stripped
-Rigidbody2D:
-  m_CorrespondingSourceObject: {fileID: 2597735930550134298, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+--- !u!54 &6921903450271284980 stripped
+Rigidbody:
+  m_CorrespondingSourceObject: {fileID: 788439871958220744, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
   m_PrefabInstance: {fileID: 7709761659009139004}
   m_PrefabAsset: {fileID: 0}
