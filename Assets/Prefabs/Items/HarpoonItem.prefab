@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 863358975546306568, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: knockbackStrength
+      value: 250
+      objectReference: {fileID: 0}
     - target: {fileID: 1148033323730379617, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -80,6 +84,10 @@ PrefabInstance:
       propertyPath: m_GravityScale
       value: 1.05
       objectReference: {fileID: 0}
+    - target: {fileID: 2738551014143626472, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: damageableSO
+      value: 
+      objectReference: {fileID: 11400000, guid: e0983257c6630ff4ead26ac00d5d1a8d, type: 2}
     - target: {fileID: 3098171700661096899, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0
@@ -172,6 +180,10 @@ PrefabInstance:
       propertyPath: baseCollisionController
       value: 
       objectReference: {fileID: 1924429888176421737}
+    - target: {fileID: 8089614718808125593, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: hideMeshOnCollisionComponent
+      value: 
+      objectReference: {fileID: 4080070733013200899}
     - target: {fileID: 8578040854288002210, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: lengthInSec
       value: 0.5
@@ -306,6 +318,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b91fa934de67dab46912e6325f3d074a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4080070733013200899 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5936238915556127039, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+  m_PrefabInstance: {fileID: 7709761659009139004}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4139059953487484834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c9002d05a4b7c24cb0074daca9581a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &4139059953487484834 stripped

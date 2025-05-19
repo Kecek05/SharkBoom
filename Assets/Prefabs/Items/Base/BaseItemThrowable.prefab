@@ -52,6 +52,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6326619365773786253, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
+      propertyPath: hideMeshOnCollisionComponent
+      value: 
+      objectReference: {fileID: 5936238915556127039}
     - target: {fileID: 7964027437172616837, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 2620805609
@@ -67,7 +71,46 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8360590805627951754, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8747205956194011556}
+    - targetCorrespondingSourceObject: {fileID: 8360590805627951754, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2738551014143626472}
+    - targetCorrespondingSourceObject: {fileID: 8360590805627951754, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4423698351422297061}
+    - targetCorrespondingSourceObject: {fileID: 8360590805627951754, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5936238915556127039}
+    - targetCorrespondingSourceObject: {fileID: 8360590805627951754, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 863358975546306568}
+    - targetCorrespondingSourceObject: {fileID: 8360590805627951754, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2821005733342969686}
+    - targetCorrespondingSourceObject: {fileID: 8360590805627951754, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8410119999329485946}
   m_SourcePrefab: {fileID: 100100000, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
+--- !u!54 &788439871958220744 stripped
+Rigidbody:
+  m_CorrespondingSourceObject: {fileID: 3276833342041568220, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
+  m_PrefabInstance: {fileID: 2848737264724986900}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &4196873844735081561 stripped
+BoxCollider:
+  m_CorrespondingSourceObject: {fileID: 2141169102940942413, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
+  m_PrefabInstance: {fileID: 2848737264724986900}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5217706511134153581 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8061930552208201593, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
+  m_PrefabInstance: {fileID: 2848737264724986900}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6020880011412641438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 633f60b4376dd944aacd07902762ba7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6020880011412641438 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8360590805627951754, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
@@ -85,6 +128,96 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54ff7ab3b9592a84db4fd435ae7ff2ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  baseCollisionController: {fileID: 8091387058931432021}
+--- !u!114 &2738551014143626472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6020880011412641438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16755dbb757ecfa409dc1c6bb6fbcba7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  damageableSO: {fileID: 0}
+  baseCollisionController: {fileID: 8091387058931432021}
+--- !u!114 &4423698351422297061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6020880011412641438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 848a46f480f88954f9a559356e484dfa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemColliders:
+  - {fileID: 4196873844735081561}
+  baseCollisionController: {fileID: 8091387058931432021}
+--- !u!114 &5936238915556127039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6020880011412641438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c9002d05a4b7c24cb0074daca9581a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseCollisionController: {fileID: 8091387058931432021}
+  meshToHide: {fileID: 6020880011412641438}
+  hideOnCollisionWithPlayer: 1
+  hideOnCollisionWithAnything: 1
+--- !u!114 &863358975546306568
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6020880011412641438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48c364087184ad84b8a15080aae1809b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseCollisionController: {fileID: 8091387058931432021}
+  knockbackStrength: 0
+--- !u!114 &2821005733342969686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6020880011412641438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 534fbfe2a7af99a47bbb1dfeed5bbc6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  followTransformComponent: {fileID: 5217706511134153581}
+  baseCollisionController: {fileID: 8091387058931432021}
+--- !u!114 &8410119999329485946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6020880011412641438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c717a077a1b6e384bb3600e107c5a2c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  rb: {fileID: 788439871958220744}
   baseCollisionController: {fileID: 8091387058931432021}
 --- !u!114 &8091387058931432021 stripped
 MonoBehaviour:
