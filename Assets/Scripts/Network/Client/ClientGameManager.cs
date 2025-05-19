@@ -24,13 +24,10 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
 
     private UserData userData;
 
-    private string joinCode;
-
     private bool isDedicatedServerGame = false;
 
     public bool IsDedicatedServerGame => isDedicatedServerGame;
     public UserData UserData => userData;
-    public string JoinCode => joinCode;
 
     public ClientGameManager()
     {
@@ -107,6 +104,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         if (joinCode == null || joinCode == string.Empty) return false;
 
         SetIsDedicatedServerGame(false);
+        HostSingleton.Instance.GameManager.ClearJoinCode();
 
         try
         {
@@ -122,9 +120,6 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         RelayServerData relayServerData = new RelayServerData(joinAllocation, "dtls");
 
         transport.SetRelayServerData(relayServerData);
-
-        this.joinCode = joinCode;
-        Debug.Log("Code Relay:" + this.joinCode);
 
         Loader.LoadClient();
         return true;

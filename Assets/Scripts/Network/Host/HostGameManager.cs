@@ -153,6 +153,13 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
         ServiceLocator.Get<BaseGameStateManager>().ConnectionLostHostAndClient();
         ShutdownAsync();
     }
+    /// <summary>
+    /// Called to clear the joinCode to not show on the Waiting for players Screen.
+    /// </summary>
+    public void ClearJoinCode()
+    {
+        joinCode = string.Empty;
+    }
 
     private IEnumerator HeartbeatLobby(float delayHeartbeatSeconds)
     {
