@@ -4,7 +4,7 @@ using UnityEngine;
 public class DisableCollisionOnCantactComponent : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private Collider2D[] itemColliders;
+    [SerializeField] private Collider[] itemColliders;
     [SerializeField] private BaseCollisionController baseCollisionController;
 
     private void Start()
@@ -20,7 +20,7 @@ public class DisableCollisionOnCantactComponent : MonoBehaviour
 
     public void DisableCollisions()
     {
-        foreach (Collider2D itemCol in itemColliders)
+        foreach (Collider itemCol in itemColliders)
         {
             itemCol.enabled = false;
         }

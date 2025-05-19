@@ -4900,7 +4900,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6908639535755631841}
-  - component: {fileID: 3804479600589895015}
+  - component: {fileID: 2141169102940942413}
   m_Layer: 10
   m_Name: COLL
   m_TagString: Untagged
@@ -4924,16 +4924,13 @@ Transform:
   - {fileID: 5422869035242432323}
   m_Father: {fileID: 3612550813663028317}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!58 &3804479600589895015
-CircleCollider2D:
+--- !u!65 &2141169102940942413
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1106937726802126416}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -4942,24 +4939,12 @@ CircleCollider2D:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
   m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Radius: 0.5
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1608255032085680932
 GameObject:
   m_ObjectHideFlags: 0
@@ -10739,7 +10724,7 @@ MonoBehaviour:
   item: {fileID: 0}
   followTransformComponent: {fileID: 0}
   lifetimeTriggerItemComponent: {fileID: 0}
-  rb: {fileID: 253816083963472398}
+  rb: {fileID: 0}
   colliterGameObject: {fileID: 1106937726802126416}
   rbMode: {fileID: 2228213193041508149}
   followTransformActive: {fileID: 7784866339588420763}
@@ -10969,10 +10954,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3612550813663028317}
-  - component: {fileID: 253816083963472398}
+  - component: {fileID: 3276833342041568220}
   - component: {fileID: 7964027437172616837}
+  - component: {fileID: 6322216467686986225}
   - component: {fileID: 6715447752760002188}
-  - component: {fileID: 5505797530241992786}
   - component: {fileID: 8061930552208201593}
   - component: {fileID: 1360640487950422005}
   - component: {fileID: 7241664042849662729}
@@ -11006,33 +10991,33 @@ Transform:
   - {fileID: 41814701358345962}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!50 &253816083963472398
-Rigidbody2D:
-  serializedVersion: 5
+--- !u!54 &3276833342041568220
+Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8360590805627951754}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
+  serializedVersion: 4
   m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
   m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!114 &7964027437172616837
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11058,6 +11043,23 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 1
+--- !u!114 &6322216467686986225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8360590805627951754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6c0be61502bb534f922ebb746851216, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkRigidbodyBaseExpanded: 0
+  UseRigidBodyForMotion: 0
+  AutoUpdateKinematicState: 1
+  AutoSetKinematicOnDespawn: 1
 --- !u!114 &6715447752760002188
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11094,23 +11096,6 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 0
   SlerpPosition: 0
---- !u!114 &5505797530241992786
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8360590805627951754}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 80d7c879794dfda4687da0e400131852, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  NetworkRigidbodyBaseExpanded: 0
-  UseRigidBodyForMotion: 0
-  AutoUpdateKinematicState: 1
-  AutoSetKinematicOnDespawn: 1
 --- !u!114 &8061930552208201593
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11172,7 +11157,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemColliders:
-  - {fileID: 3804479600589895015}
+  - {fileID: 2141169102940942413}
   baseCollisionController: {fileID: 6323861854826608193}
 --- !u!114 &6323861854826608193
 MonoBehaviour:
@@ -11244,7 +11229,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  rb2D: {fileID: 253816083963472398}
+  rb: {fileID: 3276833342041568220}
   baseCollisionController: {fileID: 6323861854826608193}
 --- !u!1 &8505792150948004565
 GameObject:

@@ -4,7 +4,7 @@ using UnityEngine;
 public class ItemCollisionController : BaseCollisionController
 {
 
-    protected override void HandleCollision(Collider2D collidedObject)
+    protected override void HandleCollision(Collider collidedObject)
     {
         TriggerOnCollided(collidedObject.gameObject); // Get the component from the collided object, head, body or foot.
 

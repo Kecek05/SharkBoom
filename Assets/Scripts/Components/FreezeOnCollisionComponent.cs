@@ -4,7 +4,7 @@ using UnityEngine;
 public class FreezeOnCollisionComponent : NetworkBehaviour
 {
     [Header("References")]
-    [SerializeField] private Rigidbody2D rb2D;
+    [SerializeField] private Rigidbody rb;
     [SerializeField] private BaseCollisionController baseCollisionController;
 
     public override void OnGainedOwnership()
@@ -16,7 +16,7 @@ public class FreezeOnCollisionComponent : NetworkBehaviour
     {
         if (!IsOwner) return;
         Debug.Log("Stop moving");
-        rb2D.bodyType = RigidbodyType2D.Static; // Freeze the object
+        rb.isKinematic = true; // Freeze the object
     }
 
     public override void OnLostOwnership()

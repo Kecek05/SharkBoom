@@ -11,7 +11,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
 
     [BetterHeader("Base Item References")]
     [SerializeField] protected ItemSO itemSO;
-    [SerializeField] protected Rigidbody2D rb;
+    [SerializeField] protected Rigidbody rb;
     [SerializeField] protected GameObject[] objectsToChangeLayer;
     [SerializeField] protected DissolveShaderComponent dissolveShaderComponent;
     [SerializeField] protected LifetimeTriggerItemComponent lifetimeTriggerItemComponent;
@@ -34,7 +34,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     {
         if(!IsOwner) return; //Only the owner can initialize the item
 
-        rb.bodyType = RigidbodyType2D.Static; //Statick until the item is released
+        rb.isKinematic = true; //Set the item to kinematic until the item is released
 
         followTransformComponent.SetTarget(parent);
         followTransformComponent.EnableComponent();
@@ -42,22 +42,22 @@ public abstract class BaseItemThrowable : NetworkBehaviour
         if (dissolveShaderComponent != null)
             dissolveShaderComponent.DissolveFadeIn();
 
-        InitializeUpdateRbTypeServerRpc(RigidbodyType2D.Static);
+        InitializeUpdateRbTypeServerRpc(true);
 
     }
 
     [Rpc(SendTo.Server)]
-    private void InitializeUpdateRbTypeServerRpc(RigidbodyType2D rigidbodyType2D)
+    private void InitializeUpdateRbTypeServerRpc(bool isKinematic)
     {
-        InitializeUpdateRbTypeClientRpc(rigidbodyType2D);
+        InitializeUpdateRbTypeClientRpc(isKinematic);
     }
 
     [Rpc(SendTo.ClientsAndHost)]
-    private void InitializeUpdateRbTypeClientRpc(RigidbodyType2D rigidbodyType2D)
+    private void InitializeUpdateRbTypeClientRpc(bool isKinematic)
     {
         if(IsOwner) return; //Ownler already changed
 
-        rb.bodyType = rigidbodyType2D;
+        rb.isKinematic = isKinematic;
     }
 
 
@@ -79,7 +79,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
 
         followTransformComponent.DisableComponent();
         turnManager = ServiceLocator.Get<BaseTurnManager>();
-        rb.AddForce(itemLauncherData.dragDirection * itemLauncherData.dragForce, ForceMode2D.Impulse);
+        rb.AddForce(itemLauncherData.dragDirection * itemLauncherData.dragForce, ForceMode.Impulse);
 
         if(lifetimeTriggerItemComponent)
             lifetimeTriggerItemComponent.StartLifetime();
@@ -113,7 +113,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
         thisItemLaucherData = itemLauncherData;
 
         OnItemReleasedAction?.Invoke(this.transform);
-        rb.bodyType = RigidbodyType2D.Dynamic;
+        rb.isKinematic = false;
     }
 
     private void SetCollision(PlayableState playableState)
