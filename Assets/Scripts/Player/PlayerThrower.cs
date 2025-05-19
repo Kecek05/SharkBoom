@@ -24,9 +24,9 @@ public class PlayerThrower : NetworkBehaviour
     [SerializeField] private GameObject[] playerColliders;
     [SerializeField] private PlayerSpawnItemOnHand playerSpawnItemOnHand;
     [SerializeField] private FollowSelectedSocketComponent followSelectedSocketComponent;
-    [SerializeField] private PlayerKnockbackListenerNetworked knockbackComponent;
     [SerializeField] private PlayerRagdollEnabler playerRagdollEnabler;
-    [SerializeField] private HitRecieveNetworked hitRecieve;
+    [SerializeField] private HitRecieveComponent hitRecieveNetworked;
+    [SerializeField] private PlayerKnockbackListenerNetworked playerKnockbackListener;
     [SerializeField] private PlayerGetUp playerGetUp;
 
     private PlayerStateMachine playerStateMachine;
@@ -38,7 +38,6 @@ public class PlayerThrower : NetworkBehaviour
 
     //Publics
 
-    public PlayerKnockbackListenerNetworked KnockbackComponent => knockbackComponent;
     public PlayerStateMachine PlayerStateMachine => playerStateMachine;
     public NetworkVariable<PlayableState> ThisPlayableState => thisPlayableState;
 
@@ -61,6 +60,8 @@ public class PlayerThrower : NetworkBehaviour
 
         //DEBUG
         gameObject.name = "Player " + UnityEngine.Random.Range(0, 10000);
+        hitRecieveNetworked.OnHitRecieve += HandleOnHitRecieve;
+
     }
 
     
@@ -106,8 +107,8 @@ public class PlayerThrower : NetworkBehaviour
         playerLauncher.InitializeOwner();
         playerDragController.InitializeOwner(playerInventory.GetItemSOByItemSOIndex(0).rb);
         playerRagdollEnabler.IniatilizeOwner();
-
     }
+
 
     private void HandleEvents()
     {
@@ -271,7 +272,12 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleOnPlayerSpawnItemOnHandItemOnHandDespawned(BaseItemThrowable throwable)
     {
-       playerLauncher.HandleOnItemOnHandDespawned(throwable);
+        playerLauncher.HandleOnItemOnHandDespawned(throwable);
+    }
+
+    private void HandleOnHitRecieve()
+    {
+        playerGetUp.TriggerGetUp();
     }
 
     private void OnPlayerSpawnItemOnHandItemSocketSelected(ItemSocket selectedSocket)
@@ -382,6 +388,7 @@ public class PlayerThrower : NetworkBehaviour
     {
         GameManager.OnClientOwnershipChanged -= HandleOnClientOwnershipChanged;
         thisPlayableState.OnValueChanged -= PlayableStateInitialize;
+        hitRecieveNetworked.OnHitRecieve -= HandleOnHitRecieve;
 
         if (IsOwner)
         {

@@ -30,7 +30,7 @@ public class PlayerGetUp : NetworkBehaviour
         Vector3.right
     };
 
-    public void HitRecieveNotify()
+    public void TriggerGetUp()
     {
         if (!IsOwner) return;
         RequestCacheOriginalPosServerRpc();
@@ -105,8 +105,11 @@ public class PlayerGetUp : NetworkBehaviour
         // we use Vector3.up because we are testing the capsule in get up
         Vector3 capsuleBottom = pos + Vector3.up * capsuleRadius;
         Vector3 capsuleTop = pos + Vector3.up * (capsuleHeight - capsuleRadius);
-        return !Physics.CheckCapsule(capsuleBottom, capsuleTop, capsuleRadius, layersToDetectCollision);
-       //  bool IsOnGround = 
+
+        bool isFree = !Physics.CheckCapsule(capsuleBottom, capsuleTop, capsuleRadius, layersToDetectCollision);
+        bool IsOnGround = Physics.Raycast(pos + Vector3.up * 0.1f, Vector3.down, out RaycastHit hit, 1f, layersToDetectCollision);
+
+        return isFree && IsOnGround;
     }
 
 
