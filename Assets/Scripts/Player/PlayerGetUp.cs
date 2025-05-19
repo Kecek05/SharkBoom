@@ -14,7 +14,7 @@ public class PlayerGetUp : NetworkBehaviour
     [SerializeField] private LayerMask layersToDetectCollision;
 
     private const int MAX_ATTEMPTS = 10;
-    private const float VERTICAL_STEP = 0.1f;
+    private const int STEP_SIZE = 1;
     private bool isInGoodPosition = false;
 
     private float verticalOffset;
@@ -22,6 +22,13 @@ public class PlayerGetUp : NetworkBehaviour
     private Quaternion originalRootRotation;
     private Quaternion ragdollRootRotation;
 
+    private Vector3[] directions =
+    {
+        Vector3.up,
+        Vector3.down,
+        Vector3.left,
+        Vector3.right
+    };
 
     public void HitRecieveNotify()
     {
@@ -53,41 +60,54 @@ public class PlayerGetUp : NetworkBehaviour
 
     public void GetUpPlayer()
     {
-        Vector3 targetPos = hipsTransform.position;
-        targetPos.y -= verticalOffset;  // correcting the y axis 
+        Vector3 initialPosOfPlayer = hipsTransform.position;
+        initialPosOfPlayer.y -= verticalOffset;  // correcting the y axis 
 
         if (Physics.Raycast(hipsTransform.position, Vector3.down, out RaycastHit hit, 5f)) // check if we hit the ground for not reset in the ground
         {
-            targetPos.y = Mathf.Max(targetPos.y, hit.point.y);
+            initialPosOfPlayer.y = Mathf.Max(initialPosOfPlayer.y, hit.point.y);
         }
 
-        Vector3 capsuleBottom = targetPos + Vector3.up * capsuleHeight;
-        Vector3 capsuleTop = targetPos + Vector3.up * (capsuleHeight - capsuleRadius);
+        Vector3 finalPos = GetFreePosition(initialPosOfPlayer);
 
-        for(int i = 0; i < MAX_ATTEMPTS; i++)
+        if(!IsCapsuleFreeAt(finalPos))
         {
-            if (!Physics.CheckCapsule(capsuleBottom, capsuleTop, capsuleRadius, layersToDetectCollision))
-            {
-                isInGoodPosition = true;
-                break;
-            }
-
-            targetPos.y += VERTICAL_STEP;
-            capsuleBottom += Vector3.up * capsuleHeight;
-            capsuleTop += Vector3.up * VERTICAL_STEP;
-        }
-        
-        if(!isInGoodPosition)
-        {
-            Debug.LogWarning("No good position found to get up player");
+            Debug.LogWarning("No free position found to get up player");
             return;
         }
+        
 
         // Send all for original rotation, basead on new position
-        rootTransform.SetPositionAndRotation(targetPos, originalRootRotation);
+        rootTransform.SetPositionAndRotation(finalPos, originalRootRotation);
         hipsTransform.rotation = originalHipRotation;
         ragdollRoot.rotation = ragdollRootRotation;
     }
 
-    
+    private Vector3 GetFreePosition(Vector3 startPos)
+    {
+        foreach (Vector3 direction in directions)
+        {
+            for (int i = 0; i < MAX_ATTEMPTS; i++)
+            {
+                Vector3 testPos = startPos + direction * (i * STEP_SIZE);
+
+                if(IsCapsuleFreeAt(testPos))
+                {
+                    return testPos;
+                }
+            }
+        }
+        return startPos; // Return the original position if no free position is found
+    }
+
+    private bool IsCapsuleFreeAt(Vector3 pos)
+    {
+        // we use Vector3.up because we are testing the capsule in get up
+        Vector3 capsuleBottom = pos + Vector3.up * capsuleRadius;
+        Vector3 capsuleTop = pos + Vector3.up * (capsuleHeight - capsuleRadius);
+        return !Physics.CheckCapsule(capsuleBottom, capsuleTop, capsuleRadius, layersToDetectCollision);
+       //  bool IsOnGround = 
+    }
+
+
 }
