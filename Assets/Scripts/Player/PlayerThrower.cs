@@ -106,8 +106,8 @@ public class PlayerThrower : NetworkBehaviour
         playerInventory.InitializeOwner();
         playerLauncher.InitializeOwner();
         playerDragController.InitializeOwner(playerInventory.GetItemSOByItemSOIndex(0).rb);
-        playerRagdollEnabler.IniatilizeOwner();
         playerGetUp.InitializeOwner();
+        playerRagdollEnabler.IniatilizeOwner();
     }
 
 
@@ -169,9 +169,8 @@ public class PlayerThrower : NetworkBehaviour
         cameraManager.UnInitializeOwner();
         playerLauncher.UnInitializeOwner();
         playerInventoryUI.UnHandleInitializeOwner();
-        playerRagdollEnabler.UnInitializeOwner();
         playerGetUp.UnInitializeOwner();
-
+        playerRagdollEnabler.UnInitializeOwner();
     }
 
     private void HandleOnPlayerDetectFacingDirectionRotationChanged(bool isRight)

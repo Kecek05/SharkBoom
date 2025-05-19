@@ -40,25 +40,30 @@ public class PlayerGetUp : NetworkBehaviour
 
     public void TriggerForCacheOriginalPos()
     {
+        Debug.Log("Hit trigger - iria chamar no player get up para cachar as variavies");
         if (!IsOwner) return;
         RequestCacheOriginalPosServerRpc();
+        Debug.Log("Hit trigger - Chamou no server para cachar as variavies");
     }
 
     [Rpc(SendTo.Server)]
     private void RequestCacheOriginalPosServerRpc()
     {
         CacheOriginalPosClientRpc();
+        Debug.Log("Hit trigger - Chamou no Client para cachar as variavies");
     }
 
-    [Rpc(SendTo.Owner)]
+    [Rpc(SendTo.ClientsAndHost)]
     private void CacheOriginalPosClientRpc()
     {
+        if (!IsOwner) return;
+        Debug.Log("Hit trigger - Cache original Pos");
         CacheOriginalPos();
     }
 
     private void CacheOriginalPos()
     {
-        Debug.Log("Hit trigger - Cache original Pos");
+        Debug.Log("Hit trigger - Cachou todas as variáveis");
         originalHipRotation = hipsTransform.rotation;
         originalRootRotation = rootTransform.rotation;
         ragdollRootRotation = ragdollRoot.rotation;
@@ -68,9 +73,11 @@ public class PlayerGetUp : NetworkBehaviour
 
     private void HandleOnItemCallbackAction()
     {
+        Debug.Log("Hit trigger - HandleOnItemCallbackAction");
         if (IsOwner)
         {
             RequestGetUpPlayerServerRpc();
+            Debug.Log("Hit trigger - Request Get Up Player");
         }
     }
 
@@ -78,15 +85,17 @@ public class PlayerGetUp : NetworkBehaviour
     private void RequestGetUpPlayerServerRpc()
     {
         RequestGetUpPlayerClientRpc();
+        Debug.Log("Hit trigger - Request CLient");
     }
 
     [Rpc(SendTo.Owner)]
     private void RequestGetUpPlayerClientRpc()
     {
         GetUpPlayer();
+        Debug.Log("Hit trigger - Request GetUp");
     }
 
-    public void GetUpPlayer()
+    private void GetUpPlayer()
     {
         Vector3 initialPosOfPlayer = hipsTransform.position;
         initialPosOfPlayer.y -= verticalOffset;  // correcting the y axis 
