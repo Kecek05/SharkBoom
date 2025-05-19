@@ -1,3 +1,4 @@
+using System;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -31,7 +32,13 @@ public class PlayerGetUp : NetworkBehaviour
     };
 
     private Vector3 lastCheckedPosition;
-    public void TriggerGetUp()
+
+    public void InitializeOwner()
+    {
+        BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
+    }
+
+    public void TriggerForCacheOriginalPos()
     {
         if (!IsOwner) return;
         RequestCacheOriginalPosServerRpc();
@@ -57,6 +64,26 @@ public class PlayerGetUp : NetworkBehaviour
         ragdollRootRotation = ragdollRoot.rotation;
 
         verticalOffset = hipsTransform.position.y - rootTransform.position.y;
+    }
+
+    private void HandleOnItemCallbackAction()
+    {
+        if (IsOwner)
+        {
+            RequestGetUpPlayerServerRpc();
+        }
+    }
+
+    [Rpc(SendTo.Server)]
+    private void RequestGetUpPlayerServerRpc()
+    {
+        RequestGetUpPlayerClientRpc();
+    }
+
+    [Rpc(SendTo.Owner)]
+    private void RequestGetUpPlayerClientRpc()
+    {
+        GetUpPlayer();
     }
 
     public void GetUpPlayer()
@@ -112,6 +139,11 @@ public class PlayerGetUp : NetworkBehaviour
         bool IsOnGround = Physics.Raycast(pos + Vector3.up * 0.1f, Vector3.down, out RaycastHit hit, 1f, layersToDetectCollision);
 
         return isFree && IsOnGround;
+    }
+
+    public void UnInitializeOwner()
+    {
+        BaseItemThrowable.OnItemCallbackAction -= HandleOnItemCallbackAction;
     }
 
     private void OnDrawGizmosSelected()

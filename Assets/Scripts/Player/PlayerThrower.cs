@@ -107,6 +107,7 @@ public class PlayerThrower : NetworkBehaviour
         playerLauncher.InitializeOwner();
         playerDragController.InitializeOwner(playerInventory.GetItemSOByItemSOIndex(0).rb);
         playerRagdollEnabler.IniatilizeOwner();
+        playerGetUp.InitializeOwner();
     }
 
 
@@ -169,6 +170,7 @@ public class PlayerThrower : NetworkBehaviour
         playerLauncher.UnInitializeOwner();
         playerInventoryUI.UnHandleInitializeOwner();
         playerRagdollEnabler.UnInitializeOwner();
+        playerGetUp.UnInitializeOwner();
 
     }
 
@@ -277,7 +279,7 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleOnHitRecieve()
     {
-        playerGetUp.TriggerGetUp();
+        playerGetUp.TriggerForCacheOriginalPos();
     }
 
     private void OnPlayerSpawnItemOnHandItemSocketSelected(ItemSocket selectedSocket)
