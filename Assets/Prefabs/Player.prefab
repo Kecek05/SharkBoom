@@ -586,6 +586,7 @@ GameObject:
   - component: {fileID: 5846641034301650373}
   - component: {fileID: 1309247174426515081}
   - component: {fileID: 1129441889960646618}
+  - component: {fileID: 1086343849340449909}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -753,10 +754,10 @@ MonoBehaviour:
   - {fileID: 1244250245066138330}
   playerSpawnItemOnHand: {fileID: 5846641034301650373}
   followSelectedSocketComponent: {fileID: 7649801925086215586}
-  knockbackComponent: {fileID: 1309247174426515081}
   playerRagdollEnabler: {fileID: 8406327557363343199}
-  hitRecieve: {fileID: 1129441889960646618}
-  playerGetUp: {fileID: 3103356086065203241}
+  hitRecieveNetworked: {fileID: 1129441889960646618}
+  playerKnockbackListener: {fileID: 1309247174426515081}
+  playerGetUp: {fileID: 1086343849340449909}
 --- !u!114 &6377254783256832976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -898,7 +899,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d8a1cc98e4d08445911c58cb28f243d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerGetUp: {fileID: 3103356086065203241}
+--- !u!114 &1086343849340449909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1244250245066138330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0e4d858381b56c448d132c03c5c771a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  rootTransform: {fileID: 2498330595957626671}
+  hipsTransform: {fileID: 6415793643202986417}
+  ragdollRoot: {fileID: 4870725441017383592}
+  capsuleRadius: 0.5
+  capsuleHeight: 2
+  layersToDetectCollision:
+    serializedVersion: 2
+    m_Bits: 1
 --- !u!1 &1348648853730134369
 GameObject:
   m_ObjectHideFlags: 0
@@ -3121,7 +3142,6 @@ GameObject:
   - component: {fileID: 8219345119279371754}
   - component: {fileID: 2468292975892475623}
   - component: {fileID: 8406327557363343199}
-  - component: {fileID: 3103356086065203241}
   m_Layer: 0
   m_Name: GFX
   m_TagString: Untagged
@@ -3292,22 +3312,6 @@ MonoBehaviour:
   ragdollColliders: []
   debugRagdollEnabler: 0
   debugRagdollDisabler: 0
---- !u!114 &3103356086065203241
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8363574200510345622}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0e4d858381b56c448d132c03c5c771a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  rootTransform: {fileID: 2498330595957626671}
-  hipsTransform: {fileID: 6415793643202986417}
-  ragdollRoot: {fileID: 4870725441017383592}
 --- !u!1 &9060422909739577700
 GameObject:
   m_ObjectHideFlags: 0

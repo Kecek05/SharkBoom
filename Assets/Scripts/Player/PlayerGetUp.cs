@@ -30,6 +30,7 @@ public class PlayerGetUp : NetworkBehaviour
         Vector3.right
     };
 
+    private Vector3 lastCheckedPosition;
     public void TriggerGetUp()
     {
         if (!IsOwner) return;
@@ -90,8 +91,9 @@ public class PlayerGetUp : NetworkBehaviour
             for (int i = 0; i < MAX_ATTEMPTS; i++)
             {
                 Vector3 testPos = startPos + direction * (i * STEP_SIZE);
+                lastCheckedPosition = testPos;
 
-                if(IsCapsuleFreeAt(testPos))
+                if (IsCapsuleFreeAt(testPos))
                 {
                     return testPos;
                 }
@@ -112,5 +114,18 @@ public class PlayerGetUp : NetworkBehaviour
         return isFree && IsOnGround;
     }
 
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.cyan;
 
+        Vector3 capsuleBottom = lastCheckedPosition + Vector3.up * capsuleRadius;
+        Vector3 capsuleTop = lastCheckedPosition + Vector3.up * (capsuleHeight - capsuleRadius);
+
+        Gizmos.DrawWireSphere(capsuleBottom, capsuleRadius);
+        Gizmos.DrawWireSphere(capsuleTop, capsuleRadius);
+        Gizmos.DrawLine(capsuleBottom + Vector3.forward * capsuleRadius, capsuleTop + Vector3.forward * capsuleRadius);
+        Gizmos.DrawLine(capsuleBottom + Vector3.back * capsuleRadius, capsuleTop + Vector3.back * capsuleRadius);
+        Gizmos.DrawLine(capsuleBottom + Vector3.left * capsuleRadius, capsuleTop + Vector3.left * capsuleRadius);
+        Gizmos.DrawLine(capsuleBottom + Vector3.right * capsuleRadius, capsuleTop + Vector3.right * capsuleRadius);
+    }
 }
