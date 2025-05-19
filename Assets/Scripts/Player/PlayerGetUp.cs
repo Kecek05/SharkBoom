@@ -3,13 +3,21 @@ using UnityEngine;
 
 public class PlayerGetUp : NetworkBehaviour
 {
-
+    [Header("References")]
     [SerializeField] private Transform rootTransform;
     [SerializeField] private Transform hipsTransform;
     [SerializeField] private Transform ragdollRoot;
 
-    private float verticalOffset = 0f;
+    [Header("Settings")]
+    private float capsuleRadius = 0.5f;
+    private float capsuleHeight = 2f;
+    private LayerMask[] layersToDetectCollision;
 
+    private const int MAX_ATTEMPTS = 10;
+    private const float VERTICAL_STEP = 0.1f;
+    private bool isInGoodPosition = false;
+
+    private float verticalOffset;
     private Quaternion originalHipRotation;
     private Quaternion originalRootRotation;
     private Quaternion ragdollRootRotation;
@@ -17,7 +25,6 @@ public class PlayerGetUp : NetworkBehaviour
 
     public void HitRecieveNotify()
     {
-
         if (!IsOwner) return;
         RequestCacheOriginalPosServerRpc();
     }
@@ -46,21 +53,38 @@ public class PlayerGetUp : NetworkBehaviour
 
     public void GetUpPlayer()
     {
-        Vector3 newPosition = hipsTransform.position;
-        newPosition.y -= verticalOffset;  // correcting the y axis 
+        Vector3 targetPos = hipsTransform.position;
+        targetPos.y -= verticalOffset;  // correcting the y axis 
 
         if (Physics.Raycast(hipsTransform.position, Vector3.down, out RaycastHit hit, 5f)) // check if we hit the ground for not reset in the ground
         {
-            float groundY = hit.point.y;
+            targetPos.y = Mathf.Max(targetPos.y, hit.point.y);
+        }
 
-            if (newPosition.y < groundY)
+        Vector3 capsuleBottom = targetPos + Vector3.up * capsuleHeight;
+        Vector3 capsuleTop = targetPos + Vector3.up * (capsuleHeight - capsuleRadius);
+
+        for(int i = 0; i < MAX_ATTEMPTS; i++)
+        {
+            if (!Physics.CheckCapsule(capsuleBottom, capsuleTop, capsuleRadius, LayerMask.GetMask("Default")))
             {
-                newPosition.y = groundY;
+                isInGoodPosition = true;
+                break;
             }
+
+            targetPos.y += VERTICAL_STEP;
+            capsuleBottom += Vector3.up * capsuleHeight;
+            capsuleTop += Vector3.up * VERTICAL_STEP;
+        }
+        
+        if(!isInGoodPosition)
+        {
+            Debug.LogWarning("No good position found to get up player");
+            return;
         }
 
         // Send all for original rotation, basead on new position
-        rootTransform.SetPositionAndRotation(newPosition, originalRootRotation);
+        rootTransform.SetPositionAndRotation(targetPos, originalRootRotation);
         hipsTransform.rotation = originalHipRotation;
         ragdollRoot.rotation = ragdollRootRotation;
     }
