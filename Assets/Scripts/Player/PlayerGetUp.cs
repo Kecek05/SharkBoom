@@ -17,7 +17,11 @@ public class PlayerGetUp : NetworkBehaviour
     private const int MAX_ATTEMPTS = 10;
     private const int STEP_SIZE = 1;
     private bool isInGoodPosition = false;
-    [SerializeField] private bool isOnGround;
+    private NetworkVariable<bool> isOnGround = new NetworkVariable<bool>(
+        default,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Owner
+    );
 
     private float verticalOffset;
     private Quaternion originalHipRotation;
@@ -37,6 +41,8 @@ public class PlayerGetUp : NetworkBehaviour
     public void InitializeOwner()
     {
         BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
+
+        Debug.Log($"[OwnerCheck] IsOwner: {IsOwner} | IsHost: {IsHost} | IsClient: {IsClient} | OwnerClientId: {NetworkObject.OwnerClientId} | LocalClientId: {NetworkManager.Singleton.LocalClientId}");
     }
 
     public void TriggerForCacheOriginalPos()
@@ -60,7 +66,7 @@ public class PlayerGetUp : NetworkBehaviour
 
     private void CacheOriginalPos()
     {
-        isOnGround = true;
+        isOnGround.Value = true;
         originalHipRotation = hipsTransform.rotation;
         originalRootRotation = rootTransform.rotation;
         ragdollRootRotation = ragdollRoot.rotation;
@@ -88,8 +94,11 @@ public class PlayerGetUp : NetworkBehaviour
     private void RequestGetUpPlayerClientRpc()
     {
         Debug.Log("Standup - chegou no client");
+
+        if (!IsOwner) return; 
+        Debug.Log("Standup - chegou no Owner");
         Debug.Log($"Standup - isOnGround = {isOnGround}");
-        if (!isOnGround) return;
+        if (!isOnGround.Value) return;
 
         GetUpPlayer();
         Debug.Log("Standup - RequestGetUpPlayerClientRpc()");
@@ -119,6 +128,7 @@ public class PlayerGetUp : NetworkBehaviour
         rootTransform.SetPositionAndRotation(finalPos, originalRootRotation);
         hipsTransform.rotation = originalHipRotation;
         ragdollRoot.rotation = ragdollRootRotation;
+        isOnGround.Value = false;
     }
 
     private Vector3 GetFreePosition(Vector3 startPos)
