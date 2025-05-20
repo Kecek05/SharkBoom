@@ -17,6 +17,8 @@ public class PlayerItemSingleUI : MonoBehaviour
     [SerializeField] private Button selectThisItemButton;
     //[SerializeField] private TextMeshProUGUI itemInventoryIndexText;
     [SerializeField] private Image backgroundImage;
+    [SerializeField] private GameObject itemCanBeUsedObj;
+    [SerializeField] private TextMeshProUGUI itemDamageText;
     private PlayerInventoryUI playerInventoryUI;
 
     private int myIndexItemInventory;
@@ -34,11 +36,12 @@ public class PlayerItemSingleUI : MonoBehaviour
         });
     }
 
-    public void Setup(string itemName, Sprite itemIcon, string itemCooldown, bool itemCanBeUsed, int indexItemInventory, PlayerInventoryUI _playerInventoryUI)
+    public void Setup(string itemName, Sprite itemIcon, string itemCooldown, bool itemCanBeUsed, int indexItemInventory, float itemDamage ,PlayerInventoryUI _playerInventoryUI)
     {
         itemNameText.text = itemName;
         itemImageIcon.sprite = itemIcon;
         itemCooldownText.text = itemCooldown;
+        itemDamageText.text = itemDamage.ToString();
 
         //itemCanBeUsedText.text = itemCanBeUsed.ToString();
 
@@ -57,6 +60,14 @@ public class PlayerItemSingleUI : MonoBehaviour
     public void UpdateCanBeUsed(bool itemCanBeUsed)
     {
         //itemCanBeUsedText.text = itemCanBeUsed.ToString();
+        if(itemCanBeUsed)
+        {
+            itemCanBeUsedObj.SetActive(false);
+        }
+        else
+        {
+            itemCanBeUsedObj.SetActive(true);
+        }
     }
 
     public void SelectedThisItem()
