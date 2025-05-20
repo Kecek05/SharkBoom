@@ -53,10 +53,9 @@ public class PlayerGetUp : NetworkBehaviour
         Debug.Log("Hit trigger - Chamou no Client para cachar as variavies");
     }
 
-    [Rpc(SendTo.ClientsAndHost)]
+    [Rpc(SendTo.Owner)]
     private void CacheOriginalPosClientRpc()
     {
-        if (!IsOwner) return;
         Debug.Log("Hit trigger - Cache original Pos");
         CacheOriginalPos();
     }
@@ -97,6 +96,7 @@ public class PlayerGetUp : NetworkBehaviour
 
     private void GetUpPlayer()
     {
+        Debug.Log("Player get up");
         Vector3 initialPosOfPlayer = hipsTransform.position;
         initialPosOfPlayer.y -= verticalOffset;  // correcting the y axis 
 
