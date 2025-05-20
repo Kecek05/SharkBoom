@@ -65,6 +65,9 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
             case PlayerState.DragReleaseJump:
                 HandleOnShoot();
                 break;
+            case PlayerState.MyTurnEnded:
+                DespawnItem();
+                break;
         }
     }
 

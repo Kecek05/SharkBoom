@@ -8,7 +8,7 @@ public class PlayerDragController : DragAndShoot
         {
             TurnOnDrag();
         } 
-        else if (state == PlayerState.DragReleaseJump || state == PlayerState.DragReleaseItem || state == PlayerState.IdleEnemyTurn)
+        else if (state == PlayerState.DragReleaseJump || state == PlayerState.DragReleaseItem || state == PlayerState.IdleEnemyTurn || state == PlayerState.MyTurnEnded)
         {
             TurnOffDrag();
             ResetDrag();

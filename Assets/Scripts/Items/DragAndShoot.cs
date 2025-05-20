@@ -279,6 +279,7 @@ public class DragAndShoot : NetworkBehaviour
         SetCanDrag(false);
         SetIsDragging(false);
         SetCanCancelDrag(false);
+        trajectory.Hide();
     }
 
     protected void TurnOnDrag()
