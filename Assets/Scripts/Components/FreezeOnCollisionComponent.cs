@@ -1,25 +1,23 @@
-using Unity.Netcode;
 using UnityEngine;
 
-public class FreezeOnCollisionComponent : NetworkBehaviour
+public class FreezeOnCollisionComponent : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Rigidbody rb;
     [SerializeField] private BaseCollisionController baseCollisionController;
 
-    public override void OnGainedOwnership()
+    private void Start()
     {
         baseCollisionController.OnCollidedWithPlayer += BaseCollisionController_OnCollidedWithPlayer;
     }
 
     private void BaseCollisionController_OnCollidedWithPlayer(PlayerThrower playerThrower)
     {
-        if (!IsOwner) return;
         Debug.Log("Stop moving");
         rb.isKinematic = true; // Freeze the object
     }
 
-    public override void OnLostOwnership()
+    private void OnDestroy()
     {
         baseCollisionController.OnCollidedWithPlayer -= BaseCollisionController_OnCollidedWithPlayer;
     }

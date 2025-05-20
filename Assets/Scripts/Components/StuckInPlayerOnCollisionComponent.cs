@@ -1,22 +1,20 @@
 using System.Collections;
-using Unity.Netcode;
 using UnityEngine;
 
-public class StuckInPlayerOnCollisionNetworkedComponent : NetworkBehaviour
+public class StuckInPlayerOnCollisionComponent : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private FollowTransformComponent followTransformComponent;
     [SerializeField] private BaseCollisionController baseCollisionController;
     private bool isFollowing = false;
 
-    public override void OnGainedOwnership()
+    private void Start()
     {
         baseCollisionController.OnCollided += BaseCollisionController_OnCollided;
     }
 
-    private void BaseCollisionController_OnCollided(GameObject collidedObject)
+    private void BaseCollisionController_OnCollided(GameObject collidedObject) //Need to listen to OnCollided to follow the collided, not the player rot
     {
-        if (!IsOwner) return;
 
         if(isFollowing) return; //Already following a player
 
@@ -36,7 +34,7 @@ public class StuckInPlayerOnCollisionNetworkedComponent : NetworkBehaviour
         followTransformComponent.EnableComponent();
     }
 
-    public override void OnLostOwnership()
+    private void OnDestroy()
     {
         baseCollisionController.OnCollided -= BaseCollisionController_OnCollided;
     }

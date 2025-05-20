@@ -95,6 +95,11 @@ Rigidbody:
   m_CorrespondingSourceObject: {fileID: 3276833342041568220, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
   m_PrefabInstance: {fileID: 2848737264724986900}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &851746441201601633 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3196075323839971445, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
+  m_PrefabInstance: {fileID: 2848737264724986900}
+  m_PrefabAsset: {fileID: 0}
 --- !u!65 &4196873844735081561 stripped
 BoxCollider:
   m_CorrespondingSourceObject: {fileID: 2141169102940942413, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
@@ -172,7 +177,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   baseCollisionController: {fileID: 8091387058931432021}
-  meshToHide: {fileID: 6020880011412641438}
+  meshToHide: {fileID: 851746441201601633}
   hideOnCollisionWithPlayer: 1
   hideOnCollisionWithAnything: 0
 --- !u!114 &863358975546306568
