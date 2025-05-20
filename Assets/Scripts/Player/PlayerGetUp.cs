@@ -51,9 +51,10 @@ public class PlayerGetUp : NetworkBehaviour
         CacheOriginalPosClientRpc();
     }
 
-    [Rpc(SendTo.Owner)]
+    [Rpc(SendTo.ClientsAndHost)]
     private void CacheOriginalPosClientRpc()
     {
+        if(!IsOwner) return;
         CacheOriginalPos();
     }
 
@@ -65,7 +66,7 @@ public class PlayerGetUp : NetworkBehaviour
         ragdollRootRotation = ragdollRoot.rotation;
 
         verticalOffset = hipsTransform.position.y - rootTransform.position.y;
-        Debug.Log($"isOnGround = {isOnGround}");
+        Debug.Log($"Standup - isOnGround = {isOnGround}");
     }
 
     private void HandleOnItemCallbackAction()
@@ -87,7 +88,7 @@ public class PlayerGetUp : NetworkBehaviour
     private void RequestGetUpPlayerClientRpc()
     {
         Debug.Log("Standup - chegou no client");
-        Debug.Log($"isOnGround = {isOnGround}");
+        Debug.Log($"Standup - isOnGround = {isOnGround}");
         if (!isOnGround) return;
 
         GetUpPlayer();
