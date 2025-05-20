@@ -17,6 +17,7 @@ public class PlayerGetUp : NetworkBehaviour
     private const int MAX_ATTEMPTS = 10;
     private const int STEP_SIZE = 1;
     private bool isInGoodPosition = false;
+    [SerializeField] private bool isInGround;
 
     private float verticalOffset;
     private Quaternion originalHipRotation;
@@ -53,16 +54,18 @@ public class PlayerGetUp : NetworkBehaviour
         Debug.Log("Hit trigger - Chamou no Client para cachar as variavies");
     }
 
-    [Rpc(SendTo.Owner)]
+    [Rpc(SendTo.ClientsAndHost)]
     private void CacheOriginalPosClientRpc()
     {
-        Debug.Log("Hit trigger - Cache original Pos");
+        if(!IsOwner) return;
         CacheOriginalPos();
     }
 
     private void CacheOriginalPos()
     {
         Debug.Log("Hit trigger - Cachou todas as variáveis");
+
+        isInGround = true;
         originalHipRotation = hipsTransform.rotation;
         originalRootRotation = rootTransform.rotation;
         ragdollRootRotation = ragdollRoot.rotation;
@@ -72,12 +75,10 @@ public class PlayerGetUp : NetworkBehaviour
 
     private void HandleOnItemCallbackAction()
     {
-        Debug.Log("Hit trigger - HandleOnItemCallbackAction");
-        if (IsOwner)
-        {
-            RequestGetUpPlayerServerRpc();
-            Debug.Log("Hit trigger - Request Get Up Player");
-        }
+        if (!IsOwner) return;
+        
+        RequestGetUpPlayerServerRpc();
+        Debug.Log("Hit trigger - Request Get Up Player");
     }
 
     [Rpc(SendTo.Server)]
@@ -96,7 +97,9 @@ public class PlayerGetUp : NetworkBehaviour
 
     private void GetUpPlayer()
     {
-        Debug.Log("Player get up");
+        if(!isInGround) return;
+
+        Debug.Log("Hit trigger- Player get up final");
         Vector3 initialPosOfPlayer = hipsTransform.position;
         initialPosOfPlayer.y -= verticalOffset;  // correcting the y axis 
 

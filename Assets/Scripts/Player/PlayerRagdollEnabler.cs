@@ -113,7 +113,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         EnableRagdollClientRpc();
     }
 
-    [Rpc(SendTo.ClientsAndHost)]
+    [Rpc(SendTo.Owner)]
     private void EnableRagdollClientRpc()
     {
         EnableRagdoll();
@@ -121,7 +121,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     private void EnableRagdoll()
     {
-        Debug.Log("Hit trigger - Here we be enable to cache original pos, compare if the time is the same");
         foreach (Rigidbody ragdollRb in ragdollRbs)
         {
             ragdollRb.isKinematic = false;
@@ -133,6 +132,8 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         }
 
         animator.enabled = false;
+
+        Debug.Log($"Hit trigger - Enable Ragdoll {animator.enabled}");
     }
 
 
@@ -163,6 +164,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             ragdollCollider.enabled = false;
         }
 
+        Debug.Log($"Hit trigger - Disable Ragdoll {animator.enabled}");
     }
 
     public void UnInitializeOwner()
