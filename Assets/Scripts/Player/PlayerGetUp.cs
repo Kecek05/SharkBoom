@@ -17,7 +17,7 @@ public class PlayerGetUp : NetworkBehaviour
     private const int MAX_ATTEMPTS = 10;
     private const int STEP_SIZE = 1;
     private bool isInGoodPosition = false;
-    [SerializeField] private bool isInGround;
+    [SerializeField] private bool isOnGround;
 
     private float verticalOffset;
     private Quaternion originalHipRotation;
@@ -41,31 +41,25 @@ public class PlayerGetUp : NetworkBehaviour
 
     public void TriggerForCacheOriginalPos()
     {
-        Debug.Log("Hit trigger - iria chamar no player get up para cachar as variavies");
         if (!IsOwner) return;
         RequestCacheOriginalPosServerRpc();
-        Debug.Log("Hit trigger - Chamou no server para cachar as variavies");
     }
 
     [Rpc(SendTo.Server)]
     private void RequestCacheOriginalPosServerRpc()
     {
         CacheOriginalPosClientRpc();
-        Debug.Log("Hit trigger - Chamou no Client para cachar as variavies");
     }
 
-    [Rpc(SendTo.ClientsAndHost)]
+    [Rpc(SendTo.Owner)]
     private void CacheOriginalPosClientRpc()
     {
-        if(!IsOwner) return;
         CacheOriginalPos();
     }
 
     private void CacheOriginalPos()
     {
-        Debug.Log("Hit trigger - Cachou todas as variáveis");
-
-        isInGround = true;
+        isOnGround = true;
         originalHipRotation = hipsTransform.rotation;
         originalRootRotation = rootTransform.rotation;
         ragdollRootRotation = ragdollRoot.rotation;
@@ -75,31 +69,26 @@ public class PlayerGetUp : NetworkBehaviour
 
     private void HandleOnItemCallbackAction()
     {
-        if (!IsOwner) return;
-        
+        if (!IsOwner || !isOnGround)
+            return;
+
         RequestGetUpPlayerServerRpc();
-        Debug.Log("Hit trigger - Request Get Up Player");
     }
 
     [Rpc(SendTo.Server)]
     private void RequestGetUpPlayerServerRpc()
     {
         RequestGetUpPlayerClientRpc();
-        Debug.Log("Hit trigger - Request CLient");
     }
 
     [Rpc(SendTo.Owner)]
     private void RequestGetUpPlayerClientRpc()
     {
         GetUpPlayer();
-        Debug.Log("Hit trigger - Request GetUp");
     }
 
     private void GetUpPlayer()
     {
-        if(!isInGround) return;
-
-        Debug.Log("Hit trigger- Player get up final");
         Vector3 initialPosOfPlayer = hipsTransform.position;
         initialPosOfPlayer.y -= verticalOffset;  // correcting the y axis 
 
