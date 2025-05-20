@@ -42,13 +42,13 @@ public class Trajectory : MonoBehaviour
 
         for (int i = 0; i < dotsNumber; i++)
         {
-            dotsList[i] = Instantiate(dotPrefab2D, dotsParent.transform).transform; // Create dots based on the number of dots variable
-            dotsList[i].position = dotsParent.transform.position; // set the dots position to the parent position (in player)
-            dotsList[i].gameObject.SetActive(false); // hide the dots, because we will show them when the distance is enough
+            dotsList[i] = Instantiate(dotPrefab2D, dotsParent.transform).transform;
+            dotsList[i].position = dotsParent.transform.position; // set dots pos to parent
+            dotsList[i].gameObject.SetActive(false);
         }
     }
 
-    public void UpdateDots(Vector2 objectPos, Vector2 forceApplied, float maxForce, Rigidbody2D rb) 
+    public void UpdateDots(Vector2 objectPos, Vector2 forceApplied, float maxForce, Rigidbody rb) 
     {
         trajectoryPoints.Add(objectPos);
         SimulateTrajectory(objectPos, forceApplied, rb);
@@ -75,22 +75,22 @@ public class Trajectory : MonoBehaviour
         }
     }
 
-    private void SimulateTrajectory(Vector2 objectPos, Vector2 forceApplied, Rigidbody2D rb)
+    private void SimulateTrajectory(Vector2 objectPos, Vector2 forceApplied, Rigidbody rb)
     {
         if (!isSimulating) return;
 
-        Physics2D.simulationMode = SimulationMode2D.Script;
+        Physics.simulationMode = SimulationMode.Script;
 
         GameObject ghostObj = new GameObject("Ghost");
-        Rigidbody2D ghost = ghostObj.AddComponent<Rigidbody2D>();
+        Rigidbody ghost = ghostObj.AddComponent<Rigidbody>();
 
         ghost.mass = rb.mass;
         ghost.linearDamping = rb.linearDamping;
         ghost.angularDamping = rb.angularDamping;
-        ghost.gravityScale = rb.gravityScale;
+        ghost.useGravity = rb.useGravity;
         ghost.position = objectPos;
         ghost.linearVelocity = forceApplied / ghost.mass;
-        ghost.bodyType = RigidbodyType2D.Dynamic;
+        ghost.isKinematic = false;
 
         trajectoryPoints.Clear();
         
@@ -99,10 +99,10 @@ public class Trajectory : MonoBehaviour
         {
             float timeStep = Time.fixedDeltaTime;
             trajectoryPoints.Add(ghost.position);
-            Physics2D.Simulate(timeStep);
+            Physics.Simulate(timeStep);
         }
 
-        Physics2D.simulationMode = SimulationMode2D.FixedUpdate;
+        Physics.simulationMode = SimulationMode.FixedUpdate;
         Destroy(ghostObj);
 
     }

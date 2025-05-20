@@ -20,7 +20,7 @@ public class PlayerThrower : NetworkBehaviour
     [SerializeField] private PlayerDragController playerDragController;
     [SerializeField] private PlayerLauncher playerLauncher;
     [SerializeField] private PlayerDetectFacingDirection playerDetectFacingDirection;
-    [SerializeField] private Collider2D playerTouchColl;
+    [SerializeField] private Collider playerTouchColl;
     [SerializeField] private GameObject[] playerColliders;
     [SerializeField] private PlayerSpawnItemOnHand playerSpawnItemOnHand;
     [SerializeField] private FollowSelectedSocketComponent followSelectedSocketComponent;

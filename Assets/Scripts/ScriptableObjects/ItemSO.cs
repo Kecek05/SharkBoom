@@ -9,7 +9,7 @@ public class ItemSO : ScriptableObject
     public GameObject itemPrefab;
     public string itemName;
     public Sprite itemIcon;
-    public Rigidbody2D rb;
+    public Rigidbody rb;
     [Space(5)]
 
     [BetterHeader("Item Settings", 12)]
