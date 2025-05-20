@@ -65,12 +65,13 @@ public class PlayerGetUp : NetworkBehaviour
         ragdollRootRotation = ragdollRoot.rotation;
 
         verticalOffset = hipsTransform.position.y - rootTransform.position.y;
+        Debug.Log($"isOnGround = {isOnGround}");
     }
 
     private void HandleOnItemCallbackAction()
     {
-        if (!IsOwner || !isOnGround)
-            return;
+        Debug.Log("Standup - Handle ItemCallback");
+        if (!IsOwner) return;
 
         RequestGetUpPlayerServerRpc();
     }
@@ -79,16 +80,23 @@ public class PlayerGetUp : NetworkBehaviour
     private void RequestGetUpPlayerServerRpc()
     {
         RequestGetUpPlayerClientRpc();
+        Debug.Log("Standup - RequestGetUpPlayerClientRpc()");
     }
 
-    [Rpc(SendTo.Owner)]
+    [Rpc(SendTo.ClientsAndHost)]
     private void RequestGetUpPlayerClientRpc()
     {
+        Debug.Log("Standup - chegou no client");
+        Debug.Log($"isOnGround = {isOnGround}");
+        if (!isOnGround) return;
+
         GetUpPlayer();
+        Debug.Log("Standup - RequestGetUpPlayerClientRpc()");
     }
 
     private void GetUpPlayer()
     {
+        Debug.Log("Standup - GetUpPlayer()");
         Vector3 initialPosOfPlayer = hipsTransform.position;
         initialPosOfPlayer.y -= verticalOffset;  // correcting the y axis 
 
