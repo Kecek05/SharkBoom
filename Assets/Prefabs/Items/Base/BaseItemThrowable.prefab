@@ -85,10 +85,10 @@ PrefabInstance:
       addedObject: {fileID: 863358975546306568}
     - targetCorrespondingSourceObject: {fileID: 8360590805627951754, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2821005733342969686}
+      addedObject: {fileID: 8410119999329485946}
     - targetCorrespondingSourceObject: {fileID: 8360590805627951754, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8410119999329485946}
+      addedObject: {fileID: 750170554083014730}
   m_SourcePrefab: {fileID: 100100000, guid: 6d3e48e203320a040bb7a18c6dd6c924, type: 3}
 --- !u!54 &788439871958220744 stripped
 Rigidbody:
@@ -194,21 +194,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseCollisionController: {fileID: 8091387058931432021}
   knockbackStrength: 0
---- !u!114 &2821005733342969686
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6020880011412641438}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 534fbfe2a7af99a47bbb1dfeed5bbc6b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  followTransformComponent: {fileID: 5217706511134153581}
-  baseCollisionController: {fileID: 8091387058931432021}
 --- !u!114 &8410119999329485946
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -221,8 +206,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c717a077a1b6e384bb3600e107c5a2c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
   rb: {fileID: 788439871958220744}
+  baseCollisionController: {fileID: 8091387058931432021}
+--- !u!114 &750170554083014730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6020880011412641438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f682d66df4d23bc4f85c93a570719d3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  followTransformComponent: {fileID: 5217706511134153581}
   baseCollisionController: {fileID: 8091387058931432021}
 --- !u!114 &8091387058931432021 stripped
 MonoBehaviour:

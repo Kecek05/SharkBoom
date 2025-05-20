@@ -13,12 +13,14 @@ public class StuckInPlayerOnCollisionComponent : MonoBehaviour
         baseCollisionController.OnCollided += BaseCollisionController_OnCollided;
     }
 
-    private void BaseCollisionController_OnCollided(GameObject collidedObject) //Need to listen to OnCollided to follow the collided, not the player rot
+    private void BaseCollisionController_OnCollided(GameObject collidedObject) 
     {
+        //Need to listen to OnCollided to follow the collided, not the player rot
+        if (isFollowing) return;
 
-        if(isFollowing) return; //Already following a player
+        if (collidedObject.transform.parent == null) return;
 
-        if (collidedObject.gameObject.TryGetComponent(out PlayerThrower playerThrower))
+        if (collidedObject.transform.parent.TryGetComponent(out PlayerThrower playerThrower)) //Get Component from the parent Obj, The Player Obj
         {
             //its a player
             isFollowing = true;
