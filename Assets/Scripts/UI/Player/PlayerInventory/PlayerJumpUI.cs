@@ -21,6 +21,7 @@ public class PlayerJumpUI : NetworkBehaviour
 
         if (JUMP_ITEM_INVENTORY_INDEX == itemInventoryIndex)
         {
+            UpdateCanBeUsed(true);
             SelectedThisItem();
         }
         else
