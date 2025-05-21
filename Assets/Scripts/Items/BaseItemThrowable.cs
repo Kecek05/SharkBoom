@@ -132,6 +132,12 @@ public abstract class BaseItemThrowable : NetworkBehaviour
                     gameObject.layer = PlayersPublicInfoManager.PLAYER_2_LAYER;
                 }
                 break;
+            case PlayableState.None:
+                foreach (GameObject gameObject in objectsToChangeLayer)
+                {
+                    gameObject.layer = PlayersPublicInfoManager.NO_DEFINED_PLAYER_LAYER;
+                }
+                break;
         }
         Debug.Log($"SetCollision: {playableState} | Layer: {gameObject.layer}");
     }
@@ -187,6 +193,8 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     private void DestroyOnServerRpc()
     {
         Debug.Log("DESTROY ITEM");
-        myNetworkObject.Despawn(true); // Pass 'true' to also destroy the GameObject
+        SetCollision(PlayableState.None); //Set the collision to none
+        NetworkObjectPool.Instance.ReturnNetworkObject(myNetworkObject, myNetworkObject.gameObject); // Return the object to the pool
+        //myNetworkObject.Despawn(true); // Pass 'true' to also destroy the GameObject
     }
 }

@@ -99,8 +99,8 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
     [Rpc(SendTo.Server)]
     private void InstantiateObjServerRpc(ulong ownerClientId, Vector3 selectedSocketPos, int itemSOIndex)
     {
-        NetworkObject spawnedItemNetworkObject = Instantiate(playerInventory.GetItemSOByItemSOIndex(itemSOIndex).itemPrefab, selectedSocketPos, Quaternion.identity).GetComponent<NetworkObject>();
-        spawnedItemNetworkObject.Spawn();
+        NetworkObject spawnedItemNetworkObject = NetworkObjectPool.Instance.GetNetworkObject(playerInventory.GetItemSOByItemSOIndex(itemSOIndex).itemPrefab, selectedSocketPos, Quaternion.identity);
+        //spawnedItemNetworkObject.Spawn();
         spawnedItemNetworkObject.ChangeOwnership(ownerClientId);
 
         if(IsServer && !IsHost) //Only DS, cuz host will get the ref in the CallOnItemOnHandClientRpc
