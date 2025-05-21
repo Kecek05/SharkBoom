@@ -95,8 +95,9 @@ public class PlayerGetUp : NetworkBehaviour
     {
         Debug.Log("Standup - chegou no client");
 
-        if (!IsOwner) return; 
+        if (!IsOwner) return;
         Debug.Log("Standup - chegou no Owner");
+
         Debug.Log($"Standup - isOnGround = {isOnGround}");
         if (!isOnGround.Value) return;
 
