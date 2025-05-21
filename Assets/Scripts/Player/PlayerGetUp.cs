@@ -34,6 +34,7 @@ public class PlayerGetUp : NetworkBehaviour
     };
 
     private Vector3 lastCheckedPosition;
+    private Vector3 finalPosition;
 
     public void InitializeOwner()
     {
@@ -105,16 +106,32 @@ public class PlayerGetUp : NetworkBehaviour
         }
 
         Vector3 getFinalPos = GetFreePosition(initialPosOfPlayer);
-        Vector3 finalPos = new Vector3(getFinalPos.x, getFinalPos.y, originalRootPosition.z);
+        finalPosition = new Vector3(getFinalPos.x, getFinalPos.y, originalRootPosition.z);
 
-        if (!IsCapsuleFreeAt(finalPos))
+        if (!IsCapsuleFreeAt(finalPosition))
         {
             Debug.LogWarning("No free position found to get up player");
             return;
         }
 
-        // Send all for original rotation, basead on new position
-        rootTransform.SetPositionAndRotation(finalPos, originalRootRotation);
+        PassPlayerFreePoosServerRpc();
+        
+    }
+
+    [Rpc(SendTo.Server)]
+    private void PassPlayerFreePoosServerRpc()
+    {
+        PassPlayerFreePoosClientRpc();
+    }
+
+    private void PassPlayerFreePoosClientRpc()
+    {
+        PassPlayerFreePoos();
+    }
+
+    private void PassPlayerFreePoos()
+    {
+        rootTransform.SetPositionAndRotation(finalPosition, originalRootRotation);
         hipsTransform.rotation = originalHipRotation;
         ragdollRoot.rotation = ragdollRootRotation;
         isFallen = false;
