@@ -31,29 +31,6 @@ public class PlayerInventory : NetworkBehaviour
 
     public bool CanInteractWithInventory => canInteractWithInventory; //DEBUG
 
-    [Command("printInventory", MonoTargetType.All)]
-    private void PrintItemsInventory()
-    {
-        if (!IsOwner) return;
-
-        foreach(ItemInventoryData item in playerItemsInventory)
-        {
-            Debug.Log($"Item {GetItemSOByItemSOIndex(item.itemSOIndex).itemName} - Index: {item.itemInventoryIndex} | Item SO Index: {item.itemSOIndex} | Item Can Be Used: {item.itemCanBeUsed} | Item Cooldown Remaining: {item.itemCooldownRemaining}");
-        }
-    }
-
-    //public override void OnNetworkSpawn()
-    //{
-    //    if(IsOwner)
-    //    {
-    //        if(playerItemsInventory.Count > 0)
-    //        {
-    //            ResyncReconnect();
-    //            Debug.Log("ResyncReconnect called in OnNetworkSpawn");
-    //        }
-    //    }
-    //}
-
     public void InitializeOwner()
     {
         if(!IsOwner) return;
@@ -258,7 +235,6 @@ public class PlayerInventory : NetworkBehaviour
     private void SetCanInteractWithInventory(bool canInteract)
     {
         canInteractWithInventory = canInteract;
-        Debug.Log($"SetCanInteractWithInventory - {canInteractWithInventory}");
     }
 
     private void SetSelectedItemInventoryIndex(int newItemInventoryIndex)
@@ -268,21 +244,7 @@ public class PlayerInventory : NetworkBehaviour
         OnItemSelected?.Invoke(selectedItemInventoryIndex);
 
         OnItemSelectedSO?.Invoke(GetItemSOByItemSOIndex(playerItemsInventory[selectedItemInventoryIndex].itemSOIndex));
-        Debug.Log($"Selected item inventory index: {selectedItemInventoryIndex}");
     }
-
-    //public override void OnGainedOwnership()
-    //{
-    //    //for(int i = 1; i < playerItemsInventory.Count; i++)
-    //    //{
-    //    //    //Need to be a for to start from index 1, index 0 is Jump
-    //    //    OnItemAdded?.Invoke(playerItemsInventory[i]);
-    //    //}
-
-    //    //Reselect an item
-
-
-    //}
 
     public void HandleOnGainOwnership()
     {
@@ -293,7 +255,6 @@ public class PlayerInventory : NetworkBehaviour
         }
 
         SelectItemDataByItemInventoryIndex(SelectFirstItemInventoryIndexAvailable());
-        Debug.Log($"ResyncReconnect called - Items in inventory: {playerItemsInventory.Count} - OwnerId: {OwnerClientId}");
     }
 
     public override void OnNetworkDespawn()

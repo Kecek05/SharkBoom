@@ -2,7 +2,6 @@ using NUnit.Framework.Interfaces;
 using QFSW.QC;
 using Sortify;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
@@ -18,7 +17,6 @@ public class PlayerInventoryUI : NetworkBehaviour
 
     [BetterHeader("References")]
     [SerializeField] private GameObject playerInventoryUIBackground;
-    //[SerializeField] private PlayerThrower player;
     [SerializeField] private Transform inventoryItemHolder;
     [SerializeField] private GameObject playerItemSingleUIPrefab;
     [SerializeField] private Button jumpButton;
@@ -28,20 +26,16 @@ public class PlayerInventoryUI : NetworkBehaviour
     [SerializeField] private ItemsListSO itemsListSO;
     [SerializeField] private Canvas inventoryCanvas;
 
-    private Camera mainCam;
-    private Camera cameraUi;
-    //[SerializeField] private PlayerInventory playerInventory;
+    private Camera cameraUI;
 
     private List<PlayerItemSingleUI> playerItemSingleUIs = new();
-    //private NetworkList<ItemInventoryData> playerItemInventoryData = new();
+
 
     private void Awake()
     {
         jumpButton.onClick.AddListener(() =>
         {
             SelecItem(0); //Jump Index
-
-            //player.PlayerInventory.SelectItemDataByItemInventoryIndex(0); //Jump Index
         });
 
         openInventoryButton.onClick.AddListener(ToggleInventory);
@@ -52,36 +46,21 @@ public class PlayerInventoryUI : NetworkBehaviour
         HideInventory();
         HideInventoryButton();
 
-        mainCam = ServiceLocator.Get<Camera>();
+        SetupInventoryWorldCamera();
+    }
 
-        UniversalAdditionalCameraData data = mainCam.GetComponent<UniversalAdditionalCameraData>();
+    private void SetupInventoryWorldCamera()
+    {
+        UniversalAdditionalCameraData data = ServiceLocator.Get<Camera>().GetComponent<UniversalAdditionalCameraData>();
         List<Camera> stack = data.cameraStack;
 
         if (stack != null)
         {
             foreach (var overlayCam in stack)
-                cameraUi = overlayCam;
+                cameraUI = overlayCam;
         }
 
-        inventoryCanvas.worldCamera = cameraUi;
-
-        //Get the camera that renders the UI
-
-        //inventoryCanvas.worldCamera = 
-        //if (!IsOwner)
-        //{
-
-        //    return;
-        //}
-
-        //Owner Code below
-
-        //player.PlayerInventory.OnItemAdded += PlayerInventory_OnItemAdded;
-        //player.PlayerInventory.OnItemChanged += PlayerInventory_OnItemChanged;
-        //player.PlayerInventory.OnItemSelected += PlayerInventory_OnItemSelected;
-
-        //player.PlayerStateMachine.OnStateChanged += PlayerStateMachine_OnStateChanged;
-
+        inventoryCanvas.worldCamera = cameraUI;
     }
 
     public void HandleOnPlayerStateMachineStateChanged(PlayerState state)
@@ -115,7 +94,6 @@ public class PlayerInventoryUI : NetworkBehaviour
         }
 
         HideInventory();
-        //UpdateOpenInventoryButton();
     }
 
     public void HandleOnPlayerInventoryItemChanged(ItemInventoryData itemData)
@@ -144,22 +122,14 @@ public class PlayerInventoryUI : NetworkBehaviour
 
         //Add item on list
         PlayerItemSingleUI playerItemSingleUI = Instantiate(playerItemSingleUIPrefab, inventoryItemHolder).GetComponent<PlayerItemSingleUI>();
-        playerItemSingleUI.Setup(itemsListSO.allItemsSOList[itemData.itemSOIndex].itemName, itemsListSO.allItemsSOList[itemData.itemSOIndex].itemIcon, itemData.itemCooldownRemaining.ToString(), itemData.itemCanBeUsed, itemData.itemInventoryIndex, 0, this);
+        playerItemSingleUI.Setup(itemsListSO.allItemsSOList[itemData.itemSOIndex].itemName, itemsListSO.allItemsSOList[itemData.itemSOIndex].itemIcon, itemData.itemCooldownRemaining, itemData.itemCanBeUsed, itemData.itemInventoryIndex, itemsListSO.allItemsSOList[itemData.itemSOIndex].damageableSO.damage, this);
         playerItemSingleUIs.Add(playerItemSingleUI);
-
-        Debug.Log($"Spawned Item: {playerItemSingleUI.gameObject.name} - {itemsListSO.allItemsSOList[itemData.itemSOIndex].itemName} - Index: {itemData.itemInventoryIndex} | Item SO Index: {itemData.itemSOIndex} | Item Can Be Used: {itemData.itemCanBeUsed} | Item Cooldown Remaining: {itemData.itemCooldownRemaining}");
-        //UpdateOpenInventoryButton();
     }
 
 
     public void SelecItem(int itemInventoryIndex)
     {
         OnItemSelectedByUI?.Invoke(itemInventoryIndex); //Notify the player that an item was selected by UI
-
-        //UpdateOpenInventoryButton();
-        //HideInventory(); //hide only when selecting an item
-
-        Debug.Log($"Item Selected By UI - Item Inventory index: {itemInventoryIndex}");
     }
 
     public void UpdateOpenInventoryButton(Sprite itemIcon)
@@ -201,23 +171,6 @@ public class PlayerInventoryUI : NetworkBehaviour
         openInventoryBackground.SetActive(true);
     }
 
-    //public override void OnGainedOwnership()
-    //{
-    //    Debug.Log($"PlayerInventoryUI Gained Ownership, new owner is: {OwnerClientId}");
-    //    //playerInventory.ResyncReconnect();
-    //    //foreach(PlayerItemSingleUI playerItemSingleUI in playerItemSingleUIs)
-    //    //{
-    //    //    PlayerItemSingleUI updatedPlayerItemSingle = Instantiate(playerItemSingleUIPrefab, inventoryItemHolder).GetComponent<PlayerItemSingleUI>();
-    //    //    updatedPlayerItemSingle.Setup(playerItemSingleUI.GetItemName(), playerItemSingleUI.GetItemIcon(), playerItemSingleUI.GetItemCooldown(), false, playerItemSingleUI.GetIndexItemInventory(), this);
-    //    //    Debug.Log($"Updated Item: {updatedPlayerItemSingle.gameObject.name} - {updatedPlayerItemSingle.GetItemName()} - Index: {updatedPlayerItemSingle.GetIndexItemInventory()} | Item Cooldown Remaining: {updatedPlayerItemSingle.GetItemCooldown()}");
-
-    //    //}
-
-    //    OnPlayerInventoryGainOwnership?.Invoke();
-
-
-    //}
-
     public void HandleOnGainOwnership()
     {
         ShowInventory();
@@ -229,19 +182,4 @@ public class PlayerInventoryUI : NetworkBehaviour
         HideInventory();
         HideInventoryButton();
     }
-
-    //DEBUG
-    [Command("checkImOwnerInventoryUI", MonoTargetType.All)]
-    private void CheckImOwnerInventoryUI()
-    {
-        Debug.Log($"Server is the Owner of InventoryUI? {IsOwnedByServer} - OwnerId: {OwnerClientId}");
-
-        if (!IsOwner)
-        {
-            return;
-        }
-
-        transform.position = new Vector3(transform.position.x, transform.position.y + 5f, transform.position.z);
-    }
-
 }
