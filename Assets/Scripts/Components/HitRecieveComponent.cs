@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class HitHandleComponent : MonoBehaviour, IRecieveHit
+public class HitRecieveComponent : MonoBehaviour, IRecieveHit
 {
     public event Action OnHitRecieve;
 

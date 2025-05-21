@@ -25,7 +25,7 @@ public class PlayerThrower : NetworkBehaviour
     [SerializeField] private PlayerSpawnItemOnHand playerSpawnItemOnHand;
     [SerializeField] private FollowSelectedSocketComponent followSelectedSocketComponent;
     [SerializeField] private PlayerRagdollEnabler playerRagdollEnabler;
-    [SerializeField] private HitHandleComponent hitRecieveNetworked;
+    [SerializeField] private HitRecieveComponent hitRecieveNetworked;
     [SerializeField] private PlayerKnockbackListener playerKnockbackListener;
     [SerializeField] private PlayerGetUp playerGetUp;
 

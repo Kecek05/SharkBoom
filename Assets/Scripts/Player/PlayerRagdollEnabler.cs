@@ -126,10 +126,14 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             ragdollRb.isKinematic = false;
         }
 
+        Debug.Log($"Standup - {ragdollRbs.Length}");
+
         foreach (Collider ragdollCollider in ragdollColliders)
         {
             ragdollCollider.enabled = true;
         }
+
+        Debug.Log($"Standup - {ragdollColliders.Length}");
 
         animator.enabled = false;
 
