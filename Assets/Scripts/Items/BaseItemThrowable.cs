@@ -141,6 +141,18 @@ public abstract class BaseItemThrowable : NetworkBehaviour
         if(!IsOwner) return; // Only the server should call the callback action
 
         turnManager.PlayerPlayed(thisItemLaucherData.ownerPlayableState);
+        ItemCallbackServerRpc();
+    }
+
+    [Rpc(SendTo.Server)]
+    private void ItemCallbackServerRpc()
+    {
+        ItemCallbackClientRpc();
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void ItemCallbackClientRpc()
+    {
         OnItemCallbackAction?.Invoke();
     }
 

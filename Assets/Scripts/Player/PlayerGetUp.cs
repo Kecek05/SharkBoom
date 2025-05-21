@@ -17,6 +17,7 @@ public class PlayerGetUp : NetworkBehaviour
     private const int MAX_ATTEMPTS = 10;
     private const int STEP_SIZE = 1;
     private bool isInGoodPosition = false;
+    private bool isFallen = false;
 
     private float verticalOffset;
     private Quaternion originalHipRotation;
@@ -40,29 +41,26 @@ public class PlayerGetUp : NetworkBehaviour
 
     public void TriggerForCacheOriginalPos()
     {
-        Debug.Log("Hit trigger - iria chamar no player get up para cachar as variavies");
         if (!IsOwner) return;
         RequestCacheOriginalPosServerRpc();
-        Debug.Log("Hit trigger - Chamou no server para cachar as variavies");
     }
 
     [Rpc(SendTo.Server)]
     private void RequestCacheOriginalPosServerRpc()
     {
         CacheOriginalPosClientRpc();
-        Debug.Log("Hit trigger - Chamou no Client para cachar as variavies");
     }
 
-    [Rpc(SendTo.Owner)]
+    [Rpc(SendTo.ClientsAndHost)]
     private void CacheOriginalPosClientRpc()
     {
-        Debug.Log("Hit trigger - Cache original Pos");
+        if(!IsOwner) return;
         CacheOriginalPos();
     }
 
     private void CacheOriginalPos()
     {
-        Debug.Log("Hit trigger - Cachou todas as variáveis");
+        isFallen = true;
         originalHipRotation = hipsTransform.rotation;
         originalRootRotation = rootTransform.rotation;
         ragdollRootRotation = ragdollRoot.rotation;
@@ -72,31 +70,29 @@ public class PlayerGetUp : NetworkBehaviour
 
     private void HandleOnItemCallbackAction()
     {
-        Debug.Log("Hit trigger - HandleOnItemCallbackAction");
-        if (IsOwner)
-        {
-            RequestGetUpPlayerServerRpc();
-            Debug.Log("Hit trigger - Request Get Up Player");
-        }
+        if(!IsOwner) return;
+
+        RequestGetUpPlayerServerRpc();
     }
 
     [Rpc(SendTo.Server)]
     private void RequestGetUpPlayerServerRpc()
     {
         RequestGetUpPlayerClientRpc();
-        Debug.Log("Hit trigger - Request CLient");
     }
 
-    [Rpc(SendTo.Owner)]
+    [Rpc(SendTo.ClientsAndHost)]
     private void RequestGetUpPlayerClientRpc()
     {
+        if (!IsOwner) return;
+
+        if (!isFallen) return;
+
         GetUpPlayer();
-        Debug.Log("Hit trigger - Request GetUp");
     }
 
     private void GetUpPlayer()
     {
-        Debug.Log("Player get up");
         Vector3 initialPosOfPlayer = hipsTransform.position;
         initialPosOfPlayer.y -= verticalOffset;  // correcting the y axis 
 
@@ -112,12 +108,12 @@ public class PlayerGetUp : NetworkBehaviour
             Debug.LogWarning("No free position found to get up player");
             return;
         }
-        
 
         // Send all for original rotation, basead on new position
         rootTransform.SetPositionAndRotation(finalPos, originalRootRotation);
         hipsTransform.rotation = originalHipRotation;
         ragdollRoot.rotation = ragdollRootRotation;
+        isFallen = false;
     }
 
     private Vector3 GetFreePosition(Vector3 startPos)

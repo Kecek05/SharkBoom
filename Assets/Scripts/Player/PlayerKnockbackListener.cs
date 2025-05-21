@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerKnockbackListenerNetworked : MonoBehaviour, IRecieveKnockback
+public class PlayerKnockbackListener : MonoBehaviour, IRecieveKnockback
 {
     [SerializeField] private PlayerRagdollEnabler playerRagdollEnabler;
 
