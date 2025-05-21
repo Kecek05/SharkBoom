@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using Unity.Netcode;
 using UnityEngine; 
 
@@ -58,7 +56,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     public void TriggerRagdoll(float knockbackStrength, Vector3 hitPoint)
     {
-        RequestRagdollServerRpc();
 
         Rigidbody hitRigidbody = null;
         float closestDistance = float.MaxValue;
@@ -89,34 +86,25 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             return;
         }
 
-        Debug.Log($"Force: {force}");
-        AddForceToOtherServerRpc(closestIndex, force, hitPoint);
+        TriggerRagdollServerRpc(closestIndex, force, hitPoint);
     }
 
     [Rpc(SendTo.Server)]
-    private void AddForceToOtherServerRpc(int hitRigidbodyIndex, Vector3 force, Vector3 hitPoint)
+    private void TriggerRagdollServerRpc(int hitRigidbodyIndex, Vector3 force, Vector3 hitPoint)
     {
-        AddForceToOtherClientRpc(hitRigidbodyIndex, force, hitPoint);
+        TriggerRagdollClientRpc(hitRigidbodyIndex, force, hitPoint);
     }
 
-    [Rpc(SendTo.Owner)]
-    private void AddForceToOtherClientRpc(int hitRigidbodyIndex, Vector3 force, Vector3 hitPoint)
-    {
-        Rigidbody hitRigidbody = ragdollRbs[hitRigidbodyIndex]; // get the rb we hit
-        hitRigidbody.AddForceAtPosition(force, hitPoint, ForceMode.Impulse);
-    }
-
-
-    [Rpc(SendTo.Server)]
-    private void RequestRagdollServerRpc()
-    {
-        EnableRagdollClientRpc();
-    }
-
-    [Rpc(SendTo.Owner)]
-    private void EnableRagdollClientRpc()
+    [Rpc(SendTo.ClientsAndHost)]
+    private void TriggerRagdollClientRpc(int hitRigidbodyIndex, Vector3 force, Vector3 hitPoint)
     {
         EnableRagdoll();
+
+        if (IsOwner)
+        {
+            Rigidbody hitRigidbody = ragdollRbs[hitRigidbodyIndex]; // get the rb we hit
+            hitRigidbody.AddForceAtPosition(force, hitPoint, ForceMode.Impulse);
+        }
     }
 
     private void EnableRagdoll()
@@ -126,18 +114,12 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             ragdollRb.isKinematic = false;
         }
 
-        Debug.Log($"Standup - {ragdollRbs.Length}");
-
         foreach (Collider ragdollCollider in ragdollColliders)
         {
             ragdollCollider.enabled = true;
         }
 
-        Debug.Log($"Standup - {ragdollColliders.Length}");
-
         animator.enabled = false;
-
-        Debug.Log($"Standup - Enable Ragdoll {animator.enabled}");
     }
 
 
@@ -168,7 +150,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             ragdollCollider.enabled = false;
         }
 
-        Debug.Log($"Standup - Disable Ragdoll {animator.enabled}");
     }
 
     public void UnInitializeOwner()
