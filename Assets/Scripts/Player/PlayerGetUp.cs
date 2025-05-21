@@ -78,9 +78,10 @@ public class PlayerGetUp : NetworkBehaviour
     private void HandleOnItemCallbackAction()
     {
         Debug.Log("Standup - Handle ItemCallback");
-        if (!IsOwner) return;
-
-        RequestGetUpPlayerServerRpc();
+        if (IsOwner)
+        {
+            RequestGetUpPlayerServerRpc();
+        }
     }
 
     [Rpc(SendTo.Server)]
@@ -123,7 +124,6 @@ public class PlayerGetUp : NetworkBehaviour
             Debug.LogWarning("No free position found to get up player");
             return;
         }
-        
 
         // Send all for original rotation, basead on new position
         rootTransform.SetPositionAndRotation(finalPos, originalRootRotation);

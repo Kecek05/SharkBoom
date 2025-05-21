@@ -133,7 +133,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
         animator.enabled = false;
 
-        Debug.Log($"Hit trigger - Enable Ragdoll {animator.enabled}");
+        Debug.Log($"Standup - Enable Ragdoll {animator.enabled}");
     }
 
 
@@ -164,7 +164,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             ragdollCollider.enabled = false;
         }
 
-        Debug.Log($"Hit trigger - Disable Ragdoll {animator.enabled}");
+        Debug.Log($"Standup - Disable Ragdoll {animator.enabled}");
     }
 
     public void UnInitializeOwner()
