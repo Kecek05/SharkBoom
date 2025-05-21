@@ -20,6 +20,7 @@ public class PlayerGetUp : NetworkBehaviour
     private bool isFallen = false;
 
     private float verticalOffset;
+    private Vector3 originalRootPosition;
     private Quaternion originalHipRotation;
     private Quaternion originalRootRotation;
     private Quaternion ragdollRootRotation;
@@ -64,8 +65,10 @@ public class PlayerGetUp : NetworkBehaviour
         originalHipRotation = hipsTransform.rotation;
         originalRootRotation = rootTransform.rotation;
         ragdollRootRotation = ragdollRoot.rotation;
+        originalRootPosition = rootTransform.position;
 
         verticalOffset = hipsTransform.position.y - rootTransform.position.y;
+        
     }
 
     private void HandleOnItemCallbackAction()
@@ -88,10 +91,10 @@ public class PlayerGetUp : NetworkBehaviour
 
         if (!isFallen) return;
 
-        GetUpPlayer();
+        CalculatePlayerFreePos();
     }
 
-    private void GetUpPlayer()
+    private void CalculatePlayerFreePos()
     {
         Vector3 initialPosOfPlayer = hipsTransform.position;
         initialPosOfPlayer.y -= verticalOffset;  // correcting the y axis 
@@ -101,9 +104,10 @@ public class PlayerGetUp : NetworkBehaviour
             initialPosOfPlayer.y = Mathf.Max(initialPosOfPlayer.y, hit.point.y);
         }
 
-        Vector3 finalPos = GetFreePosition(initialPosOfPlayer);
+        Vector3 getFinalPos = GetFreePosition(initialPosOfPlayer);
+        Vector3 finalPos = new Vector3(getFinalPos.x, getFinalPos.y, originalRootPosition.z);
 
-        if(!IsCapsuleFreeAt(finalPos))
+        if (!IsCapsuleFreeAt(finalPos))
         {
             Debug.LogWarning("No free position found to get up player");
             return;
@@ -151,18 +155,4 @@ public class PlayerGetUp : NetworkBehaviour
         BaseItemThrowable.OnItemCallbackAction -= HandleOnItemCallbackAction;
     }
 
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.cyan;
-
-        Vector3 capsuleBottom = lastCheckedPosition + Vector3.up * capsuleRadius;
-        Vector3 capsuleTop = lastCheckedPosition + Vector3.up * (capsuleHeight - capsuleRadius);
-
-        Gizmos.DrawWireSphere(capsuleBottom, capsuleRadius);
-        Gizmos.DrawWireSphere(capsuleTop, capsuleRadius);
-        Gizmos.DrawLine(capsuleBottom + Vector3.forward * capsuleRadius, capsuleTop + Vector3.forward * capsuleRadius);
-        Gizmos.DrawLine(capsuleBottom + Vector3.back * capsuleRadius, capsuleTop + Vector3.back * capsuleRadius);
-        Gizmos.DrawLine(capsuleBottom + Vector3.left * capsuleRadius, capsuleTop + Vector3.left * capsuleRadius);
-        Gizmos.DrawLine(capsuleBottom + Vector3.right * capsuleRadius, capsuleTop + Vector3.right * capsuleRadius);
-    }
 }
