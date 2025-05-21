@@ -124,6 +124,7 @@ public class PlayerGetUp : NetworkBehaviour
         PassPlayerFreePoosClientRpc();
     }
 
+    [Rpc(SendTo.ClientsAndHost)]
     private void PassPlayerFreePoosClientRpc()
     {
         PassPlayerFreePoos();
