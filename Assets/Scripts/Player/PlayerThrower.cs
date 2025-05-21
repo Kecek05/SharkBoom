@@ -1,6 +1,5 @@
 using QFSW.QC;
 using Sortify;
-using System;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -28,6 +27,7 @@ public class PlayerThrower : NetworkBehaviour
     [SerializeField] private HitRecieveComponent hitRecieveNetworked;
     [SerializeField] private PlayerKnockbackListener playerKnockbackListener;
     [SerializeField] private PlayerGetUp playerGetUp;
+    [SerializeField] private PlayerJumpUI playerJumpUI;
 
     private PlayerStateMachine playerStateMachine;
 
@@ -49,18 +49,15 @@ public class PlayerThrower : NetworkBehaviour
         turnManager = ServiceLocator.Get<BaseTurnManager>();
 
         thisPlayableState.OnValueChanged += PlayableStateInitialize;
+        hitRecieveNetworked.OnHitRecieve += HandleOnHitRecieve;
 
 
         PlayableStateInitialize(thisPlayableState.Value, thisPlayableState.Value);
-
-        //if (!IsHost) // host will add itself twice
-        //    PlayableStateInitialize(thisPlayableState.Value, thisPlayableState.Value);
 
         playerTouchColl.enabled = false;
 
         //DEBUG
         gameObject.name = "Player " + UnityEngine.Random.Range(0, 10000);
-        hitRecieveNetworked.OnHitRecieve += HandleOnHitRecieve;
 
     }
 
@@ -239,6 +236,7 @@ public class PlayerThrower : NetworkBehaviour
         playerDragController.SetDragRb(playerInventory.GetSelectedItemSO().rb);
 
         playerInventoryUI.HandleOnPlayerInventoryItemSelected(selectedItemInventoryIndex);
+        playerJumpUI.HandleOnPlayerInventoryItemSelected(selectedItemInventoryIndex);
 
         playerSpawnItemOnHand.HandleOnPlayerInventoryItemSelected(selectedItemInventoryIndex);
     }
@@ -246,6 +244,7 @@ public class PlayerThrower : NetworkBehaviour
     private void HandleOnItemChanged(ItemInventoryData itemChanged)
     {
         playerInventoryUI.HandleOnPlayerInventoryItemChanged(itemChanged);
+        playerJumpUI.HandleOnPlayerInventoryItemChanged(itemChanged);
     }
 
     private void HandleOnItemAdded(ItemInventoryData itemAdded)
@@ -332,19 +331,6 @@ public class PlayerThrower : NetworkBehaviour
         playerStateMachine.TransitionTo(playerStateMachine.idleEnemyTurnState);
         turnManager.PlayerPlayed(turnManager.LocalPlayableState);
 
-    }
-
-    //DEBUG
-    [Command("checkImOwner", MonoTargetType.All)]
-    private void CheckImOwner()
-    {
-
-        if (!IsOwner)
-        {
-            return;
-        }
-
-        transform.position = new Vector3(transform.position.x, transform.position.y + 5f, transform.position.z);
     }
 
     private void PlayableStateInitialize(PlayableState previousValue, PlayableState newValue)
