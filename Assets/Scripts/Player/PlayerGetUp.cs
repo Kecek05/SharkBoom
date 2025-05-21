@@ -17,11 +17,7 @@ public class PlayerGetUp : NetworkBehaviour
     private const int MAX_ATTEMPTS = 10;
     private const int STEP_SIZE = 1;
     private bool isInGoodPosition = false;
-    private NetworkVariable<bool> isOnGround = new NetworkVariable<bool>(
-        default,
-        NetworkVariableReadPermission.Everyone,
-        NetworkVariableWritePermission.Owner
-    );
+    private bool isFallen = false;
 
     private float verticalOffset;
     private Quaternion originalHipRotation;
@@ -41,8 +37,6 @@ public class PlayerGetUp : NetworkBehaviour
     public void InitializeOwner()
     {
         BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
-
-        Debug.Log($"[OwnerCheck] IsOwner: {IsOwner} | IsHost: {IsHost} | IsClient: {IsClient} | OwnerClientId: {NetworkObject.OwnerClientId} | LocalClientId: {NetworkManager.Singleton.LocalClientId}");
     }
 
     public void TriggerForCacheOriginalPos()
@@ -66,49 +60,39 @@ public class PlayerGetUp : NetworkBehaviour
 
     private void CacheOriginalPos()
     {
-        isOnGround.Value = true;
+        isFallen = true;
         originalHipRotation = hipsTransform.rotation;
         originalRootRotation = rootTransform.rotation;
         ragdollRootRotation = ragdollRoot.rotation;
 
         verticalOffset = hipsTransform.position.y - rootTransform.position.y;
-        Debug.Log($"Standup - isOnGround = {isOnGround}");
     }
 
     private void HandleOnItemCallbackAction()
     {
-        Debug.Log("Standup - Handle ItemCallback");
-        if (IsOwner)
-        {
-            RequestGetUpPlayerServerRpc();
-        }
+        if(!IsOwner) return;
+
+        RequestGetUpPlayerServerRpc();
     }
 
     [Rpc(SendTo.Server)]
     private void RequestGetUpPlayerServerRpc()
     {
         RequestGetUpPlayerClientRpc();
-        Debug.Log("Standup - RequestGetUpPlayerClientRpc()");
     }
 
     [Rpc(SendTo.ClientsAndHost)]
     private void RequestGetUpPlayerClientRpc()
     {
-        Debug.Log("Standup - chegou no client");
-
         if (!IsOwner) return;
-        Debug.Log("Standup - chegou no Owner");
 
-        Debug.Log($"Standup - isOnGround = {isOnGround}");
-        if (!isOnGround.Value) return;
+        if (!isFallen) return;
 
         GetUpPlayer();
-        Debug.Log("Standup - RequestGetUpPlayerClientRpc()");
     }
 
     private void GetUpPlayer()
     {
-        Debug.Log("Standup - GetUpPlayer()");
         Vector3 initialPosOfPlayer = hipsTransform.position;
         initialPosOfPlayer.y -= verticalOffset;  // correcting the y axis 
 
@@ -129,7 +113,7 @@ public class PlayerGetUp : NetworkBehaviour
         rootTransform.SetPositionAndRotation(finalPos, originalRootRotation);
         hipsTransform.rotation = originalHipRotation;
         ragdollRoot.rotation = ragdollRootRotation;
-        isOnGround.Value = false;
+        isFallen = false;
     }
 
     private Vector3 GetFreePosition(Vector3 startPos)
