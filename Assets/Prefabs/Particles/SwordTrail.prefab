@@ -110,7 +110,7 @@ TrailRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Time: 0.3
-  m_PreviewTimeScale: 0.2
+  m_PreviewTimeScale: 1
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1
@@ -181,7 +181,7 @@ TrailRenderer:
     numCapVertices: 90
     alignment: 0
     textureMode: 2
-    textureScale: {x: 1, y: 6.15}
+    textureScale: {x: 1, y: 3}
     shadowBias: 0.5
     generateLightingData: 0
   m_MinVertexDistance: 0.1
@@ -199,11 +199,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 79afe580eb691c94fa99cc6d3079b899, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.37942898
+      value: 0.12154129
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 79afe580eb691c94fa99cc6d3079b899, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.3769164
+      value: 2.507323
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 79afe580eb691c94fa99cc6d3079b899, type: 3}
       propertyPath: m_LocalPosition.z
@@ -211,19 +211,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 79afe580eb691c94fa99cc6d3079b899, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.97713876
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 79afe580eb691c94fa99cc6d3079b899, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 79afe580eb691c94fa99cc6d3079b899, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 79afe580eb691c94fa99cc6d3079b899, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: 0.21260256
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 79afe580eb691c94fa99cc6d3079b899, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -235,7 +235,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 79afe580eb691c94fa99cc6d3079b899, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
+      value: 24.55
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 79afe580eb691c94fa99cc6d3079b899, type: 3}
       propertyPath: m_Name
