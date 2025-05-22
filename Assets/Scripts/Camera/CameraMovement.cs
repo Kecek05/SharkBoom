@@ -40,7 +40,9 @@ public class CameraMovement : NetworkBehaviour
 
     private void InputReader_OnTouchPressEvent(InputAction.CallbackContext context)
     {
-        if (context.started && this.enabled == true) // When we press the screen
+        if (!enabled) return;
+
+        if (context.started) // When we press the screen
         {
             dragMoveActive = true;
             MoveStarted();
@@ -54,7 +56,11 @@ public class CameraMovement : NetworkBehaviour
 
     private void InputReader_OnPrimaryFingerPositionEvent(InputAction.CallbackContext context)
     {
-        if (dragMoveActive && this.enabled == true) // this.enabled is to check if the camera state is on move
+        if (!enabled) return;
+
+        if (cameraManager.CameraZoom.IsZooming) return;
+
+        if (dragMoveActive)
         {
             Vector2 currentTouchPosition = context.ReadValue<Vector2>(); // Get the current position of the finger while the finger is on the screen
 
@@ -88,6 +94,12 @@ public class CameraMovement : NetworkBehaviour
             Mathf.Clamp(cameraManager.CameraObjectToFollow.position.y + moveDir.y, minMovY, maxMovY),  
             cameraManager.CameraObjectToFollow.position.z 
         );  // Basically we get the pos of camera and add the movement direction of the camera, and clamp the values to the min and max values
+    }
+
+    public void ResetDrag()
+    {
+        dragMoveActive = false;
+        lastTouchPosition = Vector2.zero;
     }
 
     public void UnInitializeOwner()

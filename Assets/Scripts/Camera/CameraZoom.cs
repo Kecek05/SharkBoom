@@ -29,6 +29,8 @@ public class CameraZoom : NetworkBehaviour
 
     [SerializeField] private float zoomAmountChange = 0.5f;
 
+    public bool IsZooming { get; private set; }
+
     public void InitializeOwner()
     {
         if (!IsOwner) return;
@@ -41,15 +43,21 @@ public class CameraZoom : NetworkBehaviour
 
     private void InputReader_OnSecondaryTouchContactEvent(InputAction.CallbackContext context)
     {
-        if (context.started && this.enabled)
+        if (!enabled) return;
+
+        if (context.started)
         {
+            IsZooming = true;
             cameraManager.CameraMovement.enabled = false;
+            cameraManager.CameraMovement.ResetDrag();
             ZoomStarted(); // when we have two fingers on the screen
         }
 
-        if (context.canceled) 
+        if (context.canceled)
         {
             ZoomEnded();
+            IsZooming = false;
+            cameraManager.CameraMovement.ResetDrag();
             cameraManager.CameraMovement.enabled = true;
         }
     }

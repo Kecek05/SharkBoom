@@ -69,9 +69,6 @@ public class CameraManager : NetworkBehaviour
     {
         switch (playerState)
         {
-            default:
-                CameraMove();
-                break;
             case PlayerState.IdleEnemyTurn:
             case PlayerState.IdleMyTurn:
                 CameraMove();
