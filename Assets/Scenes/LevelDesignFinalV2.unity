@@ -8419,7 +8419,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5103511765406356202, guid: f9225153bba78ec48a05242415304141, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 12.2
+      value: 28.4
       objectReference: {fileID: 0}
     - target: {fileID: 5103511765406356202, guid: f9225153bba78ec48a05242415304141, type: 3}
       propertyPath: m_LocalPosition.y
@@ -8430,12 +8430,28 @@ PrefabInstance:
       value: 19.2
       objectReference: {fileID: 0}
     - target: {fileID: 5800948517502787491, guid: f9225153bba78ec48a05242415304141, type: 3}
+      propertyPath: TrailModule.textureScale.x
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5800948517502787491, guid: f9225153bba78ec48a05242415304141, type: 3}
+      propertyPath: TrailModule.textureScale.y
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5800948517502787491, guid: f9225153bba78ec48a05242415304141, type: 3}
+      propertyPath: TrailModule.lifetime.scalar
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5800948517502787491, guid: f9225153bba78ec48a05242415304141, type: 3}
+      propertyPath: TrailModule.sizeAffectsWidth
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5800948517502787491, guid: f9225153bba78ec48a05242415304141, type: 3}
       propertyPath: InitialModule.maxNumParticles
       value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 5800948517502787491, guid: f9225153bba78ec48a05242415304141, type: 3}
       propertyPath: InitialModule.startSize.scalar
-      value: 0.1
+      value: 0.09
       objectReference: {fileID: 0}
     - target: {fileID: 5800948517502787491, guid: f9225153bba78ec48a05242415304141, type: 3}
       propertyPath: SizeModule.curve.maxCurve.m_Curve.Array.data[1].time
