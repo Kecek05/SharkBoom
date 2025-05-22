@@ -25,7 +25,7 @@ public class CameraManager : NetworkBehaviour
     public CameraMovement CameraMovement => cameraMovement;
     public CinemachineCamera CinemachineCamera => cinemachineCamera;
     public Camera CameraMain => cameraMain;
-
+    
     public void InitializeOwner()
     {
         if (!IsOwner) return;
@@ -86,6 +86,7 @@ public class CameraManager : NetworkBehaviour
                 CameraTurnOff();
                 break;
         }
+        Debug.Log($"Camera - {playerState} - Camera move state {cameraMovement.enabled == true}");
     }
 
     /// <summary>
@@ -94,27 +95,35 @@ public class CameraManager : NetworkBehaviour
     /// <param name="movement">CameraMovement Script</param>
     /// <param name="zoom">CameraZoom Script</param>
     /// <param name="following">Camera following</param>
-    private void SetCameraModules(bool movement, bool zoom, bool following)
+    public void SetCameraModules(bool movement, bool zoom, bool following)
     {
         cameraMovement.enabled = movement;
         cameraZoom.enabled = zoom;
         cameraFollowing.enabled = following;
     }
 
-    private void CameraMove() => SetCameraModules(true, true, false);
-    private void CameraDragging() => SetCameraModules(false, true, false);
+    private void CameraMove()
+    {
+        SetCameraModules(true, true, false);
+    }
+
+    private void CameraDragging()
+    {
+        SetCameraModules(false, true, false);
+    }
+    
     private void CameraFollowing() => SetCameraModules(false, false, true);
 
     private void CameraReposOnPlayer()
     {
         SetCameraModules(false, false, true);
-        cameraFollowing.SetTarget(playerObj.transform, false, 3f, onComplete: CameraMove);
+        cameraFollowing.SetTarget(playerObj.transform, false, 0.5f, onComplete: CameraMove);
     }
 
     private void CameraReposOnEnemy()
     {
         SetCameraModules(false, false, true);
-        cameraFollowing.SetTarget(enemyObj.transform, false, 3f, onComplete: CameraMove);
+        cameraFollowing.SetTarget(enemyObj.transform, false, 0.5f, onComplete: CameraMove);
     }
 
     private void CameraTurnOff()

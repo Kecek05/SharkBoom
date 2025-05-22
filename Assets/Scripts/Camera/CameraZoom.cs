@@ -38,27 +38,21 @@ public class CameraZoom : NetworkBehaviour
         inputReader.OnSecondaryTouchContactEvent += InputReader_OnSecondaryTouchContactEvent;
         inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
         inputReader.OnSecondaryFingerPositionEvent += InputReader_OnSecondaryFingerPositionEvent;
-
     }
 
     private void InputReader_OnSecondaryTouchContactEvent(InputAction.CallbackContext context)
     {
-        if (!enabled) return;
+        if (!this.enabled) return;
 
         if (context.started)
         {
-            IsZooming = true;
-            cameraManager.CameraMovement.enabled = false;
-            cameraManager.CameraMovement.ResetDrag();
-            ZoomStarted(); // when we have two fingers on the screen
+            cameraManager.SetCameraModules(false, true, false);
+            ZoomStarted();
         }
 
         if (context.canceled)
         {
             ZoomEnded();
-            IsZooming = false;
-            cameraManager.CameraMovement.ResetDrag();
-            cameraManager.CameraMovement.enabled = true;
         }
     }
 
