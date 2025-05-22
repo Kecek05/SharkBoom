@@ -189,12 +189,21 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     }
 
 
+    [Rpc(SendTo.ClientsAndHost)]
+    private void DestroyOnClientRpc()
+    {
+        SetCollision(PlayableState.None); //Set the collision to none
+    }
+
+
     [Rpc(SendTo.Server)]
     private void DestroyOnServerRpc()
     {
         Debug.Log("DESTROY ITEM");
         SetCollision(PlayableState.None); //Set the collision to none
-        NetworkObjectPool.Instance.ReturnNetworkObject(myNetworkObject, myNetworkObject.gameObject); // Return the object to the pool
-        //myNetworkObject.Despawn(true); // Pass 'true' to also destroy the GameObject
+        NetworkObjectPool.Instance.ReturnNetworkObject(myNetworkObject, itemSO.itemIndex); // Return the object to the pool
+        myNetworkObject.Despawn(true); // Pass 'true' to also destroy the GameObject
+
+        DestroyOnClientRpc();
     }
 }
