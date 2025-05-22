@@ -14,15 +14,16 @@ public class HideMeshOnCollisionComponent : MonoBehaviour
     [SerializeField] private bool hideOnCollisionWithPlayer = true;
     [SerializeField] private bool hideOnCollisionWithAnything = true;
 
-    private void Start()
+
+    private void OnEnable()
     {
-        if(hideOnCollisionWithAnything)
+        if (hideOnCollisionWithAnything)
         {
             baseCollisionController.OnCollided += BaseCollisionController_OnCollided;
         }
 
 
-        if(hideOnCollisionWithPlayer)
+        if (hideOnCollisionWithPlayer)
         {
             baseCollisionController.OnCollidedWithPlayer += BaseCollisionController_OnCollidedWithPlayer;
         }
@@ -43,7 +44,12 @@ public class HideMeshOnCollisionComponent : MonoBehaviour
         meshToHide.SetActive(false);
     }
 
-    private void OnDestroy()
+    private void ShowMesh()
+    {
+        meshToHide.SetActive(true);
+    }
+
+    private void OnDisable()
     {
         if (hideOnCollisionWithAnything)
         {
@@ -55,5 +61,8 @@ public class HideMeshOnCollisionComponent : MonoBehaviour
         {
             baseCollisionController.OnCollidedWithPlayer -= BaseCollisionController_OnCollidedWithPlayer;
         }
+
+        ShowMesh(); //Show cuz Obj Pool
     }
+
 }

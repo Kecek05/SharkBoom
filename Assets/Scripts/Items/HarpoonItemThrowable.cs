@@ -12,9 +12,6 @@ public class HarpoonItemThrowable : BaseItemThrowable
 
         collisionController.OnCollided += OnCollided; //Subscribe to the collision event
     }
-
-
-
     public override void ItemReleased(ItemLauncherData itemLauncherData)
     {
         base.ItemReleased(itemLauncherData);
