@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -7,7 +8,6 @@ public class PlayerGetUp : NetworkBehaviour
     [Header("References")]
     [SerializeField] private Transform rootTransform;
     [SerializeField] private Transform hipsTransform;
-    [SerializeField] private Transform ragdollRoot;
 
     [Header("Settings")]
     [SerializeField] private float capsuleRadius = 0.5f;
@@ -16,25 +16,26 @@ public class PlayerGetUp : NetworkBehaviour
 
     private const int MAX_ATTEMPTS = 10;
     private const int STEP_SIZE = 1;
-    private bool isInGoodPosition = false;
     private bool isFallen = false;
 
     private float verticalOffset;
-    private Vector3 originalRootPosition;
-    private Quaternion originalHipRotation;
-    private Quaternion originalRootRotation;
-    private Quaternion ragdollRootRotation;
+    private float OriginalRootZ;
 
-    private Vector3[] directions =
+    private Vector3 finalPosition;
+
+    private Vector2[] directions =
     {
-        Vector3.up,
-        Vector3.down,
-        Vector3.left,
-        Vector3.right
+        Vector2.up,
+        Vector2.down,
+        Vector2.left,
+        Vector2.right,
+        (Vector2.up + Vector2.right).normalized,
+        (Vector2.up + Vector2.left).normalized,
+        (Vector2.down + Vector2.right).normalized,
+        (Vector2.down + Vector2.left).normalized,
     };
 
-    private Vector3 lastCheckedPosition;
-    private Vector3 finalPosition;
+    private List<Vector2> debugTestPositions = new List<Vector2>();
 
     public void InitializeOwner()
     {
@@ -56,26 +57,20 @@ public class PlayerGetUp : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost)]
     private void CacheOriginalPosClientRpc()
     {
-        if(!IsOwner) return;
+        if (!IsOwner) return;
         CacheOriginalPos();
     }
 
     private void CacheOriginalPos()
     {
         isFallen = true;
-        originalHipRotation = hipsTransform.rotation;
-        originalRootRotation = rootTransform.rotation;
-        ragdollRootRotation = ragdollRoot.rotation;
-        originalRootPosition = rootTransform.position;
-
+        OriginalRootZ = rootTransform.position.z;
         verticalOffset = hipsTransform.position.y - rootTransform.position.y;
-        
     }
 
     private void HandleOnItemCallbackAction()
     {
-        if(!IsOwner) return;
-
+        if (!IsOwner) return;
         RequestGetUpPlayerServerRpc();
     }
 
@@ -97,25 +92,30 @@ public class PlayerGetUp : NetworkBehaviour
 
     private void CalculatePlayerFreePos()
     {
+        debugTestPositions.Clear();
         Vector3 initialPosOfPlayer = hipsTransform.position;
         initialPosOfPlayer.y -= verticalOffset;  // correcting the y axis 
 
-        if (Physics.Raycast(hipsTransform.position, Vector3.down, out RaycastHit hit, 5f)) // check if we hit the ground for not reset in the ground
+        if (Physics.Raycast(hipsTransform.position, Vector3.down, out RaycastHit hit, 5f, layersToDetectCollision)) // check if we hit the ground for not reset in the ground
         {
             initialPosOfPlayer.y = Mathf.Max(initialPosOfPlayer.y, hit.point.y);
         }
 
-        Vector3 getFinalPos = GetFreePosition(initialPosOfPlayer);
-        finalPosition = new Vector3(getFinalPos.x, getFinalPos.y, originalRootPosition.z);
+        Vector2 initialPosOfPlayerXZ = new Vector2(initialPosOfPlayer.x, initialPosOfPlayer.z);
 
-        if (!IsCapsuleFreeAt(finalPosition))
+        Vector3 getFinalPos = GetFreePosition(initialPosOfPlayerXZ);
+        getFinalPos.z = OriginalRootZ;
+
+        if (!IsCapsuleFreeAt(getFinalPos))
         {
             Debug.LogWarning("No free position found to get up player");
             return;
         }
 
+        finalPosition = getFinalPos;
+
         PassPlayerFreePoosServerRpc();
-        
+
     }
 
     [Rpc(SendTo.Server)]
@@ -132,28 +132,26 @@ public class PlayerGetUp : NetworkBehaviour
 
     private void PassPlayerFreePoos()
     {
-        rootTransform.SetPositionAndRotation(finalPosition, originalRootRotation);
-        hipsTransform.rotation = originalHipRotation;
-        ragdollRoot.rotation = ragdollRootRotation;
+        rootTransform.SetPositionAndRotation(finalPosition, Quaternion.identity);
         isFallen = false;
     }
 
-    private Vector3 GetFreePosition(Vector3 startPos)
+    private Vector2 GetFreePosition(Vector2 startPos)
     {
-        foreach (Vector3 direction in directions)
+        foreach (Vector2 direction in directions)
         {
             for (int i = 0; i < MAX_ATTEMPTS; i++)
             {
-                Vector3 testPos = startPos + direction * (i * STEP_SIZE);
-                lastCheckedPosition = testPos;
-
+                Vector2 testPos = startPos + direction * (i * STEP_SIZE);
+                debugTestPositions.Add(testPos);
                 if (IsCapsuleFreeAt(testPos))
                 {
                     return testPos;
                 }
             }
         }
-        return startPos; // Return the original position if no free position is found
+        Debug.LogWarning("No free position found to get up player");
+        return startPos;
     }
 
     private bool IsCapsuleFreeAt(Vector3 pos)
@@ -172,5 +170,4 @@ public class PlayerGetUp : NetworkBehaviour
     {
         BaseItemThrowable.OnItemCallbackAction -= HandleOnItemCallbackAction;
     }
-
 }
