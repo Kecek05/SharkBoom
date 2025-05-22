@@ -92,24 +92,22 @@ public class PlayerGetUp : NetworkBehaviour
     {
         Vector3 initialPosOfPlayer = hipsTransform.position;
         initialPosOfPlayer.y -= verticalOffset;  // correcting the y axis 
+        initialPosOfPlayer.z = OriginalRootZ;
 
         if (Physics.Raycast(hipsTransform.position, Vector3.down, out RaycastHit hit, 5f, layersToDetectCollision)) // check if we hit the ground for not reset in the ground
         {
             initialPosOfPlayer.y = Mathf.Max(initialPosOfPlayer.y, hit.point.y);
         }
 
-        Vector2 initialPosOfPlayerXZ = new Vector2(initialPosOfPlayer.x, initialPosOfPlayer.z);
+        Vector3 foundPos = GetFreePosition(initialPosOfPlayer);
 
-        Vector3 getFinalPos = GetFreePosition(initialPosOfPlayerXZ);
-        getFinalPos.z = OriginalRootZ;
-
-        if (!IsCapsuleFreeAt(getFinalPos))
+        if (!IsCapsuleFreeAt(foundPos))
         {
             Debug.LogWarning("No free position found to get up player");
             return;
         }
 
-        finalPosition = getFinalPos;
+        finalPosition = foundPos;
 
         PassPlayerFreePoosServerRpc();
 
@@ -133,13 +131,16 @@ public class PlayerGetUp : NetworkBehaviour
         isFallen = false;
     }
 
-    private Vector2 GetFreePosition(Vector2 startPos)
+    private Vector3 GetFreePosition(Vector3 startPos)
     {
         foreach (Vector2 direction in directions)
         {
+            Vector3 finalDirection = new Vector3(direction.x, direction.y, 0); 
             for (int i = 0; i < MAX_ATTEMPTS; i++)
             {
-                Vector2 testPos = startPos + direction * (i * STEP_SIZE);
+                Vector3 testPos = startPos + finalDirection * (i * STEP_SIZE);
+                testPos.z = OriginalRootZ; 
+
                 if (IsCapsuleFreeAt(testPos))
                 {
                     return testPos;

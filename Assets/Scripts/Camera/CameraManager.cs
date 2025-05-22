@@ -117,13 +117,29 @@ public class CameraManager : NetworkBehaviour
     private void CameraReposOnPlayer()
     {
         SetCameraModules(false, false, true);
-        cameraFollowing.SetTarget(playerObj.transform, false, 0.5f, onComplete: CameraMove);
+        cameraFollowing.SetTarget(playerObj.transform, false, 3f, onComplete: () =>
+        {
+            PlayerState currentState = playerReference.PlayerStateMachine.CurrentState.State;
+
+            if (currentState == PlayerState.IdleMyTurn || currentState == PlayerState.IdleEnemyTurn)
+            {
+                CameraMove();
+            }
+        });
     }
 
     private void CameraReposOnEnemy()
     {
         SetCameraModules(false, false, true);
-        cameraFollowing.SetTarget(enemyObj.transform, false, 0.5f, onComplete: CameraMove);
+        cameraFollowing.SetTarget(enemyObj.transform, false, 3f, onComplete: () =>
+        {
+            PlayerState currentState = playerReference.PlayerStateMachine.CurrentState.State;
+
+            if (currentState == PlayerState.IdleMyTurn || currentState == PlayerState.IdleEnemyTurn)
+            {
+                CameraMove();
+            }
+        });
     }
 
     private void CameraTurnOff()
