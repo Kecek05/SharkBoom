@@ -15,7 +15,7 @@ public class PlayerGetUp : NetworkBehaviour
     [SerializeField] private LayerMask layersToDetectCollision;
 
     private const int MAX_ATTEMPTS = 10;
-    private const int STEP_SIZE = 1;
+    private const float STEP_SIZE = 0.25f;
     private bool isFallen = false;
 
     private float verticalOffset;
@@ -34,8 +34,6 @@ public class PlayerGetUp : NetworkBehaviour
         (Vector2.down + Vector2.right).normalized,
         (Vector2.down + Vector2.left).normalized,
     };
-
-    private List<Vector2> debugTestPositions = new List<Vector2>();
 
     public void InitializeOwner()
     {
@@ -92,7 +90,6 @@ public class PlayerGetUp : NetworkBehaviour
 
     private void CalculatePlayerFreePos()
     {
-        debugTestPositions.Clear();
         Vector3 initialPosOfPlayer = hipsTransform.position;
         initialPosOfPlayer.y -= verticalOffset;  // correcting the y axis 
 
@@ -143,7 +140,6 @@ public class PlayerGetUp : NetworkBehaviour
             for (int i = 0; i < MAX_ATTEMPTS; i++)
             {
                 Vector2 testPos = startPos + direction * (i * STEP_SIZE);
-                debugTestPositions.Add(testPos);
                 if (IsCapsuleFreeAt(testPos))
                 {
                     return testPos;
