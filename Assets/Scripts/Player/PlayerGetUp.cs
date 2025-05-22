@@ -91,7 +91,7 @@ public class PlayerGetUp : NetworkBehaviour
     private void CalculatePlayerFreePos()
     {
         Vector3 initialPosOfPlayer = hipsTransform.position;
-        initialPosOfPlayer.y -= verticalOffset;  // correcting the y axis 
+        initialPosOfPlayer.y -= verticalOffset;
         initialPosOfPlayer.z = OriginalRootZ;
 
         if (Physics.Raycast(hipsTransform.position, Vector3.down, out RaycastHit hit, 5f, layersToDetectCollision)) // check if we hit the ground for not reset in the ground
