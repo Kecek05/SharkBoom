@@ -1,20 +1,42 @@
+using System;
 using UnityEngine;
 
 public class CoconutItemThrowable : BaseItemThrowable
 {
-    [SerializeField] private BaseItemComponent spinObjectComponent;
+    [SerializeField] private BaseItemComponent rotateTowardsVelocityComponent;
+    [SerializeField] private BaseCollisionController collisionController;
+
+    public override void Initialize(Transform parent)
+    {
+        base.Initialize(parent);
+        collisionController.OnCollided += OnCollided; //Subscribe to the collision event
+    }
 
     public override void ItemReleased(ItemLauncherData itemLauncherData)
     {
         base.ItemReleased(itemLauncherData);
 
-        spinObjectComponent.EnableComponent();
+        rotateTowardsVelocityComponent.EnableComponent();
 
-        spinObjectComponent.StartComponentLogic();
+        rotateTowardsVelocityComponent.StartComponentLogic();
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnCollided(GameObject collidedObj)
     {
-        spinObjectComponent.DisableComponent();
+        rotateTowardsVelocityComponent.DisableComponent();
+
+        rb.freezeRotation = true; //freeze rotation to avoid the spear to rotate when it hits something DEBUG
     }
+
+    public override void DestroyItem(Action destroyedCallback = null)
+    {
+        base.DestroyItem(destroyedCallback);
+
+        collisionController.OnCollided -= OnCollided; //Subscribe to the collision event
+
+        rb.freezeRotation = false;
+
+        rotateTowardsVelocityComponent.DisableComponent();
+    }
+
 }
