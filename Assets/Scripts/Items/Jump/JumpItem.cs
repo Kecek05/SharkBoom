@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -10,11 +11,14 @@ public class JumpItem : BaseItemThrowable
 
     private BaseTimerManager timerManager;
 
+    private void Start()
+    {
+        timerManager = ServiceLocator.Get<BaseTimerManager>();
+    }
+
     public override void Initialize(Transform parent)
     {
         base.Initialize(parent);
-
-        timerManager = ServiceLocator.Get<BaseTimerManager>();
     }
 
     public override void ItemReleased(ItemLauncherData itemLauncherData)
@@ -48,5 +52,12 @@ public class JumpItem : BaseItemThrowable
             currentFollowingTime += Time.deltaTime;
             yield return null;
         }
+    }
+
+    public override void DestroyItem(Action destroyedCallback = null)
+    {
+        base.DestroyItem(destroyedCallback);
+
+        objectToFollowTransform = null;
     }
 }
