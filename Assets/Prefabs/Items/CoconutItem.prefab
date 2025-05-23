@@ -211,7 +211,7 @@ PrefabInstance:
       addedObject: {fileID: 3553632099735663097}
     - targetCorrespondingSourceObject: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 3526296545702240841}
+      addedObject: {fileID: 4405186089328684319}
     - targetCorrespondingSourceObject: {fileID: 2942010050083629636, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7732314127948684009}
@@ -278,16 +278,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  itemSO: {fileID: 0}
+  itemSO: {fileID: 11400000, guid: 0ff8cd00edde07d4bbec95938cc99d53, type: 2}
   rb: {fileID: 6921903450271284980}
-  objectsToChangeLayer: []
+  objectsToChangeLayer:
+  - {fileID: 4139059953487484834}
+  - {fileID: 4767779204118326136}
   dissolveShaderComponent: {fileID: 0}
   lifetimeTriggerItemComponent: {fileID: 2957073883870968353}
   followTransformComponent: {fileID: 2492626997076712017}
   myNetworkObject: {fileID: 2590630615956071341}
-  rotateTowardsVelocityComponent: {fileID: 0}
+  rotateTowardsVelocityComponent: {fileID: 4405186089328684319}
   collisionController: {fileID: 1924429888176421737}
---- !u!114 &3526296545702240841
+--- !u!114 &4405186089328684319
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -296,10 +298,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 4139059953487484834}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cbe1a628dca722444a83a20053161fda, type: 3}
+  m_Script: {fileID: 11500000, guid: 8db42a54576a6444c9feb910c71ad5ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spiningSpeed: 150
+  rotationSpeed: 10
+  rb: {fileID: 6921903450271284980}
 --- !u!1 &4767779204118326136 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2942010050083629636, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
