@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f6a533053c25e8846b295723a88b8aaa, type: 3}
-  m_Name: AnchorItemDamageSO
+  m_Name: AnchorActivatedItemDamageSO
   m_EditorClassIdentifier: 
-  damage: 15
+  damage: 30
   headMultiplier: 1
-  bodyMultiplier: 1
-  footMultiplier: 1
+  bodyMultiplier: 0.75
+  footMultiplier: 0.75

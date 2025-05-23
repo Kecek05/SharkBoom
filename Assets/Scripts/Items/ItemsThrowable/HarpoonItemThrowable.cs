@@ -25,8 +25,6 @@ public class HarpoonItemThrowable : BaseItemThrowable
     private void OnCollided(GameObject collidedObj)
     {
         rotateTowardsVelocityComponent.DisableComponent();
-
-        rb.freezeRotation = true; //freeze rotation to avoid the spear to rotate when it hits something DEBUG
     }
 
     public override void DestroyItem(Action destroyedCallback = null)
@@ -34,8 +32,6 @@ public class HarpoonItemThrowable : BaseItemThrowable
         base.DestroyItem(destroyedCallback);
 
         collisionController.OnCollided -= OnCollided; //Subscribe to the collision event
-
-        rb.freezeRotation = false;
 
         rotateTowardsVelocityComponent.DisableComponent();
     }

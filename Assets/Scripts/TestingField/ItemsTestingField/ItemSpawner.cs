@@ -1,5 +1,6 @@
 using Sortify;
 using System.Collections;
+using Unity.Netcode;
 using UnityEngine;
 
 public class ItemSpawner : MonoBehaviour
@@ -74,6 +75,7 @@ public class ItemSpawner : MonoBehaviour
     {
 
         lastProjectile = Instantiate(itemToSpawnSO.itemPrefab, transform.position, Quaternion.identity);
+        lastProjectile.GetComponent<NetworkObject>().Spawn();
 
         if (lastProjectile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
         {
