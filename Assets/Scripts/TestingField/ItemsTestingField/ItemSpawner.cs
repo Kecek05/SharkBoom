@@ -81,11 +81,5 @@ public class ItemSpawner : MonoBehaviour
             itemThrowable.ItemReleased(launcherData);
         }
 
-        //if (projetctile.transform.TryGetComponent(out BaseItemThrowableActivable activable))
-        //{
-        //    //Get the ref to active the item
-        //    itemActivableManager.SetItemThrowableActivableClient(activable);
-        //}
-
     }
 }

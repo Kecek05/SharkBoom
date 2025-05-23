@@ -12,7 +12,8 @@ public class ItemParticleController : MonoBehaviour
 
     private void OnEnable()
     {
-        hideMeshOnCollisionComponent.OnMeshHidden += HideMeshOnCollisionComponent_OnMeshHidden;
+        if(hideMeshOnCollisionComponent)
+            hideMeshOnCollisionComponent.OnMeshHidden += HideMeshOnCollisionComponent_OnMeshHidden;
         PlayParticleSystem(spawnParticleSystem);
     }
 
