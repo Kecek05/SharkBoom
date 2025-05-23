@@ -179,9 +179,13 @@ PrefabInstance:
       propertyPath: itemSO
       value: 
       objectReference: {fileID: 11400000, guid: d920d99b67057b34eb71bc10d40ec3c8, type: 2}
+    - target: {fileID: 5263959955919774353, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2585739866
+      objectReference: {fileID: 0}
     - target: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_Name
-      value: C4ItemClient
+      value: C4Item
       objectReference: {fileID: 0}
     - target: {fileID: 6129100009262690881, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_Enabled
@@ -222,19 +226,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c25c608c89e5a9b42a5779cacd9434c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isServerObject: 0
+  ShowTopMostFoldoutHeaderGroup: 1
   itemSO: {fileID: 11400000, guid: d920d99b67057b34eb71bc10d40ec3c8, type: 2}
-  rb: {fileID: 5689049572469319462}
-  collidersToChangeLayer:
-  - {fileID: 4139059953487484834}
-  - {fileID: 1971986129952758754}
+  rb: {fileID: 0}
+  objectsToChangeLayer: []
+  dissolveShaderComponent: {fileID: 0}
+  lifetimeTriggerItemComponent: {fileID: 0}
+  followTransformComponent: {fileID: 0}
+  myNetworkObject: {fileID: 0}
   inputReader: {fileID: 11400000, guid: 81d0c6922526ee54e95c7e642d4d70f3, type: 2}
   explosionObj: {fileID: 1971986129952758754}
---- !u!50 &5689049572469319462 stripped
-Rigidbody2D:
-  m_CorrespondingSourceObject: {fileID: 2597735930550134298, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
-  m_PrefabInstance: {fileID: 7709761659009139004}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8464876032891664105 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2272018210298738645, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}

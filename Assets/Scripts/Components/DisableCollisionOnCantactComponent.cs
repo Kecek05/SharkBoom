@@ -6,9 +6,11 @@ public class DisableCollisionOnCantactComponent : MonoBehaviour
     [SerializeField] private Collider[] itemColliders;
     [SerializeField] private BaseCollisionController baseCollisionController;
 
-    private void Start()
+    private void OnEnable()
     {
         baseCollisionController.OnCollidedWithPlayer += HandleItemCollidedWithPlayer;
+
+        EnableCollisions();
     }
 
 
@@ -25,8 +27,15 @@ public class DisableCollisionOnCantactComponent : MonoBehaviour
         }
     }
 
+    public void EnableCollisions()
+    {
+        foreach (Collider itemCol in itemColliders)
+        {
+            itemCol.enabled = true;
+        }
+    }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         baseCollisionController.OnCollidedWithPlayer -= HandleItemCollidedWithPlayer;
     }

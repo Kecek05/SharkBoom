@@ -6,7 +6,7 @@ public class FreezeOnCollisionComponent : MonoBehaviour
     [SerializeField] private Rigidbody rb;
     [SerializeField] private BaseCollisionController baseCollisionController;
 
-    private void Start()
+    private void OnEnable()
     {
         baseCollisionController.OnCollidedWithPlayer += BaseCollisionController_OnCollidedWithPlayer;
     }
@@ -14,11 +14,23 @@ public class FreezeOnCollisionComponent : MonoBehaviour
     private void BaseCollisionController_OnCollidedWithPlayer(PlayerThrower playerThrower)
     {
         Debug.Log("Stop moving");
+        FreezeObject();
+    }
+
+    private void FreezeObject()
+    {
         rb.isKinematic = true; // Freeze the object
     }
 
-    private void OnDestroy()
+    private void UnfreezeObject()
+    {
+        rb.isKinematic = false; // Unfreeze the object
+    }
+
+    private void OnDisable()
     {
         baseCollisionController.OnCollidedWithPlayer -= BaseCollisionController_OnCollidedWithPlayer;
+        UnfreezeObject(); // Unfreeze the object when disabled
     }
+
 }

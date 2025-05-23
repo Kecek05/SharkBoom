@@ -10,9 +10,8 @@ public class ItemParticleController : MonoBehaviour
     [SerializeField] private ParticleSystem despawnParticleSystem;
     [SerializeField] private ParticleSystem spawnParticleSystem;
 
-    private void Start()
+    private void OnEnable()
     {
-        Debug.Log("ItemParticleController Start");
         hideMeshOnCollisionComponent.OnMeshHidden += HideMeshOnCollisionComponent_OnMeshHidden;
         PlayParticleSystem(spawnParticleSystem);
     }
@@ -24,11 +23,10 @@ public class ItemParticleController : MonoBehaviour
 
     private void PlayParticleSystem(ParticleSystem particleSystem)
     {
-        Debug.Log($"PlayParticleSystem: {particleSystem}");
         particleSystem.Play();
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         hideMeshOnCollisionComponent.OnMeshHidden -= HideMeshOnCollisionComponent_OnMeshHidden;
     }

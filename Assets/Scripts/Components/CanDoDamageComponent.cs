@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using Unity.Netcode;
 
@@ -37,5 +36,10 @@ public class CanDoDamageComponent : NetworkBehaviour
     {
         if (!IsServer) return; // Only the server should handle the damage
         baseCollisionController.OnCollided -= BaseCollisionController_OnItemCollided;
+    }
+
+    private void OnDisable()
+    {
+        damaged = false; //Reset the damaged state
     }
 }

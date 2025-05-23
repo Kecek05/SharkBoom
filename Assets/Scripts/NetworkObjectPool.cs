@@ -95,7 +95,7 @@ public class NetworkObjectPool : NetworkBehaviour
     }
 
     /// <summary>
-    /// Return an object to the pool (reset objects before returning).
+    /// Return an object to the pool.
     /// </summary>
     public void ReturnNetworkObject(NetworkObject networkObject, int itemIndex)
     {

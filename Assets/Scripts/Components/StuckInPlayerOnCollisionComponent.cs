@@ -8,7 +8,7 @@ public class StuckInPlayerOnCollisionComponent : MonoBehaviour
     [SerializeField] private BaseCollisionController baseCollisionController;
     private bool isFollowing = false;
 
-    private void Start()
+    private void OnEnable()
     {
         baseCollisionController.OnCollided += BaseCollisionController_OnCollided;
     }
@@ -36,9 +36,16 @@ public class StuckInPlayerOnCollisionComponent : MonoBehaviour
         followTransformComponent.EnableComponent();
     }
 
-    private void OnDestroy()
+    private void ResetStuckState()
+    {
+        isFollowing = false;
+        followTransformComponent.DisableComponent();
+    }
+
+    private void OnDisable()
     {
         baseCollisionController.OnCollided -= BaseCollisionController_OnCollided;
+        ResetStuckState();
     }
 
 }

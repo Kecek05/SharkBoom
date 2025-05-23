@@ -162,6 +162,14 @@ public abstract class BaseItemThrowable : NetworkBehaviour
         OnItemCallbackAction?.Invoke();
     }
 
+    private void ResetItemThrowableState()
+    {
+        SetCollision(PlayableState.None);
+        itemReleased = false;
+        followTransformComponent.DisableComponent();
+        rb.isKinematic = false;
+    }
+
 
     public virtual void DestroyItem(Action destroyedCallback = null)
     {
@@ -188,14 +196,6 @@ public abstract class BaseItemThrowable : NetworkBehaviour
         }
     }
 
-
-    [Rpc(SendTo.ClientsAndHost)]
-    private void DestroyOnClientRpc()
-    {
-        SetCollision(PlayableState.None); //Set the collision to none
-    }
-
-
     [Rpc(SendTo.Server)]
     private void DestroyOnServerRpc()
     {
@@ -205,5 +205,11 @@ public abstract class BaseItemThrowable : NetworkBehaviour
         myNetworkObject.Despawn(true); // Pass 'true' to also destroy the GameObject
 
         DestroyOnClientRpc();
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void DestroyOnClientRpc()
+    {
+        ResetItemThrowableState();
     }
 }

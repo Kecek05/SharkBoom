@@ -131,6 +131,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
             return;
         }
 
+        Debug.Log($"CallOnItemOnHandClientRpc - SpanwedItem: {spawnedItem}");
         OnItemOnHandSpawned?.Invoke(spawnedItem);
     }
 

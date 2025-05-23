@@ -12,6 +12,7 @@ public class HarpoonItemThrowable : BaseItemThrowable
 
         collisionController.OnCollided += OnCollided; //Subscribe to the collision event
     }
+
     public override void ItemReleased(ItemLauncherData itemLauncherData)
     {
         base.ItemReleased(itemLauncherData);
@@ -33,5 +34,9 @@ public class HarpoonItemThrowable : BaseItemThrowable
         base.DestroyItem(destroyedCallback);
 
         collisionController.OnCollided -= OnCollided; //Subscribe to the collision event
+
+        rb.freezeRotation = false;
+
+        rotateTowardsVelocityComponent.DisableComponent();
     }
 }

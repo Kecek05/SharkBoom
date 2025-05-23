@@ -10,7 +10,7 @@ public class KnockbackTriggerComponent : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private float knockbackStrength;
 
-    private void Start()
+    private void OnEnable()
     {
         baseCollisionController.OnCollided += BaseCollisionController_OnCollided;
     }
@@ -25,7 +25,7 @@ public class KnockbackTriggerComponent : MonoBehaviour
         }
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         baseCollisionController.OnCollided -= BaseCollisionController_OnCollided;
     }

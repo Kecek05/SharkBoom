@@ -62,7 +62,7 @@ public class HideMeshOnCollisionComponent : MonoBehaviour
             baseCollisionController.OnCollidedWithPlayer -= BaseCollisionController_OnCollidedWithPlayer;
         }
 
-        ShowMesh(); //Show cuz Obj Pool
+        ShowMesh();
     }
 
 }
