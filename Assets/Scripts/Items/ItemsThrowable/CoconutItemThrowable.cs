@@ -1,16 +1,20 @@
 using UnityEngine;
 
-public class CoconutItemThrowable : MonoBehaviour
+public class CoconutItemThrowable : BaseItemThrowable
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private BaseItemComponent spinObjectComponent;
+
+    public override void ItemReleased(ItemLauncherData itemLauncherData)
     {
-        
+        base.ItemReleased(itemLauncherData);
+
+        spinObjectComponent.EnableComponent();
+
+        spinObjectComponent.StartComponentLogic();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnCollisionEnter(Collision collision)
     {
-        
+        spinObjectComponent.DisableComponent();
     }
 }
