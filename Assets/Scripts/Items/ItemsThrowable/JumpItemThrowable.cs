@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class JumpItem : BaseItemThrowable
+public class JumpItemThrowable : BaseItemThrowable
 {
 
     [SerializeField] private float followingTime = 1.5f;
