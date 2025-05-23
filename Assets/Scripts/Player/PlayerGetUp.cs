@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -7,7 +8,6 @@ public class PlayerGetUp : NetworkBehaviour
     [Header("References")]
     [SerializeField] private Transform rootTransform;
     [SerializeField] private Transform hipsTransform;
-    [SerializeField] private Transform ragdollRoot;
 
     [Header("Settings")]
     [SerializeField] private float capsuleRadius = 0.5f;
@@ -15,24 +15,25 @@ public class PlayerGetUp : NetworkBehaviour
     [SerializeField] private LayerMask layersToDetectCollision;
 
     private const int MAX_ATTEMPTS = 10;
-    private const int STEP_SIZE = 1;
-    private bool isInGoodPosition = false;
+    private const float STEP_SIZE = 0.25f;
     private bool isFallen = false;
 
     private float verticalOffset;
-    private Quaternion originalHipRotation;
-    private Quaternion originalRootRotation;
-    private Quaternion ragdollRootRotation;
+    private float OriginalRootZ;
 
-    private Vector3[] directions =
+    private Vector3 finalPosition;
+
+    private Vector2[] directions =
     {
-        Vector3.up,
-        Vector3.down,
-        Vector3.left,
-        Vector3.right
+        Vector2.up,
+        Vector2.down,
+        Vector2.left,
+        Vector2.right,
+        (Vector2.up + Vector2.right).normalized,
+        (Vector2.up + Vector2.left).normalized,
+        (Vector2.down + Vector2.right).normalized,
+        (Vector2.down + Vector2.left).normalized,
     };
-
-    private Vector3 lastCheckedPosition;
 
     public void InitializeOwner()
     {
@@ -54,24 +55,20 @@ public class PlayerGetUp : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost)]
     private void CacheOriginalPosClientRpc()
     {
-        if(!IsOwner) return;
+        if (!IsOwner) return;
         CacheOriginalPos();
     }
 
     private void CacheOriginalPos()
     {
         isFallen = true;
-        originalHipRotation = hipsTransform.rotation;
-        originalRootRotation = rootTransform.rotation;
-        ragdollRootRotation = ragdollRoot.rotation;
-
+        OriginalRootZ = rootTransform.position.z;
         verticalOffset = hipsTransform.position.y - rootTransform.position.y;
     }
 
     private void HandleOnItemCallbackAction()
     {
-        if(!IsOwner) return;
-
+        if (!IsOwner) return;
         RequestGetUpPlayerServerRpc();
     }
 
@@ -88,42 +85,61 @@ public class PlayerGetUp : NetworkBehaviour
 
         if (!isFallen) return;
 
-        GetUpPlayer();
+        CalculatePlayerFreePos();
     }
 
-    private void GetUpPlayer()
+    private void CalculatePlayerFreePos()
     {
         Vector3 initialPosOfPlayer = hipsTransform.position;
-        initialPosOfPlayer.y -= verticalOffset;  // correcting the y axis 
+        initialPosOfPlayer.y -= verticalOffset;
+        initialPosOfPlayer.z = OriginalRootZ;
 
-        if (Physics.Raycast(hipsTransform.position, Vector3.down, out RaycastHit hit, 5f)) // check if we hit the ground for not reset in the ground
+        if (Physics.Raycast(hipsTransform.position, Vector3.down, out RaycastHit hit, 5f, layersToDetectCollision)) // check if we hit the ground for not reset in the ground
         {
             initialPosOfPlayer.y = Mathf.Max(initialPosOfPlayer.y, hit.point.y);
         }
 
-        Vector3 finalPos = GetFreePosition(initialPosOfPlayer);
+        Vector3 foundPos = GetFreePosition(initialPosOfPlayer);
 
-        if(!IsCapsuleFreeAt(finalPos))
+        if (!IsCapsuleFreeAt(foundPos))
         {
             Debug.LogWarning("No free position found to get up player");
             return;
         }
 
-        // Send all for original rotation, basead on new position
-        rootTransform.SetPositionAndRotation(finalPos, originalRootRotation);
-        hipsTransform.rotation = originalHipRotation;
-        ragdollRoot.rotation = ragdollRootRotation;
+        finalPosition = foundPos;
+
+        PassPlayerFreePoosServerRpc();
+
+    }
+
+    [Rpc(SendTo.Server)]
+    private void PassPlayerFreePoosServerRpc()
+    {
+        PassPlayerFreePoosClientRpc();
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void PassPlayerFreePoosClientRpc()
+    {
+        PassPlayerFreePoos();
+    }
+
+    private void PassPlayerFreePoos()
+    {
+        rootTransform.SetPositionAndRotation(finalPosition, Quaternion.identity);
         isFallen = false;
     }
 
     private Vector3 GetFreePosition(Vector3 startPos)
     {
-        foreach (Vector3 direction in directions)
+        foreach (Vector2 direction in directions)
         {
+            Vector3 finalDirection = new Vector3(direction.x, direction.y, 0); 
             for (int i = 0; i < MAX_ATTEMPTS; i++)
             {
-                Vector3 testPos = startPos + direction * (i * STEP_SIZE);
-                lastCheckedPosition = testPos;
+                Vector3 testPos = startPos + finalDirection * (i * STEP_SIZE);
+                testPos.z = OriginalRootZ; 
 
                 if (IsCapsuleFreeAt(testPos))
                 {
@@ -131,7 +147,8 @@ public class PlayerGetUp : NetworkBehaviour
                 }
             }
         }
-        return startPos; // Return the original position if no free position is found
+        Debug.LogWarning("No free position found to get up player");
+        return startPos;
     }
 
     private bool IsCapsuleFreeAt(Vector3 pos)
@@ -149,20 +166,5 @@ public class PlayerGetUp : NetworkBehaviour
     public void UnInitializeOwner()
     {
         BaseItemThrowable.OnItemCallbackAction -= HandleOnItemCallbackAction;
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.cyan;
-
-        Vector3 capsuleBottom = lastCheckedPosition + Vector3.up * capsuleRadius;
-        Vector3 capsuleTop = lastCheckedPosition + Vector3.up * (capsuleHeight - capsuleRadius);
-
-        Gizmos.DrawWireSphere(capsuleBottom, capsuleRadius);
-        Gizmos.DrawWireSphere(capsuleTop, capsuleRadius);
-        Gizmos.DrawLine(capsuleBottom + Vector3.forward * capsuleRadius, capsuleTop + Vector3.forward * capsuleRadius);
-        Gizmos.DrawLine(capsuleBottom + Vector3.back * capsuleRadius, capsuleTop + Vector3.back * capsuleRadius);
-        Gizmos.DrawLine(capsuleBottom + Vector3.left * capsuleRadius, capsuleTop + Vector3.left * capsuleRadius);
-        Gizmos.DrawLine(capsuleBottom + Vector3.right * capsuleRadius, capsuleTop + Vector3.right * capsuleRadius);
     }
 }

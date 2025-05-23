@@ -149,7 +149,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         {
             ragdollCollider.enabled = false;
         }
-
     }
 
     public void UnInitializeOwner()

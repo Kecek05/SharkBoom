@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class C4Item : BaseItemThrowableActivable
+public class C4ItemThrowable : BaseItemThrowableActivable
 {
     [SerializeField] private GameObject explosionObj;
 
