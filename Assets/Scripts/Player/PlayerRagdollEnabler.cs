@@ -12,8 +12,8 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     private Collider[] ragdollColliders;
     
 
-    //[SerializeField] private bool debugRagdollEnabler;
-    //[SerializeField] private bool debugRagdollDisabler;
+    [SerializeField] private bool debugRagdollEnabler;
+    [SerializeField] private bool debugRagdollDisabler;
 
     public override void OnNetworkSpawn()
     {
@@ -21,27 +21,27 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>();
     }
 
-    //// JUST FOR DEBUG ON RAGDOLL SCENE
-    //private void Awake()
-    //{
-    //    ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
-    //    ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>();
-    //}
+    // JUST FOR DEBUG ON RAGDOLL SCENE
+    private void Awake()
+    {
+        ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
+        ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>();
+    }
 
-    //private void Update()
-    //{
-    //    if (debugRagdollEnabler)
-    //    {
-    //        debugRagdollEnabler = false;
-    //        DisableRagdoll();
-    //    }
+    private void Update()
+    {
+        if (debugRagdollEnabler)
+        {
+            debugRagdollEnabler = false;
+            DisableRagdoll();
+        }
 
-    //    if (debugRagdollDisabler)
-    //    {
-    //        debugRagdollDisabler = false;
-    //        EnableRagdoll();
-    //    }
-    //}
+        if (debugRagdollDisabler)
+        {
+            debugRagdollDisabler = false;
+            EnableRagdoll();
+        }
+    }
 
     public void IniatilizeOwner()
     {
@@ -112,9 +112,9 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     private void EnableRagdoll()
     {
 
-        foreach (Collider playerCollider in playerColliders)
+        foreach (Collider ragdollCollider in ragdollColliders)
         {
-            playerCollider.enabled = false;
+            ragdollCollider.enabled = true;
         }
 
         foreach (Rigidbody ragdollRb in ragdollRbs)
@@ -122,12 +122,10 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             ragdollRb.isKinematic = false;
         }
 
-        foreach (Collider ragdollCollider in ragdollColliders)
+        foreach (Collider playerCollider in playerColliders)
         {
-            ragdollCollider.enabled = true;
+            playerCollider.enabled = false;
         }
-
-        
 
         animator.enabled = false;
     }
@@ -150,9 +148,9 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     {
         animator.enabled = true;
 
-        foreach (Collider playerCollider in playerColliders)
+        foreach (Collider ragdollCollider in ragdollColliders)
         {
-            playerCollider.enabled = true;
+            ragdollCollider.enabled = false;
         }
 
         foreach (Rigidbody ragdollRb in ragdollRbs)
@@ -160,9 +158,9 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             ragdollRb.isKinematic = true;
         }
 
-        foreach (Collider ragdollCollider in ragdollColliders)
+        foreach (Collider playerCollider in playerColliders)
         {
-            ragdollCollider.enabled = false;
+            playerCollider.enabled = true;
         }
     }
 
@@ -170,5 +168,4 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     {
         BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
     }
-
 }
