@@ -70,6 +70,7 @@ public class PlayerGetUp : NetworkBehaviour
     {
         if (!IsOwner) return;
         RequestGetUpPlayerServerRpc();
+        Debug.Log("JUMP - RequestGetUpPlayerServerRpc");
     }
 
     [Rpc(SendTo.Server)]

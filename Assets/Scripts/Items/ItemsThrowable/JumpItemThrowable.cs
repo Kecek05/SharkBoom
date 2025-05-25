@@ -41,6 +41,7 @@ public class JumpItemThrowable : BaseItemThrowable
         timerManager.TogglePauseTimer(false); //unpause
         turnManager.PlayerJumped(thisItemLaucherData.ownerPlayableState);
         base.FireItemCallbackAction();
+        Debug.Log("JUMP - Callback Action");
     }
 
     private IEnumerator PlayerFollowJump()

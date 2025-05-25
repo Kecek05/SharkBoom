@@ -6,9 +6,11 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [Header("References")]
     [SerializeField] private Animator animator;
     [SerializeField] private Transform ragdollRoot;
+    [SerializeField] private Collider[] playerColliders;
 
     private Rigidbody[] ragdollRbs;
     private Collider[] ragdollColliders;
+    
 
     //[SerializeField] private bool debugRagdollEnabler;
     //[SerializeField] private bool debugRagdollDisabler;
@@ -109,6 +111,12 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     private void EnableRagdoll()
     {
+
+        foreach (Collider playerCollider in playerColliders)
+        {
+            playerCollider.enabled = false;
+        }
+
         foreach (Rigidbody ragdollRb in ragdollRbs)
         {
             ragdollRb.isKinematic = false;
@@ -118,6 +126,8 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         {
             ragdollCollider.enabled = true;
         }
+
+        
 
         animator.enabled = false;
     }
@@ -139,6 +149,11 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     private void DisableRagdoll()
     {
         animator.enabled = true;
+
+        foreach (Collider playerCollider in playerColliders)
+        {
+            playerCollider.enabled = true;
+        }
 
         foreach (Rigidbody ragdollRb in ragdollRbs)
         {
