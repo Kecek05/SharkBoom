@@ -16,7 +16,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     //[SerializeField] private bool debugRagdollDisabler;
 
     public override void OnNetworkSpawn()
-    {
+    { 
         ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
         ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>();
     }
@@ -95,13 +95,14 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     private void TriggerRagdollServerRpc(int hitRigidbodyIndex, Vector3 force, Vector3 hitPoint)
     {
         TriggerRagdollClientRpc(hitRigidbodyIndex, force, hitPoint);
+        Debug.Log("RAGDOLL - Server RPC");
     }
 
     [Rpc(SendTo.ClientsAndHost)]
     private void TriggerRagdollClientRpc(int hitRigidbodyIndex, Vector3 force, Vector3 hitPoint)
     {
         EnableRagdoll();
-
+        Debug.Log("RAGDOLL - Client RPC");
         if (IsOwner)
         {
             Rigidbody hitRigidbody = ragdollRbs[hitRigidbodyIndex]; // get the rb we hit
@@ -111,7 +112,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     private void EnableRagdoll()
     {
-
+        Debug.Log("RAGDOLL - Enable ragdoll");
         foreach (Collider ragdollCollider in ragdollColliders)
         {
             ragdollCollider.enabled = true;
@@ -151,6 +152,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         foreach (Collider ragdollCollider in ragdollColliders)
         {
             ragdollCollider.enabled = false;
+            Debug.Log($"{ragdollCollider.name} is active = {ragdollCollider.enabled}");
         }
 
         foreach (Rigidbody ragdollRb in ragdollRbs)

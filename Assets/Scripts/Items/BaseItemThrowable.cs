@@ -150,7 +150,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
         FireItemCallbackAction();
     }
 
-    protected virtual void FireItemCallbackAction()
+    protected void FireItemCallbackAction()
     {
         ItemCallbackServerRpc();
     }
