@@ -1,5 +1,6 @@
 using Sortify;
 using System.Collections;
+using Unity.Netcode;
 using UnityEngine;
 
 public class ItemSpawner : MonoBehaviour
@@ -74,18 +75,13 @@ public class ItemSpawner : MonoBehaviour
     {
 
         lastProjectile = Instantiate(itemToSpawnSO.itemPrefab, transform.position, Quaternion.identity);
+        lastProjectile.GetComponent<NetworkObject>().Spawn();
 
         if (lastProjectile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
         {
             itemThrowable.Initialize(null);
             itemThrowable.ItemReleased(launcherData);
         }
-
-        //if (projetctile.transform.TryGetComponent(out BaseItemThrowableActivable activable))
-        //{
-        //    //Get the ref to active the item
-        //    itemActivableManager.SetItemThrowableActivableClient(activable);
-        //}
 
     }
 }

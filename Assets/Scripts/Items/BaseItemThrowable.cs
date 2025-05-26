@@ -36,8 +36,11 @@ public abstract class BaseItemThrowable : NetworkBehaviour
 
         rb.isKinematic = true; //Set the item to kinematic until the item is released
 
-        followTransformComponent.SetTarget(parent);
-        followTransformComponent.EnableComponent();
+        if(parent != null)
+        {
+            followTransformComponent.SetTarget(parent);
+            followTransformComponent.EnableComponent();
+        }
 
         if (dissolveShaderComponent != null)
             dissolveShaderComponent.DissolveFadeIn();

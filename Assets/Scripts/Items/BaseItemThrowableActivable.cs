@@ -1,12 +1,7 @@
-using Sortify;
 using UnityEngine;
 
 public class BaseItemThrowableActivable : BaseItemThrowable
 {
-
-    [BetterHeader("Base Activeable References", 11)]
-    [SerializeField] protected InputReader inputReader;
-
 
     protected bool itemActivated = false;
 
@@ -27,5 +22,5 @@ public class BaseItemThrowableActivable : BaseItemThrowable
         itemActivated = true;
         Debug.Log("Item Activated");
     }
-    
+
 }

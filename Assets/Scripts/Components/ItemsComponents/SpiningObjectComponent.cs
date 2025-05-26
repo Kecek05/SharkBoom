@@ -5,7 +5,7 @@ public class SpiningObjectComponent : BaseItemComponent
 {
     [SerializeField] private float spiningSpeed = 300f;
     private Coroutine spinCoroutine;
-    private WaitForFixedUpdate waitForFixedUpdate = new WaitForFixedUpdate(); //cache
+    private WaitForFixedUpdate waitForFixedUpdate = new WaitForFixedUpdate();
 
     protected override void OnEnableComponent()
     {
