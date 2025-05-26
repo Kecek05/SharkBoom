@@ -1,4 +1,5 @@
 using Unity.Netcode;
+using Unity.Netcode.Components;
 using UnityEngine; 
 
 public class PlayerRagdollEnabler : NetworkBehaviour
@@ -7,6 +8,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private Transform ragdollRoot;
     [SerializeField] private Collider[] playerColliders;
+    [SerializeField] private NetworkTransform networkTransform;
 
     private Rigidbody[] ragdollRbs;
     private Collider[] ragdollColliders;
@@ -116,6 +118,9 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     private void EnableRagdoll()
     {
         Debug.Log("RAGDOLL - Enable ragdoll");
+
+        networkTransform.enabled = false;
+
         foreach (Collider ragdollCollider in ragdollColliders)
         {
             ragdollCollider.enabled = true;
@@ -165,6 +170,8 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         {
             playerCollider.enabled = true;
         }
+
+        networkTransform.enabled = true;
     }
 
     public void UnInitializeOwner()
