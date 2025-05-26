@@ -17,8 +17,20 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 788439871958220744, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: m_UseGravity
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 788439871958220744, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_AngularDrag
-      value: 0.05
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 788439871958220744, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: m_ImplicitCom
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 788439871958220744, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: m_CenterOfMass.x
+      value: 2.18
       objectReference: {fileID: 0}
     - target: {fileID: 851746441201601633, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_Layer
@@ -144,6 +156,10 @@ PrefabInstance:
       propertyPath: m_Center.z
       value: -0.005116597
       objectReference: {fileID: 0}
+    - target: {fileID: 4196873844735081561, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 13400000, guid: e2cf68b0fed04af40829700f0535bbfc, type: 2}
     - target: {fileID: 4368214002554539844, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: itemSO
       value: 
