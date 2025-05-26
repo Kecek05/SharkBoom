@@ -3,29 +3,28 @@ using UnityEngine;
 
 public class CoconutItemThrowable : BaseItemThrowable
 {
-    [SerializeField] private BaseItemComponent rotateTowardsVelocityComponent;
+    [SerializeField] private BaseItemComponent spinObjectComponent;
     [SerializeField] private BaseCollisionController collisionController;
 
     public override void Initialize(Transform parent)
     {
         base.Initialize(parent);
-        collisionController.OnCollided += OnCollided; //Subscribe to the collision event
+
+        collisionController.OnCollided += OnCollided; 
     }
 
     public override void ItemReleased(ItemLauncherData itemLauncherData)
     {
         base.ItemReleased(itemLauncherData);
 
-        rotateTowardsVelocityComponent.EnableComponent();
+        spinObjectComponent.EnableComponent();
 
-        rotateTowardsVelocityComponent.StartComponentLogic();
+        spinObjectComponent.StartComponentLogic();
     }
 
     private void OnCollided(GameObject collidedObj)
     {
-        rotateTowardsVelocityComponent.DisableComponent();
-
-        rb.freezeRotation = true; //freeze rotation to avoid the spear to rotate when it hits something DEBUG
+        spinObjectComponent.DisableComponent();
     }
 
     public override void DestroyItem(Action destroyedCallback = null)
@@ -34,9 +33,7 @@ public class CoconutItemThrowable : BaseItemThrowable
 
         collisionController.OnCollided -= OnCollided; //Subscribe to the collision event
 
-        rb.freezeRotation = false;
-
-        rotateTowardsVelocityComponent.DisableComponent();
+        spinObjectComponent.DisableComponent();
     }
 
 }
