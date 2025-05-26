@@ -5,6 +5,17 @@ public abstract class BaseItemComponent : MonoBehaviour
 {
     //[BetterHeader("Base Item Component Settings")]
     protected bool isEnabled;
+    [SerializeField] protected bool debugTriggerOnStart = false;
+
+    protected void Start()
+    {
+        if(debugTriggerOnStart)
+        {
+            EnableComponent();
+            StartComponentLogic();
+        }
+
+    }
 
     public bool IsEnabled => isEnabled;
 
