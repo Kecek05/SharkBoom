@@ -12,8 +12,8 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     private Collider[] ragdollColliders;
     
 
-    //[SerializeField] private bool debugRagdollEnabler;
-    //[SerializeField] private bool debugRagdollDisabler;
+    [SerializeField] private bool debugRagdollEnabler;
+    [SerializeField] private bool debugRagdollDisabler;
 
     public override void OnNetworkSpawn()
     { 
@@ -21,27 +21,27 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>();
     }
 
-    //// JUST FOR DEBUG ON RAGDOLL SCENE
-    //private void Awake()
-    //{
-    //    ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
-    //    ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>();
-    //}
+    // JUST FOR DEBUG ON RAGDOLL SCENE
+    private void Awake()
+    {
+        ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
+        ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>();
+    }
 
-    //private void Update()
-    //{
-    //    if (debugRagdollEnabler)
-    //    {
-    //        debugRagdollEnabler = false;
-    //        DisableRagdoll();
-    //    }
+    private void Update()
+    {
+        if (debugRagdollDisabler)
+        {
+            debugRagdollDisabler = false;
+            DisableRagdoll();
+        }
 
-    //    if (debugRagdollDisabler)
-    //    {
-    //        debugRagdollDisabler = false;
-    //        EnableRagdoll();
-    //    }
-    //}
+        if (debugRagdollEnabler)
+        {
+            debugRagdollEnabler = false;
+            EnableRagdoll();
+        }
+    }
 
     public void IniatilizeOwner()
     {
@@ -94,20 +94,23 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [Rpc(SendTo.Server)]
     private void TriggerRagdollServerRpc(int hitRigidbodyIndex, Vector3 force, Vector3 hitPoint)
     {
-        TriggerRagdollClientRpc(hitRigidbodyIndex, force, hitPoint);
         Debug.Log("RAGDOLL - Server RPC");
+        TriggerRagdollClientRpc(hitRigidbodyIndex, force, hitPoint);
     }
 
     [Rpc(SendTo.ClientsAndHost)]
     private void TriggerRagdollClientRpc(int hitRigidbodyIndex, Vector3 force, Vector3 hitPoint)
     {
-        EnableRagdoll();
         Debug.Log("RAGDOLL - Client RPC");
-        if (IsOwner)
-        {
-            Rigidbody hitRigidbody = ragdollRbs[hitRigidbodyIndex]; // get the rb we hit
-            hitRigidbody.AddForceAtPosition(force, hitPoint, ForceMode.Impulse);
-        }
+        EnableRagdoll();
+        Rigidbody hitRigidbody = ragdollRbs[hitRigidbodyIndex]; // get the rb we hit
+        hitRigidbody.AddForceAtPosition(force, hitPoint, ForceMode.Impulse);
+
+        //if (IsOwner)
+        //{
+        //    Rigidbody hitRigidbody = ragdollRbs[hitRigidbodyIndex]; // get the rb we hit
+        //    hitRigidbody.AddForceAtPosition(force, hitPoint, ForceMode.Impulse);
+        //}
     }
 
     private void EnableRagdoll()
@@ -144,7 +147,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         DisableRagdoll();
     }
 
-
     private void DisableRagdoll()
     {
         animator.enabled = true;
@@ -152,7 +154,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         foreach (Collider ragdollCollider in ragdollColliders)
         {
             ragdollCollider.enabled = false;
-            Debug.Log($"{ragdollCollider.name} is active = {ragdollCollider.enabled}");
         }
 
         foreach (Rigidbody ragdollRb in ragdollRbs)
