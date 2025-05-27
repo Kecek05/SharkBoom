@@ -14,9 +14,10 @@ public class SeaStarItemThrowable : BaseItemThrowable
         spinObjectComponent.StartComponentLogic();
     }
 
-    protected override void OnCollided(GameObject collidedObj)
+    protected override void CollisionController_OnCollided(GameObject collidedObj)
     {
         spinObjectComponent.DisableComponent();
+        rb.useGravity = true;
     }
 
     public override void DestroyItem(Action destroyedCallback = null)

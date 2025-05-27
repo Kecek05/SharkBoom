@@ -14,7 +14,7 @@ public class HarpoonItemThrowable : BaseItemThrowable
         rotateTowardsVelocityComponent.StartComponentLogic();
     }
 
-    protected override void OnCollided(GameObject collidedObj)
+    protected override void CollisionController_OnCollided(GameObject collidedObj)
     {
         rotateTowardsVelocityComponent.DisableComponent();
     }

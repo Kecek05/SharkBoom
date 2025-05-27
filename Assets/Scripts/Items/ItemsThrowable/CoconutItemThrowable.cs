@@ -14,7 +14,7 @@ public class CoconutItemThrowable : BaseItemThrowable
         spinObjectComponent.StartComponentLogic();
     }
 
-    protected override void OnCollided(GameObject collidedObj)
+    protected override void CollisionController_OnCollided(GameObject collidedObj)
     {
         spinObjectComponent.DisableComponent();
     }

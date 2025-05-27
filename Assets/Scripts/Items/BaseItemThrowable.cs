@@ -48,7 +48,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
 
         if(collisionController)
         {
-            collisionController.OnCollided += OnCollided;
+            collisionController.OnCollided += CollisionController_OnCollided;
             collisionController.OnCollidedWithPlayer += CollisionController_OnCollidedWithPlayer;
         }
 
@@ -61,7 +61,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
 
     }
 
-    protected virtual void OnCollided(GameObject collidedObject)
+    protected virtual void CollisionController_OnCollided(GameObject collidedObject)
     {
         
     }
@@ -238,7 +238,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
 
         if (collisionController)
         {
-            collisionController.OnCollided -= OnCollided;
+            collisionController.OnCollided -= CollisionController_OnCollided;
             collisionController.OnCollidedWithPlayer -= CollisionController_OnCollidedWithPlayer;
         }
 

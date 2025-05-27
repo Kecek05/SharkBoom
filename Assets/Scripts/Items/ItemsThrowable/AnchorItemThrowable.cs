@@ -8,7 +8,7 @@ public class AnchorItemThrowable : BaseItemThrowableActivable
     [SerializeField] private DamageableSO anchorActivatedDamageableSO;
     [SerializeField] private CanDoDamageComponent canDoDamageComponent;
 
-    protected override void OnCollided(GameObject collidedObject)
+    protected override void CollisionController_OnCollided(GameObject collidedObject)
     {
         rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
     }
