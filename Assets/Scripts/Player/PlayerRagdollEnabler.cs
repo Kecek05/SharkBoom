@@ -8,11 +8,11 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private Transform ragdollRoot;
     [SerializeField] private Collider[] playerColliders;
-    [SerializeField] private NetworkTransform networkTransform;
 
-    private Rigidbody[] ragdollRbs;
+    [SerializeField] private Rigidbody[] ragdollRbs;
+    [SerializeField] private Rigidbody parentRigidbody;
+
     private Collider[] ragdollColliders;
-    
 
     [SerializeField] private bool debugRagdollEnabler;
     [SerializeField] private bool debugRagdollDisabler;
@@ -24,26 +24,26 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     }
 
     // JUST FOR DEBUG ON RAGDOLL SCENE
-    private void Awake()
-    {
-        ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
-        ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>();
-    }
+    //private void Awake()
+    //{
+    //    ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
+    //    ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>();
+    //}
 
-    private void Update()
-    {
-        if (debugRagdollDisabler)
-        {
-            debugRagdollDisabler = false;
-            DisableRagdoll();
-        }
+    //private void Update()
+    //{
+    //    if (debugRagdollDisabler)
+    //    {
+    //        debugRagdollDisabler = false;
+    //        DisableRagdoll();
+    //    }
 
-        if (debugRagdollEnabler)
-        {
-            debugRagdollEnabler = false;
-            EnableRagdoll();
-        }
-    }
+    //    if (debugRagdollEnabler)
+    //    {
+    //        debugRagdollEnabler = false;
+    //        EnableRagdoll();
+    //    }
+    //}
 
     public void IniatilizeOwner()
     {
@@ -60,7 +60,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     public void TriggerRagdoll(float knockbackStrength, Vector3 hitPoint)
     {
-
         Rigidbody hitRigidbody = null;
         float closestDistance = float.MaxValue;
         int index = 0;
@@ -96,46 +95,41 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [Rpc(SendTo.Server)]
     private void TriggerRagdollServerRpc(int hitRigidbodyIndex, Vector3 force, Vector3 hitPoint)
     {
-        Debug.Log("RAGDOLL - Server RPC");
         TriggerRagdollClientRpc(hitRigidbodyIndex, force, hitPoint);
+        Debug.Log("RAGDOLL - Call trigger on server");
     }
 
     [Rpc(SendTo.ClientsAndHost)]
     private void TriggerRagdollClientRpc(int hitRigidbodyIndex, Vector3 force, Vector3 hitPoint)
     {
-        Debug.Log("RAGDOLL - Client RPC");
         EnableRagdoll();
         Rigidbody hitRigidbody = ragdollRbs[hitRigidbodyIndex]; // get the rb we hit
         hitRigidbody.AddForceAtPosition(force, hitPoint, ForceMode.Impulse);
-
-        //if (IsOwner)
-        //{
-        //    Rigidbody hitRigidbody = ragdollRbs[hitRigidbodyIndex]; // get the rb we hit
-        //    hitRigidbody.AddForceAtPosition(force, hitPoint, ForceMode.Impulse);
-        //}
     }
 
     private void EnableRagdoll()
     {
-        Debug.Log("RAGDOLL - Enable ragdoll");
-
-        networkTransform.enabled = false;
+        Debug.Log("RAGDOLL ENABLE - Enable ragdoll");
 
         foreach (Collider ragdollCollider in ragdollColliders)
         {
             ragdollCollider.enabled = true;
+            Debug.Log($"RAGDOLL ENABLE - {ragdollCollider.name} + {ragdollCollider.enabled}");
         }
 
         foreach (Rigidbody ragdollRb in ragdollRbs)
         {
             ragdollRb.isKinematic = false;
+            Debug.Log($"RAGDOLL ENABLE - {ragdollRb.name} + isKinematic: {ragdollRb.isKinematic}");
         }
 
         foreach (Collider playerCollider in playerColliders)
         {
             playerCollider.enabled = false;
+            Debug.Log($"RAGDOLL ENABLE - {playerCollider.name} + {playerCollider.enabled}");
         }
 
+        parentRigidbody.isKinematic = true;
         animator.enabled = false;
     }
 
@@ -154,24 +148,28 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     private void DisableRagdoll()
     {
+        Debug.Log("RAGDOLL DISABLE - Disable ragdoll");
         animator.enabled = true;
 
         foreach (Collider ragdollCollider in ragdollColliders)
         {
             ragdollCollider.enabled = false;
+            Debug.Log($"RAGDOLL DISABLE -{ragdollCollider.name} + {ragdollCollider.enabled}");
         }
 
         foreach (Rigidbody ragdollRb in ragdollRbs)
         {
             ragdollRb.isKinematic = true;
+            Debug.Log($"RAGDOLL DISABLE - {ragdollRb.name} + isKinematic: {ragdollRb.isKinematic}");
         }
 
         foreach (Collider playerCollider in playerColliders)
         {
             playerCollider.enabled = true;
+            Debug.Log($"RAGDOLL DISABLE - {playerCollider.name} + {playerCollider.enabled}");
         }
 
-        networkTransform.enabled = true;
+        parentRigidbody.isKinematic = false;
     }
 
     public void UnInitializeOwner()
