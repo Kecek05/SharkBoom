@@ -160,8 +160,11 @@ public class PlayerInventory : NetworkBehaviour
         }
     }
 
-
-    public void SetPlayerItems(int itemSOIndex) //Set the items that player have when starting the game
+    /// <summary>
+    /// Add the items that player have when starting the game
+    /// </summary>
+    /// <param name="itemSOIndex"></param>
+    public void SetPlayerItems(int itemSOIndex)
     {
         //Server Code
         playerItemsInventory.Add(new ItemInventoryData

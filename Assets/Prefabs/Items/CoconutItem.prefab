@@ -241,12 +241,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3553632099735663097}
-    - targetCorrespondingSourceObject: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 328625238394855126}
     - targetCorrespondingSourceObject: {fileID: 2942010050083629636, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7732314127948684009}
+    - targetCorrespondingSourceObject: {fileID: 851746441201601633, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 705276871807049748}
   m_SourcePrefab: {fileID: 100100000, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
 --- !u!114 &1924429888176421737 stripped
 MonoBehaviour:
@@ -319,22 +319,8 @@ MonoBehaviour:
   lifetimeTriggerItemComponent: {fileID: 2957073883870968353}
   followTransformComponent: {fileID: 2492626997076712017}
   myNetworkObject: {fileID: 2590630615956071341}
-  spinObjectComponent: {fileID: 328625238394855126}
+  spinObjectComponent: {fileID: 705276871807049748}
   collisionController: {fileID: 1924429888176421737}
---- !u!114 &328625238394855126
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4139059953487484834}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cbe1a628dca722444a83a20053161fda, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  debugTriggerOnStart: 0
-  spiningSpeed: 1000
 --- !u!1 &4767779204118326136 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2942010050083629636, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
@@ -366,3 +352,22 @@ Rigidbody:
   m_CorrespondingSourceObject: {fileID: 788439871958220744, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
   m_PrefabInstance: {fileID: 7709761659009139004}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &7002131505479470429 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 851746441201601633, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+  m_PrefabInstance: {fileID: 7709761659009139004}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &705276871807049748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7002131505479470429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbe1a628dca722444a83a20053161fda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debugTriggerOnStart: 0
+  spiningSpeed: 900

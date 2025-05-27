@@ -13,8 +13,6 @@ public class GameManager : NetworkBehaviour
     private BaseTurnManager turnManager;
     private BaseTimerManager timerManager;
     private BaseGameTimerManager gameTimerManager;
-    //private PlayersPublicInfoManager playersPublicInfoManager;
-    //private ItemActivableManager itemActivableManager;
     private BaseGameStateManager gameStateManager;
     private BaseGameOverManager gameOverManager;
     private BasePearlsManager pearlsManager;
@@ -28,8 +26,6 @@ public class GameManager : NetworkBehaviour
         turnManager = ServiceLocator.Get<BaseTurnManager>();
         timerManager = ServiceLocator.Get<BaseTimerManager>();
         gameTimerManager = ServiceLocator.Get<BaseGameTimerManager>();
-        //playersPublicInfoManager = ServiceLocator.Get<PlayersPublicInfoManager>();
-        //itemActivableManager = ServiceLocator.Get<ItemActivableManager>();
         gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
         gameOverManager = ServiceLocator.Get<BaseGameOverManager>();
         pearlsManager = ServiceLocator.Get<BasePearlsManager>();
@@ -39,7 +35,6 @@ public class GameManager : NetworkBehaviour
 
     private void HandleEvents()
     {
-        Debug.Log("HandleEvents Game manager");
 
         gameStateManager.CurrentGameState.OnValueChanged += HandleOnGameStateChanged;
 
@@ -128,7 +123,6 @@ public class GameManager : NetworkBehaviour
 
     private void UnHandleEvents()
     {
-        Debug.Log("UnHandleEvents Game Manager");
 
         gameStateManager.CurrentGameState.OnValueChanged -= HandleOnGameStateChanged;
 

@@ -163,7 +163,7 @@ PrefabInstance:
     - target: {fileID: 4897436337832737565, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: itemThrowable
       value: 
-      objectReference: {fileID: 3553632099735663097}
+      objectReference: {fileID: 6599030358803949550}
     - target: {fileID: 5263959955919774353, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 942914724
@@ -264,13 +264,13 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 3553632099735663097}
-    - targetCorrespondingSourceObject: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 328625238394855126}
+      addedObject: {fileID: 6599030358803949550}
     - targetCorrespondingSourceObject: {fileID: 2942010050083629636, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7732314127948684009}
+    - targetCorrespondingSourceObject: {fileID: 851746441201601633, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2134412629585974574}
   m_SourcePrefab: {fileID: 100100000, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
 --- !u!114 &1924429888176421737 stripped
 MonoBehaviour:
@@ -321,7 +321,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
   m_PrefabInstance: {fileID: 7709761659009139004}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &3553632099735663097
+--- !u!114 &6599030358803949550
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -330,11 +330,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 4139059953487484834}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ecbeef4a7b493f47abef1d090d0cee6, type: 3}
+  m_Script: {fileID: 11500000, guid: 1b8e9597b8ec09d40b4fb81121611153, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  itemSO: {fileID: 11400000, guid: 0ff8cd00edde07d4bbec95938cc99d53, type: 2}
+  itemSO: {fileID: 11400000, guid: ad05869eef7d8534d972e4935a2b7cdf, type: 2}
   rb: {fileID: 6921903450271284980}
   objectsToChangeLayer:
   - {fileID: 4139059953487484834}
@@ -343,22 +343,8 @@ MonoBehaviour:
   lifetimeTriggerItemComponent: {fileID: 2957073883870968353}
   followTransformComponent: {fileID: 2492626997076712017}
   myNetworkObject: {fileID: 2590630615956071341}
-  spinObjectComponent: {fileID: 328625238394855126}
+  spinObjectComponent: {fileID: 2134412629585974574}
   collisionController: {fileID: 1924429888176421737}
---- !u!114 &328625238394855126
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4139059953487484834}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cbe1a628dca722444a83a20053161fda, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  debugTriggerOnStart: 0
-  spiningSpeed: 1000
 --- !u!1 &4767779204118326136 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2942010050083629636, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
@@ -371,7 +357,7 @@ SphereCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4767779204118326136}
-  m_Material: {fileID: 13400000, guid: 1ca02d3dc6b59e545860de24a88ff65a, type: 2}
+  m_Material: {fileID: 13400000, guid: bb6a2f44f0d3371418184ca9acdc5761, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -390,3 +376,22 @@ Rigidbody:
   m_CorrespondingSourceObject: {fileID: 788439871958220744, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
   m_PrefabInstance: {fileID: 7709761659009139004}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &7002131505479470429 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 851746441201601633, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+  m_PrefabInstance: {fileID: 7709761659009139004}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2134412629585974574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7002131505479470429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbe1a628dca722444a83a20053161fda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debugTriggerOnStart: 0
+  spiningSpeed: 900
