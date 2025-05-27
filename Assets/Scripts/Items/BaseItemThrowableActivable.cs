@@ -1,8 +1,8 @@
-using UnityEngine;
+using System;
 
-public class BaseItemThrowableActivable : BaseItemThrowable
+public abstract class BaseItemThrowableActivable : BaseItemThrowable
 {
-
+    public event Action OnItemActivated;
     protected bool itemActivated = false;
 
     protected void OnEnable()
@@ -14,13 +14,10 @@ public class BaseItemThrowableActivable : BaseItemThrowable
     {
         if (itemActivated) return;
         ActivateItem();
+        OnItemActivated?.Invoke();
     }
 
 
-    protected virtual void ActivateItem()
-    {
-        itemActivated = true;
-        Debug.Log("Item Activated");
-    }
+    protected abstract void ActivateItem();
 
 }
