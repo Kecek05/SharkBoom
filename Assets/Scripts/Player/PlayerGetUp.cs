@@ -10,11 +10,11 @@ public class PlayerGetUp : NetworkBehaviour
     [SerializeField] private Transform hipsTransform;
 
     [Header("Settings")]
-    [SerializeField] private float capsuleRadius = 0.5f;
+    [SerializeField] private float capsuleRadius = 1f;
     [SerializeField] private float capsuleHeight = 2f;
     [SerializeField] private LayerMask layersToDetectCollision;
 
-    private const int MAX_ATTEMPTS = 10;
+    private const int MAX_ATTEMPTS = 30;
     private const float STEP_SIZE = 0.25f;
     private bool isFallen = false;
 
@@ -70,7 +70,7 @@ public class PlayerGetUp : NetworkBehaviour
     {
         if (!IsOwner) return;
         RequestGetUpPlayerServerRpc();
-        Debug.Log("JUMP - RequestGetUpPlayerServerRpc");
+        Debug.Log("RAGDOLL GET UP - RequestGetUpPlayerServerRpc");
     }
 
     [Rpc(SendTo.Server)]

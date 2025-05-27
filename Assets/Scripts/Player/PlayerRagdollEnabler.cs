@@ -109,24 +109,20 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     private void EnableRagdoll()
     {
-        Debug.Log("RAGDOLL ENABLE - Enable ragdoll");
 
         foreach (Collider ragdollCollider in ragdollColliders)
         {
             ragdollCollider.enabled = true;
-            Debug.Log($"RAGDOLL ENABLE - {ragdollCollider.name} + {ragdollCollider.enabled}");
         }
 
         foreach (Rigidbody ragdollRb in ragdollRbs)
         {
             ragdollRb.isKinematic = false;
-            Debug.Log($"RAGDOLL ENABLE - {ragdollRb.name} + isKinematic: {ragdollRb.isKinematic}");
         }
 
         foreach (Collider playerCollider in playerColliders)
         {
             playerCollider.enabled = false;
-            Debug.Log($"RAGDOLL ENABLE - {playerCollider.name} + {playerCollider.enabled}");
         }
 
         parentRigidbody.isKinematic = true;
@@ -148,25 +144,21 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     private void DisableRagdoll()
     {
-        Debug.Log("RAGDOLL DISABLE - Disable ragdoll");
         animator.enabled = true;
 
         foreach (Collider ragdollCollider in ragdollColliders)
         {
             ragdollCollider.enabled = false;
-            Debug.Log($"RAGDOLL DISABLE -{ragdollCollider.name} + {ragdollCollider.enabled}");
         }
 
         foreach (Rigidbody ragdollRb in ragdollRbs)
         {
             ragdollRb.isKinematic = true;
-            Debug.Log($"RAGDOLL DISABLE - {ragdollRb.name} + isKinematic: {ragdollRb.isKinematic}");
         }
 
         foreach (Collider playerCollider in playerColliders)
         {
             playerCollider.enabled = true;
-            Debug.Log($"RAGDOLL DISABLE - {playerCollider.name} + {playerCollider.enabled}");
         }
 
         parentRigidbody.isKinematic = false;
