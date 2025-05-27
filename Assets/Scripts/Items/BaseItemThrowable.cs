@@ -17,6 +17,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     [SerializeField] protected LifetimeTriggerItemComponent lifetimeTriggerItemComponent;
     [SerializeField] protected FollowTransformComponent followTransformComponent; //Used to follow the hand when the item is in hand
     [SerializeField] protected NetworkObject myNetworkObject;
+    [Tooltip("Can Be Null | Used to Listen to Collision Events")] [SerializeField] protected BaseCollisionController collisionController;
     protected ItemLauncherData thisItemLaucherData;
 
     protected BaseTurnManager turnManager;
@@ -45,8 +46,24 @@ public abstract class BaseItemThrowable : NetworkBehaviour
         if (dissolveShaderComponent != null)
             dissolveShaderComponent.DissolveFadeIn();
 
+        if(collisionController)
+        {
+            collisionController.OnCollided += OnCollided;
+            collisionController.OnCollidedWithPlayer += CollisionController_OnCollidedWithPlayer;
+        }
+
         InitializeUpdateRbTypeServerRpc(true);
 
+    }
+
+    protected virtual void CollisionController_OnCollidedWithPlayer(PlayerThrower playerObject)
+    {
+
+    }
+
+    protected virtual void OnCollided(GameObject collidedObject)
+    {
+        
     }
 
     [Rpc(SendTo.Server)]
@@ -218,6 +235,13 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost)]
     private void DestroyOnClientRpc()
     {
+
+        if (collisionController)
+        {
+            collisionController.OnCollided -= OnCollided;
+            collisionController.OnCollidedWithPlayer -= CollisionController_OnCollidedWithPlayer;
+        }
+
         ResetItemThrowableState();
     }
 }

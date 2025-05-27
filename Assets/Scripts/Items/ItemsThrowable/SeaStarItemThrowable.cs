@@ -4,14 +4,6 @@ using UnityEngine;
 public class SeaStarItemThrowable : BaseItemThrowable
 {
     [SerializeField] private BaseItemComponent spinObjectComponent;
-    [SerializeField] private BaseCollisionController collisionController;
-
-    public override void Initialize(Transform parent)
-    {
-        base.Initialize(parent);
-
-        collisionController.OnCollided += OnCollided; 
-    }
 
     public override void ItemReleased(ItemLauncherData itemLauncherData)
     {
@@ -22,7 +14,7 @@ public class SeaStarItemThrowable : BaseItemThrowable
         spinObjectComponent.StartComponentLogic();
     }
 
-    private void OnCollided(GameObject collidedObj)
+    protected override void OnCollided(GameObject collidedObj)
     {
         spinObjectComponent.DisableComponent();
     }
@@ -30,8 +22,6 @@ public class SeaStarItemThrowable : BaseItemThrowable
     public override void DestroyItem(Action destroyedCallback = null)
     {
         base.DestroyItem(destroyedCallback);
-
-        collisionController.OnCollided -= OnCollided; //Subscribe to the collision event
 
         spinObjectComponent.DisableComponent();
     }

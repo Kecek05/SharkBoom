@@ -150,6 +150,17 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: -793818038911944659}
   m_SourcePrefab: {fileID: 100100000, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+--- !u!114 &1924429888176421737 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8091387058931432021, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+  m_PrefabInstance: {fileID: 7709761659009139004}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4139059953487484834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 766f58c5354051842aee7c71f90575ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &2492626997076712017 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5217706511134153581, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
@@ -215,7 +226,7 @@ MonoBehaviour:
   lifetimeTriggerItemComponent: {fileID: 2957073883870968353}
   followTransformComponent: {fileID: 2492626997076712017}
   myNetworkObject: {fileID: 2590630615956071341}
-  myPrefab: {fileID: 4139059953487484834}
+  collisionController: {fileID: 1924429888176421737}
   followingTime: 4
 --- !u!1 &4767779204118326136 stripped
 GameObject:
