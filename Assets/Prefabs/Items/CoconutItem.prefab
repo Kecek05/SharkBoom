@@ -346,7 +346,7 @@ SphereCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Radius: 0.55
-  m_Center: {x: 0, y: 0.55, z: 0}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &6921903450271284980 stripped
 Rigidbody:
   m_CorrespondingSourceObject: {fileID: 788439871958220744, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
@@ -370,4 +370,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debugTriggerOnStart: 0
-  spiningSpeed: 900
+  rb: {fileID: 6921903450271284980}
+  spiningSpeed: 400
+  isInverted: 0

@@ -289,7 +289,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbe1a628dca722444a83a20053161fda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spiningSpeed: 900
+  debugTriggerOnStart: 0
+  rb: {fileID: 6921903450271284980}
+  spiningSpeed: 500
+  isInverted: 1
 --- !u!1 &4767779204118326136 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2942010050083629636, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}

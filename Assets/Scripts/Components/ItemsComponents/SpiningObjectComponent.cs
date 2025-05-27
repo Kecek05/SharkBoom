@@ -1,40 +1,69 @@
+using Sortify;
 using System.Collections;
 using UnityEngine;
 
 public class SpiningObjectComponent : BaseItemComponent
 {
+    [BetterHeader("References")]
+    [SerializeField] private Rigidbody rb;
+    [Space(5)]
+
+    [BetterHeader("Settings")]
     [SerializeField] private float spiningSpeed = 300f;
+
+    [Tooltip("Used to invert the direction of rotation")]
+    [SerializeField] private bool isInverted = false;
     private Coroutine spinCoroutine;
-    private WaitForFixedUpdate waitForFixedUpdate = new WaitForFixedUpdate();
+    private WaitForEndOfFrame waitForEndOfFrame = new WaitForEndOfFrame();
+    private float spinDirection = 0;
 
     protected override void OnEnableComponent()
     {
-        //Rotate the object to the right direction that the player is facing
+        StopSpinCoroutine();
     }
 
     protected override void DoComponentLogic()
     {
-        spinCoroutine ??= StartCoroutine(SpinObject()); //if not null start the coroutine and assign it to spinCoroutine
+        spinCoroutine ??= StartCoroutine(SpinObjectCoroutine()); //if not null start the coroutine and assign it to spinCoroutine
     }
 
-    private IEnumerator SpinObject()
+    private IEnumerator SpinObjectCoroutine()
     {
         while (true)
         {
             // Rotate the object around its Z-axis
-            transform.Rotate(0, 0, -spiningSpeed * Time.deltaTime);
+            if (rb)
+            {
+                spinDirection = rb.linearVelocity.normalized.x;
 
-            yield return waitForFixedUpdate;
+                if (spinDirection > 0)
+                {
+                    transform.Rotate(0, 0, isInverted ? -spiningSpeed : spiningSpeed * Time.deltaTime);
+                } else if (spinDirection < 0)
+                {
+                    transform.Rotate(0, 0, isInverted ? spiningSpeed : -spiningSpeed * Time.deltaTime);
+                }
+            } else
+            {
+                // If no Rigidbody, just spin normally
+                transform.Rotate(0, 0, isInverted ? -spiningSpeed : spiningSpeed * Time.deltaTime);
+            }
+            yield return waitForEndOfFrame;
         }
         spinCoroutine = null;
     }
 
-    protected override void OnDisableComponent()
+    private void StopSpinCoroutine()
     {
-        if(spinCoroutine != null)
+        if (spinCoroutine != null)
         {
             StopCoroutine(spinCoroutine);
             spinCoroutine = null;
         }
+    }
+
+    protected override void OnDisableComponent()
+    {
+        StopSpinCoroutine();
     }
 }

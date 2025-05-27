@@ -7,6 +7,19 @@ public class AnchorItemThrowable : BaseItemThrowableActivable
     [SerializeField] private float downForce;
     [SerializeField] private DamageableSO anchorActivatedDamageableSO;
     [SerializeField] private CanDoDamageComponent canDoDamageComponent;
+    [SerializeField] private BaseCollisionController collisionController;
+
+    public override void Initialize(Transform parent)
+    {
+        base.Initialize(parent);
+
+        collisionController.OnCollided += OnCollided;
+    }
+
+    private void OnCollided(GameObject collidedObject)
+    {
+        rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
+    }
 
     public override void ItemReleased(ItemLauncherData itemLauncherData)
     {
@@ -29,6 +42,8 @@ public class AnchorItemThrowable : BaseItemThrowableActivable
     public override void DestroyItem(Action destroyedCallback = null)
     {
         base.DestroyItem(destroyedCallback);
+
+        collisionController.OnCollided += OnCollided;
 
         rotateTowardsVelocityComponent.DisableComponent();
     }
