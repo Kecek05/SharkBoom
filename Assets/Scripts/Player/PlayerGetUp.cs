@@ -13,12 +13,13 @@ public class PlayerGetUp : NetworkBehaviour
     [SerializeField] private Vector3 boxSize;
     [SerializeField] private LayerMask layersToDetectCollision;
 
-    private const int MAX_ATTEMPTS = 100;
-    private const float STEP_SIZE =  0.25f;
+    private const int MAX_ATTEMPTS = 50;
+    private const float STEP_SIZE =  0.5f;
     private bool isFallen = false;
 
     private float verticalOffset;
     private float OriginalRootZ;
+    private Quaternion originalRootRotation;
 
     private Vector3 finalPosition;
 
@@ -62,7 +63,8 @@ public class PlayerGetUp : NetworkBehaviour
     {
         isFallen = true;
         OriginalRootZ = rootTransform.position.z;
-        //verticalOffset = hipsTransform.position.y - rootTransform.position.y;
+        verticalOffset = hipsTransform.position.y - rootTransform.position.y;
+        originalRootRotation = rootTransform.rotation;
     }
 
     private void HandleOnItemCallbackAction()
@@ -125,7 +127,7 @@ public class PlayerGetUp : NetworkBehaviour
 
     private void PassPlayerFreePoos()
     {
-        rootTransform.SetPositionAndRotation(finalPosition, Quaternion.identity);
+        rootTransform.SetPositionAndRotation(finalPosition, originalRootRotation);
         isFallen = false;
     }
 
@@ -133,7 +135,7 @@ public class PlayerGetUp : NetworkBehaviour
     {
         foreach (Vector2 direction in directions)
         {
-            Vector3 finalDirection = new Vector3(direction.x, 0, direction.y);
+            Vector3 finalDirection = new Vector3(direction.x, 0f, direction.y);
 
             for (int i = 0; i < MAX_ATTEMPTS; i++)
             {
