@@ -96,7 +96,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     private void TriggerRagdollServerRpc(int hitRigidbodyIndex, Vector3 force, Vector3 hitPoint)
     {
         TriggerRagdollClientRpc(hitRigidbodyIndex, force, hitPoint);
-        Debug.Log("RAGDOLL - Call trigger on server");
     }
 
     [Rpc(SendTo.ClientsAndHost)]

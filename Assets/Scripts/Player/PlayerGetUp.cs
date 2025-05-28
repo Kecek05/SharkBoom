@@ -10,12 +10,11 @@ public class PlayerGetUp : NetworkBehaviour
     [SerializeField] private Transform hipsTransform;
 
     [Header("Settings")]
-    [SerializeField] private float capsuleRadius = 1f;
-    [SerializeField] private float capsuleHeight = 2f;
+    [SerializeField] private Vector3 boxSize;
     [SerializeField] private LayerMask layersToDetectCollision;
 
     private const int MAX_ATTEMPTS = 30;
-    private const float STEP_SIZE = 0.25f;
+    private const float STEP_SIZE =  2.5f;
     private bool isFallen = false;
 
     private float verticalOffset;
@@ -70,7 +69,6 @@ public class PlayerGetUp : NetworkBehaviour
     {
         if (!IsOwner) return;
         RequestGetUpPlayerServerRpc();
-        Debug.Log("RAGDOLL GET UP - RequestGetUpPlayerServerRpc");
     }
 
     [Rpc(SendTo.Server)]
@@ -85,7 +83,6 @@ public class PlayerGetUp : NetworkBehaviour
         if (!IsOwner) return;
 
         if (!isFallen) return;
-
         CalculatePlayerFreePos();
     }
 
@@ -102,7 +99,7 @@ public class PlayerGetUp : NetworkBehaviour
 
         Vector3 foundPos = GetFreePosition(initialPosOfPlayer);
 
-        if (!IsCapsuleFreeAt(foundPos))
+        if (!IsBoxFreeAt(foundPos))
         {
             Debug.LogWarning("No free position found to get up player");
             return;
@@ -143,7 +140,7 @@ public class PlayerGetUp : NetworkBehaviour
                 Vector3 testPos = startPos + finalDirection * (i * STEP_SIZE);
                 testPos.z = OriginalRootZ; 
 
-                if (IsCapsuleFreeAt(testPos))
+                if (IsBoxFreeAt(testPos))
                 {
                     return testPos;
                 }
@@ -153,16 +150,16 @@ public class PlayerGetUp : NetworkBehaviour
         return startPos;
     }
 
-    private bool IsCapsuleFreeAt(Vector3 pos)
+    private bool IsBoxFreeAt(Vector3 checkPos)
     {
-        // we use Vector3.up because we are testing the capsule in get up
-        Vector3 capsuleBottom = pos + Vector3.up * capsuleRadius;
-        Vector3 capsuleTop = pos + Vector3.up * (capsuleHeight - capsuleRadius);
+        // we use Vector3.up because we are testing the box in get up
+        Vector3 centerOfBox = checkPos + Vector3.up * (boxSize.y * 0.5f);
+        Vector3 attempSizeExtends = boxSize * 0.5f;
 
-        bool isFree = !Physics.CheckCapsule(capsuleBottom, capsuleTop, capsuleRadius, layersToDetectCollision);
-        bool IsOnGround = Physics.Raycast(pos + Vector3.up * 0.1f, Vector3.down, out RaycastHit hit, 2f, layersToDetectCollision);
+        bool isFree = !Physics.CheckBox(centerOfBox, attempSizeExtends, Quaternion.identity, layersToDetectCollision);
+        bool isOnGround = Physics.Raycast(checkPos + Vector3.up * 0.1f, Vector3.down, out RaycastHit hit, attempSizeExtends.y + 0.1f, layersToDetectCollision);
 
-        return isFree && IsOnGround;
+        return isFree && isOnGround;
     }
 
     public void UnInitializeOwner()
