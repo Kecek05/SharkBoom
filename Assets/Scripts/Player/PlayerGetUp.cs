@@ -13,8 +13,8 @@ public class PlayerGetUp : NetworkBehaviour
     [SerializeField] private Vector3 boxSize;
     [SerializeField] private LayerMask layersToDetectCollision;
 
-    private const int MAX_ATTEMPTS = 30;
-    private const float STEP_SIZE =  2.5f;
+    private const int MAX_ATTEMPTS = 100;
+    private const float STEP_SIZE =  0.25f;
     private bool isFallen = false;
 
     private float verticalOffset;
@@ -62,7 +62,7 @@ public class PlayerGetUp : NetworkBehaviour
     {
         isFallen = true;
         OriginalRootZ = rootTransform.position.z;
-        verticalOffset = hipsTransform.position.y - rootTransform.position.y;
+        //verticalOffset = hipsTransform.position.y - rootTransform.position.y;
     }
 
     private void HandleOnItemCallbackAction()
