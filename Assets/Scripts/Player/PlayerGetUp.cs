@@ -136,7 +136,8 @@ public class PlayerGetUp : NetworkBehaviour
     {
         foreach (Vector2 direction in directions)
         {
-            Vector3 finalDirection = new Vector3(direction.x, direction.y, 0); 
+            Vector3 finalDirection = new Vector3(direction.x, 0, direction.y);
+
             for (int i = 0; i < MAX_ATTEMPTS; i++)
             {
                 Vector3 testPos = startPos + finalDirection * (i * STEP_SIZE);
@@ -159,7 +160,7 @@ public class PlayerGetUp : NetworkBehaviour
         Vector3 capsuleTop = pos + Vector3.up * (capsuleHeight - capsuleRadius);
 
         bool isFree = !Physics.CheckCapsule(capsuleBottom, capsuleTop, capsuleRadius, layersToDetectCollision);
-        bool IsOnGround = Physics.Raycast(pos + Vector3.up * 0.1f, Vector3.down, out RaycastHit hit, 1f, layersToDetectCollision);
+        bool IsOnGround = Physics.Raycast(pos + Vector3.up * 0.1f, Vector3.down, out RaycastHit hit, 2f, layersToDetectCollision);
 
         return isFree && IsOnGround;
     }
