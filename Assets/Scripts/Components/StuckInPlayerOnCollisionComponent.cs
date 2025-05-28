@@ -24,7 +24,7 @@ public class StuckInPlayerOnCollisionComponent : MonoBehaviour
             //its a player
             isFollowing = true;
             followTransformComponent.SetTarget(playerThrower.ItemStuckSocket.transform);
-            followTransformComponent.SetIsInterpolation(true);
+            followTransformComponent.SetUseInterpolation(true);
             followTransformComponent.EnableComponent();
         }
     }
@@ -33,7 +33,7 @@ public class StuckInPlayerOnCollisionComponent : MonoBehaviour
     {
         isFollowing = false;
         followTransformComponent.DisableComponent();
-        followTransformComponent.SetIsInterpolation(false);
+        followTransformComponent.SetUseInterpolation(false);
     }
 
     private void OnDisable()

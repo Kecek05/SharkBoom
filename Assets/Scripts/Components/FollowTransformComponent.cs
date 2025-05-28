@@ -20,7 +20,7 @@ public class FollowTransformComponent : MonoBehaviour
     [Space(3)]
 
     [BetterHeader("Interpolation Settings")]
-    [SerializeField] private bool isInterpolation = false;
+    [SerializeField] private bool useInterpolation = false;
     [SerializeField] private float interpolationSpeed = 5f;
 
 
@@ -37,7 +37,7 @@ public class FollowTransformComponent : MonoBehaviour
         // Apply positionOffset in the target's local space
         targetPositionWithOffset = targetTransform.position + targetTransform.TransformDirection(positionOffset);
 
-        if (isInterpolation)
+        if (useInterpolation)
         {
             MoveWithInterpolation();
             return;
@@ -104,8 +104,8 @@ public class FollowTransformComponent : MonoBehaviour
         positionOffset = offset;
     }
 
-    public void SetIsInterpolation(bool value)
+    public void SetUseInterpolation(bool value)
     {
-        isInterpolation = value;
+        useInterpolation = value;
     }
 }

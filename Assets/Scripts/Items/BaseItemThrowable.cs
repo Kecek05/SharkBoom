@@ -2,6 +2,7 @@ using Sortify;
 using System;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public abstract class BaseItemThrowable : NetworkBehaviour
 {
@@ -134,6 +135,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
 
         OnItemReleasedAction?.Invoke(this.transform);
         rb.isKinematic = false;
+        transform.localEulerAngles = new Vector3(0f, 0f, 0f); // reset rotation
     }
 
     private void SetCollision(PlayableState playableState)

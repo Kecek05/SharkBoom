@@ -720,7 +720,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   debugTriggerOnStart: 1
   rb: {fileID: 0}
-  spiningSpeed: 300
+  spinningSpeed: 300
+  useInterpolation: 0
+  interpolationSpeed: 300
   isInverted: 0
 --- !u!65 &1216576550
 BoxCollider:
@@ -864,7 +866,7 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 0, y: 0, z: 0}
-  isInterpolation: 0
+  useInterpolation: 0
   interpolationSpeed: 5
 --- !u!65 &1277093862
 BoxCollider:
@@ -993,7 +995,7 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 0, y: 0, z: 0}
-  isInterpolation: 0
+  useInterpolation: 0
   interpolationSpeed: 5
 --- !u!65 &1441389350
 BoxCollider:

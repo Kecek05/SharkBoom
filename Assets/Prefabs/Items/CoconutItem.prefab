@@ -319,8 +319,8 @@ MonoBehaviour:
   lifetimeTriggerItemComponent: {fileID: 2957073883870968353}
   followTransformComponent: {fileID: 2492626997076712017}
   myNetworkObject: {fileID: 2590630615956071341}
-  spinObjectComponent: {fileID: 705276871807049748}
   collisionController: {fileID: 1924429888176421737}
+  spinObjectComponent: {fileID: 705276871807049748}
 --- !u!1 &4767779204118326136 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2942010050083629636, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
@@ -371,5 +371,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   debugTriggerOnStart: 0
   rb: {fileID: 6921903450271284980}
-  spiningSpeed: 400
+  spinningSpeed: 300
+  useInterpolation: 1
+  interpolationSpeed: 300
   isInverted: 0
