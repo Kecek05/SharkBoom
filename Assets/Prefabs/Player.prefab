@@ -734,6 +734,7 @@ MonoBehaviour:
   playerKnockbackListener: {fileID: 3826531896651400832}
   playerGetUp: {fileID: 1086343849340449909}
   playerJumpUI: {fileID: 7506314524237905732}
+  itemStuckSocket: {fileID: 5022486715568151751}
 --- !u!114 &6377254783256832976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2497,6 +2498,37 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 0, y: 0, z: 0}
+--- !u!1 &5022486715568151751
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1130555658890168626}
+  m_Layer: 0
+  m_Name: ItemStuckSocket
+  m_TagString: Untagged
+  m_Icon: {fileID: 1206586993520771344, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1130555658890168626
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5022486715568151751}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.591, z: -0.492}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2927350467601940059}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5145964655419746010
 GameObject:
   m_ObjectHideFlags: 0
@@ -4076,6 +4108,7 @@ Transform:
   - {fileID: 3268204637718415723}
   - {fileID: 1265534911540065886}
   - {fileID: 8907946017582502155}
+  - {fileID: 1130555658890168626}
   m_Father: {fileID: 2498330595957626671}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6932457704017656328

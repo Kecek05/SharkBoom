@@ -26,6 +26,7 @@ public class BombItemThrowable : BaseItemThrowableActivable
         explodeBombCoroutine ??= StartCoroutine(ExplodeBomb());
     }
 
+
     private IEnumerator ExplodeBomb()
     {
         rb.isKinematic = true; // Stop bomb

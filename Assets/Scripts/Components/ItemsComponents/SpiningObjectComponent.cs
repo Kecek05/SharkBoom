@@ -14,7 +14,7 @@ public class SpiningObjectComponent : BaseItemComponent
     [Tooltip("Used to invert the direction of rotation")]
     [SerializeField] private bool isInverted = false;
     private Coroutine spinCoroutine;
-    private WaitForEndOfFrame waitForEndOfFrame = new WaitForEndOfFrame();
+    private WaitForFixedUpdate waitForFixedUpdate = new WaitForFixedUpdate();
     private float spinDirection = 0;
 
     protected override void OnEnableComponent()
@@ -48,7 +48,7 @@ public class SpiningObjectComponent : BaseItemComponent
                 // If no Rigidbody, just spin normally
                 transform.Rotate(0, 0, isInverted ? -spiningSpeed : spiningSpeed * Time.deltaTime);
             }
-            yield return waitForEndOfFrame;
+            yield return waitForFixedUpdate;
         }
         spinCoroutine = null;
     }

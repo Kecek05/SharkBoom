@@ -28,6 +28,7 @@ public class PlayerThrower : NetworkBehaviour
     [SerializeField] private PlayerKnockbackListener playerKnockbackListener;
     [SerializeField] private PlayerGetUp playerGetUp;
     [SerializeField] private PlayerJumpUI playerJumpUI;
+    [SerializeField] private GameObject itemStuckSocket;
 
     private PlayerStateMachine playerStateMachine;
 
@@ -38,6 +39,7 @@ public class PlayerThrower : NetworkBehaviour
 
     //Publics
 
+    public GameObject ItemStuckSocket => itemStuckSocket;
     public PlayerStateMachine PlayerStateMachine => playerStateMachine;
     public NetworkVariable<PlayableState> ThisPlayableState => thisPlayableState;
 

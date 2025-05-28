@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 public class StuckInPlayerOnCollisionComponent : MonoBehaviour
@@ -24,22 +23,17 @@ public class StuckInPlayerOnCollisionComponent : MonoBehaviour
         {
             //its a player
             isFollowing = true;
-            followTransformComponent.SetTarget(collidedObject.transform);
-            StartCoroutine(DelayToStuck());
+            followTransformComponent.SetTarget(playerThrower.ItemStuckSocket.transform);
+            followTransformComponent.SetIsInterpolation(true);
+            followTransformComponent.EnableComponent();
         }
-    }
-
-    private IEnumerator DelayToStuck()
-    {
-        //Delay to Stuck in the player
-        yield return new WaitForSeconds(0.2f);
-        followTransformComponent.EnableComponent();
     }
 
     private void ResetStuckState()
     {
         isFollowing = false;
         followTransformComponent.DisableComponent();
+        followTransformComponent.SetIsInterpolation(false);
     }
 
     private void OnDisable()
