@@ -392,7 +392,7 @@ MonoBehaviour:
   myNetworkObject: {fileID: 2590630615956071341}
   spinObjectComponent: {fileID: 8074073770920650270}
   collisionController: {fileID: 1924429888176421737}
-  flightDuration: 3
+  maxHeight: 2
   returnDuration: 2
 --- !u!114 &8074073770920650270
 MonoBehaviour:
@@ -407,7 +407,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debugTriggerOnStart: 0
-  spiningSpeed: 950
+  spiningSpeed: 1000
 --- !u!1 &4767779204118326136 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2942010050083629636, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}

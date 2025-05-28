@@ -11,6 +11,7 @@ public class BananaItemThrowable : BaseItemThrowableActivable
     private Coroutine bananaReturnCoroutine; // Start "Boomerang" Courotine
 
     [Header("Banana (Boomerang) Settings")]
+    [SerializeField] private AnimationCurve boomerangCurve;
     [Tooltip("Time to banana return, increase for decrease Banana speed")]
     [SerializeField] private float returnDuration = 1f;
 
@@ -32,28 +33,29 @@ public class BananaItemThrowable : BaseItemThrowableActivable
     protected override void ActivateItem()
     {
         itemActivated = true;
+        Vector3 startReturnPosition = transform.position;
 
         if (bananaReturnCoroutine != null)
         {
             StopCoroutine(bananaReturnCoroutine);
         }
 
-        bananaReturnCoroutine = StartCoroutine(ReturnToPlayer());
+        bananaReturnCoroutine = StartCoroutine(ReturnToPlayer(startReturnPosition, launchPosition));
     }
 
-    private IEnumerator ReturnToPlayer()
+    private IEnumerator ReturnToPlayer(Vector3 returnPosition, Vector3 targetPosition)
     {
         rb.angularVelocity = Vector3.zero;
-        rb.useGravity = false;
+        rb.isKinematic = true;
 
         float timer = 0f;
-        Vector3 returnInitialPos = transform.position;
 
         while (timer < returnDuration)
         {
             timer += Time.deltaTime;
             float timeOfReturn = Mathf.Clamp01(timer / returnDuration); // we use Clamp01 for not extrapolate the return pos
-            transform.position = Vector3.Slerp(returnInitialPos, launchPosition, timeOfReturn);
+
+           
             yield return null;
         }
     }
