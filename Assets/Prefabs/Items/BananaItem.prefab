@@ -130,8 +130,12 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 7667fbb8415883a4bb0ea49a0ebf3d7b, type: 2}
     - target: {fileID: 4897436337832737565, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: lifetime
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 4897436337832737565, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: itemThrowable
+      value: 
+      objectReference: {fileID: 5504366123576952347}
     - target: {fileID: 5217706511134153581, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: followRotation
       value: 1
@@ -234,7 +238,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8676418324385943797, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -0.68
+      objectReference: {fileID: 0}
+    - target: {fileID: 8676418324385943797, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.4
       objectReference: {fileID: 0}
     - target: {fileID: 8676418324385943797, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_LocalRotation.w
@@ -296,6 +304,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5504366123576952347}
+    - targetCorrespondingSourceObject: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8074073770920650270}
   m_SourcePrefab: {fileID: 100100000, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
 --- !u!114 &1924429888176421737 stripped
 MonoBehaviour:
@@ -379,7 +390,24 @@ MonoBehaviour:
   lifetimeTriggerItemComponent: {fileID: 2957073883870968353}
   followTransformComponent: {fileID: 2492626997076712017}
   myNetworkObject: {fileID: 2590630615956071341}
+  spinObjectComponent: {fileID: 8074073770920650270}
   collisionController: {fileID: 1924429888176421737}
+  maxHeight: 2
+  returnDuration: 2
+--- !u!114 &8074073770920650270
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4139059953487484834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbe1a628dca722444a83a20053161fda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debugTriggerOnStart: 0
+  spiningSpeed: 1000
 --- !u!1 &4767779204118326136 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2942010050083629636, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}

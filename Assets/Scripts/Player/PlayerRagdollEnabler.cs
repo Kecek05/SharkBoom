@@ -1,4 +1,5 @@
 using Unity.Netcode;
+using Unity.Netcode.Components;
 using UnityEngine; 
 
 public class PlayerRagdollEnabler : NetworkBehaviour
@@ -8,9 +9,10 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [SerializeField] private Transform ragdollRoot;
     [SerializeField] private Collider[] playerColliders;
 
-    private Rigidbody[] ragdollRbs;
+    [SerializeField] private Rigidbody[] ragdollRbs;
+    [SerializeField] private Rigidbody parentRigidbody;
+
     private Collider[] ragdollColliders;
-    
 
     [SerializeField] private bool debugRagdollEnabler;
     [SerializeField] private bool debugRagdollDisabler;
@@ -22,26 +24,26 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     }
 
     // JUST FOR DEBUG ON RAGDOLL SCENE
-    private void Awake()
-    {
-        ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
-        ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>();
-    }
+    //private void Awake()
+    //{
+    //    ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
+    //    ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>();
+    //}
 
-    private void Update()
-    {
-        if (debugRagdollDisabler)
-        {
-            debugRagdollDisabler = false;
-            DisableRagdoll();
-        }
+    //private void Update()
+    //{
+    //    if (debugRagdollDisabler)
+    //    {
+    //        debugRagdollDisabler = false;
+    //        DisableRagdoll();
+    //    }
 
-        if (debugRagdollEnabler)
-        {
-            debugRagdollEnabler = false;
-            EnableRagdoll();
-        }
-    }
+    //    if (debugRagdollEnabler)
+    //    {
+    //        debugRagdollEnabler = false;
+    //        EnableRagdoll();
+    //    }
+    //}
 
     public void IniatilizeOwner()
     {
@@ -58,7 +60,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     public void TriggerRagdoll(float knockbackStrength, Vector3 hitPoint)
     {
-
         Rigidbody hitRigidbody = null;
         float closestDistance = float.MaxValue;
         int index = 0;
@@ -94,28 +95,20 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [Rpc(SendTo.Server)]
     private void TriggerRagdollServerRpc(int hitRigidbodyIndex, Vector3 force, Vector3 hitPoint)
     {
-        Debug.Log("RAGDOLL - Server RPC");
         TriggerRagdollClientRpc(hitRigidbodyIndex, force, hitPoint);
     }
 
     [Rpc(SendTo.ClientsAndHost)]
     private void TriggerRagdollClientRpc(int hitRigidbodyIndex, Vector3 force, Vector3 hitPoint)
     {
-        Debug.Log("RAGDOLL - Client RPC");
         EnableRagdoll();
         Rigidbody hitRigidbody = ragdollRbs[hitRigidbodyIndex]; // get the rb we hit
         hitRigidbody.AddForceAtPosition(force, hitPoint, ForceMode.Impulse);
-
-        //if (IsOwner)
-        //{
-        //    Rigidbody hitRigidbody = ragdollRbs[hitRigidbodyIndex]; // get the rb we hit
-        //    hitRigidbody.AddForceAtPosition(force, hitPoint, ForceMode.Impulse);
-        //}
     }
 
     private void EnableRagdoll()
     {
-        Debug.Log("RAGDOLL - Enable ragdoll");
+
         foreach (Collider ragdollCollider in ragdollColliders)
         {
             ragdollCollider.enabled = true;
@@ -131,6 +124,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             playerCollider.enabled = false;
         }
 
+        parentRigidbody.isKinematic = true;
         animator.enabled = false;
     }
 
@@ -165,6 +159,8 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         {
             playerCollider.enabled = true;
         }
+
+        parentRigidbody.isKinematic = false;
     }
 
     public void UnInitializeOwner()
