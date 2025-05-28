@@ -76,13 +76,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8982874711336169404}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: 0.9918952, w: -0.12705922}
-  m_LocalPosition: {x: -0.030000031, y: 1.66, z: 0.536}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
-  m_ConstrainProportionsScale: 0
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.030000031, y: 1.66, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 3256067949749529217}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 194.599}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!96 &8059063095555013798
 TrailRenderer:
   serializedVersion: 3
@@ -168,8 +168,8 @@ TrailRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.0039215405, g: 0.08587314, b: 0.93333334, a: 0}
-      key1: {r: 0, g: 0.1750474, b: 1, a: 1}
+      key0: {r: 0.0039215405, g: 0.108388804, b: 0.93333334, a: 0}
+      key1: {r: 0.003921569, g: 0.10980392, b: 0.93333334, a: 1}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
@@ -199,11 +199,11 @@ TrailRenderer:
     numCornerVertices: 60
     numCapVertices: 60
     alignment: 1
-    textureMode: 2
+    textureMode: 0
     textureScale: {x: 80, y: 80}
     shadowBias: 0.5
     generateLightingData: 0
-  m_MinVertexDistance: 0.01
+  m_MinVertexDistance: 0.0005
   m_MaskInteraction: 0
   m_Autodestruct: 1
   m_Emitting: 1
