@@ -29,19 +29,21 @@ public class BombItemThrowable : BaseItemThrowableActivable
 
     private IEnumerator ExplodeBomb()
     {
+
         rb.isKinematic = true; // Stop bomb
         explosionCollider.enabled = true;
-        Debug.Log("Bomb Exploded");
+        spinObjectComponent.DisableComponent();
 
         yield return waitForSecondsRealtime;
 
         explosionCollider.enabled = false;
 
+        explodeBombCoroutine = null;
     }
 
     protected override void CollisionController_OnCollided(GameObject collidedObj)
     {
-        spinObjectComponent.DisableComponent();
+        TryActivate(); //Explode event if touch ground
     }
 
     public override void DestroyItem(Action destroyedCallback = null)

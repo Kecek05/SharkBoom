@@ -5390,19 +5390,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8765535256960079342, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.97288024
+      value: 0.87418634
       objectReference: {fileID: 0}
     - target: {fileID: 8765535256960079342, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.22404248
+      value: -0.4818779
       objectReference: {fileID: 0}
     - target: {fileID: 8765535256960079342, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.054487266
+      value: -0.050755255
       objectReference: {fileID: 0}
     - target: {fileID: 8765535256960079342, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.018444045
+      value: -0.031872623
       objectReference: {fileID: 0}
     - target: {fileID: 8765535256960079342, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -7259,6 +7259,22 @@ MonoBehaviour:
         - m_Target: {fileID: 1987240186612080187}
           m_TargetAssemblyTypeName: PlayerLauncher, Assembly-CSharp
           m_MethodName: Launch
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventName: OnAnimationFinished
+    OnAnimationEvent:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 6932457704017656328}
+          m_TargetAssemblyTypeName: PlayerAnimator, Assembly-CSharp
+          m_MethodName: AnimationFinished
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}

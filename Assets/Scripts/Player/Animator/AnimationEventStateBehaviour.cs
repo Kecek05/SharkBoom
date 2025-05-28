@@ -42,6 +42,7 @@ public class AnimationEventStateBehaviour : StateMachineBehaviour
         if(receiver != null)
         {
             receiver.OnAnimationEventTriggered(eventName);
+            Debug.Log("Animation NotifyRefeiver");
         }
         else
         {

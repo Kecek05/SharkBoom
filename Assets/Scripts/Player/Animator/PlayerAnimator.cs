@@ -75,6 +75,7 @@ public class PlayerAnimator : NetworkBehaviour
     private AnimationData selectedShootAnimation;
 
     private Coroutine crossFadeCoroutine;
+    private PlayerState playerState;
 
     public void HandleOnItemSelectedSO(ItemSO itemSelectedSO)
     {
@@ -87,23 +88,25 @@ public class PlayerAnimator : NetworkBehaviour
     {
         if(!IsOwner) return; //only owner
 
-        if (newState == PlayerState.IdleMyTurn || newState == PlayerState.IdleEnemyTurn || newState == PlayerState.MyTurnEnded)
+        playerState = newState;
+
+        if (playerState == PlayerState.IdleMyTurn || playerState == PlayerState.IdleEnemyTurn || playerState == PlayerState.MyTurnEnded)
         {
             PlayAnimationData(idleAnimationData);
         }
-        else if (newState == PlayerState.DraggingItem)
+        else if (playerState == PlayerState.DraggingItem)
         {
             PlayAnimationData(selectedAimAnimation);
         }
-        else if (newState == PlayerState.DraggingJump)
+        else if (playerState == PlayerState.DraggingJump)
         {
             PlayAnimationData(aimJumpAnimationData);
         }
-        else if (newState == PlayerState.DragReleaseItem)
+        else if (playerState == PlayerState.DragReleaseItem)
         {
             PlayAnimationData(selectedShootAnimation);
         }
-        else if (newState == PlayerState.DragReleaseJump)
+        else if (playerState == PlayerState.DragReleaseJump)
         {
             PlayAnimationData(jumpAnimationData);
         }
@@ -200,6 +203,18 @@ public class PlayerAnimator : NetworkBehaviour
 
         // Transition has ended
         OnCrossfadeFinished?.Invoke();
+    }
+
+    /// <summary>
+    /// Called when an Animation has finished.
+    /// </summary>
+    public void AnimationFinished()
+    {
+        Debug.Log($"AnimationFinished: {playerState}");
+        if(playerState == PlayerState.DragReleaseItem)
+        {
+            PlayAnimationData(idleAnimationData);
+        }
     }
 }
 
