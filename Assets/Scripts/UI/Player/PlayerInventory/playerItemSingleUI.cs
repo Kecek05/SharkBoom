@@ -1,7 +1,6 @@
 using Sortify;
 using System;
 using TMPro;
-using Unity.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,10 +12,10 @@ public class PlayerItemSingleUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI itemNameText;
     [SerializeField] private Image itemImageIcon;
     [SerializeField] private TextMeshProUGUI itemCooldownText;
-    //[SerializeField] private TextMeshProUGUI itemCanBeUsedText;
     [SerializeField] private Button selectThisItemButton;
-    //[SerializeField] private TextMeshProUGUI itemInventoryIndexText;
     [SerializeField] private Image backgroundImage;
+    [SerializeField] private GameObject itemCanBeUsedObj;
+    [SerializeField] private TextMeshProUGUI itemDamageText;
     private PlayerInventoryUI playerInventoryUI;
 
     private int myIndexItemInventory;
@@ -34,29 +33,41 @@ public class PlayerItemSingleUI : MonoBehaviour
         });
     }
 
-    public void Setup(string itemName, Sprite itemIcon, string itemCooldown, bool itemCanBeUsed, int indexItemInventory, PlayerInventoryUI _playerInventoryUI)
+    public void Setup(string itemName, Sprite itemIcon, int itemCooldown, bool itemCanBeUsed, int indexItemInventory, float itemDamage ,PlayerInventoryUI _playerInventoryUI)
     {
         itemNameText.text = itemName;
         itemImageIcon.sprite = itemIcon;
-        itemCooldownText.text = itemCooldown;
-
-        //itemCanBeUsedText.text = itemCanBeUsed.ToString();
-
+        UpdateCooldown(itemCooldown);
+        itemDamageText.text = itemDamage.ToString();
         myIndexItemInventory = indexItemInventory;
-
-        //itemInventoryIndexText.text = indexItemInventory.ToString();
-
         playerInventoryUI = _playerInventoryUI;
+
+        UnSelectedThisItem();
+        UpdateCanBeUsed(true);
     }
 
     public void UpdateCooldown(int newCooldown)
     {
-        itemCooldownText.text = newCooldown.ToString();
+        if(newCooldown <= 0)
+        {
+            itemCooldownText.gameObject.SetActive(false);
+        } else
+        {
+            itemCooldownText.text = newCooldown.ToString();
+            itemCooldownText.gameObject.SetActive(true);
+        }
     }
 
     public void UpdateCanBeUsed(bool itemCanBeUsed)
     {
-        //itemCanBeUsedText.text = itemCanBeUsed.ToString();
+        if(itemCanBeUsed)
+        {
+            itemCanBeUsedObj.SetActive(false);
+        }
+        else
+        {
+            itemCanBeUsedObj.SetActive(true);
+        }
     }
 
     public void SelectedThisItem()

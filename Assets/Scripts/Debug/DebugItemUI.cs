@@ -24,7 +24,7 @@ public class DebugItemUI : MonoBehaviour
         followTransformActive.text = "Follow Transform Active: " + followTransformComponent.IsActive.ToString();
         followTransformName.text = "Follow Transform Name: " + followTransformComponent.TargetTransform.ToString();
         collisionLayer.text = "Collision Layer: " + colliterGameObject.layer.ToString();
-        lifetimeActive.text = "Lifetime Active: " + lifetimeTriggerItemComponent.isActive.ToString();
+        //lifetimeActive.text = "Lifetime Active: " + lifetimeTriggerItemComponent.isActive.ToString();
         itemReleased.text = "Item Released: " + item.IsItemReleased.ToString();
         rbVelocity.text = "RB Velocity: " + rb.linearVelocity.ToString("F2");
     }

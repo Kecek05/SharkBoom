@@ -1,9 +1,8 @@
 using Sortify;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UIElements;
 
-public class PlayerDragUi : DragListener, IDetectDragStart, IDetectDragChange, IDetectDragRelease, IDetectDragCancelable
+public class PlayerDragUi : DragListener, IDetectDragStart, IDetectDragChange, IDetectDragRelease, IDetectDragCancelable, IDetectEndedTurn
 {
     [BetterHeader("References")]
     [SerializeField] private TextMeshProUGUI forceText;
@@ -55,6 +54,11 @@ public class PlayerDragUi : DragListener, IDetectDragStart, IDetectDragChange, I
     }
 
     public void DoOnDragRelease()
+    {
+        HideText();
+    }
+
+    public void DoOnEndedTurn()
     {
         HideText();
     }

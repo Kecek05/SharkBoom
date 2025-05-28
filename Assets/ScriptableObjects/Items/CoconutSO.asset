@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 935b4e634b014d64fa86ee82373e96c7, type: 3}
   m_Name: CoconutSO
   m_EditorClassIdentifier: 
-  itemClientPrefab: {fileID: 0}
-  itemServerPrefab: {fileID: 0}
-  itemName: 
+  itemIndex: 3
+  itemPrefab: {fileID: 4139059953487484834, guid: 5ea901bf6a1a0f14ba500ba8277c9356, type: 3}
+  itemName: Coconut
   itemIcon: {fileID: 21300000, guid: f2560929ed776734393f4b30256b1279, type: 3}
-  rb: {fileID: 0}
-  damageableSO: {fileID: 0}
-  cooldown: 0
-  itemAnimationSO: {fileID: 0}
+  rb: {fileID: 6921903450271284980, guid: 5ea901bf6a1a0f14ba500ba8277c9356, type: 3}
+  damageableSO: {fileID: 11400000, guid: 466f2eadf6424234aac440b39ba62f5e, type: 2}
+  cooldown: 1
+  itemAnimationSO: {fileID: 11400000, guid: f92c0d90e7c971c47a60110c349296e1, type: 2}

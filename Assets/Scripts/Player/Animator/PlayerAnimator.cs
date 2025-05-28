@@ -102,7 +102,6 @@ public class PlayerAnimator : NetworkBehaviour
         else if (newState == PlayerState.DragReleaseItem)
         {
             PlayAnimationData(selectedShootAnimation);
-            Debug.Log($"Playing Shooting item - is right: {isRight}");
         }
         else if (newState == PlayerState.DragReleaseJump)
         {
@@ -122,16 +121,12 @@ public class PlayerAnimator : NetworkBehaviour
     private void RotationChanged()
     {
         PlayAnimationData(currentAnimationData);
-        Debug.Log("Rotation Changed on Animation");
     }
 
     private void PlayAnimationData(AnimationData animationData)
     {
-        Debug.Log($"$Animation Data - Animation L: {animationData.animationL} - Animation R: {animationData.animationR}");
 
         if (animationData.animationL == Animations.None && animationData.animationR == Animations.None) return; //none
-
-        //if (currentAnimation == animationData.animationL || currentAnimation == animationData.animationR) return; //already playing this animation
 
         if(animationData.Equals(currentAnimationData))
         {
@@ -204,7 +199,6 @@ public class PlayerAnimator : NetworkBehaviour
         }
 
         // Transition has ended
-        Debug.Log("Crossfade Finished!");
         OnCrossfadeFinished?.Invoke();
     }
 }

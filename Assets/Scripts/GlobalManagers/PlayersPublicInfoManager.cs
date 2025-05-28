@@ -55,6 +55,7 @@ public class PlayersPublicInfoManager : BasePlayersPublicInfoManager
     {
         //int itemsInInventory = UnityEngine.Random.Range(2, itemsListSO.allItemsSOList.Count); //Random qtd of items for now
         int itemsInInventory = itemsListSO.allItemsSOList.Count; //all items
+        List<ItemSO> itemsAdded = new List<ItemSO>();
 
         //Add Jump item first
         foreach (PlayerInventory playerInventory in FindObjectsByType<PlayerInventory>(FindObjectsSortMode.None))
@@ -62,14 +63,26 @@ public class PlayersPublicInfoManager : BasePlayersPublicInfoManager
             playerInventory.SetPlayerItems(0);
         }
 
-        for (int i = 0; i < itemsInInventory; i++)
+        int itemsAddedToInventory = 0;
+        int itemsToAddToInventory = itemsInInventory - 1; //-1 because we already added Jump item
+
+        while(itemsAddedToInventory < itemsToAddToInventory)
         {
-            int randomItemSOIndex = UnityEngine.Random.Range(1, itemsListSO.allItemsSOList.Count); //Start from index 1,index 0 is jump
+            int randomItemSOIndex = UnityEngine.Random.Range(1, itemsListSO.allItemsSOList.Count); //start from 1 to skip Jump item
+
+            if (itemsAdded.Contains(itemsListSO.allItemsSOList[randomItemSOIndex]))
+            {
+                continue; //If the item is already added, skip to next iteration
+            }
 
             foreach (PlayerInventory playerInventory in FindObjectsByType<PlayerInventory>(FindObjectsSortMode.None))
             {
                 playerInventory.SetPlayerItems(randomItemSOIndex);
             }
+
+            itemsAdded.Add(itemsListSO.allItemsSOList[randomItemSOIndex]); //Remove the item from the list to not repeat it
+
+            itemsAddedToInventory++;
         }
     }
 

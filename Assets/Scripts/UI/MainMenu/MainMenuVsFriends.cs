@@ -61,7 +61,6 @@ public class MainMenuVsFriends : MonoBehaviour
                 lobbyCodeInputField.text = "";
                 lobbyCodeInputField.interactable = true;
             }
-            //lobbyCodeInputField.interactable = true;
             isBusy = false;
 
         });
@@ -69,7 +68,6 @@ public class MainMenuVsFriends : MonoBehaviour
         quickJoinBtn.onClick.AddListener(async () =>
         {
             if (isBusy) return;
-            //quickJoinBtn.interactable = false;
             isBusy = true;
             await ClientSingleton.Instance.GameManager.QuickJoinLobbyAsync();
             isBusy = false;

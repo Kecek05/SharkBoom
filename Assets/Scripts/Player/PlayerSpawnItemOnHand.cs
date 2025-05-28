@@ -65,6 +65,9 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
             case PlayerState.DragReleaseJump:
                 HandleOnShoot();
                 break;
+            case PlayerState.MyTurnEnded:
+                DespawnItem();
+                break;
         }
     }
 
@@ -96,7 +99,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
     [Rpc(SendTo.Server)]
     private void InstantiateObjServerRpc(ulong ownerClientId, Vector3 selectedSocketPos, int itemSOIndex)
     {
-        NetworkObject spawnedItemNetworkObject = Instantiate(playerInventory.GetItemSOByItemSOIndex(itemSOIndex).itemClientPrefab, selectedSocketPos, Quaternion.identity).GetComponent<NetworkObject>();
+        NetworkObject spawnedItemNetworkObject = NetworkObjectPool.Instance.GetNetworkObject(playerInventory.GetItemSOByItemSOIndex(itemSOIndex).itemIndex, selectedSocketPos, Quaternion.identity);
         spawnedItemNetworkObject.Spawn();
         spawnedItemNetworkObject.ChangeOwnership(ownerClientId);
 
@@ -128,6 +131,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
             return;
         }
 
+        Debug.Log($"CallOnItemOnHandClientRpc - SpanwedItem: {spawnedItem}");
         OnItemOnHandSpawned?.Invoke(spawnedItem);
     }
 

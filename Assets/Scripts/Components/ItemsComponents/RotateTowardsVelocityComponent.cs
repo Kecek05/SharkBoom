@@ -5,7 +5,8 @@ public class RotateTowardsVelocityComponent : BaseItemComponent
 {
     [Tooltip("How fast the spear rotates to align with its velocity.")]
     [SerializeField] private float rotationSpeed = 10f;
-    [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private Rigidbody rb;
+    private WaitForFixedUpdate waitForFixedUpdate = new WaitForFixedUpdate();
 
     private Coroutine rotateCoroutine;
 
@@ -23,13 +24,13 @@ public class RotateTowardsVelocityComponent : BaseItemComponent
     {
         while(true)
         {
-            Vector2 vel2D = rb.linearVelocity;
-            if (vel2D.sqrMagnitude > 0.01f)
+            Vector3 vel = rb.linearVelocity;
+            if (vel.sqrMagnitude > 0.01f)
             {
-                float angle = Mathf.Atan2(vel2D.y, vel2D.x) * Mathf.Rad2Deg;
+                float angle = Mathf.Atan2(vel.y, vel.x) * Mathf.Rad2Deg;
                 transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
             }
-            yield return new WaitForFixedUpdate();
+            yield return waitForFixedUpdate;
         }
         rotateCoroutine = null;
     }

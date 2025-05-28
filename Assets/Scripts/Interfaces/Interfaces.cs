@@ -112,3 +112,20 @@ public interface IDetectDragStart
     /// </summary>
     public void DoOnDragStart();
 }
+
+public interface IRecieveKnockback
+{
+    /// <summary>
+    /// Called when the object is knocked back.
+    /// </summary>
+    public void DoOnRecieveKnockback(float knockbackStrength, Vector3 hitPos);
+}
+
+
+public interface IRecieveHit
+{
+    /// <summary>
+    /// Called when the object is hit.
+    /// </summary>
+    public void Hit();
+}

@@ -14,16 +14,16 @@ public class CameraMovement : NetworkBehaviour
     [Tooltip("Velocity of camera movement on drag")] [Range(0, 50)]
     [SerializeField] private float dragMoveSpeed = 1f;
 
-    [Tooltip("Min clamp of x movement ")] [Range(-30, 30)]
+    [Tooltip("Min clamp of x movement ")] [Range(-200, 200)]
     [SerializeField] private int minMovX = -15;
 
-    [Tooltip("Max clamp of x movement ")] [Range(-30, 30)]
+    [Tooltip("Max clamp of x movement ")] [Range(-200, 200)]
     [SerializeField] private int maxMovX = 15;
 
-    [Tooltip("Max clamp of Y movement ")] [Range(-30, 30)]
+    [Tooltip("Max clamp of Y movement ")] [Range(-200, 200)]
     [SerializeField] private int minMovY = -10;
 
-    [Tooltip("Min clamp of x movement ")][Range(-30, 30)]
+    [Tooltip("Min clamp of x movement ")][Range(-200, 200)]
     [SerializeField] private int maxMovY = 10;
 
 
@@ -40,7 +40,7 @@ public class CameraMovement : NetworkBehaviour
 
     private void InputReader_OnTouchPressEvent(InputAction.CallbackContext context)
     {
-        if (context.started && this.enabled == true) // When we press the screen
+        if (context.started) // When we press the screen
         {
             dragMoveActive = true;
             MoveStarted();
@@ -54,7 +54,9 @@ public class CameraMovement : NetworkBehaviour
 
     private void InputReader_OnPrimaryFingerPositionEvent(InputAction.CallbackContext context)
     {
-        if (dragMoveActive && this.enabled == true) // this.enabled is to check if the camera state is on move
+        if (!enabled) return;
+
+        if (dragMoveActive)
         {
             Vector2 currentTouchPosition = context.ReadValue<Vector2>(); // Get the current position of the finger while the finger is on the screen
 
