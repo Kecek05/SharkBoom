@@ -43,7 +43,7 @@ public class BananaItemThrowable : BaseItemThrowable
         yield return new WaitForSeconds(flightDuration);
 
         rb.angularVelocity = Vector3.zero;
-        rb.isKinematic = true;
+        rb.useGravity = false;
 
         float timer = 0f;
         Vector3 returnInitialPos = transform.position;
@@ -51,8 +51,8 @@ public class BananaItemThrowable : BaseItemThrowable
         while (timer < returnDuration)
         {
             timer += Time.deltaTime;
-            float t = Mathf.Clamp01(timer / returnDuration);
-            transform.position = Vector3.Slerp(returnInitialPos, launchPosition, t);
+            float timeOfReturn = Mathf.Clamp01(timer / returnDuration); // we use Clamp01 for not extrapolate the return pos
+            transform.position = Vector3.Slerp(returnInitialPos, launchPosition, timeOfReturn);
             yield return null;
         }
     }
