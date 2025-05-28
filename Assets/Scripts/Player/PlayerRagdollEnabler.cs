@@ -1,19 +1,19 @@
+using Sortify;
 using Unity.Netcode;
-using Unity.Netcode.Components;
 using UnityEngine; 
 
 public class PlayerRagdollEnabler : NetworkBehaviour
 {
-    [Header("References")]
+    [BetterHeader("References")]
     [SerializeField] private Animator animator;
     [SerializeField] private Transform ragdollRoot;
     [SerializeField] private Collider[] playerColliders;
-
-    [SerializeField] private Rigidbody[] ragdollRbs;
     [SerializeField] private Rigidbody parentRigidbody;
+    private Rigidbody[] ragdollRbs;
 
     private Collider[] ragdollColliders;
 
+    [BetterHeader("DEBUG")]
     [SerializeField] private bool debugRagdollEnabler;
     [SerializeField] private bool debugRagdollDisabler;
 
@@ -103,6 +103,8 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     {
         EnableRagdoll();
         Rigidbody hitRigidbody = ragdollRbs[hitRigidbodyIndex]; // get the rb we hit
+
+        force = new Vector3(force.x, force.y, 0f); //Ensure to not knockback in Z
         hitRigidbody.AddForceAtPosition(force, hitPoint, ForceMode.Impulse);
     }
 

@@ -20,7 +20,7 @@ public class PlayerThrower : NetworkBehaviour
     [SerializeField] private PlayerLauncher playerLauncher;
     [SerializeField] private PlayerDetectFacingDirection playerDetectFacingDirection;
     [SerializeField] private Collider playerTouchColl;
-    [SerializeField] private GameObject[] playerColliders;
+    [SerializeField] private GameObject[] playerObjectsToChangeLayer;
     [SerializeField] private PlayerSpawnItemOnHand playerSpawnItemOnHand;
     [SerializeField] private FollowSelectedSocketComponent followSelectedSocketComponent;
     [SerializeField] private PlayerRagdollEnabler playerRagdollEnabler;
@@ -356,14 +356,14 @@ public class PlayerThrower : NetworkBehaviour
         if (newValue == PlayableState.Player1Playing)
         {
 
-            foreach (GameObject playerCollider in playerColliders)
+            foreach (GameObject playerCollider in playerObjectsToChangeLayer)
             {
                 playerCollider.layer = PlayersPublicInfoManager.PLAYER_1_LAYER;
             }
         }
         else
         {
-            foreach (GameObject playerCollider in playerColliders)
+            foreach (GameObject playerCollider in playerObjectsToChangeLayer)
             {
                 playerCollider.layer = PlayersPublicInfoManager.PLAYER_2_LAYER;
             }

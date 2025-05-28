@@ -202,6 +202,8 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 0, y: 0, z: 0}
+  useInterpolation: 0
+  interpolationSpeed: 5
 --- !u!1 &327362104558036954
 GameObject:
   m_ObjectHideFlags: 0
@@ -321,6 +323,8 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 0, y: 0, z: 0}
+  useInterpolation: 0
+  interpolationSpeed: 5
 --- !u!114 &3164583894236048529
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -722,11 +726,11 @@ MonoBehaviour:
   playerLauncher: {fileID: 1987240186612080187}
   playerDetectFacingDirection: {fileID: 8219345119279371754}
   playerTouchColl: {fileID: 7314441350882990323}
-  playerColliders:
+  playerObjectsToChangeLayer:
+  - {fileID: 1244250245066138330}
   - {fileID: 3077044857443190407}
   - {fileID: 1482397564086282568}
   - {fileID: 773857424255861932}
-  - {fileID: 1244250245066138330}
   playerSpawnItemOnHand: {fileID: 5846641034301650373}
   followSelectedSocketComponent: {fileID: 7649801925086215586}
   playerRagdollEnabler: {fileID: 8406327557363343199}
@@ -886,11 +890,10 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   rootTransform: {fileID: 2498330595957626671}
   hipsTransform: {fileID: 6415793643202986417}
-  capsuleRadius: 0.5
-  capsuleHeight: 2
+  boxSize: {x: 2.5, y: 2.5, z: 2.5}
   layersToDetectCollision:
     serializedVersion: 2
-    m_Bits: 1921
+    m_Bits: 769
 --- !u!114 &3826531896651400832
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -954,6 +957,8 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 1.33, y: 1.49, z: 0}
+  useInterpolation: 0
+  interpolationSpeed: 5
 --- !u!1 &1348648853730134369
 GameObject:
   m_ObjectHideFlags: 0
@@ -1311,6 +1316,8 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 1.33, y: 1.49, z: 0}
+  useInterpolation: 0
+  interpolationSpeed: 5
 --- !u!1 &1632845484903836230
 GameObject:
   m_ObjectHideFlags: 0
@@ -1362,6 +1369,8 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 0, y: 0, z: 0}
+  useInterpolation: 0
+  interpolationSpeed: 5
 --- !u!114 &1813528268814283170
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1566,6 +1575,8 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 0, y: 0, z: 0}
+  useInterpolation: 0
+  interpolationSpeed: 5
 --- !u!114 &234235619587785234
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1630,6 +1641,8 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 1.33, y: 1.49, z: 0}
+  useInterpolation: 0
+  interpolationSpeed: 5
 --- !u!1 &2497608634792934175
 GameObject:
   m_ObjectHideFlags: 0
@@ -1849,6 +1862,8 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 0, y: 0, z: 0}
+  useInterpolation: 0
+  interpolationSpeed: 5
 --- !u!114 &8159539420808865185
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1981,6 +1996,8 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 1.33, y: 1.49, z: 0}
+  useInterpolation: 0
+  interpolationSpeed: 5
 --- !u!1 &3215744993851674153
 GameObject:
   m_ObjectHideFlags: 0
@@ -2108,6 +2125,8 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 1.33, y: 1.49, z: 0}
+  useInterpolation: 0
+  interpolationSpeed: 5
 --- !u!1 &3633239301255831667
 GameObject:
   m_ObjectHideFlags: 0
@@ -2158,6 +2177,8 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 1.33, y: 1.49, z: 0}
+  useInterpolation: 0
+  interpolationSpeed: 5
 --- !u!1 &3686596258903131941
 GameObject:
   m_ObjectHideFlags: 0
@@ -2209,6 +2230,8 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 0, y: 0, z: 0}
+  useInterpolation: 0
+  interpolationSpeed: 5
 --- !u!114 &4723577276168246319
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2274,6 +2297,8 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 0, y: 0, z: 0}
+  useInterpolation: 0
+  interpolationSpeed: 5
 --- !u!114 &5999375251617233547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2338,6 +2363,8 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 0, y: 0, z: 0}
+  useInterpolation: 0
+  interpolationSpeed: 5
 --- !u!1 &4341005554645008447
 GameObject:
   m_ObjectHideFlags: 0
@@ -2388,6 +2415,8 @@ MonoBehaviour:
   followRotation: 0
   followScale: 0
   positionOffset: {x: 0, y: 0, z: 0}
+  useInterpolation: 0
+  interpolationSpeed: 5
 --- !u!1 &4490644184409646491
 GameObject:
   m_ObjectHideFlags: 0
@@ -2498,6 +2527,8 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 0, y: 0, z: 0}
+  useInterpolation: 0
+  interpolationSpeed: 5
 --- !u!1 &5022486715568151751
 GameObject:
   m_ObjectHideFlags: 0
@@ -2579,6 +2610,8 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 0, y: 0, z: 0}
+  useInterpolation: 0
+  interpolationSpeed: 5
 --- !u!1 &5188383608995946522
 GameObject:
   m_ObjectHideFlags: 0
@@ -2757,6 +2790,8 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 0, y: 0, z: 0}
+  useInterpolation: 0
+  interpolationSpeed: 5
 --- !u!1 &5736527916904145808
 GameObject:
   m_ObjectHideFlags: 0
@@ -2943,6 +2978,8 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 1.33, y: 1.49, z: 0}
+  useInterpolation: 0
+  interpolationSpeed: 5
 --- !u!1 &5943755589972669427
 GameObject:
   m_ObjectHideFlags: 0
@@ -3080,6 +3117,8 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 1.33, y: 1.49, z: 0}
+  useInterpolation: 0
+  interpolationSpeed: 5
 --- !u!1 &6200229110335285722
 GameObject:
   m_ObjectHideFlags: 0
@@ -3131,6 +3170,8 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 0, y: 0, z: 0}
+  useInterpolation: 0
+  interpolationSpeed: 5
 --- !u!114 &3483073630956616346
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3196,6 +3237,8 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 0, y: 0, z: 0}
+  useInterpolation: 0
+  interpolationSpeed: 5
 --- !u!114 &8558638049450642028
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3291,6 +3334,8 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 0, y: 0, z: 0}
+  useInterpolation: 0
+  interpolationSpeed: 5
 --- !u!1 &6853187466876448082
 GameObject:
   m_ObjectHideFlags: 0
@@ -3443,6 +3488,8 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 0, y: 0, z: 0}
+  useInterpolation: 0
+  interpolationSpeed: 5
 --- !u!114 &6575072514123178010
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3583,6 +3630,8 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 0, y: 0, z: 0}
+  useInterpolation: 0
+  interpolationSpeed: 5
 --- !u!114 &1585745003246422548
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3648,6 +3697,8 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 0, y: 0, z: 0}
+  useInterpolation: 0
+  interpolationSpeed: 5
 --- !u!114 &1236260225098847312
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3767,6 +3818,8 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 1.33, y: 1.49, z: 0}
+  useInterpolation: 0
+  interpolationSpeed: 5
 --- !u!1 &7564664190689124997
 GameObject:
   m_ObjectHideFlags: 0
@@ -3818,6 +3871,8 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 0, y: 0, z: 0}
+  useInterpolation: 0
+  interpolationSpeed: 5
 --- !u!114 &5401067085056969445
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3883,6 +3938,8 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 0, y: 0, z: 0}
+  useInterpolation: 0
+  interpolationSpeed: 5
 --- !u!114 &5854627714116405021
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3948,6 +4005,8 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 0, y: 0, z: 0}
+  useInterpolation: 0
+  interpolationSpeed: 5
 --- !u!114 &8990261717220171649
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4243,6 +4302,7 @@ MonoBehaviour:
   - {fileID: 1730053733278052423}
   - {fileID: 3899378877838557904}
   - {fileID: 7222765157126350015}
+  parentRigidbody: {fileID: 2537793662869306356}
   debugRagdollEnabler: 0
   debugRagdollDisabler: 0
 --- !u!1 &8577898299129031035
@@ -4295,6 +4355,8 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 1.33, y: 1.49, z: 0}
+  useInterpolation: 0
+  interpolationSpeed: 5
 --- !u!1 &9060422909739577700
 GameObject:
   m_ObjectHideFlags: 0
