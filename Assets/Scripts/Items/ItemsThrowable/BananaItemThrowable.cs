@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class BananaItemThrowable : BaseItemThrowable
+public class BananaItemThrowable : BaseItemThrowableActivable
 {
     [SerializeField] private BaseItemComponent spinObjectComponent;
     [SerializeField] private BaseCollisionController collisionController;
@@ -11,9 +11,7 @@ public class BananaItemThrowable : BaseItemThrowable
     private Coroutine bananaReturnCoroutine; // Start "Boomerang" Courotine
 
     [Header("Banana (Boomerang) Settings")]
-    [Tooltip("Time before the banana starts returning")]
-    [SerializeField] private float flightDuration = 1f;
-    [Tooltip("Time to banana return")]
+    [Tooltip("Time to banana return, increase for decrease Banana speed")]
     [SerializeField] private float returnDuration = 1f;
 
     public override void Initialize(Transform parent)
@@ -29,6 +27,11 @@ public class BananaItemThrowable : BaseItemThrowable
         spinObjectComponent.StartComponentLogic();
 
         launchPosition = transform.position;
+    }
+
+    protected override void ActivateItem()
+    {
+        itemActivated = true;
 
         if (bananaReturnCoroutine != null)
         {
@@ -40,8 +43,6 @@ public class BananaItemThrowable : BaseItemThrowable
 
     private IEnumerator ReturnToPlayer()
     {
-        yield return new WaitForSeconds(flightDuration);
-
         rb.angularVelocity = Vector3.zero;
         rb.useGravity = false;
 
