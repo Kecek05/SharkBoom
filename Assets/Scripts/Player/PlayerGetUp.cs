@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using static UnityEngine.UI.Image;
 
 public class PlayerGetUp : NetworkBehaviour
 {
@@ -10,29 +11,30 @@ public class PlayerGetUp : NetworkBehaviour
     [SerializeField] private Transform hipsTransform;
 
     [Header("Settings")]
-    [SerializeField] private Vector3 boxSize;
+    [SerializeField] private Collider[] playerColliders;
     [SerializeField] private LayerMask layersToDetectCollision;
 
-    private const int MAX_ATTEMPTS = 50;
+    private const int MAX_ATTEMPTS = 500;
     private const float STEP_SIZE =  0.5f;
     private bool isFallen = false;
 
     private float verticalOffset;
     private float OriginalRootZ;
     private Quaternion originalRootRotation;
+    private Quaternion originalHipsRotation;
 
     private Vector3 finalPosition;
 
-    private Vector2[] directions =
+    private Vector3[] directions =
     {
-        Vector2.up,
-        Vector2.down,
-        Vector2.left,
+        Vector2.up, 
+        Vector2.down, 
+        Vector2.left, 
         Vector2.right,
+        (Vector2.up + Vector2.left).normalized, 
         (Vector2.up + Vector2.right).normalized,
-        (Vector2.up + Vector2.left).normalized,
-        (Vector2.down + Vector2.right).normalized,
-        (Vector2.down + Vector2.left).normalized,
+        (Vector2.down + Vector2.left).normalized, 
+        (Vector2.down + Vector2.right).normalized
     };
 
     public void InitializeOwner()
@@ -55,7 +57,6 @@ public class PlayerGetUp : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost)]
     private void CacheOriginalPosClientRpc()
     {
-        if (!IsOwner) return;
         CacheOriginalPos();
     }
 
@@ -65,103 +66,110 @@ public class PlayerGetUp : NetworkBehaviour
         OriginalRootZ = rootTransform.position.z;
         verticalOffset = hipsTransform.position.y - rootTransform.position.y;
         originalRootRotation = rootTransform.rotation;
+        originalHipsRotation = hipsTransform.rotation;
+        Debug.Log("STANDUP - Cache original pos");
     }
 
     private void HandleOnItemCallbackAction()
     {
         if (!IsOwner) return;
         RequestGetUpPlayerServerRpc();
+        Debug.Log("STANDUP - Handle item callback");
     }
 
     [Rpc(SendTo.Server)]
     private void RequestGetUpPlayerServerRpc()
     {
         RequestGetUpPlayerClientRpc();
+        Debug.Log("STANDUP - Request get up player on server");
     }
 
     [Rpc(SendTo.ClientsAndHost)]
     private void RequestGetUpPlayerClientRpc()
     {
+        Debug.Log("STANDUP - Request get up player on Client");
         if (!IsOwner) return;
-
         if (!isFallen) return;
+        Debug.Log($"STANDUP - {IsOwner} + {isFallen}");
         CalculatePlayerFreePos();
+        Debug.Log("STANDUP - Request get calculate player free pos");
     }
 
     private void CalculatePlayerFreePos()
     {
-        Vector3 initialPosOfPlayer = hipsTransform.position;
-        initialPosOfPlayer.y -= verticalOffset;
-        initialPosOfPlayer.z = OriginalRootZ;
+        Debug.Log("STANDUP - Calculate player free pos");
+        Vector3 origin = hipsTransform.position;
+        origin.y -= verticalOffset;
+        origin.z = OriginalRootZ;
 
-        if (Physics.Raycast(hipsTransform.position, Vector3.down, out RaycastHit hit, 5f, layersToDetectCollision)) // check if we hit the ground for not reset in the ground
-        {
-            initialPosOfPlayer.y = Mathf.Max(initialPosOfPlayer.y, hit.point.y);
-        }
+        if (Physics.Raycast(hipsTransform.position, Vector3.down, out var hit, 5f, layersToDetectCollision))
+            origin.y = Mathf.Max(origin.y, hit.point.y);
 
-        Vector3 foundPos = GetFreePosition(initialPosOfPlayer);
+        Vector3 found = GetFreePosition(origin);
 
-        if (!IsBoxFreeAt(foundPos))
-        {
-            Debug.LogWarning("No free position found to get up player");
-            return;
-        }
+        finalPosition = found;
+        PassPlayerFreePosServerRpc();
 
-        finalPosition = foundPos;
-
-        PassPlayerFreePoosServerRpc();
-
-    }
-
-    [Rpc(SendTo.Server)]
-    private void PassPlayerFreePoosServerRpc()
-    {
-        PassPlayerFreePoosClientRpc();
-    }
-
-    [Rpc(SendTo.ClientsAndHost)]
-    private void PassPlayerFreePoosClientRpc()
-    {
-        PassPlayerFreePoos();
-    }
-
-    private void PassPlayerFreePoos()
-    {
-        rootTransform.SetPositionAndRotation(finalPosition, originalRootRotation);
-        isFallen = false;
     }
 
     private Vector3 GetFreePosition(Vector3 startPos)
     {
-        foreach (Vector2 direction in directions)
+        foreach (Vector3 direction in directions)
         {
-            Vector3 finalDirection = new Vector3(direction.x, 0f, direction.y);
-
-            for (int i = 0; i < MAX_ATTEMPTS; i++)
+            for (int i = 1; i <= MAX_ATTEMPTS; i++)
             {
-                Vector3 testPos = startPos + finalDirection * (i * STEP_SIZE);
-                testPos.z = OriginalRootZ; 
-
-                if (IsBoxFreeAt(testPos))
-                {
-                    return testPos;
-                }
+                Vector3 testDirection = startPos + direction * (i * STEP_SIZE);
+                testDirection.z = OriginalRootZ;
+                Debug.Log($"STANDUP - Direction: {direction} + Test Direction: {testDirection}");
+                if (AreAllCollidersFreeAt(testDirection))
+                    return testDirection;
             }
         }
-        Debug.LogWarning("No free position found to get up player");
         return startPos;
     }
 
-    private bool IsBoxFreeAt(Vector3 checkPos)
+    private bool AreAllCollidersFreeAt(Vector3 checkPos)
     {
-        // we use Vector3.up because we are testing the box in get up
-        Vector3 centerOfBox = checkPos + Vector3.up * (boxSize.y * 0.5f);
-        Vector3 attempSizeExtends = boxSize * 0.5f;
+        Debug.Log("STANDUP - Are all colliders free at");
+        foreach (Collider colliders in playerColliders)
+        {
+            Vector3 worldCenter = checkPos + (colliders.bounds.center - rootTransform.position);
 
-        bool isFree = !Physics.CheckBox(centerOfBox, attempSizeExtends, Quaternion.identity, layersToDetectCollision);
-        bool isOnGround = Physics.Raycast(checkPos + Vector3.up * 0.1f, Vector3.down, out RaycastHit hit, attempSizeExtends.y + 0.1f, layersToDetectCollision);
+            if (colliders is BoxCollider box)
+            {
+                Vector3 halfExtents = Vector3.Scale(box.size, colliders.transform.lossyScale) * 0.5f;
+                if (Physics.CheckBox(worldCenter, halfExtents, colliders.transform.rotation, layersToDetectCollision))
+                    return false;
+            }
 
-        return isFree && isOnGround;
+            Vector3 groundCheckOrigin = worldCenter + Vector3.up * 0.1f;
+            if (!Physics.Raycast(groundCheckOrigin, Vector3.down, out _, 0.2f + 0.1f, layersToDetectCollision))
+                return false;
+        }
+
+        return true;
+    }
+
+    [Rpc(SendTo.Server)]
+    private void PassPlayerFreePosServerRpc()
+    {
+        PassPlayerFreePosClientRpc();
+        Debug.Log("STANDUP - Player free pos for server");
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void PassPlayerFreePosClientRpc()
+    {
+        PassPlayerFreePos();
+        Debug.Log("STANDUP - Player free pos for Client");
+    }
+
+    private void PassPlayerFreePos()
+    {
+        rootTransform.SetPositionAndRotation(finalPosition, originalRootRotation);
+        hipsTransform.SetPositionAndRotation(finalPosition + Vector3.up * verticalOffset, originalHipsRotation);
+        isFallen = false;
+        Debug.Log("STANDUP - Set player free pos");
     }
 
     public void UnInitializeOwner()

@@ -564,8 +564,8 @@ GameObject:
   - component: {fileID: 2518838509862417992}
   - component: {fileID: 5846641034301650373}
   - component: {fileID: 1129441889960646618}
-  - component: {fileID: 1086343849340449909}
   - component: {fileID: 3826531896651400832}
+  - component: {fileID: 1086343849340449909}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -875,6 +875,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d8a1cc98e4d08445911c58cb28f243d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3826531896651400832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1244250245066138330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fbbf287339826041a049f4cabe3f47c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerRagdollEnabler: {fileID: 8406327557363343199}
 --- !u!114 &1086343849340449909
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -890,23 +903,13 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   rootTransform: {fileID: 2498330595957626671}
   hipsTransform: {fileID: 9000821076296315731}
-  boxSize: {x: 2.5, y: 2, z: 2.5}
+  playerColliders:
+  - {fileID: 1730053733278052423}
+  - {fileID: 3899378877838557904}
+  - {fileID: 7222765157126350015}
   layersToDetectCollision:
     serializedVersion: 2
     m_Bits: 1921
---- !u!114 &3826531896651400832
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1244250245066138330}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fbbf287339826041a049f4cabe3f47c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerRagdollEnabler: {fileID: 8406327557363343199}
 --- !u!1 &1282251873746260443
 GameObject:
   m_ObjectHideFlags: 0
