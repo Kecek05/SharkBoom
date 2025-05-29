@@ -11,8 +11,7 @@ public class PlayerAnimator : NetworkBehaviour
     [BetterHeader("References")]
     [SerializeField] private Animator animator;
     private bool isRight; //Rotation that the player is looking
-    private bool isDefaultRight; // Rotation of the player thrower obj in idle. - TODO: Make it look to the direction of the other player
-   
+
     private readonly static int[] animations =
     {
         Animator.StringToHash("Idle_L"),
@@ -63,7 +62,7 @@ public class PlayerAnimator : NetworkBehaviour
         Animator.StringToHash("ShootSword_R"),
     };
 
-    private AnimationData idleAnimationData = new AnimationData(Animations.Idle_L, Animations.Idle_R);
+    private AnimationData idleAnimationData = new AnimationData(Animations.Idle_L, Animations.Idle_R, 0.6f); //idle crossfade
     private AnimationData jumpAnimationData = new AnimationData(Animations.Jump_L, Animations.Jump_R);
     private AnimationData aimJumpAnimationData = new AnimationData(Animations.AimJump_L, Animations.AimJump_R);
 
@@ -206,7 +205,7 @@ public class PlayerAnimator : NetworkBehaviour
     }
 
     /// <summary>
-    /// Called when an Animation has finished.
+    /// Called when an Animation has finished. Called by Animation Event
     /// </summary>
     public void AnimationFinished()
     {

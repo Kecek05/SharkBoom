@@ -5194,7 +5194,7 @@ PrefabInstance:
       addedObject: {fileID: 7710535142955916228}
     - targetCorrespondingSourceObject: {fileID: 5292276183696153246, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4126951954742478540}
+      addedObject: {fileID: 5504341106993227596}
     - targetCorrespondingSourceObject: {fileID: 851746441201601633, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7614228182743595413}
@@ -5243,9 +5243,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c8af99f34df71049a4d597f7960c87d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   ItemThrowable: {fileID: 2065954917544850458}
   meshToHide: {fileID: 7002131505479470429}
---- !u!114 &4126951954742478540
+--- !u!114 &5504341106993227596
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5254,9 +5255,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2562374771192011682}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70a0760479f55ea408bdd58858a364ec, type: 3}
+  m_Script: {fileID: 11500000, guid: aa9ee22915074bc41b3ba86e344f2548, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   ItemThrowable: {fileID: 2065954917544850458}
   particleSystemOnActivated: {fileID: 1686596863431425947}
 --- !u!114 &2590630615956071341 stripped
@@ -5393,5 +5395,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   debugTriggerOnStart: 0
   rb: {fileID: 6921903450271284980}
-  spiningSpeed: 500
+  spinningSpeed: 300
+  useInterpolation: 1
+  interpolationSpeed: 300
   isInverted: 0
