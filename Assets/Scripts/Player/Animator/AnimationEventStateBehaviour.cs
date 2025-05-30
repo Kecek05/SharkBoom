@@ -41,7 +41,6 @@ public class AnimationEventStateBehaviour : StateMachineBehaviour
         AnimationEventReceiver receiver = animator.GetComponent<AnimationEventReceiver>();
         if(receiver != null)
         {
-            Debug.Log("AnimationEventStateBehaviour: Triggering event " + eventName + " on " + animator.name);
             receiver.OnAnimationEventTriggered(eventName);
         }
         else
