@@ -27,14 +27,14 @@ public class PlayerGetUp : NetworkBehaviour
 
     private Vector3[] directions =
     {
-        Vector2.up, 
-        Vector2.down, 
-        Vector2.left, 
-        Vector2.right,
-        (Vector2.up + Vector2.left).normalized, 
-        (Vector2.up + Vector2.right).normalized,
-        (Vector2.down + Vector2.left).normalized, 
-        (Vector2.down + Vector2.right).normalized
+        Vector3.forward,
+        Vector3.back,
+        Vector3.left,
+        Vector3.right,
+        Vector3.forward + Vector3.left,
+        Vector3.forward + Vector3.right,
+        Vector3.back + Vector3.left,
+        Vector3.back + Vector3.right
     };
 
     public void InitializeOwner()
@@ -52,12 +52,14 @@ public class PlayerGetUp : NetworkBehaviour
     private void RequestCacheOriginalPosServerRpc()
     {
         CacheOriginalPosClientRpc();
+        Debug.Log("STANDUP - Call request cache original pos on server rpc");
     }
 
     [Rpc(SendTo.ClientsAndHost)]
     private void CacheOriginalPosClientRpc()
     {
         CacheOriginalPos();
+        Debug.Log("STANDUP - Call request cache original pos on client rpc");
     }
 
     private void CacheOriginalPos()
@@ -88,9 +90,11 @@ public class PlayerGetUp : NetworkBehaviour
     private void RequestGetUpPlayerClientRpc()
     {
         Debug.Log("STANDUP - Request get up player on Client");
-        if (!IsOwner) return;
-        if (!isFallen) return;
         Debug.Log($"STANDUP - {IsOwner} + {isFallen}");
+
+        //if (!IsOwner) return;
+        if (!isFallen) return;
+        
         CalculatePlayerFreePos();
         Debug.Log("STANDUP - Request get calculate player free pos");
     }
@@ -98,16 +102,16 @@ public class PlayerGetUp : NetworkBehaviour
     private void CalculatePlayerFreePos()
     {
         Debug.Log("STANDUP - Calculate player free pos");
-        Vector3 origin = hipsTransform.position;
-        origin.y -= verticalOffset;
-        origin.z = OriginalRootZ;
+        Vector3 playerRagdollPosition = hipsTransform.position;
+        playerRagdollPosition.y -= verticalOffset;
+        playerRagdollPosition.z = OriginalRootZ;
 
         if (Physics.Raycast(hipsTransform.position, Vector3.down, out var hit, 5f, layersToDetectCollision))
-            origin.y = Mathf.Max(origin.y, hit.point.y);
+            playerRagdollPosition.y = Mathf.Max(playerRagdollPosition.y, hit.point.y);
 
-        Vector3 found = GetFreePosition(origin);
+        Vector3 foundFinalPosition = GetFreePosition(playerRagdollPosition);
 
-        finalPosition = found;
+        finalPosition = foundFinalPosition;
         PassPlayerFreePosServerRpc();
 
     }
@@ -133,18 +137,24 @@ public class PlayerGetUp : NetworkBehaviour
         Debug.Log("STANDUP - Are all colliders free at");
         foreach (Collider colliders in playerColliders)
         {
-            Vector3 worldCenter = checkPos + (colliders.bounds.center - rootTransform.position);
+            Vector3 localOffset = colliders.transform.position - rootTransform.position;
+            Vector3 worldCenter = checkPos + localOffset;
+
+            Quaternion uprightRotation = Quaternion.Euler(0, rootTransform.eulerAngles.y, 0);
 
             if (colliders is BoxCollider box)
             {
                 Vector3 halfExtents = Vector3.Scale(box.size, colliders.transform.lossyScale) * 0.5f;
-                if (Physics.CheckBox(worldCenter, halfExtents, colliders.transform.rotation, layersToDetectCollision))
+                if (Physics.CheckBox(worldCenter, halfExtents, uprightRotation, layersToDetectCollision))
                     return false;
             }
 
             Vector3 groundCheckOrigin = worldCenter + Vector3.up * 0.1f;
-            if (!Physics.Raycast(groundCheckOrigin, Vector3.down, out _, 0.2f + 0.1f, layersToDetectCollision))
+            if (!Physics.Raycast(groundCheckOrigin, Vector3.down, out _, 0.5f, layersToDetectCollision))
+            {
+                Debug.Log("STANDUP - Ground check failed.");
                 return false;
+            }
         }
 
         return true;
