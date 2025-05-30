@@ -1,6 +1,8 @@
+using NUnit.Framework;
 using Sortify;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -60,18 +62,25 @@ public class PlayerAnimator : NetworkBehaviour
         Animator.StringToHash("ShootSeaStar_R"),
         Animator.StringToHash("ShootSword_L"),
         Animator.StringToHash("ShootSword_R"),
+        Animator.StringToHash("Idle_L_1"),
+        Animator.StringToHash("Idle_R_1"),
+        Animator.StringToHash("Idle_L_2"),
+        Animator.StringToHash("Idle_R_2"),
+
     };
 
-    private AnimationData idleAnimationData = new AnimationData(Animations.Idle_L, Animations.Idle_R, 0.6f); //idle crossfade
+    //private AnimationData idleAnimationData = new AnimationData(Animations.Idle_L, Animations.Idle_R, 0.6f); //idle crossfade
     private AnimationData jumpAnimationData = new AnimationData(Animations.Jump_L, Animations.Jump_R);
     private AnimationData aimJumpAnimationData = new AnimationData(Animations.AimJump_L, Animations.AimJump_R);
 
+    [SerializeField] private List<AnimationData> idleAnimationList = new List<AnimationData>();
 
     private Animations currentAnimation;
     private AnimationData currentAnimationData;
 
     private AnimationData selectedAimAnimation;
     private AnimationData selectedShootAnimation;
+    private AnimationData selectedIdleAnimation;
 
     private Coroutine crossFadeCoroutine;
     private PlayerState playerState;
@@ -79,19 +88,16 @@ public class PlayerAnimator : NetworkBehaviour
     public void HandleOnItemSelectedSO(ItemSO itemSelectedSO)
     {
         selectedAimAnimation = itemSelectedSO.itemAnimationSO.aimItemData;
-
         selectedShootAnimation = itemSelectedSO.itemAnimationSO.shootItemData;
     }
 
     public void HandleOnPlayerStateMachineStateChanged(PlayerState newState)
     {
         if(!IsOwner) return; //only owner
-
         playerState = newState;
-
         if (playerState == PlayerState.IdleMyTurn || playerState == PlayerState.IdleEnemyTurn || playerState == PlayerState.MyTurnEnded)
         {
-            PlayAnimationData(idleAnimationData);
+            PlayAnimationData(selectedIdleAnimation);
         }
         else if (playerState == PlayerState.DraggingItem)
         {
@@ -114,9 +120,7 @@ public class PlayerAnimator : NetworkBehaviour
     public void HandleOnRotationChanged(bool isRight)
     {
         if (!IsOwner) return;
-
         this.isRight = isRight;
-
         RotationChanged();
     }
 
@@ -127,45 +131,35 @@ public class PlayerAnimator : NetworkBehaviour
 
     private void PlayAnimationData(AnimationData animationData)
     {
-
         if (animationData.animationL == Animations.None && animationData.animationR == Animations.None) return; //none
-
         if(animationData.Equals(currentAnimationData))
         {
             //Already playing this animation
-
             if(isRight)
             {
                 //looking to the right
-
                 if(currentAnimation == animationData.animationR) return; //already playing the right animation
-
                 currentAnimation = animationData.animationR;
                 DoCrossFade(animations[(int)animationData.animationR], animationData.crossFadeBetweenSides);
             } else
             {
                 //looking to the left
-
                 if (currentAnimation == animationData.animationL) return; //already playing the left animation
-
                 currentAnimation = animationData.animationL;
                 DoCrossFade(animations[(int)animationData.animationL], animationData.crossFadeBetweenSides);
             }
         } else
         {
             // not the same animation
-
             if (isRight)
             {
                 //looking to the right
-
                 currentAnimation = animationData.animationR;
                 DoCrossFade(animations[(int)animationData.animationR], animationData.crossFade);
             }
             else
             {
                 //looking to the left
-
                 currentAnimation = animationData.animationL;
                 DoCrossFade(animations[(int)animationData.animationL], animationData.crossFade);
             }
@@ -180,9 +174,7 @@ public class PlayerAnimator : NetworkBehaviour
             StopCoroutine(crossFadeCoroutine);
             crossFadeCoroutine = null;
         }
-
         animator.CrossFade(stateHashName, fadeTime);
-
         crossFadeCoroutine = StartCoroutine(CrossFadeCallback());
     }
 
@@ -193,13 +185,11 @@ public class PlayerAnimator : NetworkBehaviour
         {
             yield return null;
         }
-
         // Wait until the transition has ended
         while (animator.IsInTransition(0))
         {
             yield return null;
         }
-
         // Transition has ended
         OnCrossfadeFinished?.Invoke();
     }
@@ -209,15 +199,40 @@ public class PlayerAnimator : NetworkBehaviour
     /// </summary>
     public void AnimationFinished()
     {
+        if(!IsOwner) return;
         Debug.Log($"AnimationFinished: {playerState}");
         if(playerState == PlayerState.DragReleaseItem)
         {
-            PlayAnimationData(idleAnimationData);
+            PlayAnimationData(selectedIdleAnimation);
         }
+    }
+
+    private void SelectRandomIdleAnimation()
+    {
+        int randomIndex = UnityEngine.Random.Range(0, idleAnimationList.Count);
+        selectedIdleAnimation = idleAnimationList[randomIndex];
+
+        if (currentAnimationData.Equals(selectedIdleAnimation))
+            SelectRandomIdleAnimation();
+    }
+
+    public void IdleAnimationFinished()
+    {
+        if (!IsOwner) return;
+        SelectRandomIdleAnimation();
+        if(playerState == PlayerState.IdleMyTurn || playerState == PlayerState.IdleEnemyTurn || playerState == PlayerState.MyTurnEnded || playerState == PlayerState.MyTurnStarted)
+        {
+            PlayAnimationData(selectedIdleAnimation);
+            Debug.Log("IdleAnimationFinished - Play Idle");
+        } else
+        {
+            Debug.Log("IdleAnimationFinished - NOT Play Idle");
+        }
+        Debug.Log($"IdleAnimationFinished: {playerState} | Selected Idle Animation: {selectedIdleAnimation.animationL} - {selectedIdleAnimation.animationR}");
     }
 }
 
-
+//Same order as int[] animations
 public enum Animations
 {
     Idle_L,
@@ -266,6 +281,10 @@ public enum Animations
     ShootSeaStar_R,
     ShootSword_L,
     ShootSword_R,
+    Idle_L_1,
+    Idle_R_1,
+    Idle_L_2,
+    Idle_R_2,
     None, //at the bottom!
 }
 

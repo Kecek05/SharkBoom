@@ -4184,6 +4184,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   animator: {fileID: 3092204672454369017}
+  idleAnimationList:
+  - animationL: 0
+    animationR: 1
+    crossFade: 0.6
+    crossFadeBetweenSides: 0
+  - animationL: 46
+    animationR: 47
+    crossFade: 0.6
+    crossFadeBetweenSides: 0
+  - animationL: 48
+    animationR: 49
+    crossFade: 0.6
+    crossFadeBetweenSides: 0
 --- !u!114 &4836813870748371602
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7275,6 +7288,22 @@ MonoBehaviour:
         - m_Target: {fileID: 6932457704017656328}
           m_TargetAssemblyTypeName: PlayerAnimator, Assembly-CSharp
           m_MethodName: AnimationFinished
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventName: OnIdleAnimationFinished
+    OnAnimationEvent:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 6932457704017656328}
+          m_TargetAssemblyTypeName: PlayerAnimator, Assembly-CSharp
+          m_MethodName: IdleAnimationFinished
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}

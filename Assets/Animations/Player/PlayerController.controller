@@ -147,6 +147,18 @@ AnimatorStateMachine:
   - serializedVersion: 1
     m_State: {fileID: 5842628000070640132}
     m_Position: {x: 2230, y: 570, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: -4653176249439760004}
+    m_Position: {x: 1490, y: 180, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: -2649576737766706951}
+    m_Position: {x: 1710, y: 180, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: 7197768649081383968}
+    m_Position: {x: 1490, y: 240, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: -6487098913889523313}
+    m_Position: {x: 1710, y: 240, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -267,7 +279,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e21f5b0df825184097a4d25da7b5219, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  eventName: OnAnimationFinished
+  eventName: OnIdleAnimationFinished
   triggerTime: 0.95
 --- !u!114 &-8247132428243243955
 MonoBehaviour:
@@ -492,6 +504,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   eventName: OnShoot
   triggerTime: 0.624
+--- !u!1102 &-6487098913889523313
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Idle_R_2
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours:
+  - {fileID: -5894908605920784718}
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 369601461794320452, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!114 &-6328791004116032803
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -561,6 +600,20 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!114 &-5894908605920784718
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e21f5b0df825184097a4d25da7b5219, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eventName: OnIdleAnimationFinished
+  triggerTime: 0.95
 --- !u!114 &-5701618480485067871
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -754,6 +807,33 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1102 &-4653176249439760004
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Idle_L_1
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours:
+  - {fileID: -1144612236874912543}
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 1014035062019388290, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!1102 &-4645632100373095764
 AnimatorState:
   serializedVersion: 6
@@ -904,7 +984,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e21f5b0df825184097a4d25da7b5219, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  eventName: OnAnimationFinished
+  eventName: OnIdleAnimationFinished
   triggerTime: 0.95
 --- !u!1102 &-4223152597423641365
 AnimatorState:
@@ -1086,6 +1166,33 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1102 &-2649576737766706951
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Idle_R_1
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours:
+  - {fileID: 1735537049209925271}
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: -3408994317402608885, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!114 &-2627497326923294074
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1251,6 +1358,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   eventName: OnAnimationFinished
+  triggerTime: 0.95
+--- !u!114 &-1144612236874912543
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e21f5b0df825184097a4d25da7b5219, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eventName: OnIdleAnimationFinished
   triggerTime: 0.95
 --- !u!114 &-1077982978125346437
 MonoBehaviour:
@@ -1661,6 +1782,20 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!114 &1735537049209925271
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e21f5b0df825184097a4d25da7b5219, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eventName: OnIdleAnimationFinished
+  triggerTime: 0.95
 --- !u!114 &2201358484714409842
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2215,6 +2350,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   eventName: OnShoot
   triggerTime: 0.644
+--- !u!1102 &7197768649081383968
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Idle_L_2
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours:
+  - {fileID: 8345460016083021374}
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 8321197688927680661, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!114 &7199168045477002541
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2436,6 +2598,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   eventName: OnAnimationFinished
+  triggerTime: 0.95
+--- !u!114 &8345460016083021374
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e21f5b0df825184097a4d25da7b5219, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eventName: OnIdleAnimationFinished
   triggerTime: 0.95
 --- !u!114 &8356073515606306018
 MonoBehaviour:
