@@ -5,7 +5,6 @@ using UnityEngine;
 public class BananaItemThrowable : BaseItemThrowableActivable
 {
     [SerializeField] private BaseItemComponent spinObjectComponent;
-    [SerializeField] private BaseCollisionController collisionController;
 
     private Vector3 launchPosition;
     private Coroutine bananaReturnCoroutine; // Start "Boomerang" Courotine
@@ -14,6 +13,7 @@ public class BananaItemThrowable : BaseItemThrowableActivable
     [SerializeField] private AnimationCurve boomerangCurve;
     [Tooltip("Time to banana return, increase for decrease Banana speed")]
     [SerializeField] private float returnDuration = 1f;
+    [SerializeField] private float heightY = 3f;
 
     public override void Initialize(Transform parent)
     {
@@ -43,21 +43,26 @@ public class BananaItemThrowable : BaseItemThrowableActivable
         bananaReturnCoroutine = StartCoroutine(ReturnToPlayer(startReturnPosition, launchPosition));
     }
 
-    private IEnumerator ReturnToPlayer(Vector3 returnPosition, Vector3 targetPosition)
+    private IEnumerator ReturnToPlayer(Vector3 startPosition, Vector3 targetPosition)
     {
-        rb.angularVelocity = Vector3.zero;
-        rb.isKinematic = true;
-
         float timer = 0f;
+        Vector3 endPosition = targetPosition;
 
         while (timer < returnDuration)
         {
             timer += Time.deltaTime;
-            float timeOfReturn = Mathf.Clamp01(timer / returnDuration); // we use Clamp01 for not extrapolate the return pos
+            float linearTime = Mathf.Clamp01(timer / returnDuration);
 
-           
+            float heightTime = boomerangCurve.Evaluate(linearTime);
+            float height = heightTime * heightY; 
+
+            Vector3 curveMovePosition = Vector3.Lerp(startPosition, endPosition, linearTime);
+            transform.position = curveMovePosition + Vector3.up * height;
+
             yield return null;
         }
+
+        transform.position = endPosition;
     }
 
     private void OnCollided(GameObject collidedObj)
