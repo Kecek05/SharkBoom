@@ -14,21 +14,24 @@ public class PlayerGetUp : NetworkBehaviour
     [SerializeField] private Collider[] playerColliders;
     [SerializeField] private LayerMask layersToDetectCollision;
 
-    private NetworkVariable<bool> isFallen = new NetworkVariable<bool>();
+    private NetworkVariable<bool> isFallen = new NetworkVariable<bool>(
+        default,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Owner
+    );
 
     private const int MAX_ATTEMPTS = 500;
     private const float STEP_SIZE =  0.5f;
-    
 
     private float verticalOffset;
     private float OriginalRootZ;
     private Quaternion originalRootRotation;
     private Quaternion originalHipsRotation;
-
     private Vector3 finalPosition;
 
     private Vector3[] directions =
     {
+        Vector3.up,
         Vector3.forward,
         Vector3.back,
         Vector3.left,
@@ -46,22 +49,24 @@ public class PlayerGetUp : NetworkBehaviour
 
     public void TriggerForCacheOriginalPos()
     {
+        Debug.Log("STANDUP - Trigger for cache original pos");
         if (!IsOwner) return;
         RequestCacheOriginalPosServerRpc();
+        Debug.Log("STANDUP - Trigger for cache original pos work");
     }
 
     [Rpc(SendTo.Server)]
     private void RequestCacheOriginalPosServerRpc()
     {
         CacheOriginalPosClientRpc();
-        Debug.Log("STANDUP - Call request cache original pos on server rpc");
+        Debug.Log("STANDUP - Cache original pos Server rpc");
     }
 
     [Rpc(SendTo.ClientsAndHost)]
     private void CacheOriginalPosClientRpc()
     {
         CacheOriginalPos();
-        Debug.Log("STANDUP - Call request cache original pos on client rpc");
+        Debug.Log("STANDUP - Cache original pos client rpc");
     }
 
     private void CacheOriginalPos()
@@ -70,39 +75,20 @@ public class PlayerGetUp : NetworkBehaviour
         OriginalRootZ = rootTransform.position.z;
         verticalOffset = hipsTransform.position.y - rootTransform.position.y;
         originalHipsRotation = hipsTransform.rotation;
+        originalRootRotation = Quaternion.Euler(0, rootTransform.eulerAngles.y, 0);
         Debug.Log("STANDUP - Cache original pos");
     }
 
     private void HandleOnItemCallbackAction()
     {
-        if (!IsOwner) return;
-        RequestGetUpPlayerServerRpc();
-        Debug.Log("STANDUP - Handle item callback");
-    }
+        if(!IsOwner || !isFallen.Value) return;
 
-    [Rpc(SendTo.Server)]
-    private void RequestGetUpPlayerServerRpc()
-    {
-        RequestGetUpPlayerClientRpc();
-        Debug.Log("STANDUP - Request get up player on server");
-    }
-
-    [Rpc(SendTo.ClientsAndHost)]
-    private void RequestGetUpPlayerClientRpc()
-    {
-        Debug.Log("STANDUP - Request get up player on Client");
-        Debug.Log($"STANDUP - {IsOwner} + {isFallen.Value}");
-
-        if (!IsOwner) return;
-        if (!isFallen.Value) return;
-        
         CalculatePlayerFreePos();
-        Debug.Log("STANDUP - Request get calculate player free pos");
+        Debug.Log("STANDUP - Calculate player free pos");
     }
 
     private void CalculatePlayerFreePos()
     {
-        Debug.Log("STANDUP - Calculate player free pos");
         Vector3 playerRagdollPosition = hipsTransform.position;
         playerRagdollPosition.y -= verticalOffset;
         playerRagdollPosition.z = OriginalRootZ;
@@ -113,8 +99,7 @@ public class PlayerGetUp : NetworkBehaviour
         Vector3 foundFinalPosition = GetFreePosition(playerRagdollPosition);
 
         finalPosition = foundFinalPosition;
-        PassPlayerFreePosServerRpc();
-
+        PassPlayerFreePosServerRpc(foundFinalPosition, originalRootRotation);
     }
 
     private Vector3 GetFreePosition(Vector3 startPos)
@@ -125,62 +110,66 @@ public class PlayerGetUp : NetworkBehaviour
             {
                 Vector3 testDirection = startPos + direction * (i * STEP_SIZE);
                 testDirection.z = OriginalRootZ;
-                Debug.Log($"STANDUP - Direction: {direction} + Test Direction: {testDirection}");
+
                 if (AreAllCollidersFreeAt(testDirection))
+                {
+                    Debug.Log($"STANDUP - Return calculate correct pos: {testDirection}");
                     return testDirection;
+                }
             }
         }
+        Debug.Log($"STANDUP - Error on calculate pos: {startPos}");
         return startPos;
     }
 
     private bool AreAllCollidersFreeAt(Vector3 checkPos)
     {
-        Debug.Log("STANDUP - Are all colliders free at");
         foreach (Collider colliders in playerColliders)
         {
             Vector3 localOffset = colliders.transform.position - rootTransform.position;
             Vector3 worldCenter = checkPos + localOffset;
 
-            originalRootRotation = Quaternion.Euler(0, rootTransform.eulerAngles.y, 0);
-
             if (colliders is BoxCollider box)
             {
                 Vector3 halfExtents = Vector3.Scale(box.size, colliders.transform.lossyScale) * 0.5f;
                 if (Physics.CheckBox(worldCenter, halfExtents, originalRootRotation, layersToDetectCollision))
+                {
+                    Debug.Log("STANDUP - Checkbox error, is colliding");
                     return false;
+                }
+                    
             }
 
             Vector3 groundCheckOrigin = worldCenter + Vector3.up * 0.1f;
+
             if (!Physics.Raycast(groundCheckOrigin, Vector3.down, out _, 0.5f, layersToDetectCollision))
             {
-                Debug.Log("STANDUP - Ground check failed.");
+                Debug.Log("STANDUP - ground error, is not colliding");
                 return false;
             }
         }
-
         return true;
     }
 
+
     [Rpc(SendTo.Server)]
-    private void PassPlayerFreePosServerRpc()
+    private void PassPlayerFreePosServerRpc(Vector3 finalPos, Quaternion finalRotation)
     {
-        PassPlayerFreePosClientRpc();
-        Debug.Log("STANDUP - Player free pos for server");
+        PassPlayerFreePosClientRpc(finalPos, finalRotation);
     }
 
     [Rpc(SendTo.ClientsAndHost)]
-    private void PassPlayerFreePosClientRpc()
+    private void PassPlayerFreePosClientRpc(Vector3 finalPos, Quaternion finalRotation)
     {
-        PassPlayerFreePos();
-        Debug.Log("STANDUP - Player free pos for Client");
+        ApplyGetUp(finalPos, finalRotation);
     }
 
-    private void PassPlayerFreePos()
+    private void ApplyGetUp(Vector3 finalPos, Quaternion finalRotation)
     {
-        hipsTransform.SetPositionAndRotation(finalPosition + Vector3.up * verticalOffset, originalHipsRotation);
-        rootTransform.SetPositionAndRotation(finalPosition, originalRootRotation);
         isFallen.Value = false;
-        Debug.Log("STANDUP - Set player free pos");
+        rootTransform.SetPositionAndRotation(finalPos, finalRotation);
+        hipsTransform.SetPositionAndRotation(finalPos + Vector3.up * verticalOffset, originalHipsRotation);
+        Debug.Log("STANDUP - Pass player get up");
     }
 
     public void UnInitializeOwner()
