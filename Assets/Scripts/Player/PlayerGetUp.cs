@@ -14,9 +14,11 @@ public class PlayerGetUp : NetworkBehaviour
     [SerializeField] private Collider[] playerColliders;
     [SerializeField] private LayerMask layersToDetectCollision;
 
+    private NetworkVariable<bool> isFallen = new NetworkVariable<bool>();
+
     private const int MAX_ATTEMPTS = 500;
     private const float STEP_SIZE =  0.5f;
-    private bool isFallen = false;
+    
 
     private float verticalOffset;
     private float OriginalRootZ;
@@ -64,10 +66,9 @@ public class PlayerGetUp : NetworkBehaviour
 
     private void CacheOriginalPos()
     {
-        isFallen = true;
+        isFallen.Value = true;
         OriginalRootZ = rootTransform.position.z;
         verticalOffset = hipsTransform.position.y - rootTransform.position.y;
-        originalRootRotation = rootTransform.rotation;
         originalHipsRotation = hipsTransform.rotation;
         Debug.Log("STANDUP - Cache original pos");
     }
@@ -90,10 +91,10 @@ public class PlayerGetUp : NetworkBehaviour
     private void RequestGetUpPlayerClientRpc()
     {
         Debug.Log("STANDUP - Request get up player on Client");
-        Debug.Log($"STANDUP - {IsOwner} + {isFallen}");
+        Debug.Log($"STANDUP - {IsOwner} + {isFallen.Value}");
 
-        //if (!IsOwner) return;
-        if (!isFallen) return;
+        if (!IsOwner) return;
+        if (!isFallen.Value) return;
         
         CalculatePlayerFreePos();
         Debug.Log("STANDUP - Request get calculate player free pos");
@@ -140,12 +141,12 @@ public class PlayerGetUp : NetworkBehaviour
             Vector3 localOffset = colliders.transform.position - rootTransform.position;
             Vector3 worldCenter = checkPos + localOffset;
 
-            Quaternion uprightRotation = Quaternion.Euler(0, rootTransform.eulerAngles.y, 0);
+            originalRootRotation = Quaternion.Euler(0, rootTransform.eulerAngles.y, 0);
 
             if (colliders is BoxCollider box)
             {
                 Vector3 halfExtents = Vector3.Scale(box.size, colliders.transform.lossyScale) * 0.5f;
-                if (Physics.CheckBox(worldCenter, halfExtents, uprightRotation, layersToDetectCollision))
+                if (Physics.CheckBox(worldCenter, halfExtents, originalRootRotation, layersToDetectCollision))
                     return false;
             }
 
@@ -176,9 +177,9 @@ public class PlayerGetUp : NetworkBehaviour
 
     private void PassPlayerFreePos()
     {
-        rootTransform.SetPositionAndRotation(finalPosition, originalRootRotation);
         hipsTransform.SetPositionAndRotation(finalPosition + Vector3.up * verticalOffset, originalHipsRotation);
-        isFallen = false;
+        rootTransform.SetPositionAndRotation(finalPosition, originalRootRotation);
+        isFallen.Value = false;
         Debug.Log("STANDUP - Set player free pos");
     }
 
