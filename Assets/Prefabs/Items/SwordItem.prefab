@@ -276,6 +276,12 @@ MonoBehaviour:
   followTransformComponent: {fileID: 2492626997076712017}
   myNetworkObject: {fileID: 2590630615956071341}
   collisionController: {fileID: 1924429888176421737}
+  freezePositionX: 0
+  freezePositionY: 0
+  freezePositionZ: 0
+  freezeRotationX: 1
+  freezeRotationY: 1
+  freezeRotationZ: 0
   spinObjectComponent: {fileID: 3526296545702240841}
 --- !u!114 &3526296545702240841
 MonoBehaviour:
@@ -294,7 +300,7 @@ MonoBehaviour:
   spinningSpeed: 300
   useInterpolation: 1
   interpolationSpeed: 300
-  isInverted: 1
+  isInverted: 0
 --- !u!1 &4767779204118326136 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2942010050083629636, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
