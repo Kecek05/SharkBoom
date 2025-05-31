@@ -11,6 +11,11 @@ public class LifetimeTriggerItemComponent : MonoBehaviour
         StartCoroutine(DelayDestroy());
     }
 
+    public void StopLifetime()
+    {
+        StopAllCoroutines();
+    }
+
     private IEnumerator DelayDestroy()
     {
         yield return new WaitForSeconds(lifetime);

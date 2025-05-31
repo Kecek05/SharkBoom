@@ -10722,15 +10722,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
-  followTransformComponent: {fileID: 0}
-  lifetimeTriggerItemComponent: {fileID: 0}
-  rb: {fileID: 0}
+  followTransformComponent: {fileID: 8061930552208201593}
+  lifetimeTriggerItemComponent: {fileID: 7241664042849662729}
+  rb: {fileID: 3276833342041568220}
   colliterGameObject: {fileID: 1106937726802126416}
   rbMode: {fileID: 2228213193041508149}
   followTransformActive: {fileID: 7784866339588420763}
   followTransformName: {fileID: 8647982726800080694}
   collisionLayer: {fileID: 8172294717173303530}
-  lifetimeActive: {fileID: 5917915583664115440}
   itemReleased: {fileID: 7542557100735439005}
   rbVelocity: {fileID: 504935579662956377}
 --- !u!114 &8418083268862516824
@@ -11010,7 +11009,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 48
+  m_Constraints: 0
   m_CollisionDetection: 0
 --- !u!114 &7964027437172616837
 MonoBehaviour:
@@ -11108,6 +11107,8 @@ MonoBehaviour:
   followRotation: 1
   followScale: 0
   positionOffset: {x: 0, y: 0, z: 0}
+  useInterpolation: 0
+  interpolationSpeed: 5
 --- !u!114 &7241664042849662729
 MonoBehaviour:
   m_ObjectHideFlags: 0

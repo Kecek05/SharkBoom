@@ -15,12 +15,6 @@ public class BananaItemThrowable : BaseItemThrowableActivable
     [SerializeField] private float returnDuration = 1f;
     [SerializeField] private float heightY = 3f;
 
-    public override void Initialize(Transform parent)
-    {
-        base.Initialize(parent);
-        collisionController.OnCollided += OnCollided;
-    }
-
     public override void ItemReleased(ItemLauncherData itemLauncherData)
     {
         base.ItemReleased(itemLauncherData);
@@ -65,17 +59,15 @@ public class BananaItemThrowable : BaseItemThrowableActivable
         transform.position = endPosition;
     }
 
-    private void OnCollided(GameObject collidedObj)
+    protected override void CollisionController_OnCollided(GameObject collidedObject)
     {
         spinObjectComponent.DisableComponent();
-
     }
 
-    public override void DestroyItem(Action destroyedCallback = null)
+    protected override void ResetItemThrowableState()
     {
-        base.DestroyItem(destroyedCallback);
+        base.ResetItemThrowableState();
 
-        collisionController.OnCollided -= OnCollided; //Subscribe to the collision event
         spinObjectComponent.DisableComponent();
 
         if (bananaReturnCoroutine != null)

@@ -19,9 +19,9 @@ public class SwordItemThrowable : BaseItemThrowable
         spinObjectComponent.DisableComponent();
     }
 
-    public override void DestroyItem(Action destroyedCallback = null)
+    protected override void ResetItemThrowableState()
     {
-        base.DestroyItem(destroyedCallback);
+        base.ResetItemThrowableState();
 
         spinObjectComponent.DisableComponent();
     }

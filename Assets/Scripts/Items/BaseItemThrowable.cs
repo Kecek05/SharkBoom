@@ -19,6 +19,16 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     [SerializeField] protected FollowTransformComponent followTransformComponent; //Used to follow the hand when the item is in hand
     [SerializeField] protected NetworkObject myNetworkObject;
     [Tooltip("Can Be Null | Used to Listen to Collision Events")] [SerializeField] protected BaseCollisionController collisionController;
+    [Space(4)]
+    [BetterHeader("Item Constraints Settings", 12)]
+    [SerializeField] protected bool freezePositionX = false;
+    [SerializeField] protected bool freezePositionY = false;
+    [SerializeField] protected bool freezePositionZ = false;
+    [SerializeField] protected bool freezeRotationX = true;
+    [SerializeField] protected bool freezeRotationY = true;
+    [SerializeField] protected bool freezeRotationZ = false;
+    [Space(6)]
+
     protected ItemLauncherData thisItemLaucherData;
 
     protected BaseTurnManager turnManager;
@@ -53,8 +63,8 @@ public abstract class BaseItemThrowable : NetworkBehaviour
             collisionController.OnCollidedWithPlayer += CollisionController_OnCollidedWithPlayer;
         }
 
+        ResetConstraints();
         InitializeUpdateRbTypeServerRpc(true);
-
     }
 
     protected virtual void CollisionController_OnCollidedWithPlayer(PlayerThrower playerObject)
@@ -79,6 +89,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
         if(IsOwner) return; //Ownler already changed
 
         rb.isKinematic = isKinematic;
+        ResetConstraints();
     }
 
 
@@ -111,10 +122,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     [Rpc(SendTo.Server)]
     private void ItemReleasedServerRpc(ItemLauncherData itemLauncherData)
     {
-        Debug.Log("ItemReleasedServerRpc");
-        
         UpdateOnRelease(itemLauncherData);
-
         ItemReleasedClientRpc(itemLauncherData);
     }
 
@@ -161,7 +169,6 @@ public abstract class BaseItemThrowable : NetworkBehaviour
                 }
                 break;
         }
-        Debug.Log($"SetCollision: {playableState} | Layer: {gameObject.layer}");
     }
 
     protected virtual void ItemCallbackAction()
@@ -189,14 +196,52 @@ public abstract class BaseItemThrowable : NetworkBehaviour
         OnItemCallbackAction?.Invoke();
     }
 
-    private void ResetItemThrowableState()
+    /// <summary>
+    /// Called when the object is Destroyed, all clients call this. Use to reset to the initial state of the item to the pool.
+    /// </summary>
+    protected virtual void ResetItemThrowableState()
     {
         SetCollision(PlayableState.None);
         itemReleased = false;
         followTransformComponent.DisableComponent();
         rb.isKinematic = false;
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        ResetConstraints();
     }
 
+    private void ResetConstraints()
+    {
+        if(freezePositionX)
+            rb.constraints |= RigidbodyConstraints.FreezePositionX; // Adds the FreezePositionX constraint without removing others.
+        else
+            rb.constraints &= ~RigidbodyConstraints.FreezePositionX; // Removes FreezePositionX while preserving others.
+
+        if (freezePositionY)
+            rb.constraints |= RigidbodyConstraints.FreezePositionY;
+        else
+            rb.constraints &= ~RigidbodyConstraints.FreezePositionY;
+
+        if (freezePositionZ)
+            rb.constraints |= RigidbodyConstraints.FreezePositionZ;
+        else
+            rb.constraints &= ~RigidbodyConstraints.FreezePositionZ;
+
+        if (freezeRotationX)
+            rb.constraints |= RigidbodyConstraints.FreezeRotationX;
+        else
+            rb.constraints &= ~RigidbodyConstraints.FreezeRotationX;
+
+        if (freezeRotationY)
+            rb.constraints |= RigidbodyConstraints.FreezeRotationY;
+        else
+            rb.constraints &= ~RigidbodyConstraints.FreezeRotationY;
+
+        if (freezeRotationZ)
+            rb.constraints |= RigidbodyConstraints.FreezeRotationZ;
+        else
+            rb.constraints &= ~RigidbodyConstraints.FreezeRotationZ;
+    }
 
     public virtual void DestroyItem(Action destroyedCallback = null)
     {
@@ -223,27 +268,19 @@ public abstract class BaseItemThrowable : NetworkBehaviour
         }
     }
 
-    [Rpc(SendTo.Server)]
+    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
     private void DestroyOnServerRpc()
     {
-        Debug.Log("DESTROY ITEM");
-        SetCollision(PlayableState.None); //Set the collision to none
-        NetworkObjectPool.Instance.ReturnNetworkObject(myNetworkObject, itemSO.itemIndex); // Return the object to the pool
-        myNetworkObject.Despawn(true); // Pass 'true' to also destroy the GameObject
-
-        DestroyOnClientRpc();
+        myNetworkObject.Despawn(true); // Pass 'true' to also destroy the GameObject | Return to the pool
     }
 
-    [Rpc(SendTo.ClientsAndHost)]
-    private void DestroyOnClientRpc()
+    public override void OnNetworkDespawn()
     {
-
         if (collisionController)
         {
             collisionController.OnCollided -= CollisionController_OnCollided;
             collisionController.OnCollidedWithPlayer -= CollisionController_OnCollidedWithPlayer;
         }
-
         ResetItemThrowableState();
     }
 }

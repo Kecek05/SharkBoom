@@ -1,8 +1,9 @@
-using System;
+using Sortify;
 using UnityEngine;
 
 public class AnchorItemThrowable : BaseItemThrowableActivable
 {
+    [BetterHeader("Anchor")]
     [SerializeField] private BaseItemComponent rotateTowardsVelocityComponent;
     [SerializeField] private float downForce;
     [SerializeField] private DamageableSO anchorActivatedDamageableSO;
@@ -10,6 +11,7 @@ public class AnchorItemThrowable : BaseItemThrowableActivable
 
     protected override void CollisionController_OnCollided(GameObject collidedObject)
     {
+        Debug.LogWarning($"AnchorItemThrowable collided with {collidedObject.name}");
         rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
     }
 
@@ -27,13 +29,14 @@ public class AnchorItemThrowable : BaseItemThrowableActivable
         
         canDoDamageComponent.SetDamageableSO(anchorActivatedDamageableSO);
 
-        rb.linearVelocity = Vector3.zero; // Stop the item from moving
+        rb.linearVelocity = Vector3.zero;
+        rb.constraints = RigidbodyConstraints.FreezePositionX;
         rb.AddForce(Vector3.down * downForce, ForceMode.Impulse);
     }
 
-    public override void DestroyItem(Action destroyedCallback = null)
+    protected override void ResetItemThrowableState()
     {
-        base.DestroyItem(destroyedCallback);
+        base.ResetItemThrowableState();
 
         rotateTowardsVelocityComponent.DisableComponent();
     }

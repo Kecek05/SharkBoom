@@ -9,17 +9,13 @@ public class JumpItemThrowable : BaseItemThrowable
     private float currentFollowingTime = 0f;
     private Transform objectToFollowTransform;
     private float lockedZ;
+    private Coroutine followCoroutine;
 
     private BaseTimerManager timerManager;
 
     private void Start()
     {
         timerManager = ServiceLocator.Get<BaseTimerManager>();
-    }
-
-    public override void Initialize(Transform parent)
-    {
-        base.Initialize(parent);
     }
 
     public override void ItemReleased(ItemLauncherData itemLauncherData)
@@ -31,7 +27,7 @@ public class JumpItemThrowable : BaseItemThrowable
         objectToFollowTransform = ServiceLocator.Get<BasePlayersPublicInfoManager>().GetPlayerObjectByPlayableState(thisItemLaucherData.ownerPlayableState).transform;
         lockedZ = objectToFollowTransform.position.z;
 
-        StartCoroutine(PlayerFollowJump());
+        followCoroutine ??= StartCoroutine(PlayerFollowJump());
     }
 
     protected override void ItemCallbackAction()
@@ -59,10 +55,16 @@ public class JumpItemThrowable : BaseItemThrowable
         }
     }
 
-    public override void DestroyItem(Action destroyedCallback = null)
+    protected override void ResetItemThrowableState()
     {
-        base.DestroyItem(destroyedCallback);
+        base.ResetItemThrowableState();
 
         objectToFollowTransform = null;
+
+        if (followCoroutine != null)
+        {
+            StopCoroutine(followCoroutine);
+            followCoroutine = null;
+        }
     }
 }
