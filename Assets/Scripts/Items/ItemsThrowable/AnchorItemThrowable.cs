@@ -11,7 +11,6 @@ public class AnchorItemThrowable : BaseItemThrowableActivable
 
     protected override void CollisionController_OnCollided(GameObject collidedObject)
     {
-        Debug.LogWarning($"AnchorItemThrowable collided with {collidedObject.name}");
         rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
     }
 
