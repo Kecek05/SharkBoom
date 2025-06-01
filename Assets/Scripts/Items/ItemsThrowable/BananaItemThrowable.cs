@@ -13,6 +13,7 @@ public class BananaItemThrowable : BaseItemThrowableActivable
     [SerializeField] private AnimationCurve boomerangCurve;
     [Tooltip("Time to banana return, increase for decrease Banana speed")]
     [SerializeField] private float returnDuration = 1f;
+    [Tooltip("Banana curve height, negative values make it curve for down")]
     [SerializeField] private float heightY = 3f;
 
     public override void ItemReleased(ItemLauncherData itemLauncherData)
@@ -62,7 +63,6 @@ public class BananaItemThrowable : BaseItemThrowableActivable
     protected override void CollisionController_OnCollided(GameObject collidedObject)
     {
         spinObjectComponent.DisableComponent();
-        DestroyItem();
     }
 
     protected override void ResetItemThrowableState()
