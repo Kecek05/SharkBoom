@@ -62,6 +62,7 @@ public class BananaItemThrowable : BaseItemThrowableActivable
     protected override void CollisionController_OnCollided(GameObject collidedObject)
     {
         spinObjectComponent.DisableComponent();
+        DestroyItem();
     }
 
     protected override void ResetItemThrowableState()

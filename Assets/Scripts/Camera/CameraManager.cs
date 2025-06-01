@@ -86,7 +86,6 @@ public class CameraManager : NetworkBehaviour
                 CameraTurnOff();
                 break;
         }
-        Debug.Log($"Camera - {playerState} - Camera move state {cameraMovement.enabled == true}");
     }
 
     /// <summary>
