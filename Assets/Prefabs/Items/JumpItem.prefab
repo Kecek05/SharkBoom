@@ -60,6 +60,10 @@ PrefabInstance:
       propertyPath: damageableSO
       value: 
       objectReference: {fileID: 11400000, guid: 07ee6752c8fc31648955a50017282162, type: 2}
+    - target: {fileID: 4196873844735081561, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 13400000, guid: 918fddd292258a34abb6330b13650107, type: 2}
     - target: {fileID: 4897436337832737565, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: itemThrowable
       value: 
@@ -227,6 +231,12 @@ MonoBehaviour:
   followTransformComponent: {fileID: 2492626997076712017}
   myNetworkObject: {fileID: 2590630615956071341}
   collisionController: {fileID: 1924429888176421737}
+  freezePositionX: 0
+  freezePositionY: 0
+  freezePositionZ: 0
+  freezeRotationX: 1
+  freezeRotationY: 1
+  freezeRotationZ: 0
   followingTime: 4
 --- !u!1 &4767779204118326136 stripped
 GameObject:
