@@ -3418,6 +3418,7 @@ GameObject:
   - component: {fileID: 594128583}
   - component: {fileID: 594128586}
   - component: {fileID: 594128588}
+  - component: {fileID: 594128589}
   m_Layer: 5
   m_Name: PlayBtn
   m_TagString: Untagged
@@ -3881,18 +3882,33 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: 
-          m_MethodName: 
+        - m_Target: {fileID: 594128589}
+          m_TargetAssemblyTypeName: ButtonsEventsAnimation, Assembly-CSharp
+          m_MethodName: OnClickFeedback
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: 
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &594128589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 594128580}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3541fec851f2c5c4bad1b28569601e63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clickFeedback: {fileID: 594128586}
+  holdFeedback: {fileID: 0}
+  releaseFeedback: {fileID: 0}
 --- !u!1 &610505810
 GameObject:
   m_ObjectHideFlags: 0
@@ -12574,7 +12590,6 @@ MonoBehaviour:
   vsFriendsPanel: {fileID: 2059564257}
   lobbyCodeErrorPanel: {fileID: 1832092065}
   closeLobyCodeErrorPanelBtn: {fileID: 1896862371}
-  jumpFeedabck: {fileID: 594128586}
 --- !u!4 &2042124137
 Transform:
   m_ObjectHideFlags: 0
