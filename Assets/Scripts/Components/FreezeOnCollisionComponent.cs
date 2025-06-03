@@ -1,6 +1,7 @@
+using Unity.Netcode;
 using UnityEngine;
 
-public class FreezeOnCollisionComponent : MonoBehaviour
+public class FreezeOnCollisionComponent : NetworkBehaviour
 {
     [Header("References")]
     [SerializeField] private Rigidbody rb;
@@ -11,18 +12,38 @@ public class FreezeOnCollisionComponent : MonoBehaviour
         baseCollisionController.OnCollidedWithPlayer += BaseCollisionController_OnCollidedWithPlayer;
     }
 
-    private void BaseCollisionController_OnCollidedWithPlayer(PlayerThrower playerThrower)
+    public override void OnGainedOwnership()
     {
-        Debug.Log("Stop moving");
-        FreezeObject();
+        base.OnGainedOwnership();
+        UnfreezeObjectServerRpc();
     }
 
-    private void FreezeObject()
+    private void BaseCollisionController_OnCollidedWithPlayer(PlayerThrower playerThrower)
+    {
+        if(!IsOwner) return;
+        FreezeObjectServerRpc();
+    }
+
+    [Rpc(SendTo.Server)]
+    private void FreezeObjectServerRpc()
+    {
+        FreezeObjectClientRpc();
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void FreezeObjectClientRpc()
     {
         rb.isKinematic = true; // Freeze the object
     }
 
-    private void UnfreezeObject()
+    [Rpc(SendTo.Server)]
+    private void UnfreezeObjectServerRpc()
+    {
+        UnfreezeObjectClientRpc();
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void UnfreezeObjectClientRpc()
     {
         rb.isKinematic = false; // Unfreeze the object
     }
@@ -30,7 +51,6 @@ public class FreezeOnCollisionComponent : MonoBehaviour
     private void OnDisable()
     {
         baseCollisionController.OnCollidedWithPlayer -= BaseCollisionController_OnCollidedWithPlayer;
-        UnfreezeObject(); // Unfreeze the object when disabled
     }
 
 }
