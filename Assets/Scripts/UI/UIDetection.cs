@@ -16,7 +16,7 @@ public class UIDetection
 
     public static bool IsPointerOverThisObject(GameObject gameObject)
     {
-        Debug.Log("TestFunction");
+
         PointerEventData eventData = new PointerEventData(EventSystem.current) { position = Input.mousePosition };
 
         List<RaycastResult> resultsList = new List<RaycastResult>();

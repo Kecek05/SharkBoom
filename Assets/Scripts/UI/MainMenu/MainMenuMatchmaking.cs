@@ -50,7 +50,6 @@ public class MainMenuMatchmaking : MonoBehaviour
 
     public void SearchMathmaking()
     {
-        Debug.Log("Test press button");
         if (isCanceling) return;
 
         if (isMatchMaking) return;
