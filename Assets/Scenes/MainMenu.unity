@@ -3417,7 +3417,7 @@ GameObject:
   - component: {fileID: 594128584}
   - component: {fileID: 594128583}
   - component: {fileID: 594128590}
-  - component: {fileID: 594128592}
+  - component: {fileID: 594128591}
   m_Layer: 5
   m_Name: PlayBtn
   m_TagString: Untagged
@@ -3549,7 +3549,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &594128592
+--- !u!114 &594128591
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3561,22 +3561,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb0b66344baf0f54c9e3396aa1ad10da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  button: {fileID: 594128580}
+  buttonGameobject: {fileID: 0}
   buttonAction:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &610505810
 GameObject:
   m_ObjectHideFlags: 0
