@@ -1914,7 +1914,7 @@ Animator:
   m_GameObject: {fileID: 405298490}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e2095ac29e290d740a1e05396313a635, type: 2}
+  m_Controller: {fileID: 22100000, guid: 74dc1ecee4406b743853f7b2084e665b, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -2805,9 +2805,9 @@ Animator:
   m_GameObject: {fileID: 594128580}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 95dc34a4a6fde37499f0b106e41a20dc, type: 2}
+  m_Controller: {fileID: 22100000, guid: 4a94d250e8d7a1c4f9a71c4632b7e549, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 1
+  m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -3260,7 +3260,7 @@ GameObject:
   - component: {fileID: 680942867}
   - component: {fileID: 680942866}
   m_Layer: 5
-  m_Name: CloseVsFriendsPanel
+  m_Name: CloseVsFriendsPanelBtn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3275,7 +3275,7 @@ RectTransform:
   m_GameObject: {fileID: 680942861}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.3, y: 1.3, z: 1.3}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 417253232}
@@ -3435,7 +3435,7 @@ Animator:
   m_GameObject: {fileID: 680942861}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: d59a63df79852b14aa36775bbf62f407, type: 2}
+  m_Controller: {fileID: 22100000, guid: 6e143ebc605f6334593e615d8f49bcc4, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -6098,7 +6098,7 @@ Animator:
   m_GameObject: {fileID: 1222833792}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 8cde448b1d9255c4b8e97aaceacb35ab, type: 2}
+  m_Controller: {fileID: 22100000, guid: 24cfb84a293d15645a5bd34cef0d9996, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -10253,7 +10253,7 @@ Animator:
   m_GameObject: {fileID: 2032308057}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: d0792d8b61457284e8b5b48e27d2351c, type: 2}
+  m_Controller: {fileID: 22100000, guid: 090f7c50d75bfab4698dc2c95b693362, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -10407,7 +10407,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2059564258
 RectTransform:
   m_ObjectHideFlags: 0
