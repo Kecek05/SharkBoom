@@ -38,6 +38,19 @@ public class PlayerGetUp : NetworkBehaviour
         Vector3.back + Vector3.right
     };
 
+
+    //DEBUG
+
+    public float VerticalOffset => verticalOffset;
+    public bool IsFallen => isFallen;
+    public Vector3 FinalPosition => finalPosition;
+    public float OriginalRootZ => originalRootZ;
+    public Quaternion OriginalRootRotation => originalRootRotation;
+    public Quaternion OriginalHipsRotation => originalHipsRotation;
+
+    public Quaternion recievedFinalRotation;
+    public Quaternion recievedOriginalHipsRotation;
+
     public void InitializeOwner()
     {
         BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
@@ -75,7 +88,7 @@ public class PlayerGetUp : NetworkBehaviour
         Vector3 foundFinalPosition = GetFreePosition(playerRagdollPosition);
 
         isFallen = false;
-        //finalPosition = foundFinalPosition;
+        finalPosition = foundFinalPosition;
         PassPlayerFreePosServerRpc(foundFinalPosition, originalRootRotation, originalHipsRotation);
         //ApplyGetUp(foundFinalPosition, originalRootRotation);
     }
@@ -139,6 +152,8 @@ public class PlayerGetUp : NetworkBehaviour
 
     private void ApplyGetUp(Vector3 finalPos, Quaternion finalRotation, Quaternion originalHipsRotation)
     {
+        recievedOriginalHipsRotation = originalHipsRotation;
+        recievedFinalRotation = finalRotation;
         Debug.Log($"ApplyGetUp - FinalPos: {finalPos} - FinalRotation: {finalRotation} - OriginalHipsRotation: {originalHipsRotation}");
         rootTransform.SetPositionAndRotation(finalPos, finalRotation);
         hipsTransform.SetPositionAndRotation(finalPos + Vector3.up * verticalOffset, originalHipsRotation);

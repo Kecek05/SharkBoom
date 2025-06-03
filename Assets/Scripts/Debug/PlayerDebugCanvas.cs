@@ -7,50 +7,22 @@ public class PlayerDebugCanvas : NetworkBehaviour
 {
 
     [BetterHeader("References")]
-    public PlayerThrower player;
-    public TextMeshProUGUI selectedItemIndexText;
-    public TextMeshProUGUI selectedRbText;
-    public TextMeshProUGUI playerStateText;
-    public TextMeshProUGUI playerCanInteractWithInventoryText;
-    public TextMeshProUGUI dragDistanceText;
-    public PlayerDragController playerDragController;
-    public PlayerInventory playerInventory;
-
-    public override void OnNetworkSpawn()
-    {
-        if (!IsOwner)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-    }
+    public PlayerGetUp playerGetUp;
+    public TextMeshProUGUI isFallenTxt;
+    public TextMeshProUGUI isOwnerTxt;
+    public TextMeshProUGUI calculatedPosTxt;
+    public TextMeshProUGUI originalRootZTxt;
+    public TextMeshProUGUI verticalOffsetTxt;
+    public TextMeshProUGUI originalHipsRotTxt;
+    public TextMeshProUGUI originalRootRotTxt;
 
     private void Update()
     {
-        if (playerDragController.SelectedRb == null)
-        {
-            selectedRbText.text = "null";
-        }
-        else
-        {
-            selectedRbText.text = playerDragController.SelectedRb.ToString();
-
-        }
-
-        if(playerDragController != null) 
-        {
-            dragDistanceText.text = $"Drag Distance: {Mathf.Abs(Mathf.RoundToInt(playerDragController.DragDistance))} Last Drag Distance: {Mathf.Abs(Mathf.RoundToInt(playerDragController.LastDragDistance))}";
-        }
-
-
-        playerStateText.text = player.PlayerStateMachine.CurrentState.ToString();
-
-        selectedItemIndexText.text = playerInventory.SelectedItemInventoryIndex.ToString();
-
-        playerCanInteractWithInventoryText.text = playerInventory.CanInteractWithInventory.ToString();
+        isOwnerTxt.text = $"Is Owner: {IsOwner}";
+        isFallenTxt.text = $"Is Fallen: {playerGetUp.IsFallen}";
+        calculatedPosTxt.text = $"Calculated Pos: {playerGetUp.FinalPosition} - FinalRotation: {playerGetUp.recievedFinalRotation} - OriginalHipsRotation: {playerGetUp.recievedOriginalHipsRotation}";
+        originalHipsRotTxt.text = $"Original Hips Rotation: {playerGetUp.OriginalHipsRotation}";
+        originalRootZTxt.text = $"Original Root Z: {playerGetUp.OriginalRootZ}";
+        verticalOffsetTxt.text = $"Vertical Offset: {playerGetUp.VerticalOffset}";
     }
-
-
-
 }
