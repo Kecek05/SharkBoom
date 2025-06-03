@@ -7,15 +7,10 @@ using UnityEngine.UI;
 public class MainMenuVsFriends : MonoBehaviour
 {
     [BetterHeader("References")]
-    [SerializeField] private Button openVsFriendsPanelBtn;
-    [SerializeField] private Button closeVsFriendsPanelBtn;
-    [SerializeField] private Button joinGameBtn;
     [SerializeField] private Button createGameBtn;
     [SerializeField] private TMP_InputField lobbyCodeInputField;
-    [SerializeField] private Button quickJoinBtn;
     [SerializeField] private GameObject vsFriendsPanel;
     [SerializeField] private GameObject lobbyCodeErrorPanel;
-    [SerializeField] private Button closeLobyCodeErrorPanelBtn;
 
 
     private bool isBusy = false;
@@ -23,63 +18,61 @@ public class MainMenuVsFriends : MonoBehaviour
     private void Awake()
     {
         Hide();
-
-        openVsFriendsPanelBtn.onClick.AddListener(() =>
-        {
-            Show();
-        });
-
-        closeVsFriendsPanelBtn.onClick.AddListener(() =>
-        {
-            if (isBusy) return;
-
-            Hide();
-        });
-
-        createGameBtn.onClick.AddListener(async () =>
-        {
-            if (isBusy) return;
-
-            isBusy = true;
-            createGameBtn.interactable = false;
-            await HostSingleton.Instance.GameManager.StartHostAsync();
-            //createGameBtn.interactable = true;
-            isBusy = false;
-        });
-
-        joinGameBtn.onClick.AddListener(async () =>
-        {
-            if (isBusy) return;
-
-            isBusy = true;
-            lobbyCodeInputField.interactable = false;
-            bool joinedSuccessfully = await ClientSingleton.Instance.GameManager.StartRelayClientAsync(lobbyCodeInputField.text);
-
-            if (!joinedSuccessfully)
-            {
-                lobbyCodeErrorPanel.SetActive(true);
-                isBusy = false;
-                lobbyCodeInputField.text = "";
-                lobbyCodeInputField.interactable = true;
-            }
-            isBusy = false;
-
-        });
-
-        quickJoinBtn.onClick.AddListener(async () =>
-        {
-            if (isBusy) return;
-            isBusy = true;
-            await ClientSingleton.Instance.GameManager.QuickJoinLobbyAsync();
-            isBusy = false;
-        });
-
-        closeLobyCodeErrorPanelBtn.onClick.AddListener(() =>
-        {
-            lobbyCodeErrorPanel.SetActive(false);
-        });
     }
     
+    public void OpenVsFriendsPanel()
+    {
+        Show();
+    }
+
+    public void CloseVsFriendsPanel()
+    {
+        if (isBusy) return;
+
+        Hide();
+    }
+
+    public async void CreateGame()
+    {
+        if (isBusy) return;
+
+        isBusy = true;
+        createGameBtn.interactable = false;
+        await HostSingleton.Instance.GameManager.StartHostAsync();
+        //createGameBtn.interactable = true;
+        isBusy = false;
+    }
+
+    public async void JoinGame()
+    {
+        if (isBusy) return;
+
+        isBusy = true;
+        lobbyCodeInputField.interactable = false;
+        bool joinedSuccessfully = await ClientSingleton.Instance.GameManager.StartRelayClientAsync(lobbyCodeInputField.text);
+
+        if (!joinedSuccessfully)
+        {
+            lobbyCodeErrorPanel.SetActive(true);
+            isBusy = false;
+            lobbyCodeInputField.text = "";
+            lobbyCodeInputField.interactable = true;
+        }
+        isBusy = false;
+    }
+
+    public async void QuickJoin()
+    {
+        if (isBusy) return;
+        isBusy = true;
+        await ClientSingleton.Instance.GameManager.QuickJoinLobbyAsync();
+        isBusy = false;
+    }
+
+    public void CloseErrorLobbyCodePanel()
+    {
+        lobbyCodeErrorPanel.SetActive(false);
+    }
 
     private void Hide()
     {

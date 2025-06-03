@@ -3874,7 +3874,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &664665109
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6977,6 +6977,8 @@ GameObject:
   - component: {fileID: 1222833796}
   - component: {fileID: 1222833795}
   - component: {fileID: 1222833798}
+  - component: {fileID: 1222833800}
+  - component: {fileID: 1222833799}
   m_Layer: 5
   m_Name: VsFriendsBtn
   m_TagString: Untagged
@@ -7108,6 +7110,64 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1222833799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1222833792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb0b66344baf0f54c9e3396aa1ad10da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameobject: {fileID: 1222833792}
+  button: {fileID: 1222833795}
+  buttonAction:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2042124136}
+        m_TargetAssemblyTypeName: MainMenuVsFriends, Assembly-CSharp
+        m_MethodName: OpenVsFriendsPanel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1222833800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1222833792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 3
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1222833799}
+          m_TargetAssemblyTypeName: UiButtonReleaseComponent, Assembly-CSharp
+          m_MethodName: ButtonRelease
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1245166035
 GameObject:
   m_ObjectHideFlags: 0
@@ -11580,15 +11640,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5d06cd665e1e8744b2c87c6a8d941eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  openVsFriendsPanelBtn: {fileID: 1222833795}
-  closeVsFriendsPanelBtn: {fileID: 680942863}
-  joinGameBtn: {fileID: 405298492}
   createGameBtn: {fileID: 2032308059}
   lobbyCodeInputField: {fileID: 1450178497}
-  quickJoinBtn: {fileID: 664665110}
   vsFriendsPanel: {fileID: 2059564257}
   lobbyCodeErrorPanel: {fileID: 1832092065}
-  closeLobyCodeErrorPanelBtn: {fileID: 1896862371}
 --- !u!4 &2042124137
 Transform:
   m_ObjectHideFlags: 0
