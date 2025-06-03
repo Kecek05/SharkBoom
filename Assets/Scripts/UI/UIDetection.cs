@@ -13,4 +13,10 @@ public class UIDetection
 
         return results.Count > 0; 
     }
+
+    public static bool IsPointerOverThisObject(GameObject gameObject)
+    {
+
+        return true;
+    }
 }

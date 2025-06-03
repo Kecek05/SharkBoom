@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class MainMenuMatchmaking : MonoBehaviour
@@ -29,39 +30,38 @@ public class MainMenuMatchmaking : MonoBehaviour
     private void Awake()
     {
         Hide();
-
-        cancelMatchmakingBtn.onClick.AddListener(async () =>
-        {
-            //Cancel Matchmaking
-            if (isCanceling) return;
-
-            isCanceling = true;
-            matchmakingText.text = "Canceling...";
-            await ClientSingleton.Instance.GameManager.CancelMatchmakingAsync(); //wait to cancel the matchmake
-            isMatchMaking = false;
-            isCanceling = false;
-
-            StopMatchmakingTimer();
-            Hide();
-        });
-
-        searchMatchmakingBtn.onClick.AddListener(() =>
-        {
-            if (isCanceling) return;
-
-            if (isMatchMaking) return;
-
-            isMatchMaking = true;
-            timeInQueue = 0f; // zera o tempo
-            matchmakingText.text = "Searching...";
-            ClientSingleton.Instance.GameManager.MatchmakeAsync(OnMatchMade); //We will pass and event to be trigger when the result is ready.
-
-            StartMatchmakingTimer();
-            Show();
-
-        });
-
         MatchplayMatchmaker.OnTicketCreated += MatchplayMatchmaker_OnTicketCreated;
+    }
+
+    public async void CancelMatchmaking()
+    {
+        //Cancel Matchmaking
+        if (isCanceling) return;
+
+        isCanceling = true;
+        matchmakingText.text = "Canceling...";
+        await ClientSingleton.Instance.GameManager.CancelMatchmakingAsync(); //wait to cancel the matchmake
+        isMatchMaking = false;
+        isCanceling = false;
+
+        StopMatchmakingTimer();
+        Hide();
+    }
+
+    public void SearchMathmaking()
+    {
+        Debug.Log("Test press button");
+        if (isCanceling) return;
+
+        if (isMatchMaking) return;
+
+        isMatchMaking = true;
+        timeInQueue = 0f; // zera o tempo
+        matchmakingText.text = "Searching...";
+        ClientSingleton.Instance.GameManager.MatchmakeAsync(OnMatchMade); //We will pass and event to be trigger when the result is ready.
+
+        StartMatchmakingTimer();
+        Show();
     }
 
     private void MatchplayMatchmaker_OnTicketCreated()
@@ -164,4 +164,6 @@ public class MainMenuMatchmaking : MonoBehaviour
     {
         MatchplayMatchmaker.OnTicketCreated -= MatchplayMatchmaker_OnTicketCreated;
     }
+
+    
 }
