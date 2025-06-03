@@ -256,6 +256,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -90
       objectReference: {fileID: 0}
+    - target: {fileID: 8747205956194011556, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: knockbackStrength
+      value: 450
+      objectReference: {fileID: 0}
     - target: {fileID: 8843573594692602520, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: SyncRotAngleX
       value: 1
@@ -362,8 +366,14 @@ MonoBehaviour:
   lifetimeTriggerItemComponent: {fileID: 2957073883870968353}
   followTransformComponent: {fileID: 2492626997076712017}
   myNetworkObject: {fileID: 2590630615956071341}
-  rotateTowardsVelocityComponent: {fileID: 8460017691892430961}
   collisionController: {fileID: 1924429888176421737}
+  freezePositionX: 0
+  freezePositionY: 0
+  freezePositionZ: 0
+  freezeRotationX: 1
+  freezeRotationY: 1
+  freezeRotationZ: 0
+  rotateTowardsVelocityComponent: {fileID: 8460017691892430961}
 --- !u!114 &8460017691892430961
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -376,6 +386,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8db42a54576a6444c9feb910c71ad5ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugTriggerOnStart: 0
   rotationSpeed: 10
   rb: {fileID: 6921903450271284980}
 --- !u!1 &4767779204118326136 stripped

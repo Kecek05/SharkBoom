@@ -364,6 +364,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: 8747205956194011556, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: knockbackStrength
+      value: 700
+      objectReference: {fileID: 0}
     - target: {fileID: 8843573594692602520, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: SyncRotAngleX
       value: 1
@@ -471,6 +475,12 @@ MonoBehaviour:
   followTransformComponent: {fileID: 2492626997076712017}
   myNetworkObject: {fileID: 2590630615956071341}
   collisionController: {fileID: 1924429888176421737}
+  freezePositionX: 0
+  freezePositionY: 0
+  freezePositionZ: 0
+  freezeRotationX: 1
+  freezeRotationY: 1
+  freezeRotationZ: 0
   rotateTowardsVelocityComponent: {fileID: 3179435721879527791}
   downForce: 25
   anchorActivatedDamageableSO: {fileID: 11400000, guid: e7a1b36a4056b1941a011aa2f7f73565, type: 2}

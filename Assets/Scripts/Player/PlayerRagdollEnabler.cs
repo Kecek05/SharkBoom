@@ -88,7 +88,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             Debug.LogError("No ragdoll rb found");
             return;
         }
-
+        Debug.Log($"TriggerRagdoll, Streght: {knockbackStrength} - HitPost: {hitPoint}");
         TriggerRagdollServerRpc(closestIndex, force, hitPoint);
     }
 
@@ -105,6 +105,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         Rigidbody hitRigidbody = ragdollRbs[hitRigidbodyIndex]; // get the rb we hit
 
         force = new Vector3(force.x, force.y, 0f); //Ensure to not knockback in Z
+        Debug.Log($"TriggerRagdollClientRpc - Force: {force}");
         hitRigidbody.AddForceAtPosition(force, hitPoint, ForceMode.Impulse);
     }
 

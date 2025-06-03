@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
-using static UnityEngine.UI.Image;
 
 public class PlayerGetUp : NetworkBehaviour
 {
@@ -14,17 +13,14 @@ public class PlayerGetUp : NetworkBehaviour
     [SerializeField] private Collider[] playerColliders;
     [SerializeField] private LayerMask layersToDetectCollision;
 
-    private NetworkVariable<bool> isFallen = new NetworkVariable<bool>(
-        default,
-        NetworkVariableReadPermission.Everyone,
-        NetworkVariableWritePermission.Owner
-    );
+    private bool isFallen = false;
+    //private NetworkVariable<bool> isFallen = new NetworkVariable<bool>(false);
 
     private const int MAX_ATTEMPTS = 500;
     private const float STEP_SIZE =  0.5f;
 
     private float verticalOffset;
-    private float OriginalRootZ;
+    private float originalRootZ;
     private Quaternion originalRootRotation;
     private Quaternion originalHipsRotation;
     private Vector3 finalPosition;
@@ -47,59 +43,41 @@ public class PlayerGetUp : NetworkBehaviour
         BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
     }
 
-    public void TriggerForCacheOriginalPos()
+    public void CacheOriginalPos()
     {
-        Debug.Log("STANDUP - Trigger for cache original pos");
-        if (!IsOwner) return;
-        RequestCacheOriginalPosServerRpc();
-        Debug.Log("STANDUP - Trigger for cache original pos work");
-    }
+        if(!IsOwner) return;
 
-    [Rpc(SendTo.Server)]
-    private void RequestCacheOriginalPosServerRpc()
-    {
-        CacheOriginalPosClientRpc();
-        Debug.Log("STANDUP - Cache original pos Server rpc");
-    }
-
-    [Rpc(SendTo.ClientsAndHost)]
-    private void CacheOriginalPosClientRpc()
-    {
-        CacheOriginalPos();
-        Debug.Log("STANDUP - Cache original pos client rpc");
-    }
-
-    private void CacheOriginalPos()
-    {
-        isFallen.Value = true;
-        OriginalRootZ = rootTransform.position.z;
+        isFallen = true;
+        originalRootZ = rootTransform.position.z;
         verticalOffset = hipsTransform.position.y - rootTransform.position.y;
         originalHipsRotation = hipsTransform.rotation;
         originalRootRotation = Quaternion.Euler(0, rootTransform.eulerAngles.y, 0);
-        Debug.Log("STANDUP - Cache original pos");
     }
 
     private void HandleOnItemCallbackAction()
     {
-        if(!IsOwner || !isFallen.Value) return;
+        if(!IsOwner) return;
+
+        if (!isFallen) return;
 
         CalculatePlayerFreePos();
-        Debug.Log("STANDUP - Calculate player free pos");
     }
 
     private void CalculatePlayerFreePos()
     {
         Vector3 playerRagdollPosition = hipsTransform.position;
         playerRagdollPosition.y -= verticalOffset;
-        playerRagdollPosition.z = OriginalRootZ;
+        playerRagdollPosition.z = originalRootZ;
 
         if (Physics.Raycast(hipsTransform.position, Vector3.down, out var hit, 5f, layersToDetectCollision))
             playerRagdollPosition.y = Mathf.Max(playerRagdollPosition.y, hit.point.y);
 
         Vector3 foundFinalPosition = GetFreePosition(playerRagdollPosition);
 
-        finalPosition = foundFinalPosition;
-        PassPlayerFreePosServerRpc(foundFinalPosition, originalRootRotation);
+        isFallen = false;
+        //finalPosition = foundFinalPosition;
+        PassPlayerFreePosServerRpc(foundFinalPosition, originalRootRotation, originalHipsRotation);
+        //ApplyGetUp(foundFinalPosition, originalRootRotation);
     }
 
     private Vector3 GetFreePosition(Vector3 startPos)
@@ -109,16 +87,14 @@ public class PlayerGetUp : NetworkBehaviour
             for (int i = 1; i <= MAX_ATTEMPTS; i++)
             {
                 Vector3 testDirection = startPos + direction * (i * STEP_SIZE);
-                testDirection.z = OriginalRootZ;
+                testDirection.z = originalRootZ;
 
                 if (AreAllCollidersFreeAt(testDirection))
                 {
-                    Debug.Log($"STANDUP - Return calculate correct pos: {testDirection}");
                     return testDirection;
                 }
             }
         }
-        Debug.Log($"STANDUP - Error on calculate pos: {startPos}");
         return startPos;
     }
 
@@ -134,17 +110,14 @@ public class PlayerGetUp : NetworkBehaviour
                 Vector3 halfExtents = Vector3.Scale(box.size, colliders.transform.lossyScale) * 0.5f;
                 if (Physics.CheckBox(worldCenter, halfExtents, originalRootRotation, layersToDetectCollision))
                 {
-                    Debug.Log("STANDUP - Checkbox error, is colliding");
                     return false;
                 }
-                    
             }
 
             Vector3 groundCheckOrigin = worldCenter + Vector3.up * 0.1f;
 
             if (!Physics.Raycast(groundCheckOrigin, Vector3.down, out _, 0.5f, layersToDetectCollision))
             {
-                Debug.Log("STANDUP - ground error, is not colliding");
                 return false;
             }
         }
@@ -153,23 +126,22 @@ public class PlayerGetUp : NetworkBehaviour
 
 
     [Rpc(SendTo.Server)]
-    private void PassPlayerFreePosServerRpc(Vector3 finalPos, Quaternion finalRotation)
+    private void PassPlayerFreePosServerRpc(Vector3 finalPos, Quaternion finalRotation, Quaternion originalHipsRotation)
     {
-        PassPlayerFreePosClientRpc(finalPos, finalRotation);
+        PassPlayerFreePosClientRpc(finalPos, finalRotation, originalHipsRotation);
     }
 
     [Rpc(SendTo.ClientsAndHost)]
-    private void PassPlayerFreePosClientRpc(Vector3 finalPos, Quaternion finalRotation)
+    private void PassPlayerFreePosClientRpc(Vector3 finalPos, Quaternion finalRotation, Quaternion originalHipsRotation)
     {
-        ApplyGetUp(finalPos, finalRotation);
+        ApplyGetUp(finalPos, finalRotation, originalHipsRotation);
     }
 
-    private void ApplyGetUp(Vector3 finalPos, Quaternion finalRotation)
+    private void ApplyGetUp(Vector3 finalPos, Quaternion finalRotation, Quaternion originalHipsRotation)
     {
-        isFallen.Value = false;
+        Debug.Log($"ApplyGetUp - FinalPos: {finalPos} - FinalRotation: {finalRotation} - OriginalHipsRotation: {originalHipsRotation}");
         rootTransform.SetPositionAndRotation(finalPos, finalRotation);
         hipsTransform.SetPositionAndRotation(finalPos + Vector3.up * verticalOffset, originalHipsRotation);
-        Debug.Log("STANDUP - Pass player get up");
     }
 
     public void UnInitializeOwner()
