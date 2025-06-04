@@ -10,15 +10,8 @@ public class DisableCollisionOnCantactComponent : NetworkBehaviour
     private void OnEnable()
     {
         baseCollisionController.OnCollidedWithPlayer += HandleItemCollidedWithPlayer;
+        EnableCollisions();
     }
-
-    public override void OnGainedOwnership()
-    {
-        base.OnGainedOwnership();
-
-        EnableCollisionsServerRpc();
-    }
-
 
     private void HandleItemCollidedWithPlayer(PlayerThrower playerThrower)
     {
@@ -41,14 +34,7 @@ public class DisableCollisionOnCantactComponent : NetworkBehaviour
         }
     }
 
-    [Rpc(SendTo.Server)]
-    private void EnableCollisionsServerRpc()
-    {
-        EnableCollisionsClientRpc();
-    }
-
-    [Rpc(SendTo.ClientsAndHost)]
-    private void EnableCollisionsClientRpc()
+    private void EnableCollisions()
     {
         foreach (Collider itemCol in itemColliders)
         {

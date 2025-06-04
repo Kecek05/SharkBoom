@@ -10,12 +10,7 @@ public class FreezeOnCollisionComponent : NetworkBehaviour
     private void OnEnable()
     {
         baseCollisionController.OnCollidedWithPlayer += BaseCollisionController_OnCollidedWithPlayer;
-    }
-
-    public override void OnGainedOwnership()
-    {
-        base.OnGainedOwnership();
-        UnfreezeObjectServerRpc();
+        UnfreezeObject();
     }
 
     private void BaseCollisionController_OnCollidedWithPlayer(PlayerThrower playerThrower)
@@ -36,18 +31,10 @@ public class FreezeOnCollisionComponent : NetworkBehaviour
         rb.isKinematic = true; // Freeze the object
     }
 
-    [Rpc(SendTo.Server)]
-    private void UnfreezeObjectServerRpc()
-    {
-        UnfreezeObjectClientRpc();
-    }
-
-    [Rpc(SendTo.ClientsAndHost)]
-    private void UnfreezeObjectClientRpc()
+    private void UnfreezeObject()
     {
         rb.isKinematic = false; // Unfreeze the object
     }
-
     private void OnDisable()
     {
         baseCollisionController.OnCollidedWithPlayer -= BaseCollisionController_OnCollidedWithPlayer;

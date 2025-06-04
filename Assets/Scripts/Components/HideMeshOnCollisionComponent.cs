@@ -14,10 +14,8 @@ public class HideMeshOnCollisionComponent : NetworkBehaviour
     [Header("Settings")]
     [SerializeField] private bool hideOnCollisionWithPlayer = true;
     [SerializeField] private bool hideOnCollisionWithAnything = true;
-
-    public override void OnNetworkSpawn()
+    private void OnEnable()
     {
-        Debug.Log("Hide Mesh Enable");
         if (hideOnCollisionWithAnything)
         {
             baseCollisionController.OnCollided += BaseCollisionController_OnCollided;
@@ -27,15 +25,7 @@ public class HideMeshOnCollisionComponent : NetworkBehaviour
         {
             baseCollisionController.OnCollidedWithPlayer += BaseCollisionController_OnCollidedWithPlayer;
         }
-    }
-
-    protected override void OnOwnershipChanged(ulong previous, ulong current)
-    {
-        base.OnOwnershipChanged(previous, current);
-        if (IsOwner)
-        {
-            ShowMeshServerRpc();
-        }
+        ShowMesh();
     }
 
     private void BaseCollisionController_OnCollidedWithPlayer(PlayerThrower playerThrower)
@@ -62,22 +52,13 @@ public class HideMeshOnCollisionComponent : NetworkBehaviour
         meshToHide.SetActive(false);
     }
 
-    [Rpc(SendTo.Server)]
-    private void ShowMeshServerRpc()
+    private void ShowMesh()
     {
-        ShowMeshClientRpc();
-    }
-
-    [Rpc(SendTo.ClientsAndHost)]
-    private void ShowMeshClientRpc()
-    {
-        Debug.Log($"Hide Mesh");
         meshToHide.SetActive(true);
     }
 
-    public override void OnNetworkDespawn()
+    private void OnDisable()
     {
-        Debug.Log("Hide Mesh Disable");
         if (hideOnCollisionWithAnything)
         {
             baseCollisionController.OnCollided -= BaseCollisionController_OnCollided;

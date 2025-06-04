@@ -11,12 +11,7 @@ public class StuckInPlayerOnCollisionComponent : NetworkBehaviour
     private void OnEnable()
     {
         baseCollisionController.OnCollided += BaseCollisionController_OnCollided;
-    }
-
-    public override void OnGainedOwnership()
-    {
-        base.OnGainedOwnership();
-        ResetStuckStateServerRpc();
+        ResetStuckState();
     }
 
     private void BaseCollisionController_OnCollided(GameObject collidedObject) 
@@ -46,6 +41,11 @@ public class StuckInPlayerOnCollisionComponent : NetworkBehaviour
 
     [Rpc(SendTo.ClientsAndHost)]
     private void ResetStuckStateClientRpc()
+    {
+        ResetStuckState();
+    }
+
+    private void ResetStuckState()
     {
         isFollowing = false;
         followTransformComponent.DisableComponent();

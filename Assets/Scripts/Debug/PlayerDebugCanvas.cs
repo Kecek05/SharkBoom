@@ -15,6 +15,7 @@ public class PlayerDebugCanvas : NetworkBehaviour
     public TextMeshProUGUI verticalOffsetTxt;
     public TextMeshProUGUI originalHipsRotTxt;
     public TextMeshProUGUI originalRootRotTxt;
+    public TextMeshProUGUI lastGetUpTimeTxt;
 
     private void Update()
     {
@@ -24,5 +25,6 @@ public class PlayerDebugCanvas : NetworkBehaviour
         originalHipsRotTxt.text = $"Original Hips Rotation: {playerGetUp.OriginalHipsRotation}";
         originalRootZTxt.text = $"Original Root Z: {playerGetUp.OriginalRootZ}";
         verticalOffsetTxt.text = $"Vertical Offset: {playerGetUp.VerticalOffset}";
+        lastGetUpTimeTxt.text = $"Last Get Up Time: {playerGetUp.lastGetUpTime.Minute}:{playerGetUp.lastGetUpTime.Second}";
     }
 }

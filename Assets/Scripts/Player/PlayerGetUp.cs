@@ -41,6 +41,8 @@ public class PlayerGetUp : NetworkBehaviour
 
     //DEBUG
 
+    public DateTime lastGetUpTime;
+
     public float VerticalOffset => verticalOffset;
     public bool IsFallen => isFallen;
     public Vector3 FinalPosition => finalPosition;
@@ -154,6 +156,8 @@ public class PlayerGetUp : NetworkBehaviour
     {
         recievedOriginalHipsRotation = originalHipsRotation;
         recievedFinalRotation = finalRotation;
+        finalPosition = finalPos;
+        lastGetUpTime = DateTime.Now;
         Debug.Log($"ApplyGetUp - FinalPos: {finalPos} - FinalRotation: {finalRotation} - OriginalHipsRotation: {originalHipsRotation}");
         rootTransform.SetPositionAndRotation(finalPos, finalRotation);
         hipsTransform.SetPositionAndRotation(finalPos + Vector3.up * verticalOffset, originalHipsRotation);
