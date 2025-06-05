@@ -21,7 +21,7 @@ public class BackgroundRotationAnimationUI : MonoBehaviour
     {
         while (true)
         {
-            imageForAnimate.rotation = Quaternion.identity;
+            imageForAnimate.Rotate(0f, 0f, rotationSpeed * Time.deltaTime);
             yield return null;
         }
     }
@@ -31,7 +31,7 @@ public class BackgroundRotationAnimationUI : MonoBehaviour
         if (rotationCoroutine != null)
         {
             StopCoroutine(rotationCoroutine);
-            imageForAnimate.Rotate(0f, 0f, 0f);
+            imageForAnimate.rotation = Quaternion.identity;
             rotationCoroutine = null;
         }
     }
