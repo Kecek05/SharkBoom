@@ -2,10 +2,10 @@ using Sortify;
 using System;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public abstract class BaseItemThrowable : NetworkBehaviour
 {
+
     public static event Action OnItemFinishedAction;
     public static event Action<Transform> OnItemReleasedAction;
     public static event Action OnItemCallbackAction;

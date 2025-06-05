@@ -12,6 +12,7 @@ public class CanDoDamageComponent : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         if(!IsServer) return; // Only the server should handle the damage
+        damaged = false;
         baseCollisionController.OnCollided += BaseCollisionController_OnItemCollided;
     }
 
@@ -41,10 +42,5 @@ public class CanDoDamageComponent : NetworkBehaviour
     {
         if (!IsServer) return; // Only the server should handle the damage
         baseCollisionController.OnCollided -= BaseCollisionController_OnItemCollided;
-    }
-
-    private void OnDisable()
-    {
-        damaged = false; //Reset the damaged state
     }
 }

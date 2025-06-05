@@ -279,7 +279,7 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleOnHitRecieve()
     {
-        playerGetUp.TriggerForCacheOriginalPos();
+        playerGetUp.CacheOriginalPos();
     }
 
     private void OnPlayerSpawnItemOnHandItemSocketSelected(ItemSocket selectedSocket)

@@ -4,7 +4,8 @@ public class HitTriggerComponent : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private BaseCollisionController baseCollisionController;
-
+    [Header("Knockback Settings")]
+    [SerializeField] private float knockbackStrength;
 
     private void Start()
     {
@@ -18,7 +19,11 @@ public class HitTriggerComponent : MonoBehaviour
         if (collidedObject.transform.parent.TryGetComponent(out IRecieveHit recieveHit)) //Call on the parent
         {
             recieveHit.Hit();
-            Debug.Log("Hit trigger - Find the hit interface");
+        }
+
+        if (collidedObject.transform.parent.TryGetComponent(out IRecieveKnockback knockbackReceiver))
+        {
+            knockbackReceiver.DoOnRecieveKnockback(knockbackStrength, transform.position); //Pass the pos of the object that triggered
         }
     }
 
