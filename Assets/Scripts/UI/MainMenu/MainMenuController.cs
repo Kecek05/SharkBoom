@@ -22,24 +22,20 @@ public class MainMenuController : MonoBehaviour
     public void ShowCredits()
     {
         creditsPanel.SetActive(true);
-        Debug.Log("ButtonWorking");
     }
 
     public void HideCredits()
     {
         creditsPanel.SetActive(false);
-        Debug.Log("ButtonWorking");
     }
 
     public void ShowSettings()
     {
         settingsPanel.SetActive(true);
-        Debug.Log("ButtonWorking");
     }
     public void HideSettings()
     {
         settingsPanel.SetActive(false);
-        Debug.Log("ButtonWorking");
     }
 
 
