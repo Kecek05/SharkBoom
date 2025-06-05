@@ -199,9 +199,11 @@ public class PlayerAnimator : NetworkBehaviour
     /// </summary>
     public void AnimationFinished()
     {
-        if(!IsOwner) return;
+        Debug.Log("AnimationFinished");
+        if (!IsOwner) return;
         if(playerState == PlayerState.DragReleaseItem)
         {
+            Debug.Log("AnimationFinished - DragReleaseItem");
             PlayAnimationData(selectedIdleAnimation);
         }
     }
@@ -219,7 +221,7 @@ public class PlayerAnimator : NetworkBehaviour
     {
         if (!IsOwner) return;
         SelectRandomIdleAnimation();
-        if(playerState == PlayerState.IdleMyTurn || playerState == PlayerState.IdleEnemyTurn || playerState == PlayerState.MyTurnEnded || playerState == PlayerState.MyTurnStarted)
+        if(playerState == PlayerState.IdleMyTurn || playerState == PlayerState.IdleEnemyTurn || playerState == PlayerState.MyTurnEnded || playerState == PlayerState.MyTurnStarted || playerState == PlayerState.DragReleaseItem)
             PlayAnimationData(selectedIdleAnimation);
     }
 }
