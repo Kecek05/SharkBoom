@@ -1,5 +1,6 @@
 using QFSW.QC;
 using Sortify;
+using System;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -99,6 +100,10 @@ public class PlayerThrower : NetworkBehaviour
 
         playerStateMachine.Initialize(playerStateMachine.idleEnemyTurnState);
 
+        BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
+
+        playerGetUp.OnPlayerGetUp += HandleOnPlayerGetUp;
+
         cameraManager.InitializeOwner();
         playerDetectFacingDirection.InitializeOwner();
         playerRotateToAim.InitializeOwner();
@@ -106,9 +111,7 @@ public class PlayerThrower : NetworkBehaviour
         playerLauncher.InitializeOwner();
         playerDragController.InitializeOwner(playerInventory.GetItemSOByItemSOIndex(0).rb);
         playerGetUp.InitializeOwner();
-        playerRagdollEnabler.IniatilizeOwner();
     }
-
 
     private void HandleEvents()
     {
@@ -281,10 +284,19 @@ public class PlayerThrower : NetworkBehaviour
     {
         playerGetUp.CacheOriginalPos();
     }
-
     private void OnPlayerSpawnItemOnHandItemSocketSelected(ItemSocket selectedSocket)
     {
         followSelectedSocketComponent.HandleOnPlayerSpawnItemOnHandOnItemSocketSelected(selectedSocket);
+    }
+
+    private void HandleOnItemCallbackAction()
+    {
+        playerGetUp.HandleOnItemCallbackAction();
+    }
+
+    private void HandleOnPlayerGetUp()
+    {
+        playerRagdollEnabler.HandleOnPlayerGetUp();
     }
 
     [Rpc(SendTo.Server)]
@@ -388,6 +400,10 @@ public class PlayerThrower : NetworkBehaviour
             turnManager.OnMyTurnJumped -= GameFlowManager_OnMyTurnJumped;
 
             gameStateManager.CurrentGameState.OnValueChanged -= HandleOnGameStateChanged;
+
+            BaseItemThrowable.OnItemCallbackAction -= HandleOnItemCallbackAction;
+
+            playerGetUp.OnPlayerGetUp -= HandleOnPlayerGetUp;
 
             UnHandleEvents();
         }

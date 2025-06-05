@@ -1,10 +1,11 @@
 using System;
-using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
 public class PlayerGetUp : NetworkBehaviour
 {
+    public event Action OnPlayerGetUp;
+
     [Header("References")]
     [SerializeField] private Transform rootTransform;
     [SerializeField] private Transform hipsTransform;
@@ -40,6 +41,8 @@ public class PlayerGetUp : NetworkBehaviour
 
 
     //DEBUG
+    public GameObject CubeHipDEBUG;
+    public GameObject CubeRootDEBUG;
 
     public DateTime lastGetUpTime;
 
@@ -69,9 +72,9 @@ public class PlayerGetUp : NetworkBehaviour
         originalRootRotation = Quaternion.Euler(0, rootTransform.eulerAngles.y, 0);
     }
 
-    private void HandleOnItemCallbackAction()
+    public void HandleOnItemCallbackAction()
     {
-        if(!IsOwner) return;
+        if (!IsOwner) return;
 
         if (!isFallen) return;
 
@@ -158,9 +161,17 @@ public class PlayerGetUp : NetworkBehaviour
         recievedFinalRotation = finalRotation;
         finalPosition = finalPos;
         lastGetUpTime = DateTime.Now;
-        Debug.Log($"ApplyGetUp - FinalPos: {finalPos} - FinalRotation: {finalRotation} - OriginalHipsRotation: {originalHipsRotation}");
-        rootTransform.SetPositionAndRotation(finalPos, finalRotation);
-        hipsTransform.SetPositionAndRotation(finalPos + Vector3.up * verticalOffset, originalHipsRotation);
+        Debug.Log($"GetUp - ApplyGetUp - FinalPos: {finalPos} - FinalRotation: {finalRotation} - OriginalHipsRotation: {originalHipsRotation}");
+        InstantiateCubesForDebug(finalPos, finalRotation, originalHipsRotation);
+        OnPlayerGetUp?.Invoke();
+        //rootTransform.SetPositionAndRotation(finalPos, finalRotation);
+        //hipsTransform.SetPositionAndRotation(finalPos + Vector3.up * verticalOffset, originalHipsRotation);
+    }
+
+    private void InstantiateCubesForDebug(Vector3 finalPos, Quaternion finalRotation, Quaternion originalHipsRotation)
+    {
+        Instantiate(CubeHipDEBUG, finalPos + Vector3.up * verticalOffset, originalHipsRotation);
+        Instantiate(CubeRootDEBUG, finalPos, finalRotation);
     }
 
     public void UnInitializeOwner()

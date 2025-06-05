@@ -45,17 +45,12 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     //    }
     //}
 
-    public void IniatilizeOwner()
-    {
-        BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
-    }
 
-    private void HandleOnItemCallbackAction()
+    public void HandleOnPlayerGetUp()
     {
-        if (IsOwner)
-        {
-            RequestRagdollDisableServerRpc();
-        }
+        if (!IsOwner) return;
+
+        RequestRagdollDisableServerRpc();
     }
 
     public void TriggerRagdoll(float knockbackStrength, Vector3 hitPoint)
@@ -168,6 +163,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     public void UnInitializeOwner()
     {
-        BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
+        BaseItemThrowable.OnItemCallbackAction += HandleOnPlayerGetUp;
     }
 }
