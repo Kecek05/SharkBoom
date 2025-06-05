@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class MainMenuController : MonoBehaviour
 {
+    [SerializeField] private GameObject creditsPanel;
+    [SerializeField] private GameObject settingsPanel;
     public static event Action OnLoadMainMenu;
 
 
@@ -15,6 +17,25 @@ public class MainMenuController : MonoBehaviour
 
         HostGameManager.OnFailToStartHost += HostGameManager_OnFailToStartHost;
 
+    }
+
+    public void ShowCredits()
+    {
+        creditsPanel.SetActive(true);
+    }
+
+    public void HideCredits()
+    {
+        creditsPanel.SetActive(false);
+    }
+
+    public void ShowSettings()
+    {
+        settingsPanel.SetActive(true);
+    }
+    public void HideSettings()
+    {
+        settingsPanel.SetActive(false);
     }
 
     private void HostGameManager_OnFailToStartHost()
