@@ -60,7 +60,7 @@ public class TurnManager : BaseTurnManager
         }
 
         TriggerOnLocalPlayableStateChanged();
-        Debug.Log($"InitializeLocalStates, Local Playing State {playingState}");
+        //Debug.Log($"InitializeLocalStates, Local Playing State {playingState}");
     }
 
 

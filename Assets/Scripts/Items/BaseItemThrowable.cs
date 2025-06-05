@@ -184,13 +184,13 @@ public abstract class BaseItemThrowable : NetworkBehaviour
         ItemCallbackServerRpc();
     }
 
-    [Rpc(SendTo.Server)]
+    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
     private void ItemCallbackServerRpc()
     {
         ItemCallbackClientRpc();
     }
 
-    [Rpc(SendTo.ClientsAndHost)]
+    [Rpc(SendTo.ClientsAndHost, Delivery = RpcDelivery.Reliable)]
     private void ItemCallbackClientRpc()
     {
         OnItemCallbackAction?.Invoke();

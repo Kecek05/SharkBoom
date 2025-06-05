@@ -127,13 +127,13 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     }
 
 
-    [Rpc(SendTo.Server)]
+    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
     private void RequestRagdollDisableServerRpc()
     {
         DisableRagdollClientRpc();
     }
 
-    [Rpc(SendTo.ClientsAndHost)]
+    [Rpc(SendTo.ClientsAndHost, Delivery = RpcDelivery.Reliable)]
     private void DisableRagdollClientRpc()
     {
         DisableRagdoll();

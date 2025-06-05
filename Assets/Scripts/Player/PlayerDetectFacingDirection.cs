@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDetectDragChange, IDetectEndedTurn
+public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDetectDragChange//, IDetectEndedTurn
 {
     /// <summary>
     /// Called when the look orientation is changed. Pass if is looking right
@@ -33,6 +33,11 @@ public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDete
         }
 
         delayStartFaceOtherPlayerCoroutine = StartCoroutine(DelayStartFaceOtherPlayer());
+    }
+
+    public void HandleOnPlayerGetUp()
+    {
+        FaceOtherPlayer();
     }
 
     public void DoOnDragChange(float forcePercent, float andlePercent)
@@ -79,9 +84,9 @@ public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDete
         Debug.Log("Is Direction Right: " + isDirectionRight);
     }
 
-    public void DoOnEndedTurn()
-    {
-        FaceOtherPlayer();
-    }
+    //public void DoOnEndedTurn()
+    //{
+    //    FaceOtherPlayer();
+    //}
 
 }

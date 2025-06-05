@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -22,7 +21,7 @@ public class MyTurnStartedState : IState
 
     public void Enter()
     {
-        Debug.Log("Entering My Turn Started State");
+       //Debug.Log("Entering My Turn Started State");
 
         MyTurnStartedCallback();
     }
@@ -35,12 +34,12 @@ public class MyTurnStartedState : IState
 
     public void Execute()
     {
-        Debug.Log("Executing My Turn Started State");
+        //Debug.Log("Executing My Turn Started State");
     }
 
     public void Exit()
     {
-        Debug.Log("Exiting My Turn Started State");
+        //Debug.Log("Exiting My Turn Started State");
     }
 
 }
@@ -68,7 +67,7 @@ public class IdleMyTurnState : IState
 
     public void Enter()
     {
-        Debug.Log("Entering Idle State");
+        //Debug.Log("Entering Idle State");
 
         playerDragController.OnDragStart += PlayerDragController_OnDragStart;
 
@@ -88,14 +87,14 @@ public class IdleMyTurnState : IState
 
     public void Execute()
     {
-        Debug.Log("Executing Idle State");
+        //Debug.Log("Executing Idle State");
     }
 
     public void Exit()
     {
         playerDragController.OnDragStart -= PlayerDragController_OnDragStart;
 
-        Debug.Log("Exiting Idle State");
+        //Debug.Log("Exiting Idle State");
     }
 }
 
@@ -118,7 +117,7 @@ public class DraggingJump : IState
     }
     public void Enter()
     {
-        Debug.Log("Entering Dragging Jump State");
+        //Debug.Log("Entering Dragging Jump State");
         //Set Cant move camera
         playerDragController.OnDragRelease += PlayerDragController_OnDragRelease;
     }
@@ -130,14 +129,14 @@ public class DraggingJump : IState
 
     public void Execute()
     {
-        Debug.Log("Executing Dragging Jump State");
+       // Debug.Log("Executing Dragging Jump State");
     }
 
     public void Exit()
     {
         playerDragController.OnDragRelease -= PlayerDragController_OnDragRelease;
 
-        Debug.Log("Exiting Dragging Jump State");
+        //Debug.Log("Exiting Dragging Jump State");
     }
 
 }
@@ -162,7 +161,7 @@ public class DraggingItem : IState
     }
     public void Enter()
     {
-        Debug.Log("Entering Dragging Item State");
+        //Debug.Log("Entering Dragging Item State");
 
         playerDragController.OnDragRelease += PlayerDragController_OnDragRelease;
         //Set Cant move camera
@@ -176,14 +175,14 @@ public class DraggingItem : IState
 
     public void Execute()
     {
-        Debug.Log("Executing Dragging Item State");
+        //Debug.Log("Executing Dragging Item State");
     }
 
     public void Exit()
     {
         playerDragController.OnDragRelease -= PlayerDragController_OnDragRelease;
 
-        Debug.Log("Exiting Dragging Item State");
+        //Debug.Log("Exiting Dragging Item State");
     }
 
 }
@@ -206,7 +205,7 @@ public class DragReleaseJump : IState
     }
     public void Enter()
     {
-        Debug.Log("Entering Drag Release Jump State");
+        //Debug.Log("Entering Drag Release Jump State");
 
         //Set Camera cant move
 
@@ -216,11 +215,11 @@ public class DragReleaseJump : IState
 
     public void Execute()
     {
-        Debug.Log("Executing Drag Release Jump State");
+        //Debug.Log("Executing Drag Release Jump State");
     }
     public void Exit()
     {
-        Debug.Log("Exiting Drag Release Jump State");
+        //Debug.Log("Exiting Drag Release Jump State");
     }
 }
 
@@ -241,18 +240,18 @@ public class DragReleaseItem : IState
     public void Enter()
     {
         //Set Camera cant move
-        Debug.Log("Entering Drag Release Item State");
+        //Debug.Log("Entering Drag Release Item State");
 
         // Change to my turn ended on callback
     }
 
     public void Execute()
     {
-        Debug.Log("Executing Drag Release Item State");
+        //Debug.Log("Executing Drag Release Item State");
     }
     public void Exit()
     {
-        Debug.Log("Exiting Drag Release Item State");
+        //Debug.Log("Exiting Drag Release Item State");
     }
 }
 
@@ -273,7 +272,7 @@ public class MyTurnEndedState : IState
     }
     public void Enter()
     {
-        Debug.Log("Entering My Turn End State");
+        //Debug.Log("Entering My Turn End State");
 
         turnManager = ServiceLocator.Get<BaseTurnManager>();
 
@@ -290,11 +289,11 @@ public class MyTurnEndedState : IState
     }
     public void Execute()
     {
-        Debug.Log("Executing My Turn End State");
+        //Debug.Log("Executing My Turn End State");
     }
     public void Exit()
     {
-        Debug.Log("Exiting My Turn End State");
+        //Debug.Log("Exiting My Turn End State");
     }
 }
 
@@ -312,15 +311,15 @@ public class IdleEnemyTurnState : IState
     }
     public void Enter()
     {
-        Debug.Log("Entering Idle State");
+        //Debug.Log("Entering Idle State");
     }
     public void Execute()
     {
-        Debug.Log("Executing Idle State");
+        //Debug.Log("Executing Idle State");
     }
     public void Exit()
     {
-        Debug.Log("Exiting Idle State");
+       // Debug.Log("Exiting Idle State");
     }
 }
 
@@ -338,15 +337,15 @@ public class PlayerWatchingState : IState
     }
     public void Enter()
     {
-        Debug.Log("Entering Player Watching State");
+        //Debug.Log("Entering Player Watching State");
     }
     public void Execute()
     {
-        Debug.Log("Executing Player Watching State");
+        //Debug.Log("Executing Player Watching State");
     }
     public void Exit()
     {
-        Debug.Log("Exiting Player Watching State");
+        //Debug.Log("Exiting Player Watching State");
     }
 }
 
@@ -364,15 +363,15 @@ public class PlayerGameOverState : IState
     }
     public void Enter()
     {
-        Debug.Log("Entering Dead State");
+        //Debug.Log("Entering Dead State");
     }
     public void Execute()
     {
-        Debug.Log("Executing Dead State");
+        //Debug.Log("Executing Dead State");
     }
     public void Exit()
     {
-        Debug.Log("Exiting Dead State");
+        //Debug.Log("Exiting Dead State");
     }
 }
 

@@ -43,6 +43,8 @@ public class PlayerGetUp : NetworkBehaviour
     //DEBUG
     public GameObject CubeHipDEBUG;
     public GameObject CubeRootDEBUG;
+    public GameObject CubeFreePosDEBUG;
+    public GameObject CubeTestedPosDEBUG;
 
     public DateTime lastGetUpTime;
 
@@ -56,15 +58,10 @@ public class PlayerGetUp : NetworkBehaviour
     public Quaternion recievedFinalRotation;
     public Quaternion recievedOriginalHipsRotation;
 
-    public void InitializeOwner()
-    {
-        BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
-    }
-
     public void CacheOriginalPos()
     {
         if(!IsOwner) return;
-
+        Debug.Log("Getup - CacheOriginalPos");
         isFallen = true;
         originalRootZ = rootTransform.position.z;
         verticalOffset = hipsTransform.position.y - rootTransform.position.y;
@@ -83,6 +80,7 @@ public class PlayerGetUp : NetworkBehaviour
 
     private void CalculatePlayerFreePos()
     {
+        Debug.Log("Getup - CalculatePlayerFreePos");
         Vector3 playerRagdollPosition = hipsTransform.position;
         playerRagdollPosition.y -= verticalOffset;
         playerRagdollPosition.z = originalRootZ;
@@ -106,9 +104,10 @@ public class PlayerGetUp : NetworkBehaviour
             {
                 Vector3 testDirection = startPos + direction * (i * STEP_SIZE);
                 testDirection.z = originalRootZ;
-
+                Instantiate(CubeTestedPosDEBUG, testDirection, Quaternion.identity);
                 if (AreAllCollidersFreeAt(testDirection))
                 {
+                    Instantiate(CubeFreePosDEBUG, testDirection, Quaternion.identity);
                     return testDirection;
                 }
             }
@@ -143,13 +142,13 @@ public class PlayerGetUp : NetworkBehaviour
     }
 
 
-    [Rpc(SendTo.Server)]
+    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
     private void PassPlayerFreePosServerRpc(Vector3 finalPos, Quaternion finalRotation, Quaternion originalHipsRotation)
     {
         PassPlayerFreePosClientRpc(finalPos, finalRotation, originalHipsRotation);
     }
 
-    [Rpc(SendTo.ClientsAndHost)]
+    [Rpc(SendTo.ClientsAndHost, Delivery = RpcDelivery.Reliable)]
     private void PassPlayerFreePosClientRpc(Vector3 finalPos, Quaternion finalRotation, Quaternion originalHipsRotation)
     {
         ApplyGetUp(finalPos, finalRotation, originalHipsRotation);
@@ -161,11 +160,11 @@ public class PlayerGetUp : NetworkBehaviour
         recievedFinalRotation = finalRotation;
         finalPosition = finalPos;
         lastGetUpTime = DateTime.Now;
-        Debug.Log($"GetUp - ApplyGetUp - FinalPos: {finalPos} - FinalRotation: {finalRotation} - OriginalHipsRotation: {originalHipsRotation}");
+        Debug.Log($"GetUp - ApplyGetUp - FinalPos: {finalPos} - FinalRotation: {finalRotation} - OriginalHipsRotation: {originalHipsRotation}"); //DEBUG
         InstantiateCubesForDebug(finalPos, finalRotation, originalHipsRotation);
         OnPlayerGetUp?.Invoke();
-        //rootTransform.SetPositionAndRotation(finalPos, finalRotation);
-        //hipsTransform.SetPositionAndRotation(finalPos + Vector3.up * verticalOffset, originalHipsRotation);
+        rootTransform.SetPositionAndRotation(finalPos, finalRotation);
+        hipsTransform.SetPositionAndRotation(finalPos + Vector3.up * verticalOffset, originalHipsRotation);
     }
 
     private void InstantiateCubesForDebug(Vector3 finalPos, Quaternion finalRotation, Quaternion originalHipsRotation)

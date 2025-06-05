@@ -52,7 +52,6 @@ public class PlayerThrower : NetworkBehaviour
         turnManager = ServiceLocator.Get<BaseTurnManager>();
 
         thisPlayableState.OnValueChanged += PlayableStateInitialize;
-        hitRecieveNetworked.OnHitRecieve += HandleOnHitRecieve;
 
 
         PlayableStateInitialize(thisPlayableState.Value, thisPlayableState.Value);
@@ -102,15 +101,12 @@ public class PlayerThrower : NetworkBehaviour
 
         BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
 
-        playerGetUp.OnPlayerGetUp += HandleOnPlayerGetUp;
-
         cameraManager.InitializeOwner();
         playerDetectFacingDirection.InitializeOwner();
         playerRotateToAim.InitializeOwner();
         playerInventory.InitializeOwner();
         playerLauncher.InitializeOwner();
         playerDragController.InitializeOwner(playerInventory.GetItemSOByItemSOIndex(0).rb);
-        playerGetUp.InitializeOwner();
     }
 
     private void HandleEvents()
@@ -139,6 +135,9 @@ public class PlayerThrower : NetworkBehaviour
         playerSpawnItemOnHand.OnItemOnHandSpawned += HandleOnPlayerSpawnItemOnHandItemOnHandSpawned;
         playerSpawnItemOnHand.OnItemOnHandDespawned += HandleOnPlayerSpawnItemOnHandItemOnHandDespawned;
         playerSpawnItemOnHand.OnItemSocketSelected += OnPlayerSpawnItemOnHandItemSocketSelected;
+
+        playerGetUp.OnPlayerGetUp += HandleOnPlayerGetUp;
+        hitRecieveNetworked.OnHitRecieve += HandleOnHitRecieve;
     }
 
     private void UnHandleEvents()
@@ -167,6 +166,9 @@ public class PlayerThrower : NetworkBehaviour
         playerSpawnItemOnHand.OnItemOnHandSpawned -= HandleOnPlayerSpawnItemOnHandItemOnHandSpawned;
         playerSpawnItemOnHand.OnItemOnHandDespawned -= HandleOnPlayerSpawnItemOnHandItemOnHandDespawned;
         playerSpawnItemOnHand.OnItemSocketSelected -= OnPlayerSpawnItemOnHandItemSocketSelected;
+
+        playerGetUp.OnPlayerGetUp -= HandleOnPlayerGetUp;
+        hitRecieveNetworked.OnHitRecieve -= HandleOnHitRecieve;
 
         cameraManager.UnInitializeOwner();
         playerLauncher.UnInitializeOwner();
@@ -291,12 +293,15 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleOnItemCallbackAction()
     {
+        Debug.Log("GetUp - HandleOnItemCallbackAction");
         playerGetUp.HandleOnItemCallbackAction();
     }
 
     private void HandleOnPlayerGetUp()
     {
+        Debug.Log("GetUp - HandleOnPlayerGetUp");
         playerRagdollEnabler.HandleOnPlayerGetUp();
+        playerDetectFacingDirection.HandleOnPlayerGetUp();
     }
 
     [Rpc(SendTo.Server)]
@@ -328,7 +333,6 @@ public class PlayerThrower : NetworkBehaviour
     {
         // My Turn Started, I can play
         playerStateMachine.TransitionTo(playerStateMachine.myTurnStartedState);
-        Debug.Log("I can play!");
 
     }
 
@@ -402,8 +406,6 @@ public class PlayerThrower : NetworkBehaviour
             gameStateManager.CurrentGameState.OnValueChanged -= HandleOnGameStateChanged;
 
             BaseItemThrowable.OnItemCallbackAction -= HandleOnItemCallbackAction;
-
-            playerGetUp.OnPlayerGetUp -= HandleOnPlayerGetUp;
 
             UnHandleEvents();
         }
