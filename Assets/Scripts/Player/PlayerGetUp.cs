@@ -16,7 +16,6 @@ public class PlayerGetUp : NetworkBehaviour
     [SerializeField] private LayerMask layersToDetectCollision;
 
     private bool isFallen = false;
-    //private NetworkVariable<bool> isFallen = new NetworkVariable<bool>(false);
 
     private const int MAX_ATTEMPTS = 10;
     private const float STEP_SIZE =  0.5f;
@@ -30,19 +29,6 @@ public class PlayerGetUp : NetworkBehaviour
     private Quaternion originalRootRotation;
     private Quaternion originalHipsRotation;
     private Vector3 finalPosition;
-
-    //private Vector3[] directions =
-    //{
-    //    Vector3.up,
-    //    Vector3.forward,
-    //    Vector3.back,
-    //    Vector3.left,
-    //    Vector3.right,
-    //    Vector3.forward + Vector3.left,
-    //    Vector3.forward + Vector3.right,
-    //    Vector3.back + Vector3.left,
-    //    Vector3.back + Vector3.right
-    //};
 
     private List<Vector3> directions = new List<Vector3>();
 
