@@ -77,13 +77,13 @@ public class PlayerGetUp : NetworkBehaviour
         //originalRootRotation = Quaternion.Euler(0, rootTransform.eulerAngles.y, 0);
     }
 
-    public void HandleOnRagdollDisabled()
+    public void HandleGETUP()
     {
         if (!IsOwner) return;
 
         //if (!isFallen) return;
 
-        //CalculatePlayerFreePos();
+        CalculatePlayerFreePos();
     }
 
     [Command("getup", MonoTargetType.All)]
@@ -103,6 +103,7 @@ public class PlayerGetUp : NetworkBehaviour
         if (Physics.Raycast(hipsTransform.position, Vector3.down, out var hit, 5f, layersToDetectCollision))
             playerRagdollPosition.y = Mathf.Max(playerRagdollPosition.y, hit.point.y);
 
+        Instantiate(CubeFreePosDEBUG, playerRagdollPosition, Quaternion.Euler(defaultHipsRotation));
         Vector3 foundFinalPosition = GetFreePosition(playerRagdollPosition);
 
         //isFallen = false;
@@ -128,6 +129,7 @@ public class PlayerGetUp : NetworkBehaviour
                 }
             }
         }
+        Debug.Log("GetUp - Failed to get a Free Pos");
         return startPos;
     }
 
@@ -193,25 +195,19 @@ public class PlayerGetUp : NetworkBehaviour
         lastGetUpTime = DateTime.Now;
         //Debug.Log($"GetUp - ApplyGetUp - FinalPos: {finalPos} - FinalRotation: {finalRotation} - OriginalHipsRotation: {originalHipsRotation}"); //DEBUG
         InstantiateCubesForDebug(finalPos);
-        OnPlayerGetUp?.Invoke();
 
         //hipsTransform.SetPositionAndRotation(defaultHipsPosition, Quaternion.Euler(defaultHipsRotation));
-        hipsTransform.transform.rotation = Quaternion.Euler(defaultHipsRotation);
-        rootTransform.transform.position = finalPos;
+        //hipsTransform.localRotation = Quaternion.Euler(defaultHipsRotation);
+        rootTransform.position = finalPos;
 
-
+        OnPlayerGetUp?.Invoke();
         //hipsTransform.SetPositionAndRotation(finalPos + Vector3.up * verticalOffset, originalHipsRotation);
         //rootTransform.SetPositionAndRotation(finalPos, Quaternion.Euler(finalRotation));
     }
 
     private void InstantiateCubesForDebug(Vector3 finalPos)
     {
-        Instantiate(CubeHipDEBUG, finalPos + Vector3.up * verticalOffset, originalHipsRotation);
-        Instantiate(CubeRootDEBUG, finalPos, originalHipsRotation);
-    }
-
-    public void UnInitializeOwner()
-    {
-        BaseItemThrowable.OnItemCallbackAction -= HandleOnRagdollDisabled;
+        Instantiate(CubeHipDEBUG, finalPos + Vector3.up * verticalOffset, Quaternion.Euler(defaultHipsRotation));
+        Instantiate(CubeRootDEBUG, finalPos, Quaternion.Euler(defaultHipsRotation));
     }
 }

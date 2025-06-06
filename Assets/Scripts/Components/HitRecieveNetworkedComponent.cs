@@ -6,6 +6,9 @@ public class HitRecieveNetworkedComponent : NetworkBehaviour, IRecieveHit
 {
     public event Action OnHitRecieve;
 
+    //DEBUG
+    public bool hitRecieve = false;
+
     public void Hit()
     {
         HitServerRpc();
@@ -21,6 +24,7 @@ public class HitRecieveNetworkedComponent : NetworkBehaviour, IRecieveHit
     private void HitClientRpc()
     {
         Debug.Log("Getup - HitRecieveComponent");
+        hitRecieve = true;
         OnHitRecieve?.Invoke();
     }
 }

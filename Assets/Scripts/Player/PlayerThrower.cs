@@ -52,7 +52,6 @@ public class PlayerThrower : NetworkBehaviour
         turnManager = ServiceLocator.Get<BaseTurnManager>();
 
         thisPlayableState.OnValueChanged += PlayableStateInitialize;
-        hitRecieveNetworked.OnHitRecieve += HandleOnHitRecieve;
 
         PlayableStateInitialize(thisPlayableState.Value, thisPlayableState.Value);
 
@@ -98,6 +97,8 @@ public class PlayerThrower : NetworkBehaviour
         playerStateMachine.Initialize(playerStateMachine.idleEnemyTurnState);
 
         BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
+
+        hitRecieveNetworked.OnHitRecieve += HandleOnHitRecieve;
 
         cameraManager.InitializeOwner();
         playerDetectFacingDirection.InitializeOwner();
@@ -171,8 +172,6 @@ public class PlayerThrower : NetworkBehaviour
         cameraManager.UnInitializeOwner();
         playerLauncher.UnInitializeOwner();
         playerInventoryUI.UnHandleInitializeOwner();
-        playerGetUp.UnInitializeOwner();
-        playerRagdollEnabler.UnInitializeOwner();
     }
 
     private void HandleOnPlayerDetectFacingDirectionRotationChanged(bool isRight)
@@ -280,9 +279,12 @@ public class PlayerThrower : NetworkBehaviour
         playerLauncher.HandleOnItemOnHandDespawned(throwable);
     }
 
+    private bool hitRecieved = false;
+
     private void HandleOnHitRecieve()
     {
         Debug.Log($"GetUp - HandleOnHitRecieve - Game Object: {gameObject.name}");
+        hitRecieved = true;
         //playerGetUp.CacheOriginalPos();
     }
     private void OnPlayerSpawnItemOnHandItemSocketSelected(ItemSocket selectedSocket)
@@ -292,20 +294,25 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleOnItemCallbackAction()
     {
-        playerRagdollEnabler.HandleOnItemCallbackAction();
+        if(hitRecieved)
+        {
+            hitRecieved = false;
+            playerGetUp.HandleGETUP();
+            //playerRagdollEnabler.HandleOnItemCallbackAction();
+        }
     }
 
     private void HandleOnRagdollDisabled()
     {
         Debug.Log("GetUp - HandleOnRagdollDisabled");
-        playerGetUp.HandleOnRagdollDisabled();
-
+        playerDetectFacingDirection.HandleOnFACE();
     }
 
     private void HandleOnPlayerGetUp()
     {
         Debug.Log("GetUp - HandleOnPlayerGetUp");
-        playerDetectFacingDirection.HandleOnPlayerGetUp();
+        playerRagdollEnabler.HandleDISABLE();
+
     }
 
     [Rpc(SendTo.Server)]
@@ -397,7 +404,7 @@ public class PlayerThrower : NetworkBehaviour
     {
         GameManager.OnClientOwnershipChanged -= HandleOnClientOwnershipChanged;
         thisPlayableState.OnValueChanged -= PlayableStateInitialize;
-        hitRecieveNetworked.OnHitRecieve -= HandleOnHitRecieve;
+
 
         if (IsOwner)
         {
@@ -410,6 +417,8 @@ public class PlayerThrower : NetworkBehaviour
             gameStateManager.CurrentGameState.OnValueChanged -= HandleOnGameStateChanged;
 
             BaseItemThrowable.OnItemCallbackAction -= HandleOnItemCallbackAction;
+
+            hitRecieveNetworked.OnHitRecieve -= HandleOnHitRecieve;
 
             UnHandleEvents();
         }

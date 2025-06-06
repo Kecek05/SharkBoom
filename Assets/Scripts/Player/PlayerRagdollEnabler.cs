@@ -12,9 +12,11 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [SerializeField] private Transform ragdollRoot;
     [SerializeField] private Collider[] playerColliders;
     [SerializeField] private Rigidbody parentRigidbody;
+    [SerializeField] private Transform hips;
     private Rigidbody[] ragdollRbs;
 
     private Collider[] ragdollColliders;
+    private Vector3 defaultHipsRotation = new Vector3(-90f, 180f, 0f);
 
     [BetterHeader("DEBUG")]
     [SerializeField] private bool debugRagdollEnabler;
@@ -49,7 +51,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     }
 
 
-    public void HandleOnItemCallbackAction()
+    public void HandleDISABLE()
     {
         if (!IsOwner) return;
 
@@ -163,11 +165,8 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
         parentRigidbody.isKinematic = false;
 
-        OnRagdollDisabled?.Invoke();
-    }
+        hips.localRotation = Quaternion.Euler(defaultHipsRotation);
 
-    public void UnInitializeOwner()
-    {
-        BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
+        OnRagdollDisabled?.Invoke();
     }
 }
