@@ -10,16 +10,26 @@ public class PlayerRotateToAim : DragListener, IInitializeOnwer, IDetectDragChan
 
     public void DoOnInitializeOnwer()
     {
-        aimTransform.position = aimDefaultPosition.position;
+        ResetAimPosition();
     }
 
     public void DoOnDragChange(float forcePercent, float andlePercent)
     {
         aimTransform.position = playerDragController.GetOpositeFingerPos();
     }
+    
+    private void ResetAimPosition()
+    {
+        aimTransform.position = aimDefaultPosition.position;
+    }
+    
+    public void DoOnGetUp()
+    {
+        ResetAimPosition();
+    }
 
     public void DoOnEndedTurn()
     {
-        aimTransform.position = aimDefaultPosition.position;
+        ResetAimPosition();
     }
 }

@@ -175,8 +175,8 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     {
         if(!IsOwner) return; // Only the server should call the callback action
 
-        turnManager.PlayerPlayed(thisItemLaucherData.ownerPlayableState);
         FireItemCallbackAction();
+        turnManager.PlayerPlayed(thisItemLaucherData.ownerPlayableState);
     }
 
     protected void FireItemCallbackAction()

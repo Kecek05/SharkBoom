@@ -279,12 +279,12 @@ public class PlayerThrower : NetworkBehaviour
         playerLauncher.HandleOnItemOnHandDespawned(throwable);
     }
 
-    private bool hitRecieved = false;
+    //private bool hitRecieved = false;
 
     private void HandleOnHitRecieve()
     {
         Debug.Log($"GetUp - HandleOnHitRecieve - Game Object: {gameObject.name}");
-        hitRecieved = true;
+        //hitRecieved = true;
     }
     private void OnPlayerSpawnItemOnHandItemSocketSelected(ItemSocket selectedSocket)
     {
@@ -293,19 +293,20 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleOnItemCallbackAction()
     {
-        if(hitRecieved)
+        playerGetUp.HandleGETUP();
+        /*if(hitRecieved)
         {
             hitRecieved = false;
             playerGetUp.HandleGETUP();
             //playerRagdollEnabler.HandleOnItemCallbackAction();
-        }
+        }*/
     }
 
     private void HandleOnRagdollDisabled()
     {
         Debug.Log("GetUp - HandleOnRagdollDisabled");
         playerDetectFacingDirection.HandleOnFACE();
-
+        playerRotateToAim.DoOnGetUp();
     }
 
     private void HandleOnPlayerGetUp()

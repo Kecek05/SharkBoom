@@ -68,7 +68,7 @@ public class PlayerGetUp : NetworkBehaviour
         if (Physics.Raycast(hipsTransform.position, Vector3.down, out var hit, 5f, layersToDetectCollision))
             playerRagdollPosition.y = Mathf.Max(playerRagdollPosition.y, hit.point.y);
 
-        Instantiate(CubeStartCalcPosDEBUG, playerRagdollPosition, Quaternion.Euler(defaultHipsRotation));
+        //Instantiate(CubeStartCalcPosDEBUG, playerRagdollPosition, Quaternion.Euler(defaultHipsRotation));
         Vector3 foundFinalPosition = GetFreePosition(playerRagdollPosition);
         
         //finalPosition = foundFinalPosition;
@@ -85,7 +85,7 @@ public class PlayerGetUp : NetworkBehaviour
             {
                 Vector3 testDirection = startPos + direction * (i * STEP_SIZE);
                 testDirection.z = defaultZPosition;
-                Instantiate(CubeTestedPosDEBUG, testDirection, Quaternion.identity);
+                //Instantiate(CubeTestedPosDEBUG, testDirection, Quaternion.identity);
                 if (AreAllCollidersFreeAt(testDirection))
                 {
                     foundDirections.Add(testDirection);
@@ -104,7 +104,7 @@ public class PlayerGetUp : NetworkBehaviour
             {
                 closestDistance = distance;
                 closestDirection = foundDirection;
-                Debug.Log($"Getup - Closest Dir: {closestDirection}");
+                //Debug.Log($"Getup - Closest Dir: {closestDirection}");
             }
         }
 
@@ -116,6 +116,8 @@ public class PlayerGetUp : NetworkBehaviour
 
     private bool AreAllCollidersFreeAt(Vector3 checkPos)
     {
+        int selfLayer = gameObject.layer;
+        int filteredMask = layersToDetectCollision & ~(1 << selfLayer); // remove self layer from the mask
         foreach (Collider colliders in playerColliders)
         {
             Vector3 localOffset = colliders.transform.position - rootTransform.position;
@@ -124,9 +126,9 @@ public class PlayerGetUp : NetworkBehaviour
             if (colliders is BoxCollider box)
             {
                 Vector3 halfExtents = Vector3.Scale(box.size, colliders.transform.lossyScale) * 0.5f;
-                if (Physics.CheckBox(worldCenter, halfExtents, Quaternion.Euler(0f, 0f, 0f), layersToDetectCollision))
+                if (Physics.CheckBox(worldCenter, halfExtents, Quaternion.Euler(0f, 0f, 0f), filteredMask))
                 {
-                    Instantiate(CubeCollidedPosDEBUG, worldCenter, Quaternion.identity);
+                    //Instantiate(CubeCollidedPosDEBUG, worldCenter, Quaternion.identity);
                     return false;
                 }
             }
@@ -134,13 +136,13 @@ public class PlayerGetUp : NetworkBehaviour
 
         Vector3 groundCheckOrigin = checkPos + Vector3.up * 0.1f;
         float maxDistance = 3f;
-        if (!Physics.Raycast(groundCheckOrigin, Vector3.down, out _, maxDistance, layersToDetectCollision))
+        if (!Physics.Raycast(groundCheckOrigin, Vector3.down, out _, maxDistance, filteredMask))
         {
-            Instantiate(CubeFloatingPosDEBUG, groundCheckOrigin, Quaternion.identity);
+            //Instantiate(CubeFloatingPosDEBUG, groundCheckOrigin, Quaternion.identity);
             return false;
         }
 
-        Instantiate(CubeFoundGetUpPosDEBUG, checkPos, Quaternion.identity);
+        //Instantiate(CubeFoundGetUpPosDEBUG, checkPos, Quaternion.identity);
         return true;
     }
 
@@ -154,7 +156,7 @@ public class PlayerGetUp : NetworkBehaviour
             float x = Mathf.Cos(rad);
             float y = Mathf.Sin(rad);
             directions.Add(new Vector3(x, y, 0f).normalized); // direction on XY plane
-            Debug.Log("Direction added: " + new Vector3(x, y, 0).normalized);
+            //Debug.Log("Direction added: " + new Vector3(x, y, 0).normalized);
         }
     }
 
@@ -176,7 +178,7 @@ public class PlayerGetUp : NetworkBehaviour
     {
         /*finalPosition = finalPos;
         lastGetUpTime = DateTime.Now;*/
-        Instantiate(CubeSelectedPosDEBUG, finalPos, Quaternion.identity);
+        //Instantiate(CubeSelectedPosDEBUG, finalPos, Quaternion.identity);
 
         rootTransform.position = finalPos;
 
