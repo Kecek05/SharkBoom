@@ -1,4 +1,3 @@
-using QFSW.QC;
 using System;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -89,13 +88,6 @@ public class PlayerGetUp : NetworkBehaviour
         CalculatePlayerFreePos();
     }
 
-    [Command("getup", MonoTargetType.All)]
-    public void GetUpDebug()
-    {
-        if(!IsOwner) return;
-        CalculatePlayerFreePos();
-    }
-
     private void CalculatePlayerFreePos()
     {
         Debug.Log("Getup - CalculatePlayerFreePos");
@@ -170,15 +162,16 @@ public class PlayerGetUp : NetworkBehaviour
                     return false;
                 }
             }
-
-            Vector3 groundCheckOrigin = worldCenter + Vector3.up * 0.1f;
-            float maxDistance = 3f;
-            if (!Physics.Raycast(groundCheckOrigin, Vector3.down, out _, maxDistance, layersToDetectCollision))
-            {
-                Instantiate(CubeFloatingPosDEBUG, groundCheckOrigin, Quaternion.identity);
-                return false;
-            }
         }
+
+        Vector3 groundCheckOrigin = checkPos + Vector3.up * 0.1f;
+        float maxDistance = 3f;
+        if (!Physics.Raycast(groundCheckOrigin, Vector3.down, out _, maxDistance, layersToDetectCollision))
+        {
+            Instantiate(CubeFloatingPosDEBUG, groundCheckOrigin, Quaternion.identity);
+            return false;
+        }
+
         Instantiate(CubeFoundGetUpPosDEBUG, checkPos, Quaternion.identity);
         return true;
     }

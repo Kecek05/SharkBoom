@@ -306,6 +306,7 @@ public class PlayerThrower : NetworkBehaviour
     {
         Debug.Log("GetUp - HandleOnRagdollDisabled");
         playerDetectFacingDirection.HandleOnFACE();
+
     }
 
     private void HandleOnPlayerGetUp()

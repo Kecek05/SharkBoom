@@ -472,8 +472,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.227198, y: 0.9802805, z: 1.511654}
-  m_Center: {x: 0, y: 0.13954318, z: 0}
+  m_Size: {x: 1.227198, y: 0.59959286, z: 1.511654}
+  m_Center: {x: 0, y: 0.329887, z: 0}
 --- !u!1 &888625199460649641
 GameObject:
   m_ObjectHideFlags: 0
@@ -1050,7 +1050,7 @@ MonoBehaviour:
   cameraManager: {fileID: 3009684404041675309}
   maxForce: 26
   minForce: 1
-  forceAddMultiplier: 4.6
+  forceAddMultiplier: 5
   zoomIncreasingDragSpeed: 25
   zoomDecreasingDragSpeed: 15
   zoomAmountToChange: 7
@@ -1175,9 +1175,8 @@ MonoBehaviour:
   - {fileID: 7222765157126350015}
   layersToDetectCollision:
     serializedVersion: 2
-    m_Bits: 536872833
+    m_Bits: 536872705
   CubeFoundGetUpPosDEBUG: {fileID: 2030527000903396582, guid: 55339ee2b91ebb440aeb84e4cfd089fc, type: 3}
-  CubeTriedPosDEBUG: {fileID: 0}
   CubeCollidedPosDEBUG: {fileID: 1429527872108899871, guid: 545874c91ab0ad84fbdda048fb222fff, type: 3}
   CubeFloatingPosDEBUG: {fileID: 1818285525538544834, guid: e7053ee203c52e749903e16c5f23513c, type: 3}
   CubeStartCalcPosDEBUG: {fileID: 8368291566014290088, guid: 144a21aa2574da64b8fdd157b8c16fa7, type: 3}
