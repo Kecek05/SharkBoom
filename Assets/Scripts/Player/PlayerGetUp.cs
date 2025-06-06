@@ -19,7 +19,7 @@ public class PlayerGetUp : NetworkBehaviour
     private bool isFallen = false;
     //private NetworkVariable<bool> isFallen = new NetworkVariable<bool>(false);
 
-    private const int MAX_ATTEMPTS = 50;
+    private const int MAX_ATTEMPTS = 10;
     private const float STEP_SIZE =  0.5f;
     private const float ANGLE_STEP = 10f;
     private Vector3 defaultHipsRotation = new Vector3(-90f, 180f, 0f);
@@ -50,10 +50,12 @@ public class PlayerGetUp : NetworkBehaviour
     private List<Vector3> foundDirections = new List<Vector3>();
 
     //DEBUG
-    public GameObject CubeHipDEBUG;
-    public GameObject CubeRootDEBUG;
-    public GameObject CubeFreePosDEBUG;
+    public GameObject CubeFoundGetUpPosDEBUG;
+    public GameObject CubeCollidedPosDEBUG;
+    public GameObject CubeFloatingPosDEBUG;
+    public GameObject CubeStartCalcPosDEBUG;
     public GameObject CubeTestedPosDEBUG;
+    public GameObject CubeSelectedPosDEBUG;
 
     public DateTime lastGetUpTime;
 
@@ -104,7 +106,7 @@ public class PlayerGetUp : NetworkBehaviour
         if (Physics.Raycast(hipsTransform.position, Vector3.down, out var hit, 5f, layersToDetectCollision))
             playerRagdollPosition.y = Mathf.Max(playerRagdollPosition.y, hit.point.y);
 
-        Instantiate(CubeFreePosDEBUG, playerRagdollPosition, Quaternion.Euler(defaultHipsRotation));
+        Instantiate(CubeStartCalcPosDEBUG, playerRagdollPosition, Quaternion.Euler(defaultHipsRotation));
         Vector3 foundFinalPosition = GetFreePosition(playerRagdollPosition);
 
         //isFallen = false;
@@ -126,7 +128,6 @@ public class PlayerGetUp : NetworkBehaviour
                 Instantiate(CubeTestedPosDEBUG, testDirection, Quaternion.identity);
                 if (AreAllCollidersFreeAt(testDirection))
                 {
-                    Instantiate(CubeFreePosDEBUG, testDirection, Quaternion.identity);
                     foundDirections.Add(testDirection);
                     //return testDirection;
                 }
@@ -143,6 +144,7 @@ public class PlayerGetUp : NetworkBehaviour
             {
                 closestDistance = distance;
                 closestDirection = foundDirection;
+                Debug.Log($"Getup - Closest Dir: {closestDirection}");
             }
         }
 
@@ -164,7 +166,7 @@ public class PlayerGetUp : NetworkBehaviour
                 Vector3 halfExtents = Vector3.Scale(box.size, colliders.transform.lossyScale) * 0.5f;
                 if (Physics.CheckBox(worldCenter, halfExtents, Quaternion.Euler(0f, 0f, 0f), layersToDetectCollision))
                 {
-                    Instantiate(CubeHipDEBUG, worldCenter, Quaternion.identity);
+                    Instantiate(CubeCollidedPosDEBUG, worldCenter, Quaternion.identity);
                     return false;
                 }
             }
@@ -173,9 +175,11 @@ public class PlayerGetUp : NetworkBehaviour
             float maxDistance = 3f;
             if (!Physics.Raycast(groundCheckOrigin, Vector3.down, out _, maxDistance, layersToDetectCollision))
             {
+                Instantiate(CubeFloatingPosDEBUG, groundCheckOrigin, Quaternion.identity);
                 return false;
             }
         }
+        Instantiate(CubeFoundGetUpPosDEBUG, checkPos, Quaternion.identity);
         return true;
     }
 
@@ -209,25 +213,12 @@ public class PlayerGetUp : NetworkBehaviour
 
     private void ApplyGetUp(Vector3 finalPos)
     {
-        //recievedOriginalHipsRotation = originalHipsRotation;
-        //recievedFinalRotation = Quaternion.Euler(finalRotation);
         finalPosition = finalPos;
         lastGetUpTime = DateTime.Now;
-        //Debug.Log($"GetUp - ApplyGetUp - FinalPos: {finalPos} - FinalRotation: {finalRotation} - OriginalHipsRotation: {originalHipsRotation}"); //DEBUG
-        InstantiateCubesForDebug(finalPos);
+        Instantiate(CubeSelectedPosDEBUG, finalPos, Quaternion.identity);
 
-        //hipsTransform.SetPositionAndRotation(defaultHipsPosition, Quaternion.Euler(defaultHipsRotation));
-        //hipsTransform.localRotation = Quaternion.Euler(defaultHipsRotation);
         rootTransform.position = finalPos;
 
         OnPlayerGetUp?.Invoke();
-        //hipsTransform.SetPositionAndRotation(finalPos + Vector3.up * verticalOffset, originalHipsRotation);
-        //rootTransform.SetPositionAndRotation(finalPos, Quaternion.Euler(finalRotation));
-    }
-
-    private void InstantiateCubesForDebug(Vector3 finalPos)
-    {
-        Instantiate(CubeHipDEBUG, finalPos + Vector3.up * verticalOffset, Quaternion.Euler(defaultHipsRotation));
-        Instantiate(CubeRootDEBUG, finalPos, Quaternion.Euler(defaultHipsRotation));
     }
 }
