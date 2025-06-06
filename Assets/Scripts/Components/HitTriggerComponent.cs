@@ -18,6 +18,7 @@ public class HitTriggerComponent : MonoBehaviour
 
         if (collidedObject.transform.parent.TryGetComponent(out IRecieveHit recieveHit)) //Call on the parent
         {
+            Debug.Log("GetUp - Trigger Hit");
             recieveHit.Hit();
         }
 

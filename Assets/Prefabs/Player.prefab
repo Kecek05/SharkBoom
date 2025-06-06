@@ -1003,6 +1003,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d8a1cc98e4d08445911c58cb28f243d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!114 &3826531896651400832
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6719,6 +6720,10 @@ PrefabInstance:
     - target: {fileID: -8970590820240951989, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: -84.23681
+      objectReference: {fileID: 0}
+    - target: {fileID: -8689003367117156293, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8689003367117156293, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

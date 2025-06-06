@@ -25,7 +25,7 @@ public class PlayerThrower : NetworkBehaviour
     [SerializeField] private PlayerSpawnItemOnHand playerSpawnItemOnHand;
     [SerializeField] private FollowSelectedSocketComponent followSelectedSocketComponent;
     [SerializeField] private PlayerRagdollEnabler playerRagdollEnabler;
-    [SerializeField] private HitRecieveComponent hitRecieveNetworked;
+    [SerializeField] private HitRecieveNetworkedComponent hitRecieveNetworked;
     [SerializeField] private PlayerKnockbackListener playerKnockbackListener;
     [SerializeField] private PlayerGetUp playerGetUp;
     [SerializeField] private PlayerJumpUI playerJumpUI;
@@ -52,7 +52,7 @@ public class PlayerThrower : NetworkBehaviour
         turnManager = ServiceLocator.Get<BaseTurnManager>();
 
         thisPlayableState.OnValueChanged += PlayableStateInitialize;
-
+        hitRecieveNetworked.OnHitRecieve += HandleOnHitRecieve;
 
         PlayableStateInitialize(thisPlayableState.Value, thisPlayableState.Value);
 
@@ -62,8 +62,6 @@ public class PlayerThrower : NetworkBehaviour
         gameObject.name = "Player " + UnityEngine.Random.Range(0, 10000);
 
     }
-
-    
 
     private void HandleOnClientOwnershipChanged(ulong newOwnerClientId)
     {
@@ -137,7 +135,7 @@ public class PlayerThrower : NetworkBehaviour
         playerSpawnItemOnHand.OnItemSocketSelected += OnPlayerSpawnItemOnHandItemSocketSelected;
 
         playerGetUp.OnPlayerGetUp += HandleOnPlayerGetUp;
-        hitRecieveNetworked.OnHitRecieve += HandleOnHitRecieve;
+        playerRagdollEnabler.OnRagdollDisabled += HandleOnRagdollDisabled;
     }
 
     private void UnHandleEvents()
@@ -168,7 +166,7 @@ public class PlayerThrower : NetworkBehaviour
         playerSpawnItemOnHand.OnItemSocketSelected -= OnPlayerSpawnItemOnHandItemSocketSelected;
 
         playerGetUp.OnPlayerGetUp -= HandleOnPlayerGetUp;
-        hitRecieveNetworked.OnHitRecieve -= HandleOnHitRecieve;
+        playerRagdollEnabler.OnRagdollDisabled -= HandleOnRagdollDisabled;
 
         cameraManager.UnInitializeOwner();
         playerLauncher.UnInitializeOwner();
@@ -284,7 +282,8 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleOnHitRecieve()
     {
-        playerGetUp.CacheOriginalPos();
+        Debug.Log($"GetUp - HandleOnHitRecieve - Game Object: {gameObject.name}");
+        //playerGetUp.CacheOriginalPos();
     }
     private void OnPlayerSpawnItemOnHandItemSocketSelected(ItemSocket selectedSocket)
     {
@@ -293,14 +292,19 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleOnItemCallbackAction()
     {
-        Debug.Log("GetUp - HandleOnItemCallbackAction");
-        playerGetUp.HandleOnItemCallbackAction();
+        playerRagdollEnabler.HandleOnItemCallbackAction();
+    }
+
+    private void HandleOnRagdollDisabled()
+    {
+        Debug.Log("GetUp - HandleOnRagdollDisabled");
+        playerGetUp.HandleOnRagdollDisabled();
+
     }
 
     private void HandleOnPlayerGetUp()
     {
         Debug.Log("GetUp - HandleOnPlayerGetUp");
-        playerRagdollEnabler.HandleOnPlayerGetUp();
         playerDetectFacingDirection.HandleOnPlayerGetUp();
     }
 

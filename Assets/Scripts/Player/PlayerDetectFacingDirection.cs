@@ -77,6 +77,8 @@ public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDete
 
     private void FaceOtherPlayer()
     {
+        if(!IsOwner) return;
+
         isDirectionRight = LocateOtherPlayer.OtherPlayerIsOnMyRight(turnManager.LocalPlayableState);
 
         OnRotationChanged?.Invoke(isDirectionRight);

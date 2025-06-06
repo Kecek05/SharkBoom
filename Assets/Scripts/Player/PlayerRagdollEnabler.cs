@@ -1,9 +1,12 @@
 using Sortify;
+using System;
 using Unity.Netcode;
 using UnityEngine; 
 
 public class PlayerRagdollEnabler : NetworkBehaviour
 {
+    public event Action OnRagdollDisabled;
+
     [BetterHeader("References")]
     [SerializeField] private Animator animator;
     [SerializeField] private Transform ragdollRoot;
@@ -30,23 +33,23 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     //    ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>();
     //}
 
-    //private void Update()
-    //{
-    //    if (debugRagdollDisabler)
-    //    {
-    //        debugRagdollDisabler = false;
-    //        DisableRagdoll();
-    //    }
+    private void Update()
+    {
+        if (debugRagdollDisabler)
+        {
+            debugRagdollDisabler = false;
+            DisableRagdoll();
+        }
 
-    //    if (debugRagdollEnabler)
-    //    {
-    //        debugRagdollEnabler = false;
-    //        EnableRagdoll();
-    //    }
-    //}
+        if (debugRagdollEnabler)
+        {
+            debugRagdollEnabler = false;
+            EnableRagdoll();
+        }
+    }
 
 
-    public void HandleOnPlayerGetUp()
+    public void HandleOnItemCallbackAction()
     {
         if (!IsOwner) return;
 
@@ -159,10 +162,12 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         }
 
         parentRigidbody.isKinematic = false;
+
+        OnRagdollDisabled?.Invoke();
     }
 
     public void UnInitializeOwner()
     {
-        BaseItemThrowable.OnItemCallbackAction += HandleOnPlayerGetUp;
+        BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
     }
 }
