@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlayerDebugCanvas : NetworkBehaviour
 {
 
-    [BetterHeader("References")]
+    /*[BetterHeader("References")]
     public PlayerGetUp playerGetUp;
     public HitRecieveNetworkedComponent hitRecieveNetworkedComponent;
     public TextMeshProUGUI isFallenTxt;
@@ -29,5 +29,5 @@ public class PlayerDebugCanvas : NetworkBehaviour
         verticalOffsetTxt.text = $"Vertical Offset: {playerGetUp.VerticalOffset}";
         lastGetUpTimeTxt.text = $"Last Get Up Time: {playerGetUp.lastGetUpTime.Minute}:{playerGetUp.lastGetUpTime.Second}";
         hitRecievedTxt.text = $"Hit Recieved: {hitRecieveNetworkedComponent.hitRecieve}";
-    }
+    }*/
 }

@@ -285,7 +285,6 @@ public class PlayerThrower : NetworkBehaviour
     {
         Debug.Log($"GetUp - HandleOnHitRecieve - Game Object: {gameObject.name}");
         hitRecieved = true;
-        //playerGetUp.CacheOriginalPos();
     }
     private void OnPlayerSpawnItemOnHandItemSocketSelected(ItemSocket selectedSocket)
     {

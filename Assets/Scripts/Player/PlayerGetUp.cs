@@ -14,21 +14,18 @@ public class PlayerGetUp : NetworkBehaviour
     [Header("Settings")]
     [SerializeField] private Collider[] playerColliders;
     [SerializeField] private LayerMask layersToDetectCollision;
-
-    private bool isFallen = false;
-
+    
     private const int MAX_ATTEMPTS = 10;
     private const float STEP_SIZE =  0.5f;
     private const float ANGLE_STEP = 10f;
     private Vector3 defaultHipsRotation = new Vector3(-90f, 180f, 0f);
-    private Vector3 defaultHipsPosition = new Vector3(0f,0f,0f);
     private float defaultZPosition = -14f;
 
     private float verticalOffset;
     private float originalRootZ;
     private Quaternion originalRootRotation;
     private Quaternion originalHipsRotation;
-    private Vector3 finalPosition;
+    //private Vector3 finalPosition;
 
     private List<Vector3> directions = new List<Vector3>();
 
@@ -42,7 +39,7 @@ public class PlayerGetUp : NetworkBehaviour
     public GameObject CubeTestedPosDEBUG;
     public GameObject CubeSelectedPosDEBUG;
 
-    public DateTime lastGetUpTime;
+    /*public DateTime lastGetUpTime;
 
     public float VerticalOffset => verticalOffset;
     public bool IsFallen => isFallen;
@@ -52,24 +49,11 @@ public class PlayerGetUp : NetworkBehaviour
     public Quaternion OriginalHipsRotation => originalHipsRotation;
 
     public Quaternion recievedFinalRotation;
-    public Quaternion recievedOriginalHipsRotation;
-
-    public void CacheOriginalPos()
-    {
-        if(!IsOwner) return;
-        Debug.Log("Getup - CacheOriginalPos");
-        //isFallen = true;
-        //originalRootZ = rootTransform.position.z;
-        //verticalOffset = hipsTransform.position.y - rootTransform.position.y;
-        //originalHipsRotation = hipsTransform.rotation;
-        //originalRootRotation = Quaternion.Euler(0, rootTransform.eulerAngles.y, 0);
-    }
+    public Quaternion recievedOriginalHipsRotation;*/
 
     public void HandleGETUP()
     {
         if (!IsOwner) return;
-
-        //if (!isFallen) return;
 
         CalculatePlayerFreePos();
     }
@@ -86,11 +70,9 @@ public class PlayerGetUp : NetworkBehaviour
 
         Instantiate(CubeStartCalcPosDEBUG, playerRagdollPosition, Quaternion.Euler(defaultHipsRotation));
         Vector3 foundFinalPosition = GetFreePosition(playerRagdollPosition);
-
-        //isFallen = false;
-        finalPosition = foundFinalPosition;
+        
+        //finalPosition = foundFinalPosition;
         PassPlayerFreePosServerRpc(foundFinalPosition);
-        //ApplyGetUp(foundFinalPosition, originalRootRotation);
     }
 
     private Vector3 GetFreePosition(Vector3 startPos)
@@ -192,8 +174,8 @@ public class PlayerGetUp : NetworkBehaviour
 
     private void ApplyGetUp(Vector3 finalPos)
     {
-        finalPosition = finalPos;
-        lastGetUpTime = DateTime.Now;
+        /*finalPosition = finalPos;
+        lastGetUpTime = DateTime.Now;*/
         Instantiate(CubeSelectedPosDEBUG, finalPos, Quaternion.identity);
 
         rootTransform.position = finalPos;
