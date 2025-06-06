@@ -45,8 +45,9 @@ public class PlayerGetUp : NetworkBehaviour
     //    Vector3.back + Vector3.right
     //};
 
-    private List<Vector3> directions;
+    private List<Vector3> directions = new List<Vector3>();
 
+    private List<Vector3> foundDirections = new List<Vector3>();
 
     //DEBUG
     public GameObject CubeHipDEBUG;
@@ -115,6 +116,7 @@ public class PlayerGetUp : NetworkBehaviour
     private Vector3 GetFreePosition(Vector3 startPos)
     {
         CalculateXYDirections();
+        foundDirections.Clear();
         foreach (Vector3 direction in directions)
         {
             for (int i = 1; i <= MAX_ATTEMPTS; i++)
@@ -125,12 +127,29 @@ public class PlayerGetUp : NetworkBehaviour
                 if (AreAllCollidersFreeAt(testDirection))
                 {
                     Instantiate(CubeFreePosDEBUG, testDirection, Quaternion.identity);
-                    return testDirection;
+                    foundDirections.Add(testDirection);
+                    //return testDirection;
                 }
             }
         }
-        Debug.Log("GetUp - Failed to get a Free Pos");
-        return startPos;
+
+        float closestDistance = float.MaxValue;
+        Vector3 closestDirection = Vector3.zero;
+
+        foreach (Vector3 foundDirection in foundDirections)
+        {
+            float distance = Vector3.Distance(foundDirection, startPos);
+            if (closestDistance > distance)
+            {
+                closestDistance = distance;
+                closestDirection = foundDirection;
+            }
+        }
+
+        return closestDirection;
+
+        //Debug.Log("GetUp - Failed to get a Free Pos");
+        //return startPos;
     }
 
     private bool AreAllCollidersFreeAt(Vector3 checkPos)
@@ -143,15 +162,16 @@ public class PlayerGetUp : NetworkBehaviour
             if (colliders is BoxCollider box)
             {
                 Vector3 halfExtents = Vector3.Scale(box.size, colliders.transform.lossyScale) * 0.5f;
-                if (Physics.CheckBox(worldCenter, halfExtents, originalRootRotation, layersToDetectCollision))
+                if (Physics.CheckBox(worldCenter, halfExtents, Quaternion.Euler(0f, 0f, 0f), layersToDetectCollision))
                 {
+                    Instantiate(CubeHipDEBUG, worldCenter, Quaternion.identity);
                     return false;
                 }
             }
 
             Vector3 groundCheckOrigin = worldCenter + Vector3.up * 0.1f;
-
-            if (!Physics.Raycast(groundCheckOrigin, Vector3.down, out _, 0.5f, layersToDetectCollision))
+            float maxDistance = 3f;
+            if (!Physics.Raycast(groundCheckOrigin, Vector3.down, out _, maxDistance, layersToDetectCollision))
             {
                 return false;
             }
@@ -161,7 +181,7 @@ public class PlayerGetUp : NetworkBehaviour
 
     private void CalculateXYDirections()
     {
-        directions = new List<Vector3>();
+        directions.Clear();
 
         for (float angle = 0f; angle < 360f; angle += ANGLE_STEP)
         {
