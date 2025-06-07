@@ -88,6 +88,8 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             Debug.LogError("No ragdoll rb found");
             return;
         }
+        
+        Debug.Log($"Closest Ragdoll Rigidbody: {hitRigidbody.name} at index: {closestIndex} with force: {force} - hit point: {hitPoint}");
         TriggerRagdollServerRpc(closestIndex, force, hitPoint);
     }
 
