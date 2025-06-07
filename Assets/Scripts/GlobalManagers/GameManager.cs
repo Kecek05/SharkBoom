@@ -155,7 +155,7 @@ public class GameManager : NetworkBehaviour
     {
         SetGameOverRpc(playableState);
     }
-
+    //DEBUG
     [Rpc(SendTo.Server)]
     private void SetGameOverRpc(PlayableState playableState)
     {

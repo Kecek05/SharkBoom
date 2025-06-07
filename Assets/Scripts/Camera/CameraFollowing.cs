@@ -11,6 +11,7 @@ public class CameraFollowing : NetworkBehaviour
 
     [Header("References")]
     [SerializeField] private CameraManager cameraManager;
+    [SerializeField] private Transform playerTransform;
 
     [Header("Settings")]
     [SerializeField] private float cameraZPosOnFollowing = -12f;
@@ -31,7 +32,20 @@ public class CameraFollowing : NetworkBehaviour
         BaseItemThrowable.OnItemReleasedAction += HandleOnItemReleasedAction;
     }
 
+    private void HandleOnOnItemCallbackAction()
+    {
+        throw new NotImplementedException();
+    }
 
+    public void HandleOnPlayerHit()
+    {
+        SetTarget(playerTransform, false);
+    }
+
+    public void HandleOnItemCallbackAction()
+    {
+        
+    }
 
     private void HandleOnItemReleasedAction(Transform itemLaunched)
     {

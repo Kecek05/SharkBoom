@@ -261,6 +261,10 @@ public class PlayerThrower : NetworkBehaviour
         if(newValue == GameState.GameEnded)
         {
             playerStateMachine.TransitionTo(playerStateMachine.playerGameOverState);
+        } else if (newValue == GameState.GameStarted)
+        {
+            playerDetectFacingDirection.SetupDetectFacingDirection();
+            playerDetectFacingDirection.FaceOtherPlayer();
         }
     }
 
@@ -279,11 +283,9 @@ public class PlayerThrower : NetworkBehaviour
         playerLauncher.HandleOnItemOnHandDespawned(throwable);
     }
 
-    //private bool hitRecieved = false;
-
     private void HandleOnHitRecieve()
     {
-        //hitRecieved = true;
+        cameraManager.HandleOnPlayerHit();
     }
     private void OnPlayerSpawnItemOnHandItemSocketSelected(ItemSocket selectedSocket)
     {
@@ -293,17 +295,12 @@ public class PlayerThrower : NetworkBehaviour
     private void HandleOnItemCallbackAction()
     {
         playerGetUp.HandleOnItemCallbackAction();
-        /*if(hitRecieved)
-        {
-            hitRecieved = false;
-            playerGetUp.HandleGETUP();
-            //playerRagdollEnabler.HandleOnItemCallbackAction();
-        }*/
+        cameraManager.HandleOnItemCallbackAction();
     }
 
     private void HandleOnRagdollDisabled()
     {
-        playerDetectFacingDirection.HandleOnRagdollDisabled();
+        playerDetectFacingDirection.FaceOtherPlayer();
         playerRotateToAim.OnRagdollDisabled();
     }
 

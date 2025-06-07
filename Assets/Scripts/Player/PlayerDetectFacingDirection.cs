@@ -24,22 +24,22 @@ public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDete
 
     public void DoOnInitializeOnwer()
     {
-        turnManager = ServiceLocator.Get<BaseTurnManager>();
+        SetupDetectFacingDirection();
 
+        delayStartFaceOtherPlayerCoroutine = StartCoroutine(DelayStartFaceOtherPlayer());
+    }
+
+    public void SetupDetectFacingDirection()
+    {
+        turnManager = ServiceLocator.Get<BaseTurnManager>();
+        
         if(delayStartFaceOtherPlayerCoroutine != null)
         {
             StopCoroutine(delayStartFaceOtherPlayerCoroutine);
             delayStartFaceOtherPlayerCoroutine = null;
         }
-
-        delayStartFaceOtherPlayerCoroutine = StartCoroutine(DelayStartFaceOtherPlayer());
     }
-
-    public void HandleOnRagdollDisabled()
-    {
-        FaceOtherPlayer();
-    }
-
+    
     public void DoOnDragChange(float forcePercent, float andlePercent)
     {
         if (playerDragController.GetOpositeFingerPos().x > playerGfxTransform.position.x + angleOffset)
@@ -75,20 +75,12 @@ public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDete
         FaceOtherPlayer();
     }
 
-    private void FaceOtherPlayer()
+    public void FaceOtherPlayer()
     {
         if(!IsOwner) return;
-
         isDirectionRight = LocateOtherPlayer.OtherPlayerIsOnMyRight(turnManager.LocalPlayableState);
 
         OnRotationChanged?.Invoke(isDirectionRight);
-
-        Debug.Log("Is Direction Right: " + isDirectionRight);
     }
-
-    //public void DoOnEndedTurn()
-    //{
-    //    FaceOtherPlayer();
-    //}
 
 }

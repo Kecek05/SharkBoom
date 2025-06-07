@@ -1,3 +1,4 @@
+using System;
 using Sortify;
 using TMPro;
 using Unity.Netcode;
@@ -6,28 +7,20 @@ using UnityEngine;
 public class PlayerDebugCanvas : NetworkBehaviour
 {
 
-    /*[BetterHeader("References")]
-    public PlayerGetUp playerGetUp;
-    public HitRecieveNetworkedComponent hitRecieveNetworkedComponent;
-    public TextMeshProUGUI isFallenTxt;
-    public TextMeshProUGUI isOwnerTxt;
-    public TextMeshProUGUI calculatedPosTxt;
-    public TextMeshProUGUI originalRootZTxt;
-    public TextMeshProUGUI verticalOffsetTxt;
-    public TextMeshProUGUI originalHipsRotTxt;
-    public TextMeshProUGUI originalRootRotTxt;
-    public TextMeshProUGUI lastGetUpTimeTxt;
-    public TextMeshProUGUI hitRecievedTxt;
+    [BetterHeader("References")]
+    public PlayerRagdollEnabler playerRagdollEnabler;
+    public TextMeshProUGUI hitedDebugText;
 
     private void Update()
     {
-        isOwnerTxt.text = $"Is Owner: {IsOwner}";
-        isFallenTxt.text = $"Is Fallen: {playerGetUp.IsFallen}";
-        calculatedPosTxt.text = $"Calculated Pos: {playerGetUp.FinalPosition} - FinalRotation: {playerGetUp.recievedFinalRotation} - OriginalHipsRotation: {playerGetUp.recievedOriginalHipsRotation}";
-        originalHipsRotTxt.text = $"Original Hips Rotation: {playerGetUp.OriginalHipsRotation}";
-        originalRootZTxt.text = $"Original Root Z: {playerGetUp.OriginalRootZ}";
-        verticalOffsetTxt.text = $"Vertical Offset: {playerGetUp.VerticalOffset}";
-        lastGetUpTimeTxt.text = $"Last Get Up Time: {playerGetUp.lastGetUpTime.Minute}:{playerGetUp.lastGetUpTime.Second}";
-        hitRecievedTxt.text = $"Hit Recieved: {hitRecieveNetworkedComponent.hitRecieve}";
-    }*/
+        if (playerRagdollEnabler.hitedRbDebug)
+        {
+            hitedDebugText.text = $"Hited Rigidbody: {playerRagdollEnabler.hitedRbDebug.name} - " +
+                                  $"Velocity: {playerRagdollEnabler.hitedRbDebug.linearVelocity.magnitude:F2} m/s";
+        }
+        else
+        {
+            hitedDebugText.text = "No Rigidbody hit detected.";
+        }
+    }
 }

@@ -8,7 +8,6 @@ public class HitTriggerComponent : NetworkBehaviour
     [SerializeField] private BaseCollisionController baseCollisionController;
     [Header("Knockback Settings")]
     [SerializeField] private float knockbackStrength;
-    
 
     private void OnEnable()
     {
@@ -17,6 +16,8 @@ public class HitTriggerComponent : NetworkBehaviour
 
     private void BaseCollisionController_OnCollided(GameObject collidedObject)
     {
+        if(!IsOwner) return;
+        
         if (collidedObject.transform.parent == null) return; //Check if the collided object has a parent
 
         if (collidedObject.transform.parent.TryGetComponent(out IRecieveHit recieveHit)) //Call on the parent
@@ -24,7 +25,13 @@ public class HitTriggerComponent : NetworkBehaviour
             recieveHit.Hit();
         }
 
-        if (collidedObject.transform.parent.TryGetComponent(out IRecieveKnockback _))
+        if (collidedObject.transform.parent.TryGetComponent(out IRecieveKnockback knockbackReceiver))
+        {
+            knockbackReceiver.DoOnRecieveKnockback(knockbackStrength, transform.position); //Pass the pos of the object that triggered
+        }
+        
+
+        /*if (collidedObject.transform.parent.TryGetComponent(out IRecieveKnockback _))
         {
             //Collided with a Implemented IRecieveKnockback interface, so we can apply knockback
             if(!IsOwner) return;
@@ -33,10 +40,10 @@ public class HitTriggerComponent : NetworkBehaviour
                 //Get the NetworkObject to pass to other clients
                 DoKnockbackServerRpc(collidedNetworkObject, transform.position);
             }
-        }
+        }*/
     }
 
-    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    /*[Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
     private void DoKnockbackServerRpc(NetworkObjectReference collidedNetworkObjectReference,  Vector3 hitPosition)
     {
         DoKnockbackClientRpc(collidedNetworkObjectReference, hitPosition);
@@ -57,7 +64,7 @@ public class HitTriggerComponent : NetworkBehaviour
                 receiver.DoOnRecieveKnockback(knockbackStrength, hitPosition); //Pass the pos of the object that triggered
             }
         }
-    }
+    }*/
     
     private void OnDisable()
     {

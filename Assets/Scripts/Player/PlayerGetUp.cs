@@ -18,7 +18,7 @@ public class PlayerGetUp : NetworkBehaviour
     private const int MAX_ATTEMPTS = 10;
     private const float STEP_SIZE =  0.5f;
     private const float ANGLE_STEP = 10f;
-    private float defaultZPosition = -14f;
+    private float defaultZPosition = -14.5f;
 
     private float verticalOffset;
     private float originalRootZ;

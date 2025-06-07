@@ -30,10 +30,10 @@ public class CameraManager : NetworkBehaviour
     {
         if (!IsOwner) return;
 
-        if (cameraObjectToFollow == null)
+        if (cameraObjectToFollow)
             cameraObjectToFollow = ServiceLocator.Get<CameraObjectToFollow>().transform;
 
-        if (cinemachineCamera == null)
+        if (cinemachineCamera)
         {
             cinemachineCamera = ServiceLocator.Get<CinemachineCamera>();
             cinemachineCamera.Target.TrackingTarget = cameraObjectToFollow;
@@ -55,13 +55,15 @@ public class CameraManager : NetworkBehaviour
         enemyObj = publicInfoManager.GetOtherPlayerByMyPlayableState(turnManager.LocalPlayableState);
         playerObj = publicInfoManager.GetPlayerObjectByPlayableState(turnManager.LocalPlayableState);
 
-        if (IsMyTurn(newValue))
+        if (turnManager.LocalPlayableState == newValue)
         {
-            CameraReposOnPlayer();
+            // Local Player's turn
+            CameraGoToSelfPlayer();
         }
-        else if (IsEnemyTurn(newValue))
+        else
         {
-            CameraReposOnEnemy();
+            // Enemy Player's turn
+            CameraGoToEnemyPlayer();
         }
     }
 
@@ -88,6 +90,16 @@ public class CameraManager : NetworkBehaviour
         }
     }
 
+    public void HandleOnPlayerHit()
+    {
+        cameraFollowing.HandleOnPlayerHit();
+    }
+    
+    public void HandleOnItemCallbackAction()
+    {
+        cameraFollowing.HandleOnItemCallbackAction();
+    }
+
     /// <summary>
     /// Disable or Active modules of the camera
     /// </summary>
@@ -101,19 +113,13 @@ public class CameraManager : NetworkBehaviour
         cameraFollowing.enabled = following;
     }
 
-    private void CameraMove()
-    {
-        SetCameraModules(true, true, false);
-    }
+    private void CameraMove() => SetCameraModules(true, true, false);
 
-    private void CameraDragging()
-    {
-        SetCameraModules(false, true, false);
-    }
+    private void CameraDragging() => SetCameraModules(false, true, false);
     
     private void CameraFollowing() => SetCameraModules(false, false, true);
 
-    private void CameraReposOnPlayer()
+    private void CameraGoToSelfPlayer()
     {
         SetCameraModules(false, false, true);
         cameraFollowing.SetTarget(playerObj.transform, false, 3f, onComplete: () =>
@@ -127,7 +133,7 @@ public class CameraManager : NetworkBehaviour
         });
     }
 
-    private void CameraReposOnEnemy()
+    private void CameraGoToEnemyPlayer()
     {
         SetCameraModules(false, false, true);
         cameraFollowing.SetTarget(enemyObj.transform, false, 3f, onComplete: () =>
@@ -145,17 +151,6 @@ public class CameraManager : NetworkBehaviour
     {
         cameraFollowing.SetTarget(playerObj.transform, false, 3f);
         SetCameraModules(false, false, false);
-    }
-
-    private bool IsMyTurn(PlayableState state)
-    {
-        return state == PlayableState.Player1Playing && turnManager.LocalPlayableState == PlayableState.Player1Playing
-            || state == PlayableState.Player2Playing && turnManager.LocalPlayableState == PlayableState.Player2Playing;
-    }
-    private bool IsEnemyTurn(PlayableState state)
-    {
-        return state == PlayableState.Player1Playing && turnManager.LocalPlayableState == PlayableState.Player2Playing
-            || state == PlayableState.Player2Playing && turnManager.LocalPlayableState == PlayableState.Player1Playing;
     }
 
     public void UnInitializeOwner()
