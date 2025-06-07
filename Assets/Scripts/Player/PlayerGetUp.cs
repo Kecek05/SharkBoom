@@ -18,7 +18,6 @@ public class PlayerGetUp : NetworkBehaviour
     private const int MAX_ATTEMPTS = 10;
     private const float STEP_SIZE =  0.5f;
     private const float ANGLE_STEP = 10f;
-    private Vector3 defaultHipsRotation = new Vector3(-90f, 180f, 0f);
     private float defaultZPosition = -14f;
 
     private float verticalOffset;
@@ -32,26 +31,14 @@ public class PlayerGetUp : NetworkBehaviour
     private List<Vector3> foundDirections = new List<Vector3>();
 
     //DEBUG
-    public GameObject CubeFoundGetUpPosDEBUG;
+    /*public GameObject CubeFoundGetUpPosDEBUG;
     public GameObject CubeCollidedPosDEBUG;
     public GameObject CubeFloatingPosDEBUG;
     public GameObject CubeStartCalcPosDEBUG;
     public GameObject CubeTestedPosDEBUG;
-    public GameObject CubeSelectedPosDEBUG;
+    public GameObject CubeSelectedPosDEBUG;*/
 
-    /*public DateTime lastGetUpTime;
-
-    public float VerticalOffset => verticalOffset;
-    public bool IsFallen => isFallen;
-    public Vector3 FinalPosition => finalPosition;
-    public float OriginalRootZ => originalRootZ;
-    public Quaternion OriginalRootRotation => originalRootRotation;
-    public Quaternion OriginalHipsRotation => originalHipsRotation;
-
-    public Quaternion recievedFinalRotation;
-    public Quaternion recievedOriginalHipsRotation;*/
-
-    public void HandleGETUP()
+    public void HandleOnItemCallbackAction()
     {
         if (!IsOwner) return;
 
@@ -60,7 +47,6 @@ public class PlayerGetUp : NetworkBehaviour
 
     private void CalculatePlayerFreePos()
     {
-        Debug.Log("Getup - CalculatePlayerFreePos");
         Vector3 playerRagdollPosition = hipsTransform.position;
         playerRagdollPosition.y -= verticalOffset;
         playerRagdollPosition.z = defaultZPosition;
@@ -71,7 +57,6 @@ public class PlayerGetUp : NetworkBehaviour
         //Instantiate(CubeStartCalcPosDEBUG, playerRagdollPosition, Quaternion.Euler(defaultHipsRotation));
         Vector3 foundFinalPosition = GetFreePosition(playerRagdollPosition);
         
-        //finalPosition = foundFinalPosition;
         PassPlayerFreePosServerRpc(foundFinalPosition);
     }
 
@@ -89,7 +74,6 @@ public class PlayerGetUp : NetworkBehaviour
                 if (AreAllCollidersFreeAt(testDirection))
                 {
                     foundDirections.Add(testDirection);
-                    //return testDirection;
                 }
             }
         }
@@ -104,14 +88,10 @@ public class PlayerGetUp : NetworkBehaviour
             {
                 closestDistance = distance;
                 closestDirection = foundDirection;
-                //Debug.Log($"Getup - Closest Dir: {closestDirection}");
             }
         }
 
         return closestDirection;
-
-        //Debug.Log("GetUp - Failed to get a Free Pos");
-        //return startPos;
     }
 
     private bool AreAllCollidersFreeAt(Vector3 checkPos)
@@ -156,7 +136,6 @@ public class PlayerGetUp : NetworkBehaviour
             float x = Mathf.Cos(rad);
             float y = Mathf.Sin(rad);
             directions.Add(new Vector3(x, y, 0f).normalized); // direction on XY plane
-            //Debug.Log("Direction added: " + new Vector3(x, y, 0).normalized);
         }
     }
 
@@ -176,8 +155,6 @@ public class PlayerGetUp : NetworkBehaviour
 
     private void ApplyGetUp(Vector3 finalPos)
     {
-        /*finalPosition = finalPos;
-        lastGetUpTime = DateTime.Now;*/
         //Instantiate(CubeSelectedPosDEBUG, finalPos, Quaternion.identity);
 
         rootTransform.position = finalPos;

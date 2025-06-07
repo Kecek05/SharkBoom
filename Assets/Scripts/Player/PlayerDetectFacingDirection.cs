@@ -35,7 +35,7 @@ public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDete
         delayStartFaceOtherPlayerCoroutine = StartCoroutine(DelayStartFaceOtherPlayer());
     }
 
-    public void HandleOnFACE()
+    public void HandleOnRagdollDisabled()
     {
         FaceOtherPlayer();
     }

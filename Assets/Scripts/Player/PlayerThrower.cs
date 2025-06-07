@@ -283,7 +283,6 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleOnHitRecieve()
     {
-        Debug.Log($"GetUp - HandleOnHitRecieve - Game Object: {gameObject.name}");
         //hitRecieved = true;
     }
     private void OnPlayerSpawnItemOnHandItemSocketSelected(ItemSocket selectedSocket)
@@ -293,7 +292,7 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleOnItemCallbackAction()
     {
-        playerGetUp.HandleGETUP();
+        playerGetUp.HandleOnItemCallbackAction();
         /*if(hitRecieved)
         {
             hitRecieved = false;
@@ -304,15 +303,13 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleOnRagdollDisabled()
     {
-        Debug.Log("GetUp - HandleOnRagdollDisabled");
-        playerDetectFacingDirection.HandleOnFACE();
-        playerRotateToAim.DoOnGetUp();
+        playerDetectFacingDirection.HandleOnRagdollDisabled();
+        playerRotateToAim.OnRagdollDisabled();
     }
 
     private void HandleOnPlayerGetUp()
     {
-        Debug.Log("GetUp - HandleOnPlayerGetUp");
-        playerRagdollEnabler.HandleDISABLE();
+        playerRagdollEnabler.HandleOnPlayerGetUp();
 
     }
 
@@ -371,19 +368,15 @@ public class PlayerThrower : NetworkBehaviour
             {
                 //Host always is Player1Playing
                 ServiceLocator.Get<BaseTurnManager>().InitializeLocalStates(PlayableState.Player1Playing);
-
             } else
             {
                 ServiceLocator.Get<BaseTurnManager>().InitializeLocalStates(newValue); //pass to GameFlow to know when its local turn
             }
-
-           
         }
 
 
         if (newValue == PlayableState.Player1Playing)
         {
-
             foreach (GameObject playerCollider in playerObjectsToChangeLayer)
             {
                 playerCollider.layer = PlayersPublicInfoManager.PLAYER_1_LAYER;
@@ -427,10 +420,7 @@ public class PlayerThrower : NetworkBehaviour
 
     public override void OnLostOwnership()
     {
-
         playerTouchColl.enabled = false;
-
-
         UnHandleEvents();
     }
 }

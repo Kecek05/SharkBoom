@@ -23,7 +23,7 @@ public class PlayerRotateToAim : DragListener, IInitializeOnwer, IDetectDragChan
         aimTransform.position = aimDefaultPosition.position;
     }
     
-    public void DoOnGetUp()
+    public void OnRagdollDisabled()
     {
         ResetAimPosition();
     }
