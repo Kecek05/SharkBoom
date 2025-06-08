@@ -5,6 +5,8 @@ using UnityEngine;
 
 public abstract class BaseItemThrowable : NetworkBehaviour
 {
+    private const float ITEM_Z_POSITION = -14.5f;
+    
     /// <summary>
     /// Called when the item is destroyed.
     /// </summary>
@@ -125,6 +127,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
 
         followTransformComponent.DisableComponent();
         turnManager = ServiceLocator.Get<BaseTurnManager>();
+        transform.position = new Vector3(transform.position.x, transform.position.y, ITEM_Z_POSITION);
         rb.AddForce(itemLauncherData.dragDirection * itemLauncherData.dragForce, ForceMode.Impulse);
 
         if(lifetimeTriggerItemComponent)
@@ -222,6 +225,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         ResetConstraints();
+        Debug.Log("Item Reseted to Pool");
     }
 
     private void ResetConstraints()

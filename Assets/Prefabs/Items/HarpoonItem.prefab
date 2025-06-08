@@ -102,11 +102,11 @@ PrefabInstance:
       objectReference: {fileID: 1924429888176421737}
     - target: {fileID: 4196873844735081561, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_Size.x
-      value: 0.20660625
+      value: 0.31349894
       objectReference: {fileID: 0}
     - target: {fileID: 4196873844735081561, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_Size.y
-      value: 2.995752
+      value: 2.823083
       objectReference: {fileID: 0}
     - target: {fileID: 4196873844735081561, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_Size.z
@@ -114,15 +114,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4196873844735081561, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_Center.x
-      value: 0.012268871
+      value: 0.019175507
       objectReference: {fileID: 0}
     - target: {fileID: 4196873844735081561, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_Center.y
-      value: 1.4886353
+      value: 1.4023007
       objectReference: {fileID: 0}
     - target: {fileID: 4196873844735081561, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_Center.z
-      value: -0.0051166005
+      value: -0.005116597
       objectReference: {fileID: 0}
     - target: {fileID: 4196873844735081561, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_Material
@@ -389,6 +389,7 @@ MonoBehaviour:
   debugTriggerOnStart: 0
   rotationSpeed: 10
   rb: {fileID: 6921903450271284980}
+  velocityThreshold: 4
 --- !u!1 &4767779204118326136 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2942010050083629636, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}

@@ -22,8 +22,6 @@ public class CameraManager : NetworkBehaviour
 
     public Transform CameraObjectToFollow => cameraObjectToFollow;
     public CameraZoom CameraZoom => cameraZoom;
-    public CameraMovement CameraMovement => cameraMovement;
-    public CinemachineCamera CinemachineCamera => cinemachineCamera;
     public Camera CameraMain => cameraMain;
 
     public override void OnNetworkSpawn()

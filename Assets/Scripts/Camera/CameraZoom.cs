@@ -46,13 +46,13 @@ public class CameraZoom : NetworkBehaviour
 
         if (context.started)
         {
-            cameraManager.SetCameraModules(false, true, false);
+            cameraManager.SetCameraModules(false, true);
             ZoomStarted();
         }
 
         if (context.canceled)
         {
-            cameraManager.SetCameraModules(true, true, false);
+            cameraManager.SetCameraModules(true, true);
             ZoomEnded();
         }
     }

@@ -10,7 +10,6 @@ public class PlayerDebugCanvas : NetworkBehaviour
     [BetterHeader("References")]
     public PlayerRagdollEnabler playerRagdollEnabler;
     public TextMeshProUGUI hitedDebugText;
-    public CameraFollowing cameraFollowing;
     public TextMeshProUGUI followingTargetTxt;
 
     private void Update()
