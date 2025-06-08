@@ -140,7 +140,7 @@ public class GameOverUI : MonoBehaviour
 
     private void Lose()
     {
-        ChangeUI("You Lose!", "DEFEAT!", loseBackground, losePearlsBackground, loseReturnButton, loseBackgroundMaterial);
+        ChangeUI("<defeat>You Lose!<defeat>", "DEFEAT!", loseBackground, losePearlsBackground, loseReturnButton, loseBackgroundMaterial);
     }
 
     private void Tie()
