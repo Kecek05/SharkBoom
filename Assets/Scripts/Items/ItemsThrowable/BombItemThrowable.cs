@@ -9,7 +9,7 @@ public class BombItemThrowable : BaseItemThrowableActivable
     [SerializeField] private Collider explosionCollider;
     private Coroutine explodeBombCoroutine;
     private WaitForSecondsRealtime waitForSecondsRealtime = new WaitForSecondsRealtime(0.5f);
-    private WaitForSecondsRealtime waitToDestroy = new WaitForSecondsRealtime(2f);
+    private WaitForSecondsRealtime waitToDestroy = new WaitForSecondsRealtime(3.5f);
 
     public override void ItemReleased(ItemLauncherData itemLauncherData)
     {
@@ -22,8 +22,6 @@ public class BombItemThrowable : BaseItemThrowableActivable
 
     protected override void ActivateItem()
     {
-        itemActivated = true;
-
         explodeBombCoroutine ??= StartCoroutine(ExplodeBomb());
     }
 

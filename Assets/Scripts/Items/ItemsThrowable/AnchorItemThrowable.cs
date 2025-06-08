@@ -19,7 +19,6 @@ public class AnchorItemThrowable : BaseItemThrowableActivable
     }
     protected override void ActivateItem()
     {
-        itemActivated = true;
         
         canDoDamageComponent.SetDamageableSO(anchorActivatedDamageableSO);
 

@@ -27,7 +27,6 @@ public class BananaItemThrowable : BaseItemThrowableActivable
 
     protected override void ActivateItem()
     {
-        itemActivated = true;
         Vector3 startReturnPosition = transform.position;
 
         if (bananaReturnCoroutine != null)
@@ -61,9 +60,10 @@ public class BananaItemThrowable : BaseItemThrowableActivable
         meshObject.SetActive(false); // Hide the banana mesh when it returns
     }
 
-    protected override void CollisionController_OnCollidedWithoutPlayer(GameObject collidedObject)
+    protected override void CollisionController_OnCollided(GameObject collidedObject)
     {
-        spinObjectComponent.DisableComponent();
+        if(!itemActivated)
+            spinObjectComponent.DisableComponent();
     }
 
     protected override void ResetItemThrowableState()

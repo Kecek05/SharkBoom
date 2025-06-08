@@ -13,7 +13,7 @@ public class SwordItemThrowable : BaseItemThrowable
         spinObjectComponent.StartComponentLogic();
     }
 
-    protected override void CollisionController_OnCollidedWithoutPlayer(GameObject collidedObj)
+    protected override void CollisionController_OnCollided(GameObject collidedObject)
     {
         spinObjectComponent.DisableComponent();
     }

@@ -24,7 +24,7 @@ public class RotateTowardsVelocityComponent : BaseItemComponent
 
     protected override void DoComponentLogic()
     {
-        rotateCoroutine = StartCoroutine(RotateObject()); //if not null start the coroutine and assign it to rotateCoroutine
+        rotateCoroutine ??= StartCoroutine(RotateObject()); //if not null start the coroutine and assign it to rotateCoroutine
     }
 
     private IEnumerator RotateObject()
