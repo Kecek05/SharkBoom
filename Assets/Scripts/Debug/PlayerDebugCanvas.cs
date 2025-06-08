@@ -10,6 +10,8 @@ public class PlayerDebugCanvas : NetworkBehaviour
     [BetterHeader("References")]
     public PlayerRagdollEnabler playerRagdollEnabler;
     public TextMeshProUGUI hitedDebugText;
+    public CameraFollowing cameraFollowing;
+    public TextMeshProUGUI followingTargetTxt;
 
     private void Update()
     {
@@ -22,5 +24,10 @@ public class PlayerDebugCanvas : NetworkBehaviour
         {
             hitedDebugText.text = "No Rigidbody hit detected.";
         }
+        
+        if(cameraFollowing.FollowTargetTransformDebug)
+            followingTargetTxt.text = $"Following Target: {cameraFollowing.FollowTargetTransformDebug.name} - " +
+                                  $"Position: {cameraFollowing.FollowTargetTransformDebug.position}";
+            
     }
 }

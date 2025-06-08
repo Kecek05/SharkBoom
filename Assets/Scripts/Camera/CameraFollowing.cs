@@ -11,20 +11,23 @@ public class CameraFollowing : NetworkBehaviour
 
     [Header("References")]
     [SerializeField] private CameraManager cameraManager;
-    [SerializeField] private Transform playerTransform;
+    [SerializeField] private Transform hipsBone;
 
     [Header("Settings")]
     [SerializeField] private float cameraZPosOnFollowing = -12f;
     [SerializeField] private float followYOffsetForPlayer = 2.5f;
     private WaitForSeconds waitTimeToStopFollowing = new(3f);
-    private Transform itemLaunched;
+    private Transform followTargetTransform;
     private Vector3 lastCameraObjectToFollowPos;
 
-    private Coroutine followObject;
-    private Coroutine resetCam;
+    private Coroutine followObjectCoroutine;
+    private Coroutine resetCameraCoroutine;
 
 
 
+    //DEBUG
+    public Transform FollowTargetTransformDebug => followTargetTransform;
+    
     public void InitializeOwner()
     {
         if(!IsOwner) return;
@@ -39,13 +42,13 @@ public class CameraFollowing : NetworkBehaviour
 
     public void HandleOnPlayerHit()
     {
-        SetTarget(playerTransform, false);
+        SetTarget(hipsBone, false);
     }
 
-    public void HandleOnItemCallbackAction()
+    /*public void HandleOnItemCallbackAction()
     {
         
-    }
+    }*/
 
     private void HandleOnItemReleasedAction(Transform itemLaunched)
     {
@@ -54,20 +57,20 @@ public class CameraFollowing : NetworkBehaviour
     }
 
 
-    public void SetTarget(Transform itemLaunched, bool stopOnNull, float duration = 5f, Action onComplete = null)
+    public void SetTarget(Transform target, bool stopOnNull, float duration = 5f, Action onComplete = null)
     {
-        if (itemLaunched == null) return;
+        if (!target) return;
 
         cameraManager.CinemachineCamera.Target.TrackingTarget = cameraManager.CameraObjectToFollow; // make sure the camera is following the object
-        this.itemLaunched = itemLaunched;
+        followTargetTransform = target;
         this.OnComplete = onComplete;
 
-        if (followObject != null) // if the coroutine is already running, stop it
+        if (followObjectCoroutine != null) // if the coroutine is already running, stop it
         {
-            StopCoroutine(followObject);
+            StopCoroutine(followObjectCoroutine);
         }
 
-        followObject = StartCoroutine(FollowObjectCoroutine(duration, stopOnNull)); 
+        followObjectCoroutine = StartCoroutine(FollowObjectCoroutine(duration, stopOnNull)); 
     }
 
 
@@ -78,12 +81,12 @@ public class CameraFollowing : NetworkBehaviour
         if (stopOnNull)
         {
             // used for items that will be destroyed
-            while (itemLaunched != null) // while the itemLaunched is not destroyed
+            while (followTargetTransform != null) // while the itemLaunched is not destroyed
             {
-                cameraManager.CameraObjectToFollow.position = new Vector3(itemLaunched.position.x, itemLaunched.position.y, cameraZPosOnFollowing);
+                cameraManager.CameraObjectToFollow.position = new Vector3(followTargetTransform.position.x, followTargetTransform.position.y, cameraZPosOnFollowing);
                 yield return null;
             }
-            followObject = null;
+            followObjectCoroutine = null;
             OnComplete?.Invoke();
         }
         else
@@ -91,16 +94,16 @@ public class CameraFollowing : NetworkBehaviour
             // used for player or other item that will not be destroyed
             while (timer < duration)
             {
-                if (itemLaunched != null)
+                if (!followTargetTransform)
                 {
-                    cameraManager.CameraObjectToFollow.position = new Vector3(itemLaunched.position.x, itemLaunched.position.y + followYOffsetForPlayer, cameraZPosOnFollowing);
+                    cameraManager.CameraObjectToFollow.position = new Vector3(followTargetTransform.position.x, followTargetTransform.position.y + followYOffsetForPlayer, cameraZPosOnFollowing);
                 }
 
                 timer += Time.deltaTime;
                 yield return null;
             }
 
-            followObject = null;
+            followObjectCoroutine = null;
             OnComplete?.Invoke();
         }
     }

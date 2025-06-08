@@ -30,10 +30,10 @@ public class CameraManager : NetworkBehaviour
     {
         if (!IsOwner) return;
 
-        if (cameraObjectToFollow)
+        if (!cameraObjectToFollow)
             cameraObjectToFollow = ServiceLocator.Get<CameraObjectToFollow>().transform;
 
-        if (cinemachineCamera)
+        if (!cinemachineCamera)
         {
             cinemachineCamera = ServiceLocator.Get<CinemachineCamera>();
             cinemachineCamera.Target.TrackingTarget = cameraObjectToFollow;
@@ -56,15 +56,9 @@ public class CameraManager : NetworkBehaviour
         playerObj = publicInfoManager.GetPlayerObjectByPlayableState(turnManager.LocalPlayableState);
 
         if (turnManager.LocalPlayableState == newValue)
-        {
-            // Local Player's turn
             CameraGoToSelfPlayer();
-        }
         else
-        {
-            // Enemy Player's turn
             CameraGoToEnemyPlayer();
-        }
     }
 
     public void HandleOnPlayerStateMachineStateChanged(PlayerState playerState)
@@ -97,7 +91,7 @@ public class CameraManager : NetworkBehaviour
     
     public void HandleOnItemCallbackAction()
     {
-        cameraFollowing.HandleOnItemCallbackAction();
+        //cameraFollowing.HandleOnItemCallbackAction();
     }
 
     /// <summary>
