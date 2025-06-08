@@ -33,6 +33,7 @@ public class MatchplayMatchmaker : IDisposable
     private const int TicketCooldown = 1000;
 
     public bool IsMatchmaking { get; private set; }
+    private bool ticketCreatedTriggered;
 
     public async Task<MatchmakingResult> Matchmake(UserData data)
     {
@@ -53,8 +54,6 @@ public class MatchplayMatchmaker : IDisposable
             CreateTicketResponse createResult = await MatchmakerService.Instance.CreateTicketAsync(players, createTicketOptions);
 
             lastUsedTicket = createResult.Id;
-
-            OnTicketCreated?.Invoke();
             try
             {
                 while (!cancelToken.IsCancellationRequested)
@@ -76,6 +75,12 @@ public class MatchplayMatchmaker : IDisposable
                                 $"Ticket: {lastUsedTicket} - {matchAssignment.Status} - {matchAssignment.Message}", null);
                         }
                         Debug.Log($"Polled Ticket: {lastUsedTicket} Status: {matchAssignment.Status} ");
+
+                        if (!ticketCreatedTriggered)
+                        {
+                            ticketCreatedTriggered = true;
+                            OnTicketCreated?.Invoke();
+                        }
                     }
 
                     await Task.Delay(TicketCooldown);
@@ -107,14 +112,16 @@ public class MatchplayMatchmaker : IDisposable
 
         if (string.IsNullOrEmpty(lastUsedTicket)) { return; }
 
-        Debug.Log($"Cancelling {lastUsedTicket}");
+        Debug.Log($"Match - Cancelling {lastUsedTicket}");
 
         await MatchmakerService.Instance.DeleteTicketAsync(lastUsedTicket);
+        ticketCreatedTriggered = false;
     }
 
     private MatchmakingResult ReturnMatchResult(MatchmakerPollingResult resultErrorType, string message, MultiplayAssignment assignment)
     {
         IsMatchmaking = false;
+        ticketCreatedTriggered = false; // Reset the flag for next matchmaking
 
         if (assignment != null)
         {

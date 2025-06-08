@@ -8,11 +8,13 @@ public class PlayerNameBootstrap : MonoBehaviour
     [SerializeField] private GameObject renameScreen;
     [SerializeField] private Button confirmButton;
     [SerializeField] private TMP_InputField playerNameInputField;
+    [SerializeField] private TextMeshProUGUI loadingText;
 
     private async void Awake()
     {
         renameScreen.SetActive(false);
         confirmButton.interactable = false;
+        loadingText.enabled = false;
 
         confirmButton.onClick.AddListener(async () =>
         {
@@ -23,7 +25,7 @@ public class PlayerNameBootstrap : MonoBehaviour
 
             ClientSingleton.Instance.GameManager.UserData.SetPlayerName(await Save.LoadPlayerName(AuthenticationService.Instance.PlayerId));
             renameScreen.SetActive(false);
-
+            loadingText.enabled = true;
             Loader.LoadNoLoadingScreen(Loader.Scene.MainMenu);
         });
 
@@ -35,8 +37,10 @@ public class PlayerNameBootstrap : MonoBehaviour
         if (ClientSingleton.Instance.GameManager.UserData.userName == "")
         {
             renameScreen.SetActive(true);
-        } else
+        } 
+        else
         {
+            loadingText.enabled = true;
             Loader.LoadNoLoadingScreen(Loader.Scene.MainMenu);
         }
     }
