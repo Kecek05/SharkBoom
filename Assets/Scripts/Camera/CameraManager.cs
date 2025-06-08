@@ -91,7 +91,7 @@ public class CameraManager : NetworkBehaviour
     
     public void HandleOnItemCallbackAction()
     {
-        //cameraFollowing.HandleOnItemCallbackAction();
+        cameraFollowing.HandleOnItemCallbackAction();
     }
 
     /// <summary>

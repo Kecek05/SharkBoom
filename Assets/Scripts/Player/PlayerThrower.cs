@@ -293,8 +293,8 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleOnItemCallbackAction()
     {
-        playerGetUp.HandleOnItemCallbackAction();
         cameraManager.HandleOnItemCallbackAction();
+        playerGetUp.HandleOnItemCallbackAction();
     }
 
     private void HandleOnRagdollDisabled()
@@ -306,7 +306,6 @@ public class PlayerThrower : NetworkBehaviour
     private void HandleOnPlayerGetUp()
     {
         playerRagdollEnabler.HandleOnPlayerGetUp();
-
     }
 
     [Rpc(SendTo.Server)]

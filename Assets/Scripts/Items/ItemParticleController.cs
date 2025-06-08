@@ -24,6 +24,7 @@ public class ItemParticleController : MonoBehaviour
 
     private void PlayParticleSystem(ParticleSystem particleSystem)
     {
+        particleSystem.Clear();
         particleSystem.Play();
     }
 

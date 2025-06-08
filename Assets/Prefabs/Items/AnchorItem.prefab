@@ -212,6 +212,10 @@ PrefabInstance:
       propertyPath: itemSO
       value: 
       objectReference: {fileID: 11400000, guid: 7667fbb8415883a4bb0ea49a0ebf3d7b, type: 2}
+    - target: {fileID: 4423698351422297061, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: 'itemColliders.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1162646921372913132}
     - target: {fileID: 4897436337832737565, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: itemThrowable
       value: 
@@ -262,7 +266,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5936238915556127039, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: hideOnCollisionWithPlayer
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_Name
@@ -331,7 +335,7 @@ PrefabInstance:
     - target: {fileID: 8089614718808125593, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: hideMeshOnCollisionComponent
       value: 
-      objectReference: {fileID: 4080070733013200899}
+      objectReference: {fileID: 0}
     - target: {fileID: 8457933688022276986, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -382,6 +386,11 @@ PrefabInstance:
     - {fileID: 0}
     - {fileID: 0}
     - {fileID: 0}
+    - {fileID: 4196873844735081561, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+    - {fileID: 750170554083014730, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+    - {fileID: 5936238915556127039, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+    - {fileID: 8410119999329485946, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+    - {fileID: 4423698351422297061, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -391,6 +400,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3179435721879527791}
+    - targetCorrespondingSourceObject: {fileID: 2942010050083629636, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1162646921372913132}
   m_SourcePrefab: {fileID: 100100000, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
 --- !u!114 &1924429888176421737 stripped
 MonoBehaviour:
@@ -434,17 +446,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b91fa934de67dab46912e6325f3d074a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &4080070733013200899 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5936238915556127039, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
-  m_PrefabInstance: {fileID: 7709761659009139004}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4139059953487484834}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c9002d05a4b7c24cb0074daca9581a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &4139059953487484834 stripped
@@ -500,11 +501,35 @@ MonoBehaviour:
   debugTriggerOnStart: 0
   rotationSpeed: 15
   rb: {fileID: 6921903450271284980}
+  velocityThreshold: 5
 --- !u!1 &4767779204118326136 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2942010050083629636, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
   m_PrefabInstance: {fileID: 7709761659009139004}
   m_PrefabAsset: {fileID: 0}
+--- !u!136 &1162646921372913132
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4767779204118326136}
+  m_Material: {fileID: 13400000, guid: e2cf68b0fed04af40829700f0535bbfc, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.64
+  m_Height: 2.41
+  m_Direction: 1
+  m_Center: {x: 0, y: 1.21, z: 0}
 --- !u!114 &5548393793532431828 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2738551014143626472, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}

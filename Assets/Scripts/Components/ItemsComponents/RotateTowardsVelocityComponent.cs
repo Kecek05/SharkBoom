@@ -6,7 +6,7 @@ public class RotateTowardsVelocityComponent : BaseItemComponent
     [Tooltip("How fast the spear rotates to align with its velocity.")]
     [SerializeField] private float rotationSpeed = 10f;
     [SerializeField] private Rigidbody rb;
-    private float velocityThreshold = 0.5f; // Minimum velocity to consider for rotation
+    [SerializeField] private float velocityThreshold = 0.5f; // Minimum velocity to consider for rotation
     private WaitForFixedUpdate waitForFixedUpdate = new WaitForFixedUpdate();
 
     private Coroutine rotateCoroutine;

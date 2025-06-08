@@ -311,7 +311,7 @@ PrefabInstance:
     - target: {fileID: 8089614718808125593, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: hideMeshOnCollisionComponent
       value: 
-      objectReference: {fileID: 4080070733013200899}
+      objectReference: {fileID: 0}
     - target: {fileID: 8578040854288002210, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: lengthInSec
       value: 0.5
@@ -430,6 +430,9 @@ PrefabInstance:
     - {fileID: 6129100009262690881, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
     - {fileID: 1605454544280285762, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
     - {fileID: 1388381339307784563, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+    - {fileID: 8410119999329485946, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+    - {fileID: 5936238915556127039, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+    - {fileID: 4423698351422297061, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -482,17 +485,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b91fa934de67dab46912e6325f3d074a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &4080070733013200899 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5936238915556127039, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
-  m_PrefabInstance: {fileID: 7709761659009139004}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4139059953487484834}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c9002d05a4b7c24cb0074daca9581a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &4139059953487484834 stripped

@@ -6,7 +6,15 @@ using UnityEngine;
 
 public class CameraFollowing : NetworkBehaviour
 {
-
+    /// <summary>
+    /// Used to say to the other CameraFollowing in the other player to follow the item that was hit.
+    /// </summary>
+    private static event Action<Transform> OnItemHit;
+    /// <summary>
+    /// Used to say to the other CameraFollowing in the other player to stop following the item that was hit.
+    /// </summary>
+    public static event Action OnItemHitCallback;
+    
     private Action OnComplete;
 
     [Header("References")]
@@ -30,26 +38,37 @@ public class CameraFollowing : NetworkBehaviour
     
     public void InitializeOwner()
     {
+        OnItemHit += ItemHitted;
+        OnItemHitCallback += ItemCallback;
         if(!IsOwner) return;
 
         BaseItemThrowable.OnItemReleasedAction += HandleOnItemReleasedAction;
     }
 
-    private void HandleOnOnItemCallbackAction()
-    {
-        throw new NotImplementedException();
-    }
-
     public void HandleOnPlayerHit()
     {
-        SetTarget(hipsBone, false);
+        /*Debug.Log($"HandleOnPlayerHit - This Player: {gameObject.transform.parent.name}");
+        SetTarget(hipsBone, true);*/
+        OnItemHit?.Invoke(hipsBone.transform);
     }
 
-    /*public void HandleOnItemCallbackAction()
+    public void HandleOnItemCallbackAction()
     {
-        
-    }*/
+        OnItemHitCallback?.Invoke();
+    }
 
+    private void ItemCallback()
+    {
+        StopFollowing();
+    }
+
+    private void ItemHitted(Transform followTarget)
+    {
+        if (!IsOwner) return;
+
+        Debug.Log($"HandleOnPlayerHit - This Player: {gameObject.transform.parent.name}");
+        SetTarget(followTarget, true);
+    }
     private void HandleOnItemReleasedAction(Transform itemLaunched)
     {
         lastCameraObjectToFollowPos = cameraManager.CameraObjectToFollow.position; // store current position of the camera before the item is launched
@@ -57,31 +76,24 @@ public class CameraFollowing : NetworkBehaviour
     }
 
 
-    public void SetTarget(Transform target, bool stopOnNull, float duration = 5f, Action onComplete = null)
+    public void SetTarget(Transform target, bool followUntilIsNull, float duration = 5f, Action onComplete = null)
     {
-        if (!target) return;
-
         cameraManager.CinemachineCamera.Target.TrackingTarget = cameraManager.CameraObjectToFollow; // make sure the camera is following the object
         followTargetTransform = target;
         this.OnComplete = onComplete;
-
-        if (followObjectCoroutine != null) // if the coroutine is already running, stop it
-        {
-            StopCoroutine(followObjectCoroutine);
-        }
-
-        followObjectCoroutine = StartCoroutine(FollowObjectCoroutine(duration, stopOnNull)); 
+        StopFollowing();
+        
+        followObjectCoroutine = StartCoroutine(FollowObjectCoroutine(duration, followUntilIsNull)); 
     }
 
 
-    private IEnumerator FollowObjectCoroutine(float duration, bool stopOnNull = true)    
+    private IEnumerator FollowObjectCoroutine(float duration, bool followUntilIsNull = true)    
     {
         float timer = 0f;
-
-        if (stopOnNull)
+        Debug.Log($"Follow Object: {followTargetTransform.name}");
+        if (followUntilIsNull)
         {
-            // used for items that will be destroyed
-            while (followTargetTransform) // while the object is not destroyed
+            while (followTargetTransform)
             {
                 cameraManager.CameraObjectToFollow.position = new Vector3(followTargetTransform.position.x, followTargetTransform.position.y, cameraZPosOnFollowing);
                 yield return null;
@@ -91,7 +103,7 @@ public class CameraFollowing : NetworkBehaviour
         }
         else
         {
-            // used for player or other item that will not be destroyed
+            // stop following after a certain duration
             while (timer < duration)
             {
                 if (followTargetTransform)
@@ -108,9 +120,19 @@ public class CameraFollowing : NetworkBehaviour
         }
     }
 
+    private void StopFollowing()
+    {
+        if (followObjectCoroutine != null) // if the coroutine is already running, stop it
+        {
+            StopCoroutine(followObjectCoroutine);
+        }
+    }
+
 
     public void UnInitializeOwner()
     {
+        OnItemHit -= ItemHitted;
+        OnItemHitCallback -= ItemCallback;
         if (!IsOwner) return;
         BaseItemThrowable.OnItemReleasedAction -= HandleOnItemReleasedAction;
     }
