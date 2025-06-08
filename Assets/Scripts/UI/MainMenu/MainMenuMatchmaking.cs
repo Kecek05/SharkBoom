@@ -36,29 +36,25 @@ public class MainMenuMatchmaking : MonoBehaviour
     public async void CancelMatchmaking()
     {
         //Cancel Matchmaking
-        if (isCanceling) return;
+        if (isCanceling || !isMatchMaking) return;
 
         isCanceling = true;
         matchmakingText.text = "Canceling...";
-        await ClientSingleton.Instance.GameManager.CancelMatchmakingAsync(); //wait to cancel the matchmake
-        isMatchMaking = false;
-        isCanceling = false;
-
-        StopMatchmakingTimer();
-        Hide();
+        Debug.Log("Match - is canceling");
+        await ClientSingleton.Instance.GameManager.CancelMatchmakingAsync();
+        Debug.Log("Match - cancel ok");
+        CanceledMatchmaking();
     }
 
     public void SearchMathmaking()
     {
-        if (isCanceling) return;
-
-        if (isMatchMaking) return;
+        if (isCanceling || isMatchMaking) return;
 
         isMatchMaking = true;
-        timeInQueue = 0f; // zera o tempo
+        timeInQueue = 0f;
         matchmakingText.text = "Searching...";
+        Debug.Log("Match - is searching");
         ClientSingleton.Instance.GameManager.MatchmakeAsync(OnMatchMade); //We will pass and event to be trigger when the result is ready.
-
         StartMatchmakingTimer();
         Show();
     }
@@ -78,10 +74,10 @@ public class MainMenuMatchmaking : MonoBehaviour
     {
         yield return waitToTurnOnCancel;
         cancelMatchmakingBtn.interactable = true;
-
         cancelButtonCoroutine = null;
+        Debug.Log("Match - cancel button interactable true");
     }
-    
+
     private void StartMatchmakingTimer()
     {
         if (matchmakingTimerCoroutine != null)
@@ -112,6 +108,14 @@ public class MainMenuMatchmaking : MonoBehaviour
             matchmakingTime.text = string.Format("{0:00}:{1:00}", ts.Minutes, ts.Seconds);
             yield return waitToIncreaseMatchmakingTime;
         }
+    }
+
+    private void CanceledMatchmaking()
+    {
+        isMatchMaking = false;
+        isCanceling = false;
+        StopMatchmakingTimer();
+        Hide();
     }
 
     private void Hide()
