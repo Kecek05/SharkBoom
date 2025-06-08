@@ -8,11 +8,6 @@ public class AnchorItemThrowable : BaseItemThrowableActivable
     [SerializeField] private float downForce;
     [SerializeField] private DamageableSO anchorActivatedDamageableSO;
     [SerializeField] private CanDoDamageComponent canDoDamageComponent;
-    protected override void CollisionController_OnCollidedWithPlayer(PlayerThrower playerObject)
-    {
-        //Dont allow to activate the item if collided with player
-        itemActivated = true;
-    }
 
     public override void ItemReleased(ItemLauncherData itemLauncherData)
     {

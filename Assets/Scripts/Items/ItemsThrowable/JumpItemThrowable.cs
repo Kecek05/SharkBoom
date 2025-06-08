@@ -41,7 +41,7 @@ public class JumpItemThrowable : BaseItemThrowable
 
     private IEnumerator PlayerFollowJump()
     {
-        if (objectToFollowTransform == null) yield break;
+        if (!objectToFollowTransform) yield break;
 
         currentFollowingTime = 0f;
         while (currentFollowingTime < followingTime)

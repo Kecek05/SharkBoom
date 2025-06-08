@@ -9,6 +9,12 @@ public abstract class BaseItemThrowableActivable : BaseItemThrowable
     {
         itemActivated = false;
     }
+    
+    protected override void CollisionController_OnCollidedWithPlayer(PlayerThrower playerObject)
+    {
+        //Dont allow to activate the item if collided with player
+        itemActivated = true;
+    }
 
     public void TryActivate()
     {

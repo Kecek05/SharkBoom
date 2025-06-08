@@ -29,8 +29,6 @@ public class BombItemThrowable : BaseItemThrowableActivable
 
     protected override void CollisionController_OnCollided(GameObject collidedObject)
     {
-        base.CollisionController_OnCollided(collidedObject);
-
         spinObjectComponent.DisableComponent();
     }
 

@@ -34,7 +34,9 @@ public class ServiceLocatorBootstrap : MonoBehaviour
         BaseGameStateManager gameStateManager = gameObject.AddComponent<GameStateManager>();
         BaseGameOverManager gameOverManager = gameObject.AddComponent<GameOverManager>();
         BasePearlsManager pearlsManager = gameObject.AddComponent<PearlsManager>();
-
+        CameraGlobalFollow cameraGlobalFollow = gameObject.AddComponent<CameraGlobalFollow>();
+        cameraGlobalFollow.Initialize(cameraObjectToFollow.transform);
+        
         cameraObjectToFollow.gameObject.transform.position = new Vector3(12, 0, -20);
 
         ServiceLocator.Register(turnManager);
@@ -48,6 +50,7 @@ public class ServiceLocatorBootstrap : MonoBehaviour
         ServiceLocator.Register(cameraObjectToFollow);
         ServiceLocator.Register(cinemachineCamera);
         ServiceLocator.Register(cameraMain);
+        ServiceLocator.Register(cameraGlobalFollow);
 
 
         OnServiceLocatorInitialized?.Invoke();

@@ -1126,11 +1126,12 @@ MonoBehaviour:
   playerSpawnItemOnHand: {fileID: 5846641034301650373}
   followSelectedSocketComponent: {fileID: 7649801925086215586}
   playerRagdollEnabler: {fileID: 8406327557363343199}
-  hitRecieveNetworked: {fileID: 1129441889960646618}
+  hitReceiveNetworked: {fileID: 1129441889960646618}
   playerKnockbackListener: {fileID: 3826531896651400832}
   playerGetUp: {fileID: 1086343849340449909}
   playerJumpUI: {fileID: 7506314524237905732}
   itemStuckSocket: {fileID: 5022486715568151751}
+  hipsTransform: {fileID: 9000821076296315731}
 --- !u!114 &6377254783256832976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1689,6 +1690,7 @@ MonoBehaviour:
   cameraZoom: {fileID: 2903552973942911587}
   cameraFollowing: {fileID: 1764359340906761994}
   playerReference: {fileID: 2871544100916734757}
+  playerNetworkObject: {fileID: 6789602644162241133}
 --- !u!114 &1764359340906761994
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1704,8 +1706,10 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   cameraManager: {fileID: 3009684404041675309}
   hipsBone: {fileID: 9000821076296315731}
+  playerNetworkObject: {fileID: 6789602644162241133}
   cameraZPosOnFollowing: -25
   followYOffsetForPlayer: 2.5
+  hitedDebug: 0
 --- !u!114 &8450544055641021374
 MonoBehaviour:
   m_ObjectHideFlags: 0

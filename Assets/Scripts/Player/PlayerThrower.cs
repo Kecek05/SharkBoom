@@ -25,11 +25,12 @@ public class PlayerThrower : NetworkBehaviour
     [SerializeField] private PlayerSpawnItemOnHand playerSpawnItemOnHand;
     [SerializeField] private FollowSelectedSocketComponent followSelectedSocketComponent;
     [SerializeField] private PlayerRagdollEnabler playerRagdollEnabler;
-    [SerializeField] private HitRecieveNetworkedComponent hitRecieveNetworked;
+    [SerializeField] private HitReceiveNetworkedComponent hitReceiveNetworked;
     [SerializeField] private PlayerKnockbackListener playerKnockbackListener;
     [SerializeField] private PlayerGetUp playerGetUp;
     [SerializeField] private PlayerJumpUI playerJumpUI;
     [SerializeField] private GameObject itemStuckSocket;
+    [SerializeField] private Transform hipsTransform;
 
     private PlayerStateMachine playerStateMachine;
 
@@ -43,6 +44,8 @@ public class PlayerThrower : NetworkBehaviour
     public GameObject ItemStuckSocket => itemStuckSocket;
     public PlayerStateMachine PlayerStateMachine => playerStateMachine;
     public NetworkVariable<PlayableState> ThisPlayableState => thisPlayableState;
+    
+    public Transform HipsTransform => hipsTransform;
 
     public override void OnNetworkSpawn()
     {
@@ -98,7 +101,7 @@ public class PlayerThrower : NetworkBehaviour
 
         BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
 
-        hitRecieveNetworked.OnHitRecieve += HandleOnHitRecieve;
+        hitReceiveNetworked.OnHitReceive += HandleOnHitReceive;
 
         cameraManager.InitializeOwner();
         playerDetectFacingDirection.InitializeOwner();
@@ -282,7 +285,7 @@ public class PlayerThrower : NetworkBehaviour
         playerLauncher.HandleOnItemOnHandDespawned(throwable);
     }
 
-    private void HandleOnHitRecieve()
+    private void HandleOnHitReceive()
     {
         cameraManager.HandleOnPlayerHit();
     }
@@ -407,7 +410,7 @@ public class PlayerThrower : NetworkBehaviour
 
             BaseItemThrowable.OnItemCallbackAction -= HandleOnItemCallbackAction;
 
-            hitRecieveNetworked.OnHitRecieve -= HandleOnHitRecieve;
+            hitReceiveNetworked.OnHitReceive -= HandleOnHitReceive;
 
             UnHandleEvents();
         }

@@ -13,13 +13,14 @@ public class CameraFollowing : NetworkBehaviour
     /// <summary>
     /// Used to say to the other CameraFollowing in the other player to stop following the item that was hit.
     /// </summary>
-    public static event Action OnItemHitCallback;
+    private static event Action OnItemHitCallback;
     
     private Action OnComplete;
 
     [Header("References")]
     [SerializeField] private CameraManager cameraManager;
     [SerializeField] private Transform hipsBone;
+    [SerializeField] private NetworkObject playerNetworkObject;
 
     [Header("Settings")]
     [SerializeField] private float cameraZPosOnFollowing = -12f;
@@ -30,18 +31,23 @@ public class CameraFollowing : NetworkBehaviour
 
     private Coroutine followObjectCoroutine;
     private Coroutine resetCameraCoroutine;
-
-
-
-    //DEBUG
-    public Transform FollowTargetTransformDebug => followTargetTransform;
     
-    public void InitializeOwner()
+    //DEBUG
+    public bool hitedDebug = false;
+    public Transform FollowTargetTransformDebug => followTargetTransform;
+
+    public override void OnNetworkSpawn()
     {
         OnItemHit += ItemHitted;
         OnItemHitCallback += ItemCallback;
-        if(!IsOwner) return;
+        
+        Debug.Log("Camera- Subscribed to CameraFollowing events");
+    }
 
+    public void InitializeOwner()
+    {
+        if(!IsOwner) return;
+        
         BaseItemThrowable.OnItemReleasedAction += HandleOnItemReleasedAction;
     }
 
@@ -49,24 +55,37 @@ public class CameraFollowing : NetworkBehaviour
     {
         /*Debug.Log($"HandleOnPlayerHit - This Player: {gameObject.transform.parent.name}");
         SetTarget(hipsBone, true);*/
+        //HandleOnPlayerHitServerRpc();
+    }
+
+    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    private void HandleOnPlayerHitServerRpc()
+    {
+        HandleOnPlayerHitClientRpc();
+    }
+    
+    [Rpc(SendTo.ClientsAndHost, Delivery = RpcDelivery.Reliable)]
+    private void HandleOnPlayerHitClientRpc()
+    {
         OnItemHit?.Invoke(hipsBone.transform);
     }
 
     public void HandleOnItemCallbackAction()
     {
-        OnItemHitCallback?.Invoke();
+        //Debug.Log($"Camera - This Player: {gameObject.transform.parent.name}");
+        //OnItemHitCallback?.Invoke();
     }
 
     private void ItemCallback()
     {
-        StopFollowing();
+        //StopFollowing();
     }
 
     private void ItemHitted(Transform followTarget)
     {
-        if (!IsOwner) return;
-
-        Debug.Log($"HandleOnPlayerHit - This Player: {gameObject.transform.parent.name}");
+        //if (!IsOwner) return; 
+        hitedDebug = true;
+        Debug.Log($"Camera - This Player: {gameObject.transform.parent.name} - Follow Target: {followTarget.name}");
         SetTarget(followTarget, true);
     }
     private void HandleOnItemReleasedAction(Transform itemLaunched)
@@ -90,7 +109,7 @@ public class CameraFollowing : NetworkBehaviour
     private IEnumerator FollowObjectCoroutine(float duration, bool followUntilIsNull = true)    
     {
         float timer = 0f;
-        Debug.Log($"Follow Object: {followTargetTransform.name}");
+        Debug.Log($"Camera - Follow Object: {followTargetTransform.name}");
         if (followUntilIsNull)
         {
             while (followTargetTransform)
@@ -131,10 +150,14 @@ public class CameraFollowing : NetworkBehaviour
 
     public void UnInitializeOwner()
     {
-        OnItemHit -= ItemHitted;
-        OnItemHitCallback -= ItemCallback;
         if (!IsOwner) return;
         BaseItemThrowable.OnItemReleasedAction -= HandleOnItemReleasedAction;
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        OnItemHit -= ItemHitted;
+        OnItemHitCallback -= ItemCallback;
     }
 
 }

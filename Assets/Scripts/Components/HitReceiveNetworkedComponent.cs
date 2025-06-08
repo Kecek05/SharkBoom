@@ -2,9 +2,9 @@ using System;
 using Unity.Netcode;
 using UnityEngine;
 
-public class HitRecieveNetworkedComponent : NetworkBehaviour, IRecieveHit
+public class HitReceiveNetworkedComponent : NetworkBehaviour, IRecieveHit
 {
-    public event Action OnHitRecieve;
+    public event Action OnHitReceive;
 
     //DEBUG
     //public bool hitRecieve = false;
@@ -23,8 +23,7 @@ public class HitRecieveNetworkedComponent : NetworkBehaviour, IRecieveHit
     [Rpc(SendTo.ClientsAndHost, Delivery = RpcDelivery.Reliable)]
     private void HitClientRpc()
     {
-        Debug.Log("Getup - HitRecieveComponent");
-        //hitRecieve = true;
-        OnHitRecieve?.Invoke();
+        Debug.Log("Getup - HitReceiveComponent");
+        OnHitReceive?.Invoke();
     }
 }

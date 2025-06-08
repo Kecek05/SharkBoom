@@ -9,7 +9,7 @@ public class CameraManager : NetworkBehaviour
     [SerializeField] private CameraZoom cameraZoom;
     [SerializeField] private CameraFollowing cameraFollowing;
     [SerializeField] private PlayerThrower playerReference;
-    
+    [SerializeField] private NetworkObject playerNetworkObject;
     private CinemachineCamera cinemachineCamera;
     private Camera cameraMain; // Cache camera main for all scripts that need it
     private Transform cameraObjectToFollow;
@@ -19,13 +19,19 @@ public class CameraManager : NetworkBehaviour
 
     private BaseTurnManager turnManager;
     private BasePlayersPublicInfoManager publicInfoManager;
+    private CameraGlobalFollow cameraGlobalFollow;
 
     public Transform CameraObjectToFollow => cameraObjectToFollow;
     public CameraZoom CameraZoom => cameraZoom;
     public CameraMovement CameraMovement => cameraMovement;
     public CinemachineCamera CinemachineCamera => cinemachineCamera;
     public Camera CameraMain => cameraMain;
-    
+
+    public override void OnNetworkSpawn()
+    {
+        cameraGlobalFollow = ServiceLocator.Get<CameraGlobalFollow>();
+    }
+
     public void InitializeOwner()
     {
         if (!IsOwner) return;
@@ -86,12 +92,13 @@ public class CameraManager : NetworkBehaviour
 
     public void HandleOnPlayerHit()
     {
-        cameraFollowing.HandleOnPlayerHit();
+        //cameraFollowing.HandleOnPlayerHit();
+        cameraGlobalFollow.FollowPlayerHipsObject(playerNetworkObject);
     }
     
     public void HandleOnItemCallbackAction()
     {
-        cameraFollowing.HandleOnItemCallbackAction();
+        //cameraFollowing.HandleOnItemCallbackAction();
     }
 
     /// <summary>

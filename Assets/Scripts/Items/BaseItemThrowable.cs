@@ -5,9 +5,17 @@ using UnityEngine;
 
 public abstract class BaseItemThrowable : NetworkBehaviour
 {
-
+    /// <summary>
+    /// Called when the item is destroyed.
+    /// </summary>
     public static event Action OnItemFinishedAction;
+    /// <summary>
+    /// Called when the item is released from the hand.
+    /// </summary>
     public static event Action<Transform> OnItemReleasedAction;
+    /// <summary>
+    /// Called when the item is destroyed and was released.
+    /// </summary>
     public static event Action OnItemCallbackAction;
 
     [BetterHeader("Base Item References")]
@@ -48,23 +56,29 @@ public abstract class BaseItemThrowable : NetworkBehaviour
 
         rb.isKinematic = true; //Set the item to kinematic until the item is released
 
-        if(parent != null)
+        if(parent)
         {
             followTransformComponent.SetTarget(parent);
             followTransformComponent.EnableComponent();
         }
 
-        if (dissolveShaderComponent != null)
+        if (dissolveShaderComponent)
             dissolveShaderComponent.DissolveFadeIn();
 
         if(collisionController)
         {
             collisionController.OnCollided += CollisionController_OnCollided;
             collisionController.OnCollidedWithPlayer += CollisionController_OnCollidedWithPlayer;
+            collisionController.OnCollidedWithoutPlayer += CollisionController_OnCollidedWithoutPlayer;
         }
 
         ResetConstraints();
         InitializeUpdateRbTypeServerRpc(true);
+    }
+
+    protected virtual void CollisionController_OnCollidedWithoutPlayer(GameObject collidedObject)
+    {
+        
     }
 
     protected virtual void CollisionController_OnCollidedWithPlayer(PlayerThrower playerObject)

@@ -1,0 +1,146 @@
+using System;
+using System.Collections;
+using Unity.Netcode;
+using UnityEngine;
+
+public class CameraGlobalFollow : NetworkBehaviour
+{
+    public static event Action OnFinishedFollowing;
+    
+    private static Transform followTargetTransform;
+    private Coroutine followObjectCoroutine;
+    private Transform cameraObjectToFollow;
+    
+
+    private float cameraZPosOnFollowing = -12f;
+    private float followYOffsetForPlayer = 2.5f;
+    
+    public override void OnNetworkSpawn()
+    {
+        BaseItemThrowable.OnItemReleasedAction += HandleOnItemReleasedAction;
+        BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
+        Debug.Log("CameraGlobalFollow - Subscribed to CameraFollowing events");
+    }
+
+    public void Initialize(Transform _cameraObjectToFollow)
+    {
+        cameraObjectToFollow = _cameraObjectToFollow;
+    }
+
+    private void HandleOnItemCallbackAction()
+    {
+        StopFollowingObject();
+    }
+
+    private void HandleOnItemReleasedAction(Transform itemObject)
+    {
+        FollowPlayerHipsObject(itemObject.GetComponent<NetworkObject>());
+    }
+    
+    /// <summary>
+    /// Called to follow a NetworkObject 
+    /// </summary>
+    /// <param name="objectToFollow"> pass the NetworkObject to follow. MUST BE!</param>
+    /// <param name="duration"> duration if want</param>
+    /// <param name="followByDuration"> if should follow indefinitely or follow for a short period</param>
+    public void FollowPlayerHipsObject(NetworkObjectReference objectToFollow, float duration = 0, bool followByDuration = false)
+    {
+        FollowPlayerHipsObjectServerRpc(objectToFollow, duration, followByDuration);
+    }
+
+    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    private void FollowPlayerHipsObjectServerRpc(NetworkObjectReference objectToFollow, float duration, bool followByDuration)
+    {
+        FollowPlayerHipsObjectClientRpc(objectToFollow, duration, followByDuration);
+    }
+    
+    [Rpc(SendTo.ClientsAndHost, Delivery = RpcDelivery.Reliable)]
+    private void FollowPlayerHipsObjectClientRpc(NetworkObjectReference objectToFollow, float duration, bool followByDuration)
+    {
+        if (objectToFollow.TryGet(out NetworkObject networkObject))
+        {
+            if (networkObject.TryGetComponent(out PlayerThrower playerThrower))
+            {
+                followTargetTransform = playerThrower.HipsTransform;
+            }
+            else
+            {
+                Debug.LogWarning("CameraGlobalFollow - FollowObjectClientRpc: NetworkObject does not have PlayerThrower component.");
+                return;
+            }
+        }
+        else
+        {
+            Debug.LogWarning("CameraGlobalFollow - FollowObjectClientRpc: NetworkObjectReference is not valid.");
+            return;
+        }
+        
+        followObjectCoroutine = StartCoroutine(FollowPositionCoroutine(duration, followByDuration)); 
+    }
+
+    public void StopFollowingObject()
+    {
+        StopFollowingObjectServerRpc();
+    }
+    
+    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    private void StopFollowingObjectServerRpc()
+    {
+        StopFollowingObjectClientRpc();
+    }
+    [Rpc(SendTo.ClientsAndHost, Delivery = RpcDelivery.Reliable)]
+    private void StopFollowingObjectClientRpc()
+    {
+        StopFollowingCoroutine();
+    }
+    
+    
+    private IEnumerator FollowPositionCoroutine(float duration, bool followByDuration)    
+    {
+        float timer = 0f;
+        Debug.Log($"CameraGlobalFollow - Follow Object: {followTargetTransform.name}");
+        if (!followByDuration)
+        {
+            while (followTargetTransform)
+            {
+                cameraObjectToFollow.position = new Vector3(followTargetTransform.position.x, followTargetTransform.position.y, cameraZPosOnFollowing);
+                yield return null;
+            }
+            followObjectCoroutine = null;
+            OnFinishedFollowing?.Invoke();
+        }
+        else
+        {
+            // stop following after a certain duration
+            while (timer < duration)
+            {
+                if (followTargetTransform)
+                {
+                    cameraObjectToFollow.position = new Vector3(followTargetTransform.position.x, followTargetTransform.position.y + followYOffsetForPlayer, cameraZPosOnFollowing);
+                }
+
+                timer += Time.deltaTime;
+                yield return null;
+            }
+
+            followObjectCoroutine = null;
+            OnFinishedFollowing?.Invoke();
+        }
+    }
+
+    private void StopFollowingCoroutine()
+    {
+        if (followObjectCoroutine != null) // if the coroutine is already running, stop it
+        {
+            StopCoroutine(followObjectCoroutine);
+        }
+
+        followObjectCoroutine = null;
+    }
+    
+    public override void OnNetworkDespawn()
+    {
+        BaseItemThrowable.OnItemReleasedAction -= HandleOnItemReleasedAction;
+        BaseItemThrowable.OnItemCallbackAction -= HandleOnItemCallbackAction;
+    }
+}

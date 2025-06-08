@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class SwordItemThrowable : BaseItemThrowable
@@ -14,7 +13,7 @@ public class SwordItemThrowable : BaseItemThrowable
         spinObjectComponent.StartComponentLogic();
     }
 
-    protected override void CollisionController_OnCollided(GameObject collidedObj)
+    protected override void CollisionController_OnCollidedWithoutPlayer(GameObject collidedObj)
     {
         spinObjectComponent.DisableComponent();
     }
