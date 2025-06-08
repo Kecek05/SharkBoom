@@ -14,15 +14,16 @@ public class RotateTowardsVelocityComponent : BaseItemComponent
     protected override void OnEnableComponent()
     {
         //Rotate the object to the right direction that the player is facing and get the right rotation, if is positive or if is negative
+        
+        /*if (rotateCoroutine != null)
+        {
+            StopCoroutine(rotateCoroutine);
+            rotateCoroutine = null;
+        }*/
     }
 
     protected override void DoComponentLogic()
     {
-        if (rotateCoroutine != null)
-        {
-            StopCoroutine(rotateCoroutine);
-            rotateCoroutine = null;
-        }
         rotateCoroutine = StartCoroutine(RotateObject()); //if not null start the coroutine and assign it to rotateCoroutine
     }
 
@@ -34,6 +35,8 @@ public class RotateTowardsVelocityComponent : BaseItemComponent
             if (vel.sqrMagnitude > velocityThreshold)
             {
                 float angle = Mathf.Atan2(vel.y, vel.x) * Mathf.Rad2Deg;
+                //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.AngleAxis(angle, Vector3.forward), rotationSpeed * Time.fixedDeltaTime);
+
                 transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
             }
             yield return waitForFixedUpdate;

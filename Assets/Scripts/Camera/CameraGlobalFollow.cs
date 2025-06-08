@@ -13,7 +13,7 @@ public class CameraGlobalFollow : NetworkBehaviour
     
 
     private float cameraZPosOnFollowing = -30f;
-    private float followYOffsetForPlayer = 2.5f;
+    //[SerializeField] private float cameraFollowSpeed = 10f;
     
     public override void OnNetworkSpawn()
     {
@@ -105,7 +105,7 @@ public class CameraGlobalFollow : NetworkBehaviour
         {
             while (followTargetTransform)
             {
-                cameraObjectToFollow.position = new Vector3(followTargetTransform.position.x, followTargetTransform.position.y, cameraZPosOnFollowing);
+                ChangeCameraObjectToFollowPosition();
                 yield return null;
             }
             followObjectCoroutine = null;
@@ -118,7 +118,7 @@ public class CameraGlobalFollow : NetworkBehaviour
             {
                 if (followTargetTransform)
                 {
-                    cameraObjectToFollow.position = new Vector3(followTargetTransform.position.x, followTargetTransform.position.y + followYOffsetForPlayer, cameraZPosOnFollowing);
+                    ChangeCameraObjectToFollowPosition();
                 }
 
                 timer += Time.deltaTime;
@@ -128,6 +128,14 @@ public class CameraGlobalFollow : NetworkBehaviour
             followObjectCoroutine = null;
             OnComplete?.Invoke();
         }
+    }
+
+    private void ChangeCameraObjectToFollowPosition()
+    {
+        cameraObjectToFollow.position = new Vector3(followTargetTransform.position.x, followTargetTransform.position.y, cameraZPosOnFollowing);
+        
+        /*Vector3 targetPos = new Vector3(followTargetTransform.position.x, followTargetTransform.position.y, cameraZPosOnFollowing);
+        cameraObjectToFollow.position = Vector3.Lerp(cameraObjectToFollow.position, targetPos, cameraFollowSpeed * Time.deltaTime);*/
     }
 
     private void StopFollowingCoroutine()
