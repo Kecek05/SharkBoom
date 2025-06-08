@@ -102,7 +102,7 @@ public class CameraFollowing : NetworkBehaviour
         this.OnComplete = onComplete;
         StopFollowing();
         
-        followObjectCoroutine = StartCoroutine(FollowObjectCoroutine(duration, followUntilIsNull)); 
+        //followObjectCoroutine = StartCoroutine(FollowObjectCoroutine(duration, followUntilIsNull)); 
     }
 
 

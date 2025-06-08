@@ -34,7 +34,7 @@ public class CameraGlobalFollow : NetworkBehaviour
 
     private void HandleOnItemReleasedAction(Transform itemObject)
     {
-        FollowPlayerHipsObject(itemObject.GetComponent<NetworkObject>());
+        FollowObject(itemObject.GetComponent<NetworkObject>());
     }
     
     /// <summary>
@@ -43,30 +43,26 @@ public class CameraGlobalFollow : NetworkBehaviour
     /// <param name="objectToFollow"> pass the NetworkObject to follow. MUST BE!</param>
     /// <param name="duration"> duration if want</param>
     /// <param name="followByDuration"> if should follow indefinitely or follow for a short period</param>
-    public void FollowPlayerHipsObject(NetworkObjectReference objectToFollow, float duration = 0, bool followByDuration = false)
+    public void FollowObject(NetworkObjectReference objectToFollow, float duration = 0, bool followByDuration = false)
     {
-        FollowPlayerHipsObjectServerRpc(objectToFollow, duration, followByDuration);
+        FollowObjectServerRpc(objectToFollow, duration, followByDuration);
     }
 
     [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
-    private void FollowPlayerHipsObjectServerRpc(NetworkObjectReference objectToFollow, float duration, bool followByDuration)
+    private void FollowObjectServerRpc(NetworkObjectReference objectToFollow, float duration, bool followByDuration)
     {
-        FollowPlayerHipsObjectClientRpc(objectToFollow, duration, followByDuration);
+        FollowObjectClientRpc(objectToFollow, duration, followByDuration);
     }
     
     [Rpc(SendTo.ClientsAndHost, Delivery = RpcDelivery.Reliable)]
-    private void FollowPlayerHipsObjectClientRpc(NetworkObjectReference objectToFollow, float duration, bool followByDuration)
+    private void FollowObjectClientRpc(NetworkObjectReference objectToFollow, float duration, bool followByDuration)
     {
         if (objectToFollow.TryGet(out NetworkObject networkObject))
         {
-            if (networkObject.TryGetComponent(out PlayerThrower playerThrower))
+            if (networkObject.transform.TryGetComponent(out PlayerThrower playerThrower))
             {
+                //If is player, follow hips transform
                 followTargetTransform = playerThrower.HipsTransform;
-            }
-            else
-            {
-                Debug.LogWarning("CameraGlobalFollow - FollowObjectClientRpc: NetworkObject does not have PlayerThrower component.");
-                return;
             }
         }
         else
@@ -75,6 +71,7 @@ public class CameraGlobalFollow : NetworkBehaviour
             return;
         }
         
+        StopFollowingObject();
         followObjectCoroutine = StartCoroutine(FollowPositionCoroutine(duration, followByDuration)); 
     }
 
@@ -98,12 +95,13 @@ public class CameraGlobalFollow : NetworkBehaviour
     private IEnumerator FollowPositionCoroutine(float duration, bool followByDuration)    
     {
         float timer = 0f;
-        Debug.Log($"CameraGlobalFollow - Follow Object: {followTargetTransform.name}");
+        Debug.Log($"CameraGlobalFollow - Follow Object: {followTargetTransform.name} - Pos: {followTargetTransform.position}");
         if (!followByDuration)
         {
             while (followTargetTransform)
             {
                 cameraObjectToFollow.position = new Vector3(followTargetTransform.position.x, followTargetTransform.position.y, cameraZPosOnFollowing);
+                Debug.Log($"CameraGlobalFollow - Camera Object: {cameraObjectToFollow.position}");
                 yield return null;
             }
             followObjectCoroutine = null;

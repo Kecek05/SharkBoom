@@ -93,7 +93,7 @@ public class CameraManager : NetworkBehaviour
     public void HandleOnPlayerHit()
     {
         //cameraFollowing.HandleOnPlayerHit();
-        cameraGlobalFollow.FollowPlayerHipsObject(playerNetworkObject);
+        cameraGlobalFollow.FollowObject(playerNetworkObject);
     }
     
     public void HandleOnItemCallbackAction()
