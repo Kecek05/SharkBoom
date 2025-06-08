@@ -15,7 +15,6 @@ public class GameOverUI : MonoBehaviour
     [SerializeField] private Image gameOverImage;
     [SerializeField] private Image returnBtnImage;
     [SerializeField] private Image animateBackground;
-    [SerializeField] private Button returnBtn;
     [Space(5)]
     [BetterHeader("Win")]
     [SerializeField] private Material winBackgroundMaterial;
@@ -44,17 +43,7 @@ public class GameOverUI : MonoBehaviour
     private void Awake()
     {
         Hide();
-
         alreadyChanged = false;
-
-        returnBtn.onClick.AddListener(() =>
-        {
-            //Return to main menu
-
-            if(ClientSingleton.Instance != null)
-                ClientSingleton.Instance.GameManager.Disconnect();
-        });
-
     }
 
     private void Start()
@@ -68,6 +57,11 @@ public class GameOverUI : MonoBehaviour
         pearlsManager.OnPearlsChanged += PearlsManager_OnPearlsChanged;
     }
 
+    public void ReturnToMenu()
+    {
+        if (ClientSingleton.Instance != null)
+            ClientSingleton.Instance.GameManager.Disconnect();
+    }
     private void PearlsManager_OnPearlsChanged(int pearlsToShow)
     {
         SetupPearlsResult(pearlsToShow);

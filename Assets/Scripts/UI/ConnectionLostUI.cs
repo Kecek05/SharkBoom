@@ -8,21 +8,12 @@ public class ConnectionLostUI : MonoBehaviour
     //ONLY FOR HOST AND CLIENT
     [BetterHeader("References")]
     [SerializeField] private GameObject connectionLostBackground;
-    [SerializeField] private Button returnButton;
 
     private BaseGameStateManager gameStateManager;
 
     private void Awake()
     {
         Hide();
-
-        returnButton.onClick.AddListener(() =>
-        {
-            //Return to main menu
-
-            if (ClientSingleton.Instance != null)
-                ClientSingleton.Instance.GameManager.Disconnect();
-        });
     }
 
     private void Start()
@@ -32,9 +23,14 @@ public class ConnectionLostUI : MonoBehaviour
         gameStateManager.OnLostConnectionInHost += GameStateManager_OnLostConnectionInHost;
     }
 
+    public void ReturnGame()
+    {
+        if (ClientSingleton.Instance != null)
+            ClientSingleton.Instance.GameManager.Disconnect();
+    }
+
     private void GameStateManager_OnLostConnectionInHost()
     {
-        Debug.Log("OnLostConnectionInHost in ConnectionLostUI");
         Show();
     }
 
