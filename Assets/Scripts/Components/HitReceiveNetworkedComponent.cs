@@ -4,26 +4,28 @@ using UnityEngine;
 
 public class HitReceiveNetworkedComponent : NetworkBehaviour, IRecieveHit
 {
-    public event Action OnHitReceive;
+    /// <summary>
+    /// Called when the object receives a hit. Pass if is jump to camera not follow.
+    /// </summary>
+    public event Action<bool> OnHitReceive;
 
     //DEBUG
     //public bool hitRecieve = false;
 
-    public void Hit()
+    public void Hit(bool isJump)
     {
-        HitServerRpc();
+        HitServerRpc(isJump);
     }
 
     [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
-    private void HitServerRpc()
+    private void HitServerRpc(bool isJump)
     {
-        HitClientRpc();
+        HitClientRpc(isJump);
     }
 
     [Rpc(SendTo.ClientsAndHost, Delivery = RpcDelivery.Reliable)]
-    private void HitClientRpc()
+    private void HitClientRpc(bool isJump)
     {
-        Debug.Log("Getup - HitReceiveComponent");
-        OnHitReceive?.Invoke();
+        OnHitReceive?.Invoke(isJump);
     }
 }

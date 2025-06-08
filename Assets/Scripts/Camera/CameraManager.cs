@@ -7,7 +7,6 @@ public class CameraManager : NetworkBehaviour
 {
     [SerializeField] private CameraMovement cameraMovement;
     [SerializeField] private CameraZoom cameraZoom;
-    [SerializeField] private CameraFollowing cameraFollowing;
     [SerializeField] private PlayerThrower playerReference;
     [SerializeField] private NetworkObject playerNetworkObject;
     private CinemachineCamera cinemachineCamera;
@@ -89,9 +88,9 @@ public class CameraManager : NetworkBehaviour
         }
     }
 
-    public void HandleOnPlayerHit()
+    public void HandleOnPlayerHit(bool isJump)
     {
-        cameraGlobalFollow.FollowObject(playerNetworkObject);
+        cameraGlobalFollow.FollowObject(playerNetworkObject, isJump: isJump);
     }
 
     /// <summary>
@@ -100,22 +99,21 @@ public class CameraManager : NetworkBehaviour
     /// <param name="movement">CameraMovement Script</param>
     /// <param name="zoom">CameraZoom Script</param>
     /// <param name="following">Camera following</param>
-    public void SetCameraModules(bool movement, bool zoom, bool following)
+    public void SetCameraModules(bool movement, bool zoom)
     {
         cameraMovement.enabled = movement;
         cameraZoom.enabled = zoom;
-        cameraFollowing.enabled = following;
     }
 
-    private void CameraMove() => SetCameraModules(true, true, false);
+    private void CameraMove() => SetCameraModules(true, true);
 
-    private void CameraDragging() => SetCameraModules(false, true, false);
+    private void CameraDragging() => SetCameraModules(false, true);
     
-    private void CameraFollowing() => SetCameraModules(false, false, true);
+    private void CameraFollowing() => SetCameraModules(false, false);
     
     private void CameraGoToPlayer(GameObject player)
     {
-        SetCameraModules(false, false, true);
+        SetCameraModules(false, false);
         cameraGlobalFollow.FollowObject(player, 3f, true, onComplete: () =>
         {
             PlayerState currentState = playerReference.PlayerStateMachine.CurrentState.State;
@@ -129,7 +127,7 @@ public class CameraManager : NetworkBehaviour
 
     private void CameraTurnOff()
     {
-        SetCameraModules(false, false, false);
+        SetCameraModules(false, false);
     }
 
     public void UnInitializeOwner()

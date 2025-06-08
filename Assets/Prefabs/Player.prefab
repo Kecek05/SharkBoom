@@ -1648,7 +1648,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3641900726820850059}
   - component: {fileID: 3009684404041675309}
-  - component: {fileID: 1764359340906761994}
   - component: {fileID: 8450544055641021374}
   - component: {fileID: 2903552973942911587}
   m_Layer: 0
@@ -1688,28 +1687,9 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   cameraMovement: {fileID: 8450544055641021374}
   cameraZoom: {fileID: 2903552973942911587}
-  cameraFollowing: {fileID: 1764359340906761994}
+  cameraFollowing: {fileID: 0}
   playerReference: {fileID: 2871544100916734757}
   playerNetworkObject: {fileID: 6789602644162241133}
---- !u!114 &1764359340906761994
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1569166266498005489}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f802b013fd1955043ac78bce19ab8d6f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  cameraManager: {fileID: 3009684404041675309}
-  hipsBone: {fileID: 9000821076296315731}
-  playerNetworkObject: {fileID: 6789602644162241133}
-  cameraZPosOnFollowing: -25
-  followYOffsetForPlayer: 2.5
-  hitedDebug: 0
 --- !u!114 &8450544055641021374
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3740,7 +3720,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   playerRagdollEnabler: {fileID: 8406327557363343199}
   hitedDebugText: {fileID: 6379452729668931535}
-  cameraFollowing: {fileID: 1764359340906761994}
+  cameraFollowing: {fileID: 0}
   followingTargetTxt: {fileID: 3321589396493213526}
 --- !u!1 &4311250076909872014
 GameObject:

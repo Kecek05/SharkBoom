@@ -127,5 +127,5 @@ public interface IRecieveHit
     /// <summary>
     /// Called when the object is hit.
     /// </summary>
-    public void Hit();
+    public void Hit(bool isJump = false);
 }

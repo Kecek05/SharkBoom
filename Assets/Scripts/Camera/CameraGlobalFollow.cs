@@ -43,8 +43,9 @@ public class CameraGlobalFollow : NetworkBehaviour
     /// <param name="objectToFollow"> pass the NetworkObject to follow. MUST BE!</param>
     /// <param name="duration"> duration if want</param>
     /// <param name="followByDuration"> if should follow indefinitely or follow for a short period</param>
-    public void FollowObject(NetworkObjectReference objectToFollow, float duration = 0, bool followByDuration = false, Action onComplete = null)
+    public void FollowObject(NetworkObjectReference objectToFollow, float duration = 0, bool followByDuration = false, Action onComplete = null, bool isJump = false)
     {
+        if(isJump) return;
         this.OnComplete = onComplete;
         FollowObjectServerRpc(objectToFollow, duration, followByDuration);
     }

@@ -1,4 +1,5 @@
 using System;
+using Sortify;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -6,8 +7,11 @@ public class HitTriggerComponent : NetworkBehaviour
 {
     [Header("References")]
     [SerializeField] private BaseCollisionController baseCollisionController;
+    [BetterHeader("Settings")]
+    [SerializeField] private bool isJump;
     [Header("Knockback Settings")]
     [SerializeField] private float knockbackStrength;
+
 
     private void OnEnable()
     {
@@ -18,11 +22,11 @@ public class HitTriggerComponent : NetworkBehaviour
     {
         if(!IsOwner) return;
         
-        if (collidedObject.transform.parent == null) return; //Check if the collided object has a parent
+        if (!collidedObject.transform.parent) return; //Check if the collided object has a parent
 
         if (collidedObject.transform.parent.TryGetComponent(out IRecieveHit recieveHit)) //Call on the parent
         {
-            recieveHit.Hit();
+            recieveHit.Hit(isJump);
         }
 
         if (collidedObject.transform.parent.TryGetComponent(out IRecieveKnockback knockbackReceiver))

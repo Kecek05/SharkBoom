@@ -284,9 +284,9 @@ public class PlayerThrower : NetworkBehaviour
         playerLauncher.HandleOnItemOnHandDespawned(throwable);
     }
 
-    private void HandleOnHitReceive()
+    private void HandleOnHitReceive(bool isJump)
     {
-        cameraManager.HandleOnPlayerHit();
+        cameraManager.HandleOnPlayerHit(isJump);
     }
     private void OnPlayerSpawnItemOnHandItemSocketSelected(ItemSocket selectedSocket)
     {
