@@ -15,10 +15,10 @@ public class MainMenuMatchmaking : MonoBehaviour
     [SerializeField] private TMP_Text matchmakingTime;
     [SerializeField] private TMP_Text matchmakingText;
 
-    private WaitForSeconds waitToTurnOnCancel = new WaitForSeconds(2f);
+    private WaitForSeconds waitToTurnOnSearch = new WaitForSeconds(2f);
     private WaitForSeconds waitToIncreaseMatchmakingTime = new WaitForSeconds(1f);
 
-    private Coroutine cancelButtonCoroutine;
+    private Coroutine searchButtonCoroutine;
     private Coroutine matchmakingTimerCoroutine;
 
     private bool isMatchMaking = false;
@@ -61,20 +61,7 @@ public class MainMenuMatchmaking : MonoBehaviour
 
     private void MatchplayMatchmaker_OnTicketCreated()
     {
-        if(cancelButtonCoroutine != null)
-        {
-            StopCoroutine(cancelButtonCoroutine);
-            cancelButtonCoroutine = null;
-        }
-
-        cancelButtonCoroutine = StartCoroutine(CancelButtonDelay());
-    }
-
-    private IEnumerator CancelButtonDelay()
-    {
-        yield return waitToTurnOnCancel;
         cancelMatchmakingBtn.interactable = true;
-        cancelButtonCoroutine = null;
         Debug.Log("Match - cancel button interactable true");
     }
 
@@ -124,12 +111,24 @@ public class MainMenuMatchmaking : MonoBehaviour
         matchmakingPanel.SetActive(false);
         matchmakingTime.text = string.Empty;
         matchmakingText.text = string.Empty;
+        searchMatchmakingBtn.interactable = false;
+        Debug.Log($"Match - button is not interactable - {searchMatchmakingBtn.interactable}");
 
-        if (cancelButtonCoroutine != null)
+        if (searchButtonCoroutine != null)
         {
-            StopCoroutine(cancelButtonCoroutine);
-            cancelButtonCoroutine = null;
+            StopCoroutine(searchButtonCoroutine);
+            searchButtonCoroutine = null;
         }
+
+        searchButtonCoroutine = StartCoroutine(SearchButtonDelay());
+    }
+
+
+    private IEnumerator SearchButtonDelay()
+    {
+        yield return waitToTurnOnSearch;
+        searchMatchmakingBtn.interactable = true;
+        Debug.Log($"Match - button is interactable - {searchMatchmakingBtn.interactable}");
     }
 
     private void Show()

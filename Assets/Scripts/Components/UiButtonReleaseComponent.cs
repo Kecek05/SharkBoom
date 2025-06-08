@@ -12,7 +12,7 @@ public class UiButtonReleaseComponent : MonoBehaviour
 
     public void ButtonRelease()
     {
-        if (UIDetection.IsPointerOverThisObject(gameobject))
+        if (UIDetection.IsPointerOverThisObject(gameobject) && button.interactable)
         {
             buttonAction?.Invoke();
         }
