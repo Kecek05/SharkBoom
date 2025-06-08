@@ -81,7 +81,7 @@ public class CameraFollowing : NetworkBehaviour
         if (stopOnNull)
         {
             // used for items that will be destroyed
-            while (followTargetTransform != null) // while the itemLaunched is not destroyed
+            while (followTargetTransform) // while the object is not destroyed
             {
                 cameraManager.CameraObjectToFollow.position = new Vector3(followTargetTransform.position.x, followTargetTransform.position.y, cameraZPosOnFollowing);
                 yield return null;
@@ -94,7 +94,7 @@ public class CameraFollowing : NetworkBehaviour
             // used for player or other item that will not be destroyed
             while (timer < duration)
             {
-                if (!followTargetTransform)
+                if (followTargetTransform)
                 {
                     cameraManager.CameraObjectToFollow.position = new Vector3(followTargetTransform.position.x, followTargetTransform.position.y + followYOffsetForPlayer, cameraZPosOnFollowing);
                 }

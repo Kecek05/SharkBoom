@@ -226,7 +226,6 @@ public class PlayerThrower : NetworkBehaviour
 
         playerInventoryUI.HandleOnPlayerStateMachineStateChanged(state);
 
-
         playerSpawnItemOnHand.HandleOnPlayerStateChanged(state);
     }
 

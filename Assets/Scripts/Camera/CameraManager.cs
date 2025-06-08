@@ -54,7 +54,7 @@ public class CameraManager : NetworkBehaviour
     {
         enemyObj = publicInfoManager.GetOtherPlayerByMyPlayableState(turnManager.LocalPlayableState);
         playerObj = publicInfoManager.GetPlayerObjectByPlayableState(turnManager.LocalPlayableState);
-
+        
         if (turnManager.LocalPlayableState == newValue)
             CameraGoToSelfPlayer();
         else

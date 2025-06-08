@@ -24,19 +24,18 @@ public class PlayerGetUp : NetworkBehaviour
     private float originalRootZ;
     private Quaternion originalRootRotation;
     private Quaternion originalHipsRotation;
-    //private Vector3 finalPosition;
 
     private List<Vector3> directions = new List<Vector3>();
 
     private List<Vector3> foundDirections = new List<Vector3>();
 
     //DEBUG
-    /*public GameObject CubeFoundGetUpPosDEBUG;
+    public GameObject CubeFoundGetUpPosDEBUG;
     public GameObject CubeCollidedPosDEBUG;
     public GameObject CubeFloatingPosDEBUG;
     public GameObject CubeStartCalcPosDEBUG;
     public GameObject CubeTestedPosDEBUG;
-    public GameObject CubeSelectedPosDEBUG;*/
+    public GameObject CubeSelectedPosDEBUG;
 
     public void HandleOnItemCallbackAction()
     {
@@ -54,7 +53,7 @@ public class PlayerGetUp : NetworkBehaviour
         if (Physics.Raycast(hipsTransform.position, Vector3.down, out var hit, 5f, layersToDetectCollision))
             playerRagdollPosition.y = Mathf.Max(playerRagdollPosition.y, hit.point.y);
 
-        //Instantiate(CubeStartCalcPosDEBUG, playerRagdollPosition, Quaternion.Euler(defaultHipsRotation));
+        //Instantiate(CubeStartCalcPosDEBUG, playerRagdollPosition, Quaternion.identity);
         Vector3 foundFinalPosition = GetFreePosition(playerRagdollPosition);
         
         PassPlayerFreePosServerRpc(foundFinalPosition);
@@ -108,7 +107,7 @@ public class PlayerGetUp : NetworkBehaviour
                 Vector3 halfExtents = Vector3.Scale(box.size, colliders.transform.lossyScale) * 0.5f;
                 if (Physics.CheckBox(worldCenter, halfExtents, Quaternion.Euler(0f, 0f, 0f), filteredMask))
                 {
-                    //Instantiate(CubeCollidedPosDEBUG, worldCenter, Quaternion.identity);
+                    //(CubeCollidedPosDEBUG, worldCenter, Quaternion.identity);
                     return false;
                 }
             }

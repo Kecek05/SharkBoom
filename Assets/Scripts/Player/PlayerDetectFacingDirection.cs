@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDetectDragChange//, IDetectEndedTurn
+public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDetectDragChange, IDetectEndedTurn
 {
     /// <summary>
     /// Called when the look orientation is changed. Pass if is looking right
@@ -50,9 +50,6 @@ public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDete
             isDirectionRight = true;
 
             OnRotationChanged?.Invoke(true);
-
-            Debug.Log("Right");
-
         }
         else if (playerDragController.GetOpositeFingerPos().x < playerGfxTransform.position.x - angleOffset)
         {
@@ -62,10 +59,7 @@ public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDete
             isDirectionRight = false;
 
             OnRotationChanged?.Invoke(false);
-
-            Debug.Log("Left");
         }
-        Debug.Log($"DragChange Oposite Finger Pos X: {playerDragController.GetOpositeFingerPos().x} - PlayerGFX Pos X: {playerGfxTransform.position.x} - isRight: {isDirectionRight}");
     }
 
     private IEnumerator DelayStartFaceOtherPlayer()
@@ -83,4 +77,8 @@ public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDete
         OnRotationChanged?.Invoke(isDirectionRight);
     }
 
+    public void DoOnEndedTurn()
+    {
+        FaceOtherPlayer();
+    }
 }
