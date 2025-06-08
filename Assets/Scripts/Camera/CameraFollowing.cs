@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class CameraFollowing : NetworkBehaviour
 {
-    /// <summary>
+    /*/// <summary>
     /// Used to say to the other CameraFollowing in the other player to follow the item that was hit.
     /// </summary>
     private static event Action<Transform> OnItemHit;
@@ -54,7 +54,7 @@ public class CameraFollowing : NetworkBehaviour
     public void HandleOnPlayerHit()
     {
         /*Debug.Log($"HandleOnPlayerHit - This Player: {gameObject.transform.parent.name}");
-        SetTarget(hipsBone, true);*/
+        SetTarget(hipsBone, true);#1#
         //HandleOnPlayerHitServerRpc();
     }
 
@@ -97,10 +97,10 @@ public class CameraFollowing : NetworkBehaviour
 
     public void SetTarget(Transform target, bool followUntilIsNull, float duration = 5f, Action onComplete = null)
     {
-        cameraManager.CinemachineCamera.Target.TrackingTarget = cameraManager.CameraObjectToFollow; // make sure the camera is following the object
+        /*cameraManager.CinemachineCamera.Target.TrackingTarget = cameraManager.CameraObjectToFollow; // make sure the camera is following the object
         followTargetTransform = target;
         this.OnComplete = onComplete;
-        StopFollowing();
+        StopFollowing();#1#
         
         //followObjectCoroutine = StartCoroutine(FollowObjectCoroutine(duration, followUntilIsNull)); 
     }
@@ -158,6 +158,6 @@ public class CameraFollowing : NetworkBehaviour
     {
         OnItemHit -= ItemHitted;
         OnItemHitCallback -= ItemCallback;
-    }
+    }*/
 
 }

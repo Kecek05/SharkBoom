@@ -15,6 +15,7 @@ public class PlayerDebugCanvas : NetworkBehaviour
 
     private void Update()
     {
+        /*
         if (playerRagdollEnabler.hitedRbDebug)
         {
             hitedDebugText.text = $"Hited Rigidbody: {playerRagdollEnabler.hitedRbDebug.name} - " +
@@ -24,10 +25,11 @@ public class PlayerDebugCanvas : NetworkBehaviour
         {
             hitedDebugText.text = "No Rigidbody hit detected.";
         }
+        */
         
-        if(cameraFollowing.FollowTargetTransformDebug)
+        /*if(cameraFollowing.FollowTargetTransformDebug)
             followingTargetTxt.text = $"Following Target: {cameraFollowing.FollowTargetTransformDebug.name} - " +
-                                  $"Position: {cameraFollowing.FollowTargetTransformDebug.position}";
+                                  $"Position: {cameraFollowing.FollowTargetTransformDebug.position}";*/
             
     }
 }

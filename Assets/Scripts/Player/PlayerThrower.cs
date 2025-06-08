@@ -295,7 +295,6 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleOnItemCallbackAction()
     {
-        cameraManager.HandleOnItemCallbackAction();
         playerGetUp.HandleOnItemCallbackAction();
     }
 
