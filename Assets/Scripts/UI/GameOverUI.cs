@@ -38,6 +38,9 @@ public class GameOverUI : MonoBehaviour
     private BaseGameOverManager gameOverManager;
     private BasePearlsManager pearlsManager;
 
+    private const string TEXTANIMATOR_WIN = "<win>";
+    private const string TEXTANIMATOR_LOSE = "<lose>";
+
     private void Awake()
     {
         Hide();
@@ -135,12 +138,12 @@ public class GameOverUI : MonoBehaviour
 
     private void Win()
     {
-        ChangeUI("You Win!", "VICTORY!", winBackground, winPearlsBackground, winReturnButton, winBackgroundMaterial);
+        ChangeUI($"{TEXTANIMATOR_WIN}You Win!{TEXTANIMATOR_WIN}", "VICTORY!", winBackground, winPearlsBackground, winReturnButton, winBackgroundMaterial);
     }
 
     private void Lose()
     {
-        ChangeUI("<defeat>You Lose!<defeat>", "DEFEAT!", loseBackground, losePearlsBackground, loseReturnButton, loseBackgroundMaterial);
+        ChangeUI($"{TEXTANIMATOR_LOSE}You Lose!{TEXTANIMATOR_LOSE}", "DEFEAT!", loseBackground, losePearlsBackground, loseReturnButton, loseBackgroundMaterial);
     }
 
     private void Tie()
