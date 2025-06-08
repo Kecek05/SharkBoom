@@ -1,5 +1,6 @@
 using MoreMountains.Feedbacks;
 using Sortify;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,6 +12,8 @@ public class MainMenuVsFriends : MonoBehaviour
     [SerializeField] private TMP_InputField lobbyCodeInputField;
     [SerializeField] private GameObject vsFriendsPanel;
     [SerializeField] private GameObject lobbyCodeErrorPanel;
+    [SerializeField] private GameObject creatingLobbyPanel;
+    [SerializeField] private Button errorCreatingLobbyBtn;
 
 
     private bool isBusy = false;
@@ -38,9 +41,17 @@ public class MainMenuVsFriends : MonoBehaviour
 
         isBusy = true;
         createGameBtn.interactable = false;
-        await HostSingleton.Instance.GameManager.StartHostAsync();
-        //createGameBtn.interactable = true;
-        isBusy = false;
+
+        try
+        {
+            creatingLobbyPanel.SetActive(true);
+            await HostSingleton.Instance.GameManager.StartHostAsync();
+        }
+        catch (Exception ex)
+        {
+            errorCreatingLobbyBtn.enabled = true;
+            
+        }
     }
 
     public async void JoinGame()
@@ -67,6 +78,14 @@ public class MainMenuVsFriends : MonoBehaviour
         isBusy = true;
         await ClientSingleton.Instance.GameManager.QuickJoinLobbyAsync();
         isBusy = false;
+    }
+
+    public void CloseLobbyErrorCreating()
+    {
+        createGameBtn.interactable = true;
+        isBusy = false;
+        creatingLobbyPanel.SetActive(false);
+        createGameBtn.enabled = false;
     }
 
     public void CloseErrorLobbyCodePanel()
