@@ -14,17 +14,21 @@ public class GameOverUI : MonoBehaviour
     [SerializeField] private Image pearlsBackground;
     [SerializeField] private Image gameOverImage;
     [SerializeField] private Image returnBtnImage;
+    [SerializeField] private Image animateBackground;
     [SerializeField] private Button returnBtn;
     [Space(5)]
     [BetterHeader("Win")]
+    [SerializeField] private Material winBackgroundMaterial;
     [SerializeField] private Sprite winBackground;
     [SerializeField] private Sprite winPearlsBackground;
     [SerializeField] private Sprite winReturnButton;
     [BetterHeader("Lose")]
+    [SerializeField] private Material loseBackgroundMaterial;
     [SerializeField] private Sprite loseBackground;
     [SerializeField] private Sprite losePearlsBackground;
     [SerializeField] private Sprite loseReturnButton;
     [BetterHeader("Tie")]
+    [SerializeField] private Material tieBackgroundMaterial;
     [SerializeField] private Sprite tieBackground;
     [SerializeField] private Sprite tiePearlsBackground;
     [SerializeField] private Sprite tieReturnButton;
@@ -131,26 +135,27 @@ public class GameOverUI : MonoBehaviour
 
     private void Win()
     {
-        ChangeUI("You Win!", "VICTORY!", winBackground, winPearlsBackground, winReturnButton);
+        ChangeUI("You Win!", "VICTORY!", winBackground, winPearlsBackground, winReturnButton, winBackgroundMaterial);
     }
 
     private void Lose()
     {
-        ChangeUI("You Lose!", "DEFEAT!", loseBackground, losePearlsBackground, loseReturnButton);
+        ChangeUI("You Lose!", "DEFEAT!", loseBackground, losePearlsBackground, loseReturnButton, loseBackgroundMaterial);
     }
 
     private void Tie()
     {
-        ChangeUI("Time's Up!", "TIE!", tieBackground, tiePearlsBackground, tieReturnButton);
+        ChangeUI("Time's Up!", "TIE!", tieBackground, tiePearlsBackground, tieReturnButton, tieBackgroundMaterial);
     }
 
-    private void ChangeUI(string resultTxt, string resultTitleTxt, Sprite backgroundSprite, Sprite pearlsSprite, Sprite buttonSprite)
+    private void ChangeUI(string resultTxt, string resultTitleTxt, Sprite backgroundSprite, Sprite pearlsSprite, Sprite buttonSprite, Material animateMaterial)
     {
         resultText.text = resultTxt;
         resultTitleText.text = resultTitleTxt;
         gameOverImage.sprite = backgroundSprite;
         pearlsBackground.sprite = pearlsSprite;
         returnBtnImage.sprite = buttonSprite;
+        animateBackground.material = animateMaterial;
     }
 
     private void OnDestroy()
