@@ -54,7 +54,7 @@ public class MainMenuVsFriends : MonoBehaviour
         }
     }
 
-    public async void JoinGame()
+    public async void JoinGameWithCode()
     {
         if (isBusy) return;
 
