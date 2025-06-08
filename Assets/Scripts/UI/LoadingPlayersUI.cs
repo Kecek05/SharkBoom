@@ -25,7 +25,8 @@ public class LoadingPlayersUI : NetworkBehaviour
     [SerializeField] private TextMeshProUGUI player2PearlsText;
     [SerializeField] private Transform player2VisualSpawnpoint;
 
-    
+    private const string TEXTANIMATOR_NAMETAG = "<name>";
+
 
     private BaseGameStateManager gameStateManager;
     private BasePlayersPublicInfoManager basePlayerPublicInfoManager;
@@ -98,18 +99,16 @@ public class LoadingPlayersUI : NetworkBehaviour
     {
         updatedPlayersInfoOnClient++;
 
-        Debug.Log($"Name: {playerName} Pearls: {playerPearls} Player Count: {updatedPlayersInfoOnClient}");
-
         //All clients listen to this
         switch(playableState)
         {
             case PlayableState.Player1Playing:
-                player1NameText.text = playerName.ToString();
-                player1PearlsText.text = playerPearls.ToString();
+                player1NameText.text = TEXTANIMATOR_NAMETAG + playerName.ToString() + TEXTANIMATOR_NAMETAG;
+                player1PearlsText.text = playerPearls.ToString()
                 player1GameObject = SpawnPlayerVisual(basePlayerPublicInfoManager.GetPlayerVisualTypes()[playableState], player1VisualSpawnpoint);
                 break;
             case PlayableState.Player2Playing:
-                player2NameText.text = playerName.ToString();
+                player2NameText.text = TEXTANIMATOR_NAMETAG + playerName.ToString() + TEXTANIMATOR_NAMETAG;
                 player2PearlsText.text = playerPearls.ToString();
                 player2GameObject = SpawnPlayerVisual(basePlayerPublicInfoManager.GetPlayerVisualTypes()[playableState], player2VisualSpawnpoint);
                 break;
