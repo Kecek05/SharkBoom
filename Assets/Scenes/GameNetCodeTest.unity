@@ -5062,7 +5062,6 @@ GameObject:
   - component: {fileID: 723245790}
   - component: {fileID: 723245792}
   - component: {fileID: 723245791}
-  - component: {fileID: 723245793}
   m_Layer: 5
   m_Name: BackgroundWaitingForPlayers
   m_TagString: Untagged
@@ -5129,20 +5128,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 723245789}
   m_CullTransparentMesh: 1
---- !u!114 &723245793
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 723245789}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 83d359a757ed26049aecaa1caeead1b9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  imageForAnimate: {fileID: 1597453646}
-  rotationSpeed: 10
 --- !u!1 &766580085
 GameObject:
   m_ObjectHideFlags: 0
@@ -5471,6 +5456,7 @@ GameObject:
   - component: {fileID: 829601600}
   - component: {fileID: 829601602}
   - component: {fileID: 829601601}
+  - component: {fileID: 829601603}
   m_Layer: 5
   m_Name: VStxt
   m_TagString: Untagged
@@ -5517,7 +5503,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: VS
+  m_text: <vs>VS<vs>
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 39ec0e304d5138e439cf7887d13c821c, type: 2}
   m_sharedMaterial: {fileID: -5130788614859905338, guid: 39ec0e304d5138e439cf7887d13c821c, type: 2}
@@ -5596,6 +5582,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 829601599}
   m_CullTransparentMesh: 1
+--- !u!114 &829601603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 829601599}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8ace8ced0e81c847968cdca0aeda757, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  typewriterStartsAutomatically: 0
+  animationLoop: 0
+  timeScale: 0
+  _text: <vs>VS<vs>
+  useDynamicScaling: 1
+  referenceFontSize: 10
+  isResettingTimeOnNewText: 1
+  useDefaultDatabases: 1
+  databaseBehaviors: {fileID: 11400000, guid: 83e842c82803dc34491b7b2a3e53ee14, type: 2}
+  databaseAppearances: {fileID: 11400000, guid: f6c9b478e0c4942448ecf0a5911db8fd, type: 2}
+  useDefaultStyleSheet: 1
+  styleSheet: {fileID: 0}
+  databaseActions: {fileID: 11400000, guid: 76f76256d1bc71e429ea0482ef9589be, type: 2}
+  defaultAppearancesTags:
+  - size
+  defaultDisappearancesTags:
+  - fade
+  defaultBehaviorsTags: []
+  defaultTagsMode: 0
 --- !u!1 &841483725
 GameObject:
   m_ObjectHideFlags: 0
