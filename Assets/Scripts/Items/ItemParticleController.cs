@@ -30,6 +30,7 @@ public class ItemParticleController : MonoBehaviour
 
     private void OnDisable()
     {
-        hideMeshOnCollisionComponent.OnMeshHidden -= HideMeshOnCollisionComponent_OnMeshHidden;
+        if(hideMeshOnCollisionComponent)
+            hideMeshOnCollisionComponent.OnMeshHidden -= HideMeshOnCollisionComponent_OnMeshHidden;
     }
 }

@@ -36,6 +36,9 @@ public class TurnManager : BaseTurnManager
         {
             //Local Player cant play
             TriggerOnMyTurnEnded();
+        } else if (newValue == enemyPlayableState)
+        {
+            TriggerOnEnemyTurnStarted();
         }
     }
 
@@ -52,10 +55,12 @@ public class TurnManager : BaseTurnManager
             case PlayableState.Player1Playing:
                 localPlayableState = PlayableState.Player1Playing;
                 localPlayedState = PlayableState.Player1Played;
+                enemyPlayableState = PlayableState.Player2Playing;
                 break;
             case PlayableState.Player2Playing:
                 localPlayableState = PlayableState.Player2Playing;
                 localPlayedState = PlayableState.Player2Played;
+                enemyPlayableState = PlayableState.Player1Playing;
                 break;
         }
 
