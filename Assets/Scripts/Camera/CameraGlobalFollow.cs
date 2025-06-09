@@ -76,7 +76,8 @@ public class CameraGlobalFollow : NetworkBehaviour
             Debug.LogWarning("CameraGlobalFollow - FollowObjectClientRpc: NetworkObjectReference is not valid.");
             return;
         }
-
+        
+        Debug.Log($"CameraGlobalFollow - FollowObject called with object: {followTargetTransform.name}");
         StopFollowingCoroutine();
         followObjectCoroutine = StartCoroutine(FollowPositionCoroutine(duration, followByDuration)); 
     }
