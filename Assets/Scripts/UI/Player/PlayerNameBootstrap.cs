@@ -15,20 +15,6 @@ public class PlayerNameBootstrap : MonoBehaviour
         renameScreen.SetActive(false);
         confirmButton.interactable = false;
         loadingText.enabled = false;
-
-        confirmButton.onClick.AddListener(async () =>
-        {
-            playerNameInputField.interactable = false;
-            confirmButton.interactable = false;
-
-            await Save.SavePlayerName(AuthenticationService.Instance.PlayerId, playerNameInputField.text);
-
-            ClientSingleton.Instance.GameManager.UserData.SetPlayerName(await Save.LoadPlayerName(AuthenticationService.Instance.PlayerId));
-            renameScreen.SetActive(false);
-            loadingText.enabled = true;
-            Loader.LoadNoLoadingScreen(Loader.Scene.MainMenu);
-        });
-
         playerNameInputField.onValueChanged.AddListener(HandlePlayerName);
     }
 
@@ -43,6 +29,19 @@ public class PlayerNameBootstrap : MonoBehaviour
             loadingText.enabled = true;
             Loader.LoadNoLoadingScreen(Loader.Scene.MainMenu);
         }
+    }
+
+    public async void ConfirmName()
+    {
+        playerNameInputField.interactable = false;
+        confirmButton.interactable = false;
+
+        await Save.SavePlayerName(AuthenticationService.Instance.PlayerId, playerNameInputField.text);
+
+        ClientSingleton.Instance.GameManager.UserData.SetPlayerName(await Save.LoadPlayerName(AuthenticationService.Instance.PlayerId));
+        renameScreen.SetActive(false);
+        loadingText.enabled = true;
+        Loader.LoadNoLoadingScreen(Loader.Scene.MainMenu);
     }
 
     private void HandlePlayerName(string playerName)
