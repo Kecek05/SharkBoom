@@ -5987,7 +5987,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   connectionLostBackground: {fileID: 858212715}
-  returnButton: {fileID: 1320018066}
 --- !u!114 &995668864
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7139,13 +7138,16 @@ MonoBehaviour:
   pearlsBackground: {fileID: 0}
   gameOverImage: {fileID: 0}
   returnBtnImage: {fileID: 0}
-  returnBtn: {fileID: 0}
+  animateBackground: {fileID: 0}
+  winBackgroundMaterial: {fileID: 0}
   winBackground: {fileID: 0}
   winPearlsBackground: {fileID: 0}
   winReturnButton: {fileID: 0}
+  loseBackgroundMaterial: {fileID: 0}
   loseBackground: {fileID: 0}
   losePearlsBackground: {fileID: 0}
   loseReturnButton: {fileID: 0}
+  tieBackgroundMaterial: {fileID: 0}
   tieBackground: {fileID: 0}
   tiePearlsBackground: {fileID: 0}
   tieReturnButton: {fileID: 0}
@@ -7934,7 +7936,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4845276930943762971, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.000030517578
+      value: -0.000030517578
       objectReference: {fileID: 0}
     - target: {fileID: 4845637959249703711, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchorMax.y
@@ -10243,13 +10245,16 @@ MonoBehaviour:
   pearlsBackground: {fileID: 0}
   gameOverImage: {fileID: 0}
   returnBtnImage: {fileID: 0}
-  returnBtn: {fileID: 0}
+  animateBackground: {fileID: 0}
+  winBackgroundMaterial: {fileID: 0}
   winBackground: {fileID: 0}
   winPearlsBackground: {fileID: 0}
   winReturnButton: {fileID: 0}
+  loseBackgroundMaterial: {fileID: 0}
   loseBackground: {fileID: 0}
   losePearlsBackground: {fileID: 0}
   loseReturnButton: {fileID: 0}
+  tieBackgroundMaterial: {fileID: 0}
   tieBackground: {fileID: 0}
   tiePearlsBackground: {fileID: 0}
   tieReturnButton: {fileID: 0}
@@ -12564,13 +12569,16 @@ MonoBehaviour:
   pearlsBackground: {fileID: 0}
   gameOverImage: {fileID: 0}
   returnBtnImage: {fileID: 0}
-  returnBtn: {fileID: 0}
+  animateBackground: {fileID: 0}
+  winBackgroundMaterial: {fileID: 0}
   winBackground: {fileID: 0}
   winPearlsBackground: {fileID: 0}
   winReturnButton: {fileID: 0}
+  loseBackgroundMaterial: {fileID: 0}
   loseBackground: {fileID: 0}
   losePearlsBackground: {fileID: 0}
   loseReturnButton: {fileID: 0}
+  tieBackgroundMaterial: {fileID: 0}
   tieBackground: {fileID: 0}
   tiePearlsBackground: {fileID: 0}
   tieReturnButton: {fileID: 0}
