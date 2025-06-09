@@ -12,6 +12,9 @@ GameObject:
   - component: {fileID: 8379730067978457469}
   - component: {fileID: 8104980272527296498}
   - component: {fileID: 405844151340449578}
+  - component: {fileID: 8037231111297394136}
+  - component: {fileID: 949066710888473825}
+  - component: {fileID: 2517253177902465345}
   m_Layer: 5
   m_Name: InventoryButton
   m_TagString: Untagged
@@ -96,7 +99,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 0
+  m_Transition: 3
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -121,6 +124,86 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!95 &8037231111297394136
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 101631079734299359}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 22100000, guid: ede473885e1eb9345869c7f988038854, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &949066710888473825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 101631079734299359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 3
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2517253177902465345}
+          m_TargetAssemblyTypeName: UiButtonReleaseComponent, Assembly-CSharp
+          m_MethodName: ButtonRelease
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &2517253177902465345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 101631079734299359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb0b66344baf0f54c9e3396aa1ad10da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameobject: {fileID: 101631079734299359}
+  button: {fileID: 405844151340449578}
+  buttonAction:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5233387307745232000}
+        m_TargetAssemblyTypeName: PlayerInventoryUI, Assembly-CSharp
+        m_MethodName: OpenInventoryButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &280136961278878580
 GameObject:
   m_ObjectHideFlags: 0
@@ -954,7 +1037,6 @@ GameObject:
   - component: {fileID: 800024870368675109}
   - component: {fileID: 2518838509862417992}
   - component: {fileID: 5846641034301650373}
-  - component: {fileID: 1129441889960646618}
   - component: {fileID: 3826531896651400832}
   - component: {fileID: 1086343849340449909}
   m_Layer: 0
@@ -1126,7 +1208,7 @@ MonoBehaviour:
   playerSpawnItemOnHand: {fileID: 5846641034301650373}
   followSelectedSocketComponent: {fileID: 7649801925086215586}
   playerRagdollEnabler: {fileID: 8406327557363343199}
-  hitReceiveNetworked: {fileID: 1129441889960646618}
+  hitReceiveNetworked: {fileID: 0}
   playerKnockbackListener: {fileID: 3826531896651400832}
   playerGetUp: {fileID: 1086343849340449909}
   playerJumpUI: {fileID: 7506314524237905732}
@@ -1264,19 +1346,6 @@ MonoBehaviour:
   - {fileID: 8058686637688890739}
   - {fileID: 4249305266648288445}
   - {fileID: 4228405611554419781}
---- !u!114 &1129441889960646618
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1244250245066138330}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d8a1cc98e4d08445911c58cb28f243d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!114 &3826531896651400832
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1687,7 +1756,6 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   cameraMovement: {fileID: 8450544055641021374}
   cameraZoom: {fileID: 2903552973942911587}
-  cameraFollowing: {fileID: 0}
   playerReference: {fileID: 2871544100916734757}
   playerNetworkObject: {fileID: 6789602644162241133}
 --- !u!114 &8450544055641021374
@@ -1855,6 +1923,9 @@ GameObject:
   - component: {fileID: 770099976245203709}
   - component: {fileID: 1705995384829575891}
   - component: {fileID: 8101142939162384478}
+  - component: {fileID: 3524568459333510665}
+  - component: {fileID: 6128268810229248076}
+  - component: {fileID: 7999573096021552223}
   - component: {fileID: 7506314524237905732}
   m_Layer: 5
   m_Name: JumpButton
@@ -1880,8 +1951,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -1288.2626, y: 81.746704}
-  m_SizeDelta: {x: 152.5249, y: 150.1783}
+  m_AnchoredPosition: {x: -1300, y: 50}
+  m_SizeDelta: {x: 150, y: 150}
   m_Pivot: {x: 0, y: 0}
 --- !u!222 &770099976245203709
 CanvasRenderer:
@@ -1940,7 +2011,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 0
+  m_Transition: 3
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -1965,6 +2036,86 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!95 &3524568459333510665
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1731536595254416242}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 22100000, guid: 296dd760c471e0541b4c386125441194, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &6128268810229248076
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1731536595254416242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 3
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 7999573096021552223}
+          m_TargetAssemblyTypeName: UiButtonReleaseComponent, Assembly-CSharp
+          m_MethodName: ButtonRelease
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &7999573096021552223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1731536595254416242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb0b66344baf0f54c9e3396aa1ad10da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameobject: {fileID: 1731536595254416242}
+  button: {fileID: 8101142939162384478}
+  buttonAction:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5233387307745232000}
+        m_TargetAssemblyTypeName: PlayerInventoryUI, Assembly-CSharp
+        m_MethodName: SelectJumpButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &7506314524237905732
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2324,8 +2475,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -661.5377, y: 189.29547}
-  m_SizeDelta: {x: 312.4592, y: 216.0927}
+  m_AnchoredPosition: {x: -539, y: 165}
+  m_SizeDelta: {x: 350, y: 250}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2431052711063713342
 CanvasRenderer:
@@ -3720,7 +3871,6 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   playerRagdollEnabler: {fileID: 8406327557363343199}
   hitedDebugText: {fileID: 6379452729668931535}
-  cameraFollowing: {fileID: 0}
   followingTargetTxt: {fileID: 3321589396493213526}
 --- !u!1 &4311250076909872014
 GameObject:
@@ -4100,8 +4250,6 @@ MonoBehaviour:
   playerInventoryUIBackground: {fileID: 8210345525591779225}
   inventoryItemHolder: {fileID: 3048060028184846068}
   playerItemSingleUIPrefab: {fileID: 1455874116165048915, guid: fbe932c78e14f894abff59d22cff4bdd, type: 3}
-  jumpButton: {fileID: 8101142939162384478}
-  openInventoryButton: {fileID: 405844151340449578}
   selectedItemImage: {fileID: 1070127664333934888}
   openInventoryBackground: {fileID: 2497608634792934175}
   itemsListSO: {fileID: 11400000, guid: 0512cb21a29af2e4b88962e2cb6a1605, type: 2}
@@ -4411,7 +4559,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 60.4, y: -0.1}
+  m_AnchoredPosition: {x: 60, y: 0}
   m_SizeDelta: {x: 76, y: 76}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4708927048927263090
@@ -6349,8 +6497,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -143.49213, y: 511.53598}
-  m_SizeDelta: {x: 234.3867, y: 934.8379}
+  m_AnchoredPosition: {x: -145, y: 510}
+  m_SizeDelta: {x: 235, y: 935}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5330454977958495046
 CanvasRenderer:
@@ -7128,7 +7276,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8689003367117156293, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.000015239372
       objectReference: {fileID: 0}
     - target: {fileID: -8689003367117156293, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -8131,6 +8279,18 @@ PrefabInstance:
       value: 0.9999981
       objectReference: {fileID: 0}
     - target: {fileID: 7483998322380018809, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 5.2852556e-10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7483998322380018809, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.00089439284
+      objectReference: {fileID: 0}
+    - target: {fileID: 7483998322380018809, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 7.45058e-10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7483998322380018809, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
       propertyPath: m_LocalRotation.w
       value: 0.9907736
       objectReference: {fileID: 0}
@@ -8220,19 +8380,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8765535256960079342, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.87418634
+      value: 0.97288024
       objectReference: {fileID: 0}
     - target: {fileID: 8765535256960079342, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.4818779
+      value: -0.22404248
       objectReference: {fileID: 0}
     - target: {fileID: 8765535256960079342, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.050755255
+      value: -0.054487266
       objectReference: {fileID: 0}
     - target: {fileID: 8765535256960079342, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.031872623
+      value: -0.018444045
       objectReference: {fileID: 0}
     - target: {fileID: 8765535256960079342, guid: dc7d61a72ca6832458e7ffebc75a53be, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
