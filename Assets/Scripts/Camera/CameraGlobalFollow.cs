@@ -65,10 +65,13 @@ public class CameraGlobalFollow : NetworkBehaviour
             {
                 //If is player, follow hips transform
                 followTargetTransform = playerThrower.HipsTransform;
+                Debug.Log($"CameraGlobalFollow - FollowObject called with object: {playerThrower.gameObject.name}");
+                
             }
             else
             {
                 followTargetTransform = networkObject.transform;
+                Debug.Log($"CameraGlobalFollow - FollowObject called with object: {followTargetTransform.name}");
             }
         }
         else
@@ -77,7 +80,6 @@ public class CameraGlobalFollow : NetworkBehaviour
             return;
         }
         
-        Debug.Log($"CameraGlobalFollow - FollowObject called with object: {followTargetTransform.name}");
         StopFollowingCoroutine();
         followObjectCoroutine = StartCoroutine(FollowPositionCoroutine(duration, followByDuration)); 
     }

@@ -56,6 +56,9 @@ public class CameraManager : NetworkBehaviour
     {
         enemyObject = publicInfoManager.GetOtherPlayerByMyPlayableState(turnManager.LocalPlayableState);
         playerObject = publicInfoManager.GetPlayerObjectByPlayableState(turnManager.LocalPlayableState);
+        Debug.Log($"CameraGlobalFollow - turnManager.LocalPlayableState: {turnManager.LocalPlayableState}, newValue: {newValue}");
+        
+        if(newValue == PlayableState.Player1Played || newValue == PlayableState.Player2Played) return;
         
         if (turnManager.LocalPlayableState == newValue)
             CameraGoToPlayer(playerObject);
