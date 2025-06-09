@@ -4519,7 +4519,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.04014555, y: 0.3802852}
   m_AnchorMax: {x: 0.8728639, y: 1}
-  m_AnchoredPosition: {x: -28.659912, y: 5.504}
+  m_AnchoredPosition: {x: -28.659912, y: 5.5039997}
   m_SizeDelta: {x: 43.659912, y: 30.504}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &581414025
@@ -4708,7 +4708,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -67.806885, y: -8.47583}
+  m_AnchoredPosition: {x: -67.80682, y: -8.47583}
   m_SizeDelta: {x: 0, y: 159.3565}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &626651520
@@ -8637,7 +8637,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4845276930943762971, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.000022888184
+      value: -0.000022888184
       objectReference: {fileID: 0}
     - target: {fileID: 4845637959249703711, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchorMax.y
@@ -10068,15 +10068,15 @@ MonoBehaviour:
   returnBtnImage: {fileID: 1741645482}
   animateBackground: {fileID: 1126556508}
   winBackgroundMaterial: {fileID: 2100000, guid: 7ed061f2ceb7437478d58f92a061bef0, type: 2}
-  winBackground: {fileID: 21300000, guid: adb1d1a7a2844764c9ad82a4c09d0618, type: 3}
+  winBackground: {fileID: 21300000, guid: f6c9753affa5dd244a1bcd0dc66e52ab, type: 3}
   winPearlsBackground: {fileID: 21300000, guid: 78ee5836f37dd4748bc58339da2ec79e, type: 3}
   winReturnButton: {fileID: 21300000, guid: e0a58850144f4a7478f1c73724db2d87, type: 3}
   loseBackgroundMaterial: {fileID: 2100000, guid: bd72b9165a165d74783689af49db6b2f, type: 2}
-  loseBackground: {fileID: 21300000, guid: e2a408cccc3243a43bd87f4fac9c20c0, type: 3}
+  loseBackground: {fileID: 21300000, guid: d9dd494e20128b741804917d4931f53a, type: 3}
   losePearlsBackground: {fileID: 21300000, guid: b51923eb24627eb46b7745841d499cb9, type: 3}
   loseReturnButton: {fileID: 21300000, guid: e5956ce19a3f1664ab32c4a80fac6a64, type: 3}
   tieBackgroundMaterial: {fileID: 2100000, guid: f43fad2a17c57664db0d435292c0140e, type: 2}
-  tieBackground: {fileID: 21300000, guid: 5e01237debe4f884c8780fe0fa859495, type: 3}
+  tieBackground: {fileID: 21300000, guid: 4b1304ec14f0e62489bd2ffc46be3b92, type: 3}
   tiePearlsBackground: {fileID: 21300000, guid: c5c4da0077010314fabd44713e9ab4ee, type: 3}
   tieReturnButton: {fileID: 21300000, guid: 5784df549036a5d4d90991bdbfba4673, type: 3}
 --- !u!1 &1597453645
@@ -11524,7 +11524,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -56.546326, y: 110.785545}
+  m_AnchoredPosition: {x: -56.546326, y: 110.78555}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1934400093
