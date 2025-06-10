@@ -270,7 +270,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
         if (itemReleased)
             ItemCallbackAction();
 
-        if (dissolveShaderComponent != null)
+        if (dissolveShaderComponent)
         {
             dissolveShaderComponent.DissolveFadeOut(() =>
             {
