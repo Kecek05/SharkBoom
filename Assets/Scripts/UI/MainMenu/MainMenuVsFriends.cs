@@ -14,6 +14,7 @@ public class MainMenuVsFriends : MonoBehaviour
     [SerializeField] private GameObject lobbyCodeErrorPanel;
     [SerializeField] private GameObject creatingLobbyPanel;
     [SerializeField] private Button errorCreatingLobbyBtn;
+    [SerializeField] private GameObject joiningLobbyPanel;
 
 
     private bool isBusy = false;
@@ -60,10 +61,12 @@ public class MainMenuVsFriends : MonoBehaviour
 
         isBusy = true;
         lobbyCodeInputField.interactable = false;
+        joiningLobbyPanel.SetActive(true);
         bool joinedSuccessfully = await ClientSingleton.Instance.GameManager.StartRelayClientAsync(lobbyCodeInputField.text);
 
         if (!joinedSuccessfully)
         {
+            joiningLobbyPanel.SetActive(false);
             lobbyCodeErrorPanel.SetActive(true);
             isBusy = false;
             lobbyCodeInputField.text = "";

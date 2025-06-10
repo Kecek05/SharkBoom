@@ -25,6 +25,7 @@ public class MainMenuMatchmaking : MonoBehaviour
     private bool isCanceling = false;
 
     private float timeInQueue;
+    private const string TEXTANIMATOR_SEARCHING = "<loading>";
 
 
     private void Awake()
@@ -39,10 +40,8 @@ public class MainMenuMatchmaking : MonoBehaviour
         if (isCanceling || !isMatchMaking) return;
 
         isCanceling = true;
-        matchmakingText.text = "Canceling...";
-        Debug.Log("Match - is canceling");
+        matchmakingText.text = $"{TEXTANIMATOR_SEARCHING}Canceling match...{TEXTANIMATOR_SEARCHING}";
         await ClientSingleton.Instance.GameManager.CancelMatchmakingAsync();
-        Debug.Log("Match - cancel ok");
         CanceledMatchmaking();
     }
 
@@ -52,9 +51,8 @@ public class MainMenuMatchmaking : MonoBehaviour
 
         isMatchMaking = true;
         timeInQueue = 0f;
-        matchmakingText.text = "Searching...";
-        Debug.Log("Match - is searching");
-        ClientSingleton.Instance.GameManager.MatchmakeAsync(OnMatchMade); //We will pass and event to be trigger when the result is ready.
+        matchmakingText.text = $"{TEXTANIMATOR_SEARCHING}Searching for players...{TEXTANIMATOR_SEARCHING}";
+        ClientSingleton.Instance.GameManager.MatchmakeAsync(OnMatchMade); // We will pass and event to be trigger when the result is ready.
         StartMatchmakingTimer();
         Show();
     }
@@ -62,7 +60,6 @@ public class MainMenuMatchmaking : MonoBehaviour
     private void MatchplayMatchmaker_OnTicketCreated()
     {
         cancelMatchmakingBtn.interactable = true;
-        Debug.Log("Match - cancel button interactable true");
     }
 
     private void StartMatchmakingTimer()
@@ -112,7 +109,6 @@ public class MainMenuMatchmaking : MonoBehaviour
         matchmakingTime.text = string.Empty;
         matchmakingText.text = string.Empty;
         searchMatchmakingBtn.interactable = false;
-        Debug.Log($"Match - button is not interactable - {searchMatchmakingBtn.interactable}");
 
         if (searchButtonCoroutine != null)
         {
@@ -128,7 +124,6 @@ public class MainMenuMatchmaking : MonoBehaviour
     {
         yield return waitToTurnOnSearch;
         searchMatchmakingBtn.interactable = true;
-        Debug.Log($"Match - button is interactable - {searchMatchmakingBtn.interactable}");
     }
 
     private void Show()

@@ -7,8 +7,6 @@ public class HealthBarUI : MonoBehaviour
 {
 
     [BetterHeader("References")]
-    [SerializeField] private Image player1Image;
-    [SerializeField] private Image player2Image;
     [SerializeField] private Slider player1HealthSlider;
     [SerializeField] private Slider player2HealthSlider;
     [SerializeField] private float tweenDuration = 0.3f;

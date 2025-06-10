@@ -19,36 +19,31 @@ public class PlayerInventoryUI : NetworkBehaviour
     [SerializeField] private GameObject playerInventoryUIBackground;
     [SerializeField] private Transform inventoryItemHolder;
     [SerializeField] private GameObject playerItemSingleUIPrefab;
-    [SerializeField] private Button jumpButton;
-    [SerializeField] private Button openInventoryButton;
     [SerializeField] private Image selectedItemImage;
     [SerializeField] private GameObject openInventoryBackground;
     [SerializeField] private ItemsListSO itemsListSO;
     [SerializeField] private Canvas inventoryCanvas;
 
     private Camera cameraUI;
-
     private List<PlayerItemSingleUI> playerItemSingleUIs = new();
-
-
-    private void Awake()
-    {
-        jumpButton.onClick.AddListener(() =>
-        {
-            SelecItem(0); //Jump Index
-        });
-
-        openInventoryButton.onClick.AddListener(ToggleInventory);
-    }
 
     public override void OnNetworkSpawn()
     {
         HideInventory();
         HideInventoryButton();
-
         SetupInventoryWorldCamera();
     }
 
+    public void SelectJumpButton()
+    {
+        SelecItem(0); //Jump Index
+    }
+
+    public void OpenInventoryButton()
+    {
+        ToggleInventory();
+    }
+        
     private void SetupInventoryWorldCamera()
     {
         UniversalAdditionalCameraData data = ServiceLocator.Get<Camera>().GetComponent<UniversalAdditionalCameraData>();
