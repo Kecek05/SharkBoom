@@ -664,7 +664,7 @@ ParticleSystem:
   ShapeModule:
     serializedVersion: 6
     enabled: 1
-    type: 10
+    type: 0
     angle: 25
     length: 5
     boxThickness: {x: 0, y: 0, z: 0}
@@ -4901,7 +4901,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 788439871958220744, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_Drag
-      value: 1
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 788439871958220744, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_Mass
@@ -4921,7 +4921,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 788439871958220744, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_CenterOfMass.x
-      value: 2.18
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 851746441201601633, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_Layer
@@ -5104,6 +5104,10 @@ PrefabInstance:
       value: BombItem
       objectReference: {fileID: 0}
     - target: {fileID: 6091596160473946369, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: item
+      value: 
+      objectReference: {fileID: 2065954917544850458}
+    - target: {fileID: 6091596160473946369, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: followTransformComponent
       value: 
       objectReference: {fileID: 2492626997076712017}
@@ -5159,6 +5163,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8747205956194011556, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: knockback
+      value: 
+      objectReference: {fileID: 11400000, guid: 72fe707975db31440aa134e6a08ea4e2, type: 2}
+    - target: {fileID: 8747205956194011556, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: knockbackStrength
+      value: 350
+      objectReference: {fileID: 0}
     - target: {fileID: 8843573594692602520, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: SyncRotAngleX
       value: 1
@@ -5194,7 +5206,7 @@ PrefabInstance:
       addedObject: {fileID: 7710535142955916228}
     - targetCorrespondingSourceObject: {fileID: 5292276183696153246, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4126951954742478540}
+      addedObject: {fileID: 5504341106993227596}
     - targetCorrespondingSourceObject: {fileID: 851746441201601633, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7614228182743595413}
@@ -5204,6 +5216,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7838895398303230807, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
   m_PrefabInstance: {fileID: 7709761659009139004}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1412654848046434456 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8747205956194011556, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+  m_PrefabInstance: {fileID: 7709761659009139004}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4139059953487484834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54ff7ab3b9592a84db4fd435ae7ff2ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1924429888176421737 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8091387058931432021, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
@@ -5243,9 +5266,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c8af99f34df71049a4d597f7960c87d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   ItemThrowable: {fileID: 2065954917544850458}
   meshToHide: {fileID: 7002131505479470429}
---- !u!114 &4126951954742478540
+--- !u!114 &5504341106993227596
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5254,9 +5278,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2562374771192011682}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70a0760479f55ea408bdd58858a364ec, type: 3}
+  m_Script: {fileID: 11500000, guid: aa9ee22915074bc41b3ba86e344f2548, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   ItemThrowable: {fileID: 2065954917544850458}
   particleSystemOnActivated: {fileID: 1686596863431425947}
 --- !u!114 &2590630615956071341 stripped
@@ -5320,6 +5345,14 @@ MonoBehaviour:
   followTransformComponent: {fileID: 2492626997076712017}
   myNetworkObject: {fileID: 2590630615956071341}
   collisionController: {fileID: 1924429888176421737}
+  freezePositionX: 0
+  freezePositionY: 0
+  freezePositionZ: 0
+  freezeRotationX: 1
+  freezeRotationY: 1
+  freezeRotationZ: 0
+  knockbackSOActivated: {fileID: 11400000, guid: 0c417133b77bc524abb278a7c44baa9e, type: 2}
+  hitTriggerComponent: {fileID: 1412654848046434456}
   spinObjectComponent: {fileID: 7614228182743595413}
   explosionCollider: {fileID: 8614684108031565060}
 --- !u!1 &4767779204118326136 stripped
@@ -5334,7 +5367,7 @@ SphereCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4767779204118326136}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: b46750e97d7e7f94ab9532a5a028db48, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -5393,5 +5426,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   debugTriggerOnStart: 0
   rb: {fileID: 6921903450271284980}
-  spiningSpeed: 500
+  spinningSpeed: 300
+  useInterpolation: 1
+  interpolationSpeed: 300
   isInverted: 0

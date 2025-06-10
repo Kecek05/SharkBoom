@@ -12,7 +12,6 @@ public class PlayerItemSingleUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI itemNameText;
     [SerializeField] private Image itemImageIcon;
     [SerializeField] private TextMeshProUGUI itemCooldownText;
-    [SerializeField] private Button selectThisItemButton;
     [SerializeField] private Image backgroundImage;
     [SerializeField] private GameObject itemCanBeUsedObj;
     [SerializeField] private TextMeshProUGUI itemDamageText;
@@ -25,12 +24,9 @@ public class PlayerItemSingleUI : MonoBehaviour
     [SerializeField] private Color selectedColor;
     [SerializeField] private Color unSelectedColor;
 
-    private void Awake()
+    public void SelectThisItem()
     {
-        selectThisItemButton.onClick.AddListener(() =>
-        {
-            playerInventoryUI.SelecItem(myIndexItemInventory);
-        });
+        playerInventoryUI.SelecItem(myIndexItemInventory);
     }
 
     public void Setup(string itemName, Sprite itemIcon, int itemCooldown, bool itemCanBeUsed, int indexItemInventory, float itemDamage ,PlayerInventoryUI _playerInventoryUI)

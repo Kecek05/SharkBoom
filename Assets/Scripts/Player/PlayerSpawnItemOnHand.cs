@@ -76,7 +76,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         //Spawn selected Item on the selected socket
         if (!canSpawnItem) return; //Do nothing if the player is not in the right state
 
-        if (spawnedItem != null)
+        if (spawnedItem)
         {
             spawnedItem.ChangeFollowTransform(selectedSocket.transform);
         }
@@ -114,7 +114,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
     {
         if(itemNetworkObject.TryGet(out NetworkObject itemNetworkObjectRef))
         {
-            if (spawnedItem != null)
+            if (spawnedItem)
                 spawnedItem.DestroyItem();
 
             spawnedItem = itemNetworkObjectRef.GetComponent<BaseItemThrowable>();
@@ -138,16 +138,13 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
     public void HandleOnShoot()
     {
         //Release item
-        if (spawnedItem != null)
-        {
-            spawnedItem = null;
-        }
+        spawnedItem = null;
     }
 
     private void DespawnItem()
     {
         //Despawn item
-        if (spawnedItem != null)
+        if (spawnedItem)
         {
             spawnedItem.DestroyItem(() =>
             {

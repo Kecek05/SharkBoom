@@ -8,25 +8,13 @@ public class PlayerNameBootstrap : MonoBehaviour
     [SerializeField] private GameObject renameScreen;
     [SerializeField] private Button confirmButton;
     [SerializeField] private TMP_InputField playerNameInputField;
+    [SerializeField] private TextMeshProUGUI loadingText;
 
     private async void Awake()
     {
         renameScreen.SetActive(false);
         confirmButton.interactable = false;
-
-        confirmButton.onClick.AddListener(async () =>
-        {
-            playerNameInputField.interactable = false;
-            confirmButton.interactable = false;
-
-            await Save.SavePlayerName(AuthenticationService.Instance.PlayerId, playerNameInputField.text);
-
-            ClientSingleton.Instance.GameManager.UserData.SetPlayerName(await Save.LoadPlayerName(AuthenticationService.Instance.PlayerId));
-            renameScreen.SetActive(false);
-
-            Loader.LoadNoLoadingScreen(Loader.Scene.MainMenu);
-        });
-
+        loadingText.enabled = false;
         playerNameInputField.onValueChanged.AddListener(HandlePlayerName);
     }
 
@@ -35,10 +23,25 @@ public class PlayerNameBootstrap : MonoBehaviour
         if (ClientSingleton.Instance.GameManager.UserData.userName == "")
         {
             renameScreen.SetActive(true);
-        } else
+        } 
+        else
         {
+            loadingText.enabled = true;
             Loader.LoadNoLoadingScreen(Loader.Scene.MainMenu);
         }
+    }
+
+    public async void ConfirmName()
+    {
+        playerNameInputField.interactable = false;
+        confirmButton.interactable = false;
+
+        await Save.SavePlayerName(AuthenticationService.Instance.PlayerId, playerNameInputField.text);
+
+        ClientSingleton.Instance.GameManager.UserData.SetPlayerName(await Save.LoadPlayerName(AuthenticationService.Instance.PlayerId));
+        renameScreen.SetActive(false);
+        loadingText.enabled = true;
+        Loader.LoadNoLoadingScreen(Loader.Scene.MainMenu);
     }
 
     private void HandlePlayerName(string playerName)

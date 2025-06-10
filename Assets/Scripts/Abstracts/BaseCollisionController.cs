@@ -8,9 +8,14 @@ public abstract class BaseCollisionController : MonoBehaviour
     /// </summary>
     public event Action<PlayerThrower> OnCollidedWithPlayer;
     /// <summary>
-    /// lled when the item is collided with any object. Pass the Collided object.
+    /// Called when the item is collided with any object. Pass the Collided object.
     /// </summary>
     public event Action<GameObject> OnCollided;
+    
+    /// <summary>
+    /// Called when the item is collided with any object except player. Pass the Collided object.
+    /// </summary>
+    public event Action<GameObject> OnCollidedWithoutPlayer;
 
     protected void OnCollisionEnter(Collision collision)
     {
@@ -32,5 +37,10 @@ public abstract class BaseCollisionController : MonoBehaviour
     protected void TriggerOnCollided(GameObject collidedObject)
     {
         OnCollided?.Invoke(collidedObject);
+    }
+
+    protected void TriggerOnCollidedWithoutPlayer(GameObject collidedObject)
+    {
+        OnCollidedWithoutPlayer?.Invoke(collidedObject);
     }
 }

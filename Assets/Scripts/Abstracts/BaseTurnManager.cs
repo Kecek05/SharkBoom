@@ -7,8 +7,8 @@ public abstract class BaseTurnManager : NetworkBehaviour
 {
 
     //Events
-
     public event Action OnMyTurnStarted; //local player can play
+    public event Action OnEnemyTurnStarted; //enemy player can play
     public event Action OnMyTurnEnded;
     public event Action OnMyTurnJumped;
     public event Action OnLocalPlayableStateChanged;
@@ -19,6 +19,7 @@ public abstract class BaseTurnManager : NetworkBehaviour
 
     protected PlayableState localPlayableState = new();
     protected PlayableState localPlayedState = new();
+    protected PlayableState enemyPlayableState = new();
 
     protected NetworkVariable<PlayableState> currentPlayableState = new(PlayableState.None);
 
@@ -33,6 +34,8 @@ public abstract class BaseTurnManager : NetworkBehaviour
     protected void TriggerOnMyTurnEnded() => OnMyTurnEnded?.Invoke();
 
     protected void TriggerOnMyTurnJumped() => OnMyTurnJumped?.Invoke();
+    
+    protected void TriggerOnEnemyTurnStarted() => OnEnemyTurnStarted?.Invoke();
 
     protected void TriggerOnLocalPlayableStateChanged() => OnLocalPlayableStateChanged?.Invoke();
 

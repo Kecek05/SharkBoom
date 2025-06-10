@@ -151,7 +151,7 @@ public class DragAndShoot : NetworkBehaviour
 
                 //Collider2D hit = Physics2D.OverlapPoint(worldPoint2D, touchLayer); // make a overlap point only to check if hit will hit the object that we need
 
-                if (hit.collider != null) // check for dont creates null references
+                if (hit.collider) // check for dont creates null references
                 {
                     if (hit.collider.gameObject == areaOfStartDrag)
                     {

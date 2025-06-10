@@ -7,33 +7,36 @@ public class CameraManager : NetworkBehaviour
 {
     [SerializeField] private CameraMovement cameraMovement;
     [SerializeField] private CameraZoom cameraZoom;
-    [SerializeField] private CameraFollowing cameraFollowing;
     [SerializeField] private PlayerThrower playerReference;
-    
+    [SerializeField] private NetworkObject playerNetworkObject;
     private CinemachineCamera cinemachineCamera;
     private Camera cameraMain; // Cache camera main for all scripts that need it
     private Transform cameraObjectToFollow;
 
-    private GameObject playerObj;
-    private GameObject enemyObj;
+    private GameObject playerObject;
+    private GameObject enemyObject;
 
     private BaseTurnManager turnManager;
     private BasePlayersPublicInfoManager publicInfoManager;
+    private CameraGlobalFollow cameraGlobalFollow;
 
     public Transform CameraObjectToFollow => cameraObjectToFollow;
     public CameraZoom CameraZoom => cameraZoom;
-    public CameraMovement CameraMovement => cameraMovement;
-    public CinemachineCamera CinemachineCamera => cinemachineCamera;
     public Camera CameraMain => cameraMain;
-    
+
+    public override void OnNetworkSpawn()
+    {
+        cameraGlobalFollow = ServiceLocator.Get<CameraGlobalFollow>();
+    }
+
     public void InitializeOwner()
     {
         if (!IsOwner) return;
 
-        if (cameraObjectToFollow == null)
+        if (!cameraObjectToFollow)
             cameraObjectToFollow = ServiceLocator.Get<CameraObjectToFollow>().transform;
 
-        if (cinemachineCamera == null)
+        if (!cinemachineCamera)
         {
             cinemachineCamera = ServiceLocator.Get<CinemachineCamera>();
             cinemachineCamera.Target.TrackingTarget = cameraObjectToFollow;
@@ -45,24 +48,22 @@ public class CameraManager : NetworkBehaviour
 
         cameraMovement.InitializeOwner();
         cameraZoom.InitializeOwner();
-        cameraFollowing.InitializeOwner();
 
         turnManager.CurrentPlayableState.OnValueChanged += HandleOnPlayableStateChanged;
     }
 
     private void HandleOnPlayableStateChanged(PlayableState previousValue, PlayableState newValue)
     {
-        enemyObj = publicInfoManager.GetOtherPlayerByMyPlayableState(turnManager.LocalPlayableState);
-        playerObj = publicInfoManager.GetPlayerObjectByPlayableState(turnManager.LocalPlayableState);
-
-        if (IsMyTurn(newValue))
-        {
-            CameraReposOnPlayer();
-        }
-        else if (IsEnemyTurn(newValue))
-        {
-            CameraReposOnEnemy();
-        }
+        enemyObject = publicInfoManager.GetOtherPlayerByMyPlayableState(turnManager.LocalPlayableState);
+        playerObject = publicInfoManager.GetPlayerObjectByPlayableState(turnManager.LocalPlayableState);
+        Debug.Log($"CameraGlobalFollow - turnManager.LocalPlayableState: {turnManager.LocalPlayableState}, newValue: {newValue}");
+        
+        if(newValue == PlayableState.Player1Played || newValue == PlayableState.Player2Played) return;
+        
+        if (turnManager.LocalPlayableState == newValue)
+            CameraGoToPlayer(playerObject);
+        else
+            CameraGoToPlayer(enemyObject);
     }
 
     public void HandleOnPlayerStateMachineStateChanged(PlayerState playerState)
@@ -86,7 +87,11 @@ public class CameraManager : NetworkBehaviour
                 CameraTurnOff();
                 break;
         }
-        Debug.Log($"Camera - {playerState} - Camera move state {cameraMovement.enabled == true}");
+    }
+
+    public void HandleOnPlayerHit(bool isJump)
+    {
+        cameraGlobalFollow.FollowObject(playerNetworkObject, isJump: isJump);
     }
 
     /// <summary>
@@ -95,43 +100,22 @@ public class CameraManager : NetworkBehaviour
     /// <param name="movement">CameraMovement Script</param>
     /// <param name="zoom">CameraZoom Script</param>
     /// <param name="following">Camera following</param>
-    public void SetCameraModules(bool movement, bool zoom, bool following)
+    public void SetCameraModules(bool movement, bool zoom)
     {
         cameraMovement.enabled = movement;
         cameraZoom.enabled = zoom;
-        cameraFollowing.enabled = following;
     }
 
-    private void CameraMove()
-    {
-        SetCameraModules(true, true, false);
-    }
+    private void CameraMove() => SetCameraModules(true, true);
 
-    private void CameraDragging()
-    {
-        SetCameraModules(false, true, false);
-    }
+    private void CameraDragging() => SetCameraModules(false, true);
     
-    private void CameraFollowing() => SetCameraModules(false, false, true);
-
-    private void CameraReposOnPlayer()
+    private void CameraFollowing() => SetCameraModules(false, false);
+    
+    private void CameraGoToPlayer(GameObject player)
     {
-        SetCameraModules(false, false, true);
-        cameraFollowing.SetTarget(playerObj.transform, false, 3f, onComplete: () =>
-        {
-            PlayerState currentState = playerReference.PlayerStateMachine.CurrentState.State;
-
-            if (currentState == PlayerState.IdleMyTurn || currentState == PlayerState.IdleEnemyTurn)
-            {
-                CameraMove();
-            }
-        });
-    }
-
-    private void CameraReposOnEnemy()
-    {
-        SetCameraModules(false, false, true);
-        cameraFollowing.SetTarget(enemyObj.transform, false, 3f, onComplete: () =>
+        SetCameraModules(false, false);
+        cameraGlobalFollow.FollowObject(player, 3f, true, onComplete: () =>
         {
             PlayerState currentState = playerReference.PlayerStateMachine.CurrentState.State;
 
@@ -144,19 +128,7 @@ public class CameraManager : NetworkBehaviour
 
     private void CameraTurnOff()
     {
-        cameraFollowing.SetTarget(playerObj.transform, false, 3f);
-        SetCameraModules(false, false, false);
-    }
-
-    private bool IsMyTurn(PlayableState state)
-    {
-        return state == PlayableState.Player1Playing && turnManager.LocalPlayableState == PlayableState.Player1Playing
-            || state == PlayableState.Player2Playing && turnManager.LocalPlayableState == PlayableState.Player2Playing;
-    }
-    private bool IsEnemyTurn(PlayableState state)
-    {
-        return state == PlayableState.Player1Playing && turnManager.LocalPlayableState == PlayableState.Player2Playing
-            || state == PlayableState.Player2Playing && turnManager.LocalPlayableState == PlayableState.Player1Playing;
+        SetCameraModules(false, false);
     }
 
     public void UnInitializeOwner()
@@ -165,6 +137,5 @@ public class CameraManager : NetworkBehaviour
 
         cameraMovement.UnInitializeOwner();
         cameraZoom.UnInitializeOwner();
-        cameraFollowing.UnInitializeOwner();
     }
 }

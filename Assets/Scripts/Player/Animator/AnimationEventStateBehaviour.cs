@@ -11,7 +11,7 @@ public class AnimationEventStateBehaviour : StateMachineBehaviour
     /// Percentage of the animation time when the event should be triggered.
     /// </summary>
     [Tooltip("In % of the animation time when the event should be triggered")]
-    [Range(0, 1f)] 
+    [Range(0, 0.95f)] 
     public float triggerTime;
 
     private bool hasTriggered;

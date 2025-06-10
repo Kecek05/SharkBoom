@@ -14,17 +14,20 @@ public class GameOverUI : MonoBehaviour
     [SerializeField] private Image pearlsBackground;
     [SerializeField] private Image gameOverImage;
     [SerializeField] private Image returnBtnImage;
-    [SerializeField] private Button returnBtn;
+    [SerializeField] private Image animateBackground;
     [Space(5)]
     [BetterHeader("Win")]
+    [SerializeField] private Material winBackgroundMaterial;
     [SerializeField] private Sprite winBackground;
     [SerializeField] private Sprite winPearlsBackground;
     [SerializeField] private Sprite winReturnButton;
     [BetterHeader("Lose")]
+    [SerializeField] private Material loseBackgroundMaterial;
     [SerializeField] private Sprite loseBackground;
     [SerializeField] private Sprite losePearlsBackground;
     [SerializeField] private Sprite loseReturnButton;
     [BetterHeader("Tie")]
+    [SerializeField] private Material tieBackgroundMaterial;
     [SerializeField] private Sprite tieBackground;
     [SerializeField] private Sprite tiePearlsBackground;
     [SerializeField] private Sprite tieReturnButton;
@@ -34,20 +37,13 @@ public class GameOverUI : MonoBehaviour
     private BaseGameOverManager gameOverManager;
     private BasePearlsManager pearlsManager;
 
+    private const string TEXTANIMATOR_WIN = "<win>";
+    private const string TEXTANIMATOR_LOSE = "<lose>";
+
     private void Awake()
     {
         Hide();
-
         alreadyChanged = false;
-
-        returnBtn.onClick.AddListener(() =>
-        {
-            //Return to main menu
-
-            if(ClientSingleton.Instance != null)
-                ClientSingleton.Instance.GameManager.Disconnect();
-        });
-
     }
 
     private void Start()
@@ -61,6 +57,11 @@ public class GameOverUI : MonoBehaviour
         pearlsManager.OnPearlsChanged += PearlsManager_OnPearlsChanged;
     }
 
+    public void ReturnToMenu()
+    {
+        if (ClientSingleton.Instance != null)
+            ClientSingleton.Instance.GameManager.Disconnect();
+    }
     private void PearlsManager_OnPearlsChanged(int pearlsToShow)
     {
         SetupPearlsResult(pearlsToShow);
@@ -131,26 +132,27 @@ public class GameOverUI : MonoBehaviour
 
     private void Win()
     {
-        ChangeUI("You Win!", "VICTORY!", winBackground, winPearlsBackground, winReturnButton);
+        ChangeUI($"{TEXTANIMATOR_WIN}You Win!{TEXTANIMATOR_WIN}", "VICTORY!", winBackground, winPearlsBackground, winReturnButton, winBackgroundMaterial);
     }
 
     private void Lose()
     {
-        ChangeUI("You Lose!", "DEFEAT!", loseBackground, losePearlsBackground, loseReturnButton);
+        ChangeUI($"{TEXTANIMATOR_LOSE}You Lose!{TEXTANIMATOR_LOSE}", "DEFEAT!", loseBackground, losePearlsBackground, loseReturnButton, loseBackgroundMaterial);
     }
 
     private void Tie()
     {
-        ChangeUI("Time's Up!", "TIE!", tieBackground, tiePearlsBackground, tieReturnButton);
+        ChangeUI("Time's Up!", "TIE!", tieBackground, tiePearlsBackground, tieReturnButton, tieBackgroundMaterial);
     }
 
-    private void ChangeUI(string resultTxt, string resultTitleTxt, Sprite backgroundSprite, Sprite pearlsSprite, Sprite buttonSprite)
+    private void ChangeUI(string resultTxt, string resultTitleTxt, Sprite backgroundSprite, Sprite pearlsSprite, Sprite buttonSprite, Material animateMaterial)
     {
         resultText.text = resultTxt;
         resultTitleText.text = resultTitleTxt;
         gameOverImage.sprite = backgroundSprite;
         pearlsBackground.sprite = pearlsSprite;
         returnBtnImage.sprite = buttonSprite;
+        animateBackground.material = animateMaterial;
     }
 
     private void OnDestroy()

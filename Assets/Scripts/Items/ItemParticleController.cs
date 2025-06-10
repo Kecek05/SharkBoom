@@ -24,11 +24,13 @@ public class ItemParticleController : MonoBehaviour
 
     private void PlayParticleSystem(ParticleSystem particleSystem)
     {
+        particleSystem.Clear();
         particleSystem.Play();
     }
 
     private void OnDisable()
     {
-        hideMeshOnCollisionComponent.OnMeshHidden -= HideMeshOnCollisionComponent_OnMeshHidden;
+        if(hideMeshOnCollisionComponent)
+            hideMeshOnCollisionComponent.OnMeshHidden -= HideMeshOnCollisionComponent_OnMeshHidden;
     }
 }

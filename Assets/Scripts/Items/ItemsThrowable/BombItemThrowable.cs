@@ -9,6 +9,7 @@ public class BombItemThrowable : BaseItemThrowableActivable
     [SerializeField] private Collider explosionCollider;
     private Coroutine explodeBombCoroutine;
     private WaitForSecondsRealtime waitForSecondsRealtime = new WaitForSecondsRealtime(0.5f);
+    private WaitForSecondsRealtime waitToDestroy = new WaitForSecondsRealtime(3.5f);
 
     public override void ItemReleased(ItemLauncherData itemLauncherData)
     {
@@ -21,32 +22,36 @@ public class BombItemThrowable : BaseItemThrowableActivable
 
     protected override void ActivateItem()
     {
-        itemActivated = true;
-
         explodeBombCoroutine ??= StartCoroutine(ExplodeBomb());
     }
 
+    protected override void CollisionController_OnCollided(GameObject collidedObject)
+    {
+        spinObjectComponent.DisableComponent();
+    }
 
     private IEnumerator ExplodeBomb()
     {
+        lifetimeTriggerItemComponent.StopLifetime(); //prevent the item to be destroyed while is exploding
+
         rb.isKinematic = true; // Stop bomb
         explosionCollider.enabled = true;
-        Debug.Log("Bomb Exploded");
+        spinObjectComponent.DisableComponent();
 
         yield return waitForSecondsRealtime;
 
         explosionCollider.enabled = false;
 
+        explodeBombCoroutine = null;
+
+        yield return waitToDestroy;
+
+        DestroyItem();
     }
 
-    protected override void CollisionController_OnCollided(GameObject collidedObj)
+    protected override void ResetItemThrowableState()
     {
-        spinObjectComponent.DisableComponent();
-    }
-
-    public override void DestroyItem(Action destroyedCallback = null)
-    {
-        base.DestroyItem(destroyedCallback);
+        base.ResetItemThrowableState();
 
         spinObjectComponent.DisableComponent();
     }

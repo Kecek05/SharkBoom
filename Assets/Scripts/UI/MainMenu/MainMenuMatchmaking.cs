@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class MainMenuMatchmaking : MonoBehaviour
@@ -14,75 +15,53 @@ public class MainMenuMatchmaking : MonoBehaviour
     [SerializeField] private TMP_Text matchmakingTime;
     [SerializeField] private TMP_Text matchmakingText;
 
-    private WaitForSeconds waitToTurnOnCancel = new WaitForSeconds(2f);
+    private WaitForSeconds waitToTurnOnSearch = new WaitForSeconds(2f);
     private WaitForSeconds waitToIncreaseMatchmakingTime = new WaitForSeconds(1f);
 
-    private Coroutine cancelButtonCoroutine;
+    private Coroutine searchButtonCoroutine;
     private Coroutine matchmakingTimerCoroutine;
 
     private bool isMatchMaking = false;
     private bool isCanceling = false;
 
     private float timeInQueue;
+    private const string TEXTANIMATOR_SEARCHING = "<loading>";
 
 
     private void Awake()
     {
         Hide();
-
-        cancelMatchmakingBtn.onClick.AddListener(async () =>
-        {
-            //Cancel Matchmaking
-            if (isCanceling) return;
-
-            isCanceling = true;
-            matchmakingText.text = "Canceling...";
-            await ClientSingleton.Instance.GameManager.CancelMatchmakingAsync(); //wait to cancel the matchmake
-            isMatchMaking = false;
-            isCanceling = false;
-
-            StopMatchmakingTimer();
-            Hide();
-        });
-
-        searchMatchmakingBtn.onClick.AddListener(() =>
-        {
-            if (isCanceling) return;
-
-            if (isMatchMaking) return;
-
-            isMatchMaking = true;
-            timeInQueue = 0f; // zera o tempo
-            matchmakingText.text = "Searching...";
-            ClientSingleton.Instance.GameManager.MatchmakeAsync(OnMatchMade); //We will pass and event to be trigger when the result is ready.
-
-            StartMatchmakingTimer();
-            Show();
-
-        });
-
         MatchplayMatchmaker.OnTicketCreated += MatchplayMatchmaker_OnTicketCreated;
+    }
+
+    public async void CancelMatchmaking()
+    {
+        //Cancel Matchmaking
+        if (isCanceling || !isMatchMaking) return;
+
+        isCanceling = true;
+        matchmakingText.text = $"{TEXTANIMATOR_SEARCHING}Canceling match...{TEXTANIMATOR_SEARCHING}";
+        await ClientSingleton.Instance.GameManager.CancelMatchmakingAsync();
+        CanceledMatchmaking();
+    }
+
+    public void SearchMathmaking()
+    {
+        if (isCanceling || isMatchMaking) return;
+
+        isMatchMaking = true;
+        timeInQueue = 0f;
+        matchmakingText.text = $"{TEXTANIMATOR_SEARCHING}Searching for players...{TEXTANIMATOR_SEARCHING}";
+        ClientSingleton.Instance.GameManager.MatchmakeAsync(OnMatchMade); // We will pass and event to be trigger when the result is ready.
+        StartMatchmakingTimer();
+        Show();
     }
 
     private void MatchplayMatchmaker_OnTicketCreated()
     {
-        if(cancelButtonCoroutine != null)
-        {
-            StopCoroutine(cancelButtonCoroutine);
-            cancelButtonCoroutine = null;
-        }
-
-        cancelButtonCoroutine = StartCoroutine(CancelButtonDelay());
-    }
-
-    private IEnumerator CancelButtonDelay()
-    {
-        yield return waitToTurnOnCancel;
         cancelMatchmakingBtn.interactable = true;
-
-        cancelButtonCoroutine = null;
     }
-    
+
     private void StartMatchmakingTimer()
     {
         if (matchmakingTimerCoroutine != null)
@@ -115,18 +94,36 @@ public class MainMenuMatchmaking : MonoBehaviour
         }
     }
 
+    private void CanceledMatchmaking()
+    {
+        isMatchMaking = false;
+        isCanceling = false;
+        StopMatchmakingTimer();
+        Hide();
+    }
+
     private void Hide()
     {
         cancelMatchmakingBtn.interactable = false;
         matchmakingPanel.SetActive(false);
         matchmakingTime.text = string.Empty;
         matchmakingText.text = string.Empty;
+        searchMatchmakingBtn.interactable = false;
 
-        if (cancelButtonCoroutine != null)
+        if (searchButtonCoroutine != null)
         {
-            StopCoroutine(cancelButtonCoroutine);
-            cancelButtonCoroutine = null;
+            StopCoroutine(searchButtonCoroutine);
+            searchButtonCoroutine = null;
         }
+
+        searchButtonCoroutine = StartCoroutine(SearchButtonDelay());
+    }
+
+
+    private IEnumerator SearchButtonDelay()
+    {
+        yield return waitToTurnOnSearch;
+        searchMatchmakingBtn.interactable = true;
     }
 
     private void Show()
@@ -164,4 +161,6 @@ public class MainMenuMatchmaking : MonoBehaviour
     {
         MatchplayMatchmaker.OnTicketCreated -= MatchplayMatchmaker_OnTicketCreated;
     }
+
+    
 }

@@ -14,19 +14,6 @@ public class CameraMovement : NetworkBehaviour
     [Tooltip("Velocity of camera movement on drag")] [Range(0, 50)]
     [SerializeField] private float dragMoveSpeed = 1f;
 
-    [Tooltip("Min clamp of x movement ")] [Range(-200, 200)]
-    [SerializeField] private int minMovX = -15;
-
-    [Tooltip("Max clamp of x movement ")] [Range(-200, 200)]
-    [SerializeField] private int maxMovX = 15;
-
-    [Tooltip("Max clamp of Y movement ")] [Range(-200, 200)]
-    [SerializeField] private int minMovY = -10;
-
-    [Tooltip("Min clamp of x movement ")][Range(-200, 200)]
-    [SerializeField] private int maxMovY = 10;
-
-
     private bool dragMoveActive = false; // hold if the drag move is active
     private Vector2 lastTouchPosition;
 
@@ -85,11 +72,8 @@ public class CameraMovement : NetworkBehaviour
     private void MoveCamera(Vector2 movementDelta)
     {
         Vector3 moveDir = new Vector3(-movementDelta.x, -movementDelta.y, 0) * dragMoveSpeed * Time.deltaTime; // we put a negative value to invert the movement, making the sensation of dragging the camera
-        cameraManager.CameraObjectToFollow.position = new Vector3(
-            Mathf.Clamp(cameraManager.CameraObjectToFollow.position.x + moveDir.x, minMovX, maxMovX), 
-            Mathf.Clamp(cameraManager.CameraObjectToFollow.position.y + moveDir.y, minMovY, maxMovY),  
-            cameraManager.CameraObjectToFollow.position.z 
-        );  // Basically we get the pos of camera and add the movement direction of the camera, and clamp the values to the min and max values
+        cameraManager.CameraObjectToFollow.position = new Vector3(cameraManager.CameraObjectToFollow.position.x + moveDir.x, cameraManager.CameraObjectToFollow.position.y + moveDir.y, cameraManager.CameraObjectToFollow.position.z );
+
     }
 
     public void UnInitializeOwner()

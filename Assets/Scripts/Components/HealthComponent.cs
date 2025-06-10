@@ -12,7 +12,7 @@ public class HealthComponent : NetworkBehaviour
     [SerializeField] protected float maxHealth;
     protected NetworkVariable<float> currentHealth = new();
 
-    protected bool isDead = false;
+    protected NetworkVariable<bool> isDead = new(false);
 
     public NetworkVariable<float> CurrentHealth => currentHealth;
 
@@ -31,9 +31,9 @@ public class HealthComponent : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        if (isDead) return;
+        if (isDead.Value) return;
 
-        ModifyHealth(healthToHeal);
+        ModifyHealthServerRpc(healthToHeal);
 
         currentHealth.Value += healthToHeal;
         currentHealth.Value = Mathf.Clamp(currentHealth.Value, 0, maxHealth);
@@ -43,13 +43,13 @@ public class HealthComponent : NetworkBehaviour
             currentHealth.Value = maxHealth;
         }
     }
-
-
-    protected void ModifyHealth(float value) //only server
+    
+    [Rpc(SendTo.Server)]
+    protected void ModifyHealthServerRpc(float value) //only server
     {
         if (!IsServer) return;
 
-        if (isDead) return;
+        if (isDead.Value) return;
 
         float newHealth = currentHealth.Value + value;
 
@@ -59,24 +59,17 @@ public class HealthComponent : NetworkBehaviour
 
         if (currentHealth.Value <= 0)
         {
-            isDead = true;
+            isDead.Value = true;
             Die();
         }
     }
-
+    
     [Command("health-die")]
      protected virtual void Die()
      {
         if(!IsServer) return;
-
-        //Temp, after will only invoke the event 
-
+        
         OnDie?.Invoke();
-
-          //if (gameObject.TryGetComponent(out NetworkObject networkObject))
-          //{
-          //    networkObject.Despawn(true);
-          //}
+        
      } 
-    // Debug.log
 }

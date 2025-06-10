@@ -1,3 +1,4 @@
+using System;
 using Sortify;
 using TMPro;
 using Unity.Netcode;
@@ -7,50 +8,27 @@ public class PlayerDebugCanvas : NetworkBehaviour
 {
 
     [BetterHeader("References")]
-    public PlayerThrower player;
-    public TextMeshProUGUI selectedItemIndexText;
-    public TextMeshProUGUI selectedRbText;
-    public TextMeshProUGUI playerStateText;
-    public TextMeshProUGUI playerCanInteractWithInventoryText;
-    public TextMeshProUGUI dragDistanceText;
-    public PlayerDragController playerDragController;
-    public PlayerInventory playerInventory;
-
-    public override void OnNetworkSpawn()
-    {
-        if (!IsOwner)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-    }
+    public PlayerRagdollEnabler playerRagdollEnabler;
+    public TextMeshProUGUI hitedDebugText;
+    public TextMeshProUGUI followingTargetTxt;
 
     private void Update()
     {
-        if (playerDragController.SelectedRb == null)
+        /*
+        if (playerRagdollEnabler.hitedRbDebug)
         {
-            selectedRbText.text = "null";
+            hitedDebugText.text = $"Hited Rigidbody: {playerRagdollEnabler.hitedRbDebug.name} - " +
+                                  $"Velocity: {playerRagdollEnabler.hitedRbDebug.linearVelocity.magnitude:F2} m/s";
         }
         else
         {
-            selectedRbText.text = playerDragController.SelectedRb.ToString();
-
+            hitedDebugText.text = "No Rigidbody hit detected.";
         }
-
-        if(playerDragController != null) 
-        {
-            dragDistanceText.text = $"Drag Distance: {Mathf.Abs(Mathf.RoundToInt(playerDragController.DragDistance))} Last Drag Distance: {Mathf.Abs(Mathf.RoundToInt(playerDragController.LastDragDistance))}";
-        }
-
-
-        playerStateText.text = player.PlayerStateMachine.CurrentState.ToString();
-
-        selectedItemIndexText.text = playerInventory.SelectedItemInventoryIndex.ToString();
-
-        playerCanInteractWithInventoryText.text = playerInventory.CanInteractWithInventory.ToString();
+        */
+        
+        /*if(cameraFollowing.FollowTargetTransformDebug)
+            followingTargetTxt.text = $"Following Target: {cameraFollowing.FollowTargetTransformDebug.name} - " +
+                                  $"Position: {cameraFollowing.FollowTargetTransformDebug.position}";*/
+            
     }
-
-
-
 }

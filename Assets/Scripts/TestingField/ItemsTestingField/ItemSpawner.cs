@@ -13,6 +13,7 @@ public class ItemSpawner : MonoBehaviour
     [SerializeField] private float dragForce;
     [SerializeField] private float delayBetweenSpawns = 3f;
     [SerializeField] private bool canSpawn = true;
+    [SerializeField] private bool canActivate = true;
 
     private GameObject lastProjectile;
 
@@ -60,6 +61,7 @@ public class ItemSpawner : MonoBehaviour
 
             yield return delay; // wait to activate if possible
 
+            if(!canActivate) continue;
             BaseItemThrowableActivable lastActivableProjectile = lastProjectile.GetComponent<BaseItemThrowableActivable>();
 
             if(lastActivableProjectile != null)

@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: m_UseGravity
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 788439871958220744, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: m_ImplicitCom
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 853258414879694376, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -135,7 +139,7 @@ PrefabInstance:
     - target: {fileID: 2738551014143626472, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: damageableSO
       value: 
-      objectReference: {fileID: 11400000, guid: 466f2eadf6424234aac440b39ba62f5e, type: 2}
+      objectReference: {fileID: 11400000, guid: 4a1bd00371e551640b2acac2ab3d64c1, type: 2}
     - target: {fileID: 3098171700661096899, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -249,6 +253,10 @@ PrefabInstance:
       value: SeaStarItem
       objectReference: {fileID: 0}
     - target: {fileID: 6091596160473946369, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: item
+      value: 
+      objectReference: {fileID: 6599030358803949550}
+    - target: {fileID: 6091596160473946369, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: followTransformComponent
       value: 
       objectReference: {fileID: 2492626997076712017}
@@ -339,6 +347,14 @@ PrefabInstance:
     - target: {fileID: 8676418324385943797, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8747205956194011556, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: knockback
+      value: 
+      objectReference: {fileID: 11400000, guid: 5482be76cfae43b44ab802ed8d302600, type: 2}
+    - target: {fileID: 8747205956194011556, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: knockbackStrength
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 8843573594692602520, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: SyncRotAngleX
@@ -456,6 +472,12 @@ MonoBehaviour:
   followTransformComponent: {fileID: 2492626997076712017}
   myNetworkObject: {fileID: 2590630615956071341}
   collisionController: {fileID: 1924429888176421737}
+  freezePositionX: 0
+  freezePositionY: 0
+  freezePositionZ: 0
+  freezeRotationX: 1
+  freezeRotationY: 1
+  freezeRotationZ: 0
   spinObjectComponent: {fileID: 2134412629585974574}
 --- !u!1 &4767779204118326136 stripped
 GameObject:

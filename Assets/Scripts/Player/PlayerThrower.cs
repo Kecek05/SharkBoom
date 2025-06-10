@@ -24,11 +24,12 @@ public class PlayerThrower : NetworkBehaviour
     [SerializeField] private PlayerSpawnItemOnHand playerSpawnItemOnHand;
     [SerializeField] private FollowSelectedSocketComponent followSelectedSocketComponent;
     [SerializeField] private PlayerRagdollEnabler playerRagdollEnabler;
-    [SerializeField] private HitRecieveComponent hitRecieveNetworked;
+    [SerializeField] private HitReceiveNetworkedComponent hitReceiveNetworked;
     [SerializeField] private PlayerKnockbackListener playerKnockbackListener;
     [SerializeField] private PlayerGetUp playerGetUp;
     [SerializeField] private PlayerJumpUI playerJumpUI;
     [SerializeField] private GameObject itemStuckSocket;
+    [SerializeField] private Transform hipsTransform;
 
     private PlayerStateMachine playerStateMachine;
 
@@ -42,6 +43,8 @@ public class PlayerThrower : NetworkBehaviour
     public GameObject ItemStuckSocket => itemStuckSocket;
     public PlayerStateMachine PlayerStateMachine => playerStateMachine;
     public NetworkVariable<PlayableState> ThisPlayableState => thisPlayableState;
+    
+    public Transform HipsTransform => hipsTransform;
 
     public override void OnNetworkSpawn()
     {
@@ -51,8 +54,6 @@ public class PlayerThrower : NetworkBehaviour
         turnManager = ServiceLocator.Get<BaseTurnManager>();
 
         thisPlayableState.OnValueChanged += PlayableStateInitialize;
-        hitRecieveNetworked.OnHitRecieve += HandleOnHitRecieve;
-
 
         PlayableStateInitialize(thisPlayableState.Value, thisPlayableState.Value);
 
@@ -62,8 +63,6 @@ public class PlayerThrower : NetworkBehaviour
         gameObject.name = "Player " + UnityEngine.Random.Range(0, 10000);
 
     }
-
-    
 
     private void HandleOnClientOwnershipChanged(ulong newOwnerClientId)
     {
@@ -99,16 +98,17 @@ public class PlayerThrower : NetworkBehaviour
 
         playerStateMachine.Initialize(playerStateMachine.idleEnemyTurnState);
 
+        BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
+
+        hitReceiveNetworked.OnHitReceive += HandleOnHitReceive;
+
         cameraManager.InitializeOwner();
         playerDetectFacingDirection.InitializeOwner();
         playerRotateToAim.InitializeOwner();
         playerInventory.InitializeOwner();
         playerLauncher.InitializeOwner();
         playerDragController.InitializeOwner(playerInventory.GetItemSOByItemSOIndex(0).rb);
-        playerGetUp.InitializeOwner();
-        playerRagdollEnabler.IniatilizeOwner();
     }
-
 
     private void HandleEvents()
     {
@@ -136,6 +136,9 @@ public class PlayerThrower : NetworkBehaviour
         playerSpawnItemOnHand.OnItemOnHandSpawned += HandleOnPlayerSpawnItemOnHandItemOnHandSpawned;
         playerSpawnItemOnHand.OnItemOnHandDespawned += HandleOnPlayerSpawnItemOnHandItemOnHandDespawned;
         playerSpawnItemOnHand.OnItemSocketSelected += OnPlayerSpawnItemOnHandItemSocketSelected;
+
+        playerGetUp.OnPlayerGetUp += HandleOnPlayerGetUp;
+        playerRagdollEnabler.OnRagdollDisabled += HandleOnRagdollDisabled;
     }
 
     private void UnHandleEvents()
@@ -165,11 +168,12 @@ public class PlayerThrower : NetworkBehaviour
         playerSpawnItemOnHand.OnItemOnHandDespawned -= HandleOnPlayerSpawnItemOnHandItemOnHandDespawned;
         playerSpawnItemOnHand.OnItemSocketSelected -= OnPlayerSpawnItemOnHandItemSocketSelected;
 
+        playerGetUp.OnPlayerGetUp -= HandleOnPlayerGetUp;
+        playerRagdollEnabler.OnRagdollDisabled -= HandleOnRagdollDisabled;
+
         cameraManager.UnInitializeOwner();
         playerLauncher.UnInitializeOwner();
         playerInventoryUI.UnHandleInitializeOwner();
-        playerGetUp.UnInitializeOwner();
-        playerRagdollEnabler.UnInitializeOwner();
     }
 
     private void HandleOnPlayerDetectFacingDirectionRotationChanged(bool isRight)
@@ -224,7 +228,6 @@ public class PlayerThrower : NetworkBehaviour
 
         playerInventoryUI.HandleOnPlayerStateMachineStateChanged(state);
 
-
         playerSpawnItemOnHand.HandleOnPlayerStateChanged(state);
     }
 
@@ -259,6 +262,10 @@ public class PlayerThrower : NetworkBehaviour
         if(newValue == GameState.GameEnded)
         {
             playerStateMachine.TransitionTo(playerStateMachine.playerGameOverState);
+        } else if (newValue == GameState.GameStarted)
+        {
+            playerDetectFacingDirection.SetupDetectFacingDirection();
+            playerDetectFacingDirection.FaceOtherPlayer();
         }
     }
 
@@ -277,14 +284,29 @@ public class PlayerThrower : NetworkBehaviour
         playerLauncher.HandleOnItemOnHandDespawned(throwable);
     }
 
-    private void HandleOnHitRecieve()
+    private void HandleOnHitReceive(bool isJump)
     {
-        playerGetUp.TriggerForCacheOriginalPos();
+        cameraManager.HandleOnPlayerHit(isJump);
     }
-
     private void OnPlayerSpawnItemOnHandItemSocketSelected(ItemSocket selectedSocket)
     {
         followSelectedSocketComponent.HandleOnPlayerSpawnItemOnHandOnItemSocketSelected(selectedSocket);
+    }
+
+    private void HandleOnItemCallbackAction()
+    {
+        playerGetUp.HandleOnItemCallbackAction();
+    }
+
+    private void HandleOnRagdollDisabled()
+    {
+        playerDetectFacingDirection.FaceOtherPlayer();
+        playerRotateToAim.OnRagdollDisabled();
+    }
+
+    private void HandleOnPlayerGetUp()
+    {
+        playerRagdollEnabler.HandleOnPlayerGetUp();
     }
 
     [Rpc(SendTo.Server)]
@@ -316,7 +338,6 @@ public class PlayerThrower : NetworkBehaviour
     {
         // My Turn Started, I can play
         playerStateMachine.TransitionTo(playerStateMachine.myTurnStartedState);
-        Debug.Log("I can play!");
 
     }
 
@@ -343,19 +364,15 @@ public class PlayerThrower : NetworkBehaviour
             {
                 //Host always is Player1Playing
                 ServiceLocator.Get<BaseTurnManager>().InitializeLocalStates(PlayableState.Player1Playing);
-
             } else
             {
                 ServiceLocator.Get<BaseTurnManager>().InitializeLocalStates(newValue); //pass to GameFlow to know when its local turn
             }
-
-           
         }
 
 
         if (newValue == PlayableState.Player1Playing)
         {
-
             foreach (GameObject playerCollider in playerObjectsToChangeLayer)
             {
                 playerCollider.layer = PlayersPublicInfoManager.PLAYER_1_LAYER;
@@ -377,7 +394,7 @@ public class PlayerThrower : NetworkBehaviour
     {
         GameManager.OnClientOwnershipChanged -= HandleOnClientOwnershipChanged;
         thisPlayableState.OnValueChanged -= PlayableStateInitialize;
-        hitRecieveNetworked.OnHitRecieve -= HandleOnHitRecieve;
+
 
         if (IsOwner)
         {
@@ -389,16 +406,17 @@ public class PlayerThrower : NetworkBehaviour
 
             gameStateManager.CurrentGameState.OnValueChanged -= HandleOnGameStateChanged;
 
+            BaseItemThrowable.OnItemCallbackAction -= HandleOnItemCallbackAction;
+
+            hitReceiveNetworked.OnHitReceive -= HandleOnHitReceive;
+
             UnHandleEvents();
         }
     }
 
     public override void OnLostOwnership()
     {
-
         playerTouchColl.enabled = false;
-
-
         UnHandleEvents();
     }
 }

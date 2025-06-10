@@ -1,6 +1,7 @@
+using Unity.Netcode;
 using UnityEngine;
 
-public class FreezeOnCollisionComponent : MonoBehaviour
+public class FreezeOnCollisionComponent : NetworkBehaviour
 {
     [Header("References")]
     [SerializeField] private Rigidbody rb;
@@ -9,15 +10,23 @@ public class FreezeOnCollisionComponent : MonoBehaviour
     private void OnEnable()
     {
         baseCollisionController.OnCollidedWithPlayer += BaseCollisionController_OnCollidedWithPlayer;
+        UnfreezeObject();
     }
 
     private void BaseCollisionController_OnCollidedWithPlayer(PlayerThrower playerThrower)
     {
-        Debug.Log("Stop moving");
-        FreezeObject();
+        if(!IsOwner) return;
+        FreezeObjectServerRpc();
     }
 
-    private void FreezeObject()
+    [Rpc(SendTo.Server)]
+    private void FreezeObjectServerRpc()
+    {
+        FreezeObjectClientRpc();
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void FreezeObjectClientRpc()
     {
         rb.isKinematic = true; // Freeze the object
     }
@@ -26,11 +35,9 @@ public class FreezeOnCollisionComponent : MonoBehaviour
     {
         rb.isKinematic = false; // Unfreeze the object
     }
-
     private void OnDisable()
     {
         baseCollisionController.OnCollidedWithPlayer -= BaseCollisionController_OnCollidedWithPlayer;
-        UnfreezeObject(); // Unfreeze the object when disabled
     }
 
 }

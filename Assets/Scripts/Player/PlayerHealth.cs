@@ -1,4 +1,5 @@
 using System;
+using Unity.Netcode;
 using UnityEngine;
 
 public class PlayerHealth : HealthComponent
@@ -39,7 +40,7 @@ public class PlayerHealth : HealthComponent
 
     public void PlayerTakeDamage(DamageableSO damageableSO, BodyPartEnum bodyPart)
     {
-        if (IsServer && !isDead)
+        if (!isDead.Value)
         {
             selectedMultiplier = bodyPart == BodyPartEnum.Head ? damageableSO.headMultiplier : bodyPart == BodyPartEnum.Body ? damageableSO.bodyMultiplier : bodyPart == BodyPartEnum.Foot ? damageableSO.footMultiplier : 0f; //0f error
 
@@ -51,7 +52,7 @@ public class PlayerHealth : HealthComponent
 
             Debug.Log($"Damage: {damageableSO.damage} in: {bodyPart} with multiplier: {selectedMultiplier} total: {damageableSO.damage * selectedMultiplier} damageableSO: {damageableSO}");
 
-            ModifyHealth(-(damageableSO.damage * selectedMultiplier));
+            ModifyHealthServerRpc(-(damageableSO.damage * selectedMultiplier));
 
         }
 

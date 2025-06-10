@@ -5,165 +5,159 @@ using UnityEngine;
 
 public class PlayerGetUp : NetworkBehaviour
 {
+    public event Action OnPlayerGetUp;
+
     [Header("References")]
     [SerializeField] private Transform rootTransform;
     [SerializeField] private Transform hipsTransform;
 
     [Header("Settings")]
-    [SerializeField] private Vector3 boxSize;
+    [SerializeField] private Collider[] playerColliders;
     [SerializeField] private LayerMask layersToDetectCollision;
-
-    private const int MAX_ATTEMPTS = 30;
-    private const float STEP_SIZE =  2.5f;
-    private bool isFallen = false;
+    
+    private const int MAX_ATTEMPTS = 10;
+    private const float STEP_SIZE =  0.5f;
+    private const float ANGLE_STEP = 10f;
+    private float defaultZPosition = -14.5f;
 
     private float verticalOffset;
-    private float OriginalRootZ;
+    private float originalRootZ;
+    private Quaternion originalRootRotation;
+    private Quaternion originalHipsRotation;
 
-    private Vector3 finalPosition;
+    private List<Vector3> directions = new List<Vector3>();
 
-    private Vector2[] directions =
-    {
-        Vector2.up,
-        Vector2.down,
-        Vector2.left,
-        Vector2.right,
-        (Vector2.up + Vector2.right).normalized,
-        (Vector2.up + Vector2.left).normalized,
-        (Vector2.down + Vector2.right).normalized,
-        (Vector2.down + Vector2.left).normalized,
-    };
+    private List<Vector3> foundDirections = new List<Vector3>();
 
-    public void InitializeOwner()
-    {
-        BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
-    }
+    //DEBUG
+    public GameObject CubeFoundGetUpPosDEBUG;
+    public GameObject CubeCollidedPosDEBUG;
+    public GameObject CubeFloatingPosDEBUG;
+    public GameObject CubeStartCalcPosDEBUG;
+    public GameObject CubeTestedPosDEBUG;
+    public GameObject CubeSelectedPosDEBUG;
 
-    public void TriggerForCacheOriginalPos()
-    {
-        if (!IsOwner) return;
-        RequestCacheOriginalPosServerRpc();
-    }
-
-    [Rpc(SendTo.Server)]
-    private void RequestCacheOriginalPosServerRpc()
-    {
-        CacheOriginalPosClientRpc();
-    }
-
-    [Rpc(SendTo.ClientsAndHost)]
-    private void CacheOriginalPosClientRpc()
-    {
-        if (!IsOwner) return;
-        CacheOriginalPos();
-    }
-
-    private void CacheOriginalPos()
-    {
-        isFallen = true;
-        OriginalRootZ = rootTransform.position.z;
-        verticalOffset = hipsTransform.position.y - rootTransform.position.y;
-    }
-
-    private void HandleOnItemCallbackAction()
-    {
-        if (!IsOwner) return;
-        RequestGetUpPlayerServerRpc();
-    }
-
-    [Rpc(SendTo.Server)]
-    private void RequestGetUpPlayerServerRpc()
-    {
-        RequestGetUpPlayerClientRpc();
-    }
-
-    [Rpc(SendTo.ClientsAndHost)]
-    private void RequestGetUpPlayerClientRpc()
+    public void HandleOnItemCallbackAction()
     {
         if (!IsOwner) return;
 
-        if (!isFallen) return;
         CalculatePlayerFreePos();
     }
 
     private void CalculatePlayerFreePos()
     {
-        Vector3 initialPosOfPlayer = hipsTransform.position;
-        initialPosOfPlayer.y -= verticalOffset;
-        initialPosOfPlayer.z = OriginalRootZ;
+        Vector3 playerRagdollPosition = hipsTransform.position;
+        playerRagdollPosition.y -= verticalOffset;
+        playerRagdollPosition.z = defaultZPosition;
 
-        if (Physics.Raycast(hipsTransform.position, Vector3.down, out RaycastHit hit, 5f, layersToDetectCollision)) // check if we hit the ground for not reset in the ground
-        {
-            initialPosOfPlayer.y = Mathf.Max(initialPosOfPlayer.y, hit.point.y);
-        }
+        if (Physics.Raycast(hipsTransform.position, Vector3.down, out var hit, 5f, layersToDetectCollision))
+            playerRagdollPosition.y = Mathf.Max(playerRagdollPosition.y, hit.point.y);
 
-        Vector3 foundPos = GetFreePosition(initialPosOfPlayer);
-
-        if (!IsBoxFreeAt(foundPos))
-        {
-            Debug.LogWarning("No free position found to get up player");
-            return;
-        }
-
-        finalPosition = foundPos;
-
-        PassPlayerFreePoosServerRpc();
-
-    }
-
-    [Rpc(SendTo.Server)]
-    private void PassPlayerFreePoosServerRpc()
-    {
-        PassPlayerFreePoosClientRpc();
-    }
-
-    [Rpc(SendTo.ClientsAndHost)]
-    private void PassPlayerFreePoosClientRpc()
-    {
-        PassPlayerFreePoos();
-    }
-
-    private void PassPlayerFreePoos()
-    {
-        rootTransform.SetPositionAndRotation(finalPosition, Quaternion.identity);
-        isFallen = false;
+        //Instantiate(CubeStartCalcPosDEBUG, playerRagdollPosition, Quaternion.identity);
+        Vector3 foundFinalPosition = GetFreePosition(playerRagdollPosition);
+        
+        PassPlayerFreePosServerRpc(foundFinalPosition);
     }
 
     private Vector3 GetFreePosition(Vector3 startPos)
     {
-        foreach (Vector2 direction in directions)
+        CalculateXYDirections();
+        foundDirections.Clear();
+        foreach (Vector3 direction in directions)
         {
-            Vector3 finalDirection = new Vector3(direction.x, 0, direction.y);
-
-            for (int i = 0; i < MAX_ATTEMPTS; i++)
+            for (int i = 1; i <= MAX_ATTEMPTS; i++)
             {
-                Vector3 testPos = startPos + finalDirection * (i * STEP_SIZE);
-                testPos.z = OriginalRootZ; 
-
-                if (IsBoxFreeAt(testPos))
+                Vector3 testDirection = startPos + direction * (i * STEP_SIZE);
+                testDirection.z = defaultZPosition;
+                //Instantiate(CubeTestedPosDEBUG, testDirection, Quaternion.identity);
+                if (AreAllCollidersFreeAt(testDirection))
                 {
-                    return testPos;
+                    foundDirections.Add(testDirection);
                 }
             }
         }
-        Debug.LogWarning("No free position found to get up player");
-        return startPos;
+
+        float closestDistance = float.MaxValue;
+        Vector3 closestDirection = Vector3.zero;
+
+        foreach (Vector3 foundDirection in foundDirections)
+        {
+            float distance = Vector3.Distance(foundDirection, startPos);
+            if (closestDistance > distance)
+            {
+                closestDistance = distance;
+                closestDirection = foundDirection;
+            }
+        }
+
+        return closestDirection;
     }
 
-    private bool IsBoxFreeAt(Vector3 checkPos)
+    private bool AreAllCollidersFreeAt(Vector3 checkPos)
     {
-        // we use Vector3.up because we are testing the box in get up
-        Vector3 centerOfBox = checkPos + Vector3.up * (boxSize.y * 0.5f);
-        Vector3 attempSizeExtends = boxSize * 0.5f;
+        int selfLayer = gameObject.layer;
+        int filteredMask = layersToDetectCollision & ~(1 << selfLayer); // remove self layer from the mask
+        foreach (Collider colliders in playerColliders)
+        {
+            Vector3 localOffset = colliders.transform.position - rootTransform.position;
+            Vector3 worldCenter = checkPos + localOffset;
 
-        bool isFree = !Physics.CheckBox(centerOfBox, attempSizeExtends, Quaternion.identity, layersToDetectCollision);
-        bool isOnGround = Physics.Raycast(checkPos + Vector3.up * 0.1f, Vector3.down, out RaycastHit hit, attempSizeExtends.y + 0.1f, layersToDetectCollision);
+            if (colliders is BoxCollider box)
+            {
+                Vector3 halfExtents = Vector3.Scale(box.size, colliders.transform.lossyScale) * 0.5f;
+                if (Physics.CheckBox(worldCenter, halfExtents, Quaternion.Euler(0f, 0f, 0f), filteredMask))
+                {
+                    //(CubeCollidedPosDEBUG, worldCenter, Quaternion.identity);
+                    return false;
+                }
+            }
+        }
 
-        return isFree && isOnGround;
+        Vector3 groundCheckOrigin = checkPos + Vector3.up * 0.1f;
+        float maxDistance = 3f;
+        if (!Physics.Raycast(groundCheckOrigin, Vector3.down, out _, maxDistance, filteredMask))
+        {
+            //Instantiate(CubeFloatingPosDEBUG, groundCheckOrigin, Quaternion.identity);
+            return false;
+        }
+
+        //Instantiate(CubeFoundGetUpPosDEBUG, checkPos, Quaternion.identity);
+        return true;
     }
 
-    public void UnInitializeOwner()
+    private void CalculateXYDirections()
     {
-        BaseItemThrowable.OnItemCallbackAction -= HandleOnItemCallbackAction;
+        directions.Clear();
+
+        for (float angle = 0f; angle < 360f; angle += ANGLE_STEP)
+        {
+            float rad = angle * Mathf.Deg2Rad;
+            float x = Mathf.Cos(rad);
+            float y = Mathf.Sin(rad);
+            directions.Add(new Vector3(x, y, 0f).normalized); // direction on XY plane
+        }
+    }
+
+
+
+    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    private void PassPlayerFreePosServerRpc(Vector3 finalPos)
+    {
+        PassPlayerFreePosClientRpc(finalPos);
+    }
+
+    [Rpc(SendTo.ClientsAndHost, Delivery = RpcDelivery.Reliable)]
+    private void PassPlayerFreePosClientRpc(Vector3 finalPos)
+    {
+        ApplyGetUp(finalPos);
+    }
+
+    private void ApplyGetUp(Vector3 finalPos)
+    {
+        //Instantiate(CubeSelectedPosDEBUG, finalPos, Quaternion.identity);
+
+        rootTransform.position = finalPos;
+
+        OnPlayerGetUp?.Invoke();
     }
 }

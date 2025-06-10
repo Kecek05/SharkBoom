@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class SeaStarItemThrowable : BaseItemThrowable
@@ -20,11 +19,12 @@ public class SeaStarItemThrowable : BaseItemThrowable
         rb.useGravity = true;
     }
 
-    public override void DestroyItem(Action destroyedCallback = null)
+    protected override void ResetItemThrowableState()
     {
-        base.DestroyItem(destroyedCallback);
+        base.ResetItemThrowableState();
 
         spinObjectComponent.DisableComponent();
+        rb.useGravity = false;
     }
 
 }

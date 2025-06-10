@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class HarpoonItemThrowable : BaseItemThrowable
@@ -19,9 +18,9 @@ public class HarpoonItemThrowable : BaseItemThrowable
         rotateTowardsVelocityComponent.DisableComponent();
     }
 
-    public override void DestroyItem(Action destroyedCallback = null)
+    protected override void ResetItemThrowableState()
     {
-        base.DestroyItem(destroyedCallback);
+        base.ResetItemThrowableState();
 
         rotateTowardsVelocityComponent.DisableComponent();
     }
