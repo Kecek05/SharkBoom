@@ -66,6 +66,8 @@ public class PlayerAnimator : NetworkBehaviour
         Animator.StringToHash("Idle_R_1"),
         Animator.StringToHash("Idle_L_2"),
         Animator.StringToHash("Idle_R_2"),
+        Animator.StringToHash("Idle_L_3"),
+        Animator.StringToHash("Idle_R_3"),
 
     };
 
@@ -279,6 +281,8 @@ public enum Animations
     Idle_R_1,
     Idle_L_2,
     Idle_R_2,
+    Idle_L_3,
+    Idle_R_3,
     None, //at the bottom!
 }
 
