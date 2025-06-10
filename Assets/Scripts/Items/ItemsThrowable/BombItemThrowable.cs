@@ -50,12 +50,12 @@ public class BombItemThrowable : BaseItemThrowableActivable
     }
     
     public override void DestroyItem(Action destroyedCallback = null)
-    {
+    {   
         if (!IsOwner) return;
 
         if (!itemReleased)
         {
-            base.DestroyItem();
+            base.DestroyItem(destroyedCallback);
             return;
         }
         
@@ -63,7 +63,7 @@ public class BombItemThrowable : BaseItemThrowableActivable
         if(itemCanBeActivated && !itemActivated) //Not exploded yet
             TryActivate();
         else
-            base.DestroyItem();
+            base.DestroyItem(destroyedCallback);
     }
 
     protected override void ResetItemThrowableState()
