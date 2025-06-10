@@ -835,6 +835,7 @@ GameObject:
   - component: {fileID: 5846641034301650373}
   - component: {fileID: 3826531896651400832}
   - component: {fileID: 1086343849340449909}
+  - component: {fileID: 2368892595055795578}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1004,7 +1005,7 @@ MonoBehaviour:
   playerSpawnItemOnHand: {fileID: 5846641034301650373}
   followSelectedSocketComponent: {fileID: 7649801925086215586}
   playerRagdollEnabler: {fileID: 8406327557363343199}
-  hitReceiveNetworked: {fileID: 0}
+  hitReceiveNetworked: {fileID: 2368892595055795578}
   playerKnockbackListener: {fileID: 3826531896651400832}
   playerGetUp: {fileID: 1086343849340449909}
   playerJumpUI: {fileID: 7506314524237905732}
@@ -1183,6 +1184,19 @@ MonoBehaviour:
   CubeStartCalcPosDEBUG: {fileID: 8368291566014290088, guid: 144a21aa2574da64b8fdd157b8c16fa7, type: 3}
   CubeTestedPosDEBUG: {fileID: 4075656425157644027, guid: 90470e1d68ad1f4499b1a491d9ff3602, type: 3}
   CubeSelectedPosDEBUG: {fileID: 2804248509602817314, guid: 130fa52a08ec5034bb681e58615e9596, type: 3}
+--- !u!114 &2368892595055795578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1244250245066138330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d8a1cc98e4d08445911c58cb28f243d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &1282251873746260443
 GameObject:
   m_ObjectHideFlags: 0
@@ -9446,6 +9460,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2498330595957626671}
     m_Modifications:
+    - target: {fileID: 3873209594310504747, guid: 7b8e86d3faaf55e47adc3ea5b3cecaa1, type: 3}
+      propertyPath: playerItemSingleUIPrefab
+      value: 
+      objectReference: {fileID: 8059052312601099466, guid: 7b8e86d3faaf55e47adc3ea5b3cecaa1, type: 3}
     - target: {fileID: 4850609182189403967, guid: 7b8e86d3faaf55e47adc3ea5b3cecaa1, type: 3}
       propertyPath: m_Pivot.x
       value: 0
