@@ -139,7 +139,7 @@ PrefabInstance:
     - target: {fileID: 2738551014143626472, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: damageableSO
       value: 
-      objectReference: {fileID: 11400000, guid: 466f2eadf6424234aac440b39ba62f5e, type: 2}
+      objectReference: {fileID: 11400000, guid: 4a1bd00371e551640b2acac2ab3d64c1, type: 2}
     - target: {fileID: 3098171700661096899, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -348,6 +348,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8747205956194011556, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: knockback
+      value: 
+      objectReference: {fileID: 11400000, guid: 5482be76cfae43b44ab802ed8d302600, type: 2}
     - target: {fileID: 8747205956194011556, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: knockbackStrength
       value: 200

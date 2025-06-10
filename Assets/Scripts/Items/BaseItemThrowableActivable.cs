@@ -1,11 +1,13 @@
 using System;
+using UnityEngine;
 
 public abstract class BaseItemThrowableActivable : BaseItemThrowable
 {
     public event Action OnItemActivated;
     protected bool itemActivated = false;
     protected bool itemCanBeActivated = true;
-
+    [SerializeField] protected KnockbackSO knockbackSOActivated;
+    [SerializeField] protected HitTriggerComponent hitTriggerComponent;
     protected void OnEnable()
     {
         itemActivated = false;
@@ -25,6 +27,9 @@ public abstract class BaseItemThrowableActivable : BaseItemThrowable
         if(!itemCanBeActivated) return;
         
         itemActivated = true;
+        if(knockbackSOActivated)
+            if(hitTriggerComponent)
+                hitTriggerComponent.SetKnockbackSO(knockbackSOActivated);
         ActivateItem();
         OnItemActivated?.Invoke();
     }

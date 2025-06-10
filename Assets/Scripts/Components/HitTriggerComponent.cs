@@ -11,7 +11,7 @@ public class HitTriggerComponent : NetworkBehaviour
     [SerializeField] private bool isJump;
     [Header("Knockback Settings")]
     [SerializeField] private float knockbackStrength;
-
+    [SerializeField] private KnockbackSO knockback;
 
     private void OnEnable()
     {
@@ -31,7 +31,7 @@ public class HitTriggerComponent : NetworkBehaviour
 
         if (collidedObject.transform.parent.TryGetComponent(out IRecieveKnockback knockbackReceiver))
         {
-            knockbackReceiver.DoOnRecieveKnockback(knockbackStrength, transform.position); //Pass the pos of the object that triggered
+            knockbackReceiver.DoOnRecieveKnockback(knockback.knockbackStrength, transform.position); //Pass the pos of the object that triggered
         }
         
 
@@ -70,8 +70,15 @@ public class HitTriggerComponent : NetworkBehaviour
         }
     }*/
     
+    public void SetKnockbackSO(KnockbackSO knockbackSoActivated)
+    {
+        knockback = knockbackSoActivated;
+    }
+    
     private void OnDisable()
     {
         baseCollisionController.OnCollided -= BaseCollisionController_OnCollided;
     }
+
+
 }

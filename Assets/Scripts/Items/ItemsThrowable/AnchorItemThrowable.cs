@@ -8,7 +8,8 @@ public class AnchorItemThrowable : BaseItemThrowableActivable
     [SerializeField] private float downForce;
     [SerializeField] private DamageableSO anchorActivatedDamageableSO;
     [SerializeField] private CanDoDamageComponent canDoDamageComponent;
-
+    
+    
     public override void ItemReleased(ItemLauncherData itemLauncherData)
     {
         base.ItemReleased(itemLauncherData);

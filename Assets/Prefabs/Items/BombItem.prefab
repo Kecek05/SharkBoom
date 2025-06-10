@@ -5164,6 +5164,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8747205956194011556, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: knockback
+      value: 
+      objectReference: {fileID: 11400000, guid: 72fe707975db31440aa134e6a08ea4e2, type: 2}
+    - target: {fileID: 8747205956194011556, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: knockbackStrength
       value: 350
       objectReference: {fileID: 0}
@@ -5212,6 +5216,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7838895398303230807, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
   m_PrefabInstance: {fileID: 7709761659009139004}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1412654848046434456 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8747205956194011556, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+  m_PrefabInstance: {fileID: 7709761659009139004}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4139059953487484834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54ff7ab3b9592a84db4fd435ae7ff2ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1924429888176421737 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8091387058931432021, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
@@ -5336,6 +5351,8 @@ MonoBehaviour:
   freezeRotationX: 1
   freezeRotationY: 1
   freezeRotationZ: 0
+  knockbackSOActivated: {fileID: 11400000, guid: 0c417133b77bc524abb278a7c44baa9e, type: 2}
+  hitTriggerComponent: {fileID: 1412654848046434456}
   spinObjectComponent: {fileID: 7614228182743595413}
   explosionCollider: {fileID: 8614684108031565060}
 --- !u!1 &4767779204118326136 stripped
