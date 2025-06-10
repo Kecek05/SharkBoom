@@ -178,6 +178,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         animator.enabled = true;
         
         hips.localRotation = Quaternion.Euler(defaultHipsRotation);
+        hips.localPosition = Vector3.zero;
         
         OnRagdollDisabled?.Invoke();
     }

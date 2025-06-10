@@ -52,9 +52,18 @@ public class BombItemThrowable : BaseItemThrowableActivable
     public override void DestroyItem(Action destroyedCallback = null)
     {
         if (!IsOwner) return;
+
+        if (!itemReleased)
+        {
+            base.DestroyItem();
+            return;
+        }
         
         //If the lifetime of the bomb gets to the end, it will explode
-        TryActivate();
+        if(itemCanBeActivated && !itemActivated) //Not exploded yet
+            TryActivate();
+        else
+            base.DestroyItem();
     }
 
     protected override void ResetItemThrowableState()

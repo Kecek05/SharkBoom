@@ -22,6 +22,8 @@ public abstract class BaseItemThrowableActivable : BaseItemThrowable
 
     public void TryActivate()
     {
+        if(gameObject.activeInHierarchy == false) return; //If the item is not active, don't activate it
+        
         if (itemActivated) return;
         
         if(!itemCanBeActivated) return;

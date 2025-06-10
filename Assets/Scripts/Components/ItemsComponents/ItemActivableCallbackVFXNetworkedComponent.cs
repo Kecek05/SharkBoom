@@ -9,6 +9,7 @@ public class ItemActivableCallbackVFXNetworkedComponent : NetworkBehaviour
     private void OnEnable()
     {
         ItemThrowable.OnItemActivated += BaseItemThrowableActivable_OnItemActivated;
+        particleSystemOnActivated.Clear();
     }
 
     private void BaseItemThrowableActivable_OnItemActivated()
@@ -25,6 +26,7 @@ public class ItemActivableCallbackVFXNetworkedComponent : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost, Delivery = RpcDelivery.Unreliable)]
     private void PlayVFXClientRpc()
     {
+        particleSystemOnActivated.Clear();
         particleSystemOnActivated.Play();
     }
 

@@ -118,7 +118,7 @@ public class CameraManager : NetworkBehaviour
         cameraGlobalFollow.FollowObject(player, 3f, true, onComplete: () =>
         {
             PlayerState currentState = playerReference.PlayerStateMachine.CurrentState.State;
-
+            Debug.Log($"CameraManager - currentState of Player when camera finishes moving: {currentState} - Player: {playerReference.name}");
             if (currentState == PlayerState.IdleMyTurn || currentState == PlayerState.IdleEnemyTurn)
             {
                 CameraMove();

@@ -7,7 +7,7 @@ public class ItemActivableManager : BaseItemActivableManager
     {
         //always local machine will call this
 
-        if (itemThrowableActivableClient != null)
+        if (itemThrowableActivableClient)
             itemThrowableActivableClient.TryActivate();
 
         UseItemServerRpc();
@@ -22,7 +22,7 @@ public class ItemActivableManager : BaseItemActivableManager
     private void UseItemServerRpc(ServerRpcParams serverRpc = default)
     {
 
-        if (itemThrowableActivableServer != null)
+        if (itemThrowableActivableServer)
             itemThrowableActivableServer.TryActivate();
 
         UseItemClientRpc(serverRpc.Receive.SenderClientId);
@@ -39,7 +39,7 @@ public class ItemActivableManager : BaseItemActivableManager
     {
         if (clientIdUsed == NetworkManager.Singleton.LocalClientId) return; //already called on client
 
-        if (itemThrowableActivableClient != null)
+        if (itemThrowableActivableClient)
             itemThrowableActivableClient.TryActivate();
     }
 

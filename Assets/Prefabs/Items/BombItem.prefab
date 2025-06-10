@@ -43,7 +43,7 @@ ParticleSystem:
   serializedVersion: 8
   lengthInSec: 1
   simulationSpeed: 1
-  stopAction: 1
+  stopAction: 0
   cullingMode: 0
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
@@ -5178,6 +5178,10 @@ PrefabInstance:
     - target: {fileID: 8843573594692602520, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: SyncRotAngleY
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9041130409635445487, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: stopAction
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}

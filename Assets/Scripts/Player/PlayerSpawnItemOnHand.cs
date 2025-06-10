@@ -47,7 +47,6 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
     {
         if (!IsOwner) return;
         canSpawnItem = false;
-
         switch (newState)
         {
             case PlayerState.IdleMyTurn:
@@ -69,10 +68,12 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
                 DespawnItem();
                 break;
         }
+        Debug.Log($"HandleOnPlayerStateChanged - New State: {newState} - Can Spawn Item: {canSpawnItem} - Item Spawned: {spawnedItem}");
     }
 
     private void SpawnItem()
     {
+        Debug.Log($"Spawn item - I can? {canSpawnItem} - item spawned: {spawnedItem} ");
         //Spawn selected Item on the selected socket
         if (!canSpawnItem) return; //Do nothing if the player is not in the right state
 
