@@ -34,7 +34,7 @@ public class CameraGlobalFollow : NetworkBehaviour
 
     private void HandleOnItemReleasedAction(Transform itemObject)
     {
-        FollowObject(itemObject.GetComponent<NetworkObject>());
+        //FollowObject(itemObject.GetComponent<NetworkObject>());
     }
     
     /// <summary>
