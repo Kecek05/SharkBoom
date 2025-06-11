@@ -3,7 +3,7 @@ using System;
 using Unity.Netcode;
 using UnityEngine;
 
-public abstract class BaseItemThrowable : MonoBehaviour
+public abstract class BaseItemThrowable : NetworkBehaviour
 {
     private const float ITEM_Z_POSITION = -14.5f;
     
@@ -54,6 +54,8 @@ public abstract class BaseItemThrowable : MonoBehaviour
     /// <param name="itemLauncherData"></param>
     public virtual void Initialize(Transform parent)
     {
+        if(!IsOwner) return; //Only the owner can initialize the item
+
         rb.isKinematic = true; //Set the item to kinematic until the item is released
 
         if(parent)
@@ -73,6 +75,7 @@ public abstract class BaseItemThrowable : MonoBehaviour
         }
 
         ResetConstraints();
+        InitializeUpdateRbTypeServerRpc(true);
     }
 
     protected virtual void CollisionController_OnCollidedWithoutPlayer(GameObject collidedObject)
@@ -90,21 +93,20 @@ public abstract class BaseItemThrowable : MonoBehaviour
         
     }
 
-    /*
     [Rpc(SendTo.Server)]
     private void InitializeUpdateRbTypeServerRpc(bool isKinematic)
     {
         InitializeUpdateRbTypeClientRpc(isKinematic);
-    }*/
+    }
 
-    /*[Rpc(SendTo.ClientsAndHost)]
+    [Rpc(SendTo.ClientsAndHost)]
     private void InitializeUpdateRbTypeClientRpc(bool isKinematic)
     {
         if(IsOwner) return; //Ownler already changed
 
         rb.isKinematic = isKinematic;
         ResetConstraints();
-    }*/
+    }
 
 
     public virtual void ChangeFollowTransform(Transform follow)
@@ -119,6 +121,8 @@ public abstract class BaseItemThrowable : MonoBehaviour
     /// <param name="direction"></param>
     public virtual void ItemReleased(ItemLauncherData itemLauncherData)
     {
+        if(!IsOwner) return; //Only the owner can release the item
+
         UpdateOnRelease(itemLauncherData);
 
         followTransformComponent.DisableComponent();
@@ -129,10 +133,10 @@ public abstract class BaseItemThrowable : MonoBehaviour
         if(lifetimeTriggerItemComponent)
             lifetimeTriggerItemComponent.StartLifetime();
         
-        //ItemReleasedServerRpc(itemLauncherData);
+        ItemReleasedServerRpc(itemLauncherData);
     }
 
-    /*[Rpc(SendTo.Server)]
+    [Rpc(SendTo.Server)]
     private void ItemReleasedServerRpc(ItemLauncherData itemLauncherData)
     {
         UpdateOnRelease(itemLauncherData);
@@ -145,7 +149,7 @@ public abstract class BaseItemThrowable : MonoBehaviour
         if(IsOwner) return; //Owner already released
 
         UpdateOnRelease(itemLauncherData);
-    }*/
+    }
 
     private void UpdateOnRelease(ItemLauncherData itemLauncherData)
     {
@@ -186,15 +190,13 @@ public abstract class BaseItemThrowable : MonoBehaviour
 
     protected virtual void ItemCallbackAction()
     {
-        //if(!IsOwner) return; // Only the server should call the callback action
+        if(!IsOwner) return; // Only the server should call the callback action
 
-        //FireItemCallbackAction();
-        
-        OnItemCallbackAction?.Invoke();
+        FireItemCallbackAction();
         turnManager.PlayerPlayed(thisItemLaucherData.ownerPlayableState);
     }
 
-    /*protected void FireItemCallbackAction()
+    protected void FireItemCallbackAction()
     {
         ItemCallbackServerRpc();
     }
@@ -209,7 +211,7 @@ public abstract class BaseItemThrowable : MonoBehaviour
     private void ItemCallbackClientRpc()
     {
         OnItemCallbackAction?.Invoke();
-    }*/
+    }
 
     /// <summary>
     /// Called when the object is Destroyed, all clients call this. Use to reset to the initial state of the item to the pool.
@@ -261,7 +263,7 @@ public abstract class BaseItemThrowable : MonoBehaviour
 
     public virtual void DestroyItem(Action destroyedCallback = null)
     {
-        //if (!IsOwner) return; //Only the owner can destroy the item
+        if (!IsOwner) return; //Only the owner can destroy the item
 
         OnItemFinishedAction?.Invoke();
 
@@ -272,37 +274,25 @@ public abstract class BaseItemThrowable : MonoBehaviour
         {
             dissolveShaderComponent.DissolveFadeOut(() =>
             {
-                //DestroyOnServerRpc();
+                DestroyOnServerRpc();
                 destroyedCallback?.Invoke();
                 dissolveShaderComponent = null;
-                Destroy(gameObject);
             });
         }
         else
         {
-            //DestroyOnServerRpc();
+            DestroyOnServerRpc();
             destroyedCallback?.Invoke();
-            Destroy(gameObject);
         }
     }
 
-    /*[Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
     private void DestroyOnServerRpc()
     {
         myNetworkObject.Despawn(true); // Pass 'true' to also destroy the GameObject | Return to the pool
-    }*/
+    }
 
-    /*public override void OnNetworkDespawn()
-    {
-        if (collisionController)
-        {
-            collisionController.OnCollided -= CollisionController_OnCollided;
-            collisionController.OnCollidedWithPlayer -= CollisionController_OnCollidedWithPlayer;
-        }
-        ResetItemThrowableState();
-    }*/
-
-    private void OnDisable()
+    public override void OnNetworkDespawn()
     {
         if (collisionController)
         {
