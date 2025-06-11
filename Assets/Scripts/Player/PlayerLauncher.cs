@@ -83,7 +83,7 @@ public class PlayerLauncher : NetworkBehaviour
 
         SpawnProjectile(itemLauncherData); 
         
-        //SpawnProjectileServerRpc(itemLauncherData);
+        SpawnProjectileServerRpc(itemLauncherData);
     
         OnItemLaunched?.Invoke(playerInventory.SelectedItemInventoryIndex); //pass itemInventoryIndex
         Debug.Log("Player Launcher - Launched");
