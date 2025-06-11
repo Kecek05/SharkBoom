@@ -83,10 +83,10 @@ public class PlayerLauncher : NetworkBehaviour
 
         SpawnProjectile(itemLauncherData); 
         
-        SpawnProjectileServerRpc(itemLauncherData);
+        //SpawnProjectileServerRpc(itemLauncherData);
     
         OnItemLaunched?.Invoke(playerInventory.SelectedItemInventoryIndex); //pass itemInventoryIndex
-         
+        Debug.Log("Player Launcher - Launched");
     }
 
     [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
@@ -103,15 +103,16 @@ public class PlayerLauncher : NetworkBehaviour
 
     private void SpawnProjectile(ItemLauncherData launcherData) // on client, need to pass the prefab for the other clients instantiate it
     {
-        if (playerInventory.GetItemSOByItemSOIndex(launcherData.selectedItemSOIndex).itemPrefab)
+        if (!playerInventory.GetItemSOByItemSOIndex(launcherData.selectedItemSOIndex).itemPrefab)
         {
-            Debug.LogWarning($"ItemSOIndex: {launcherData.selectedItemSOIndex} has no client prefab");
+            Debug.LogWarning($"Player Launcher - ItemSOIndex: {launcherData.selectedItemSOIndex} has no client prefab");
             return;
         }
 
         if (lastProjectile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
         {
             itemThrowable.ItemReleased(launcherData);
+            Debug.Log($"Player Launcher - Item released: {itemThrowable.name}");
         }
 
         if (lastProjectile.transform.TryGetComponent(out BaseItemThrowableActivable activable))

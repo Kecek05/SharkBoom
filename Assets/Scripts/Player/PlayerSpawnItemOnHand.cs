@@ -22,7 +22,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
 
     public void HandleOnRotationChanged(bool isRight)
     {
-        if (!IsOwner) return;
+        //if (!IsOwner) return;
         //Used to select the right side socket
         isRightSocket = isRight;
         UpdateSelectedSocket();
@@ -31,7 +31,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
 
     public void HandleOnPlayerInventoryItemSelected(int selectedItemSOIndex)
     {
-        if (!IsOwner) return;
+        //if (!IsOwner) return;
         //Based on the item select, save the item to spawn when drag start and select the corresponding socket based on item and on rotation
         this.selectedItemSOIndex = playerInventory.GetSelectedItemSOIndex();
         UpdateSelectedSocket();
@@ -39,7 +39,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
 
     public void HandleOnCrossfadeFinished()
     {
-        if (!IsOwner) return;
+        //if (!IsOwner) return;
         SpawnItem(selectedItemSOIndex);
     }
 
@@ -78,21 +78,6 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         TriggerSpawnItem(_selectedItemSOIndex);
         
         SpawnItemServerRpc(_selectedItemSOIndex);
-
-        
-    }
-
-    private void TriggerSpawnItem(int _selectedItemSOIndex)
-    {
-        if (spawnedItem)
-        {
-            spawnedItem.ChangeFollowTransform(selectedSocket.transform);
-        }
-        else
-        {
-            //it's null
-            InstantiateObj();
-        }
     }
     
     [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
@@ -106,18 +91,44 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
     {
         TriggerSpawnItem(_selectedItemSOIndex);
     }
+    
+    private void TriggerSpawnItem(int _selectedItemSOIndex)
+    {
+        UpdateSelectedSocket();
+        
+        if (spawnedItem)
+        {
+            spawnedItem.ChangeFollowTransform(selectedSocket.transform);
+        }
+        else
+        {
+            //it's null
+            InstantiateLocalObj(_selectedItemSOIndex);
+        }
+    }
 
-    private void InstantiateObj()
+   /* private void InstantiateObj()
     {
         UpdateSelectedSocket();
         InstantiateObjServerRpc(NetworkManager.Singleton.LocalClientId, selectedSocket.transform.position, selectedItemSOIndex);
 
-    }
+    }*/
 
+    private void InstantiateLocalObj(int itemSOIndex)
+    {
+        GameObject spawnedItemObject = ObjectPool.Instance.GetObject(playerInventory.GetItemSOByItemSOIndex(itemSOIndex).itemIndex, selectedSocket.transform.position, Quaternion.identity);
+        spawnedItem = spawnedItemObject.GetComponent<BaseItemThrowable>();
+        
+        spawnedItem.Initialize(selectedSocket.transform);
+        spawnedItem.transform.localRotation = Quaternion.identity;
+        
+        OnItemOnHandSpawned?.Invoke(spawnedItem);
+    }
+    /*
     [Rpc(SendTo.Server)]
     private void InstantiateObjServerRpc(ulong ownerClientId, Vector3 selectedSocketPos, int itemSOIndex)
     {
-        NetworkObject spawnedItemNetworkObject = NetworkObjectPool.Instance.GetNetworkObject(playerInventory.GetItemSOByItemSOIndex(itemSOIndex).itemIndex, selectedSocketPos, Quaternion.identity);
+        NetworkObject spawnedItemNetworkObject = ObjectPool.Instance.GetObject(playerInventory.GetItemSOByItemSOIndex(itemSOIndex).itemIndex, selectedSocketPos, Quaternion.identity);
         spawnedItemNetworkObject.Spawn();
         spawnedItemNetworkObject.ChangeOwnership(ownerClientId);
 
@@ -125,9 +136,9 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
             spawnedItem = spawnedItemNetworkObject.GetComponent<BaseItemThrowable>();
 
         CallOnItemOnHandClientRpc(spawnedItemNetworkObject);
-    }
+    }*/
 
-    [Rpc(SendTo.ClientsAndHost)]
+    /*[Rpc(SendTo.ClientsAndHost)]
     private void CallOnItemOnHandClientRpc(NetworkObjectReference itemNetworkObject)
     {
         if(itemNetworkObject.TryGet(out NetworkObject itemNetworkObjectRef))
@@ -150,7 +161,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         }
 
         OnItemOnHandSpawned?.Invoke(spawnedItem);
-    }
+    }*/
 
     public void HandleOnShoot()
     {
