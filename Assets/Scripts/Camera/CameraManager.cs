@@ -56,6 +56,7 @@ public class CameraManager : NetworkBehaviour
     {
         enemyObject = publicInfoManager.GetOtherPlayerByMyPlayableState(turnManager.LocalPlayableState);
         playerObject = publicInfoManager.GetPlayerObjectByPlayableState(turnManager.LocalPlayableState);
+        Debug.Log($"CameraGlobalFollow - turnManager.LocalPlayableState: {turnManager.LocalPlayableState}, newValue: {newValue}");
         
         if(newValue == PlayableState.Player1Played || newValue == PlayableState.Player2Played) return;
         
@@ -118,6 +119,7 @@ public class CameraManager : NetworkBehaviour
         cameraGlobalFollow.FollowObject(player, 3f, true, onComplete: () =>
         {
             PlayerState currentState = playerReference.PlayerStateMachine.CurrentState.State;
+            Debug.Log($"CameraManager - currentState of Player when camera finishes moving: {currentState} - Player: {playerReference.name}");
             if (currentState == PlayerState.IdleMyTurn || currentState == PlayerState.IdleEnemyTurn)
             {
                 CameraMove();
@@ -136,7 +138,5 @@ public class CameraManager : NetworkBehaviour
 
         cameraMovement.UnInitializeOwner();
         cameraZoom.UnInitializeOwner();
-        
-        turnManager.CurrentPlayableState.OnValueChanged -= HandleOnPlayableStateChanged;
     }
 }

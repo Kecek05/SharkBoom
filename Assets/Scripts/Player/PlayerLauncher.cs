@@ -82,28 +82,14 @@ public class PlayerLauncher : NetworkBehaviour
         };
 
         SpawnProjectile(itemLauncherData); 
-        
-        SpawnProjectileServerRpc(itemLauncherData);
     
         OnItemLaunched?.Invoke(playerInventory.SelectedItemInventoryIndex); //pass itemInventoryIndex
          
     }
 
-    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
-    private void SpawnProjectileServerRpc(ItemLauncherData itemLauncherData)
-    {
-        SpawnProjectileClientRpc(itemLauncherData);
-    }
-    
-    [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
-    private void SpawnProjectileClientRpc(ItemLauncherData itemLauncherData)
-    {
-        SpawnProjectile(itemLauncherData);
-    }
-
     private void SpawnProjectile(ItemLauncherData launcherData) // on client, need to pass the prefab for the other clients instantiate it
     {
-        if (playerInventory.GetItemSOByItemSOIndex(launcherData.selectedItemSOIndex).itemPrefab)
+        if (playerInventory.GetItemSOByItemSOIndex(launcherData.selectedItemSOIndex).itemPrefab == null)
         {
             Debug.LogWarning($"ItemSOIndex: {launcherData.selectedItemSOIndex} has no client prefab");
             return;
