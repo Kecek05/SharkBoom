@@ -3,7 +3,7 @@ using Sortify;
 using Unity.Netcode;
 using UnityEngine;
 
-public class HitTriggerComponent : NetworkBehaviour
+public class HitTriggerComponent : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private BaseCollisionController baseCollisionController;
@@ -22,7 +22,7 @@ public class HitTriggerComponent : NetworkBehaviour
 
     private void BaseCollisionController_OnCollided(GameObject collidedObject)
     {
-        if(!IsOwner) return;
+        //if(!IsOwner) return;
         
         if (!collidedObject.transform.parent) return; //Check if the collided object has a parent
 

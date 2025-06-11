@@ -51,7 +51,7 @@ public class BombItemThrowable : BaseItemThrowableActivable
     
     public override void DestroyItem(Action destroyedCallback = null)
     {   
-        if (!IsOwner) return;
+        //if (!IsOwner) return;
 
         if (!itemReleased)
         {

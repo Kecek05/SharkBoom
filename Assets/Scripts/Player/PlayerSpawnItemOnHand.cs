@@ -26,7 +26,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         //Used to select the right side socket
         isRightSocket = isRight;
         UpdateSelectedSocket();
-        SpawnItem();
+        SpawnItem(selectedItemSOIndex);
     }
 
     public void HandleOnPlayerInventoryItemSelected(int selectedItemSOIndex)
@@ -40,7 +40,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
     public void HandleOnCrossfadeFinished()
     {
         if (!IsOwner) return;
-        SpawnItem();
+        SpawnItem(selectedItemSOIndex);
     }
 
     public void HandleOnPlayerStateChanged(PlayerState newState)
@@ -70,11 +70,20 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         }
     }
 
-    private void SpawnItem()
+    private void SpawnItem(int _selectedItemSOIndex)
     {
         //Spawn selected Item on the selected socket
         if (!canSpawnItem) return; //Do nothing if the player is not in the right state
+        
+        TriggerSpawnItem(_selectedItemSOIndex);
+        
+        SpawnItemServerRpc(_selectedItemSOIndex);
 
+        
+    }
+
+    private void TriggerSpawnItem(int _selectedItemSOIndex)
+    {
         if (spawnedItem)
         {
             spawnedItem.ChangeFollowTransform(selectedSocket.transform);
@@ -84,12 +93,22 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
             //it's null
             InstantiateObj();
         }
-        
+    }
+    
+    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    private void SpawnItemServerRpc(int _selectedItemSOIndex)
+    {
+        SpawnItemClientRpc(_selectedItemSOIndex);
+    }
+    
+    [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
+    private void SpawnItemClientRpc(int _selectedItemSOIndex)
+    {
+        TriggerSpawnItem(_selectedItemSOIndex);
     }
 
     private void InstantiateObj()
     {
-        if(!IsOwner) return; //Only the owner can spawn the item
         UpdateSelectedSocket();
         InstantiateObjServerRpc(NetworkManager.Singleton.LocalClientId, selectedSocket.transform.position, selectedItemSOIndex);
 
