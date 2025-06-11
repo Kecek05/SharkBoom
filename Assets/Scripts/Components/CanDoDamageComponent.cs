@@ -1,7 +1,7 @@
+using System;
 using UnityEngine;
-using Unity.Netcode;
 
-public class CanDoDamageComponent : NetworkBehaviour
+public class CanDoDamageComponent : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private DamageableSO damageableSO;
@@ -9,15 +9,22 @@ public class CanDoDamageComponent : NetworkBehaviour
 
     private bool damaged = false; //damage only once
 
-    public override void OnNetworkSpawn()
+    private void OnEnable()
     {
         damaged = false;
         baseCollisionController.OnCollided += BaseCollisionController_OnItemCollided;
     }
 
+    /*
+    public override void OnNetworkSpawn()
+    {
+        damaged = false;
+        baseCollisionController.OnCollided += BaseCollisionController_OnItemCollided;
+    }*/
+
     private void BaseCollisionController_OnItemCollided(GameObject collidedObj)
     {
-        if(!IsOwner) return;
+        //if(!IsOwner) return;
         
         if(collidedObj.TryGetComponent(out IDamageable damageable)) //Only on server
         {
@@ -39,9 +46,14 @@ public class CanDoDamageComponent : NetworkBehaviour
         this.damageableSO = damageableSO;
     }
 
-    public override void OnNetworkDespawn()
+    /*public override void OnNetworkDespawn()
     {
         if (!IsServer) return; // Only the server should handle the damage
+        baseCollisionController.OnCollided -= BaseCollisionController_OnItemCollided;
+    }*/
+
+    private void OnDisable()
+    {
         baseCollisionController.OnCollided -= BaseCollisionController_OnItemCollided;
     }
 }

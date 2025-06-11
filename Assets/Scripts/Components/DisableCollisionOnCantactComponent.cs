@@ -1,7 +1,7 @@
 using Unity.Netcode;
 using UnityEngine;
 
-public class DisableCollisionOnCantactComponent : NetworkBehaviour
+public class DisableCollisionOnCantactComponent : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Collider[] itemColliders;
@@ -15,11 +15,17 @@ public class DisableCollisionOnCantactComponent : NetworkBehaviour
 
     private void HandleItemCollidedWithPlayer(PlayerThrower playerThrower)
     {
-        if(!IsOwner) return;
-        DisableCollisionsServerRpc();
+        //if(!IsOwner) return;
+        
+        //DisableCollisionsServerRpc();
+        
+        foreach (Collider itemCol in itemColliders)
+        {
+            itemCol.enabled = false;
+        }
     }
 
-    [Rpc(SendTo.Server)]
+    /*[Rpc(SendTo.Server)]
     private void DisableCollisionsServerRpc()
     {
         DisableCollisionsClientRpc();
@@ -32,7 +38,7 @@ public class DisableCollisionOnCantactComponent : NetworkBehaviour
         {
             itemCol.enabled = false;
         }
-    }
+    }*/
 
     private void EnableCollisions()
     {
