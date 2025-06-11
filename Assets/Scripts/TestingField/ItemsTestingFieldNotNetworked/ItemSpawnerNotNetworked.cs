@@ -81,8 +81,9 @@ public class ItemSpawnerNotNetworked : NetworkBehaviour
     {
         lastProjectile = Instantiate(itemPrefab, transform.position, Quaternion.identity);
 
-        if (lastProjectile.transform.TryGetComponent(out ItemTestingNotNetworked itemThrowable))
+        if (lastProjectile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
         {
+            itemThrowable.Initialize(null);
             itemThrowable.ItemReleased(launcherData);
         }
     }
