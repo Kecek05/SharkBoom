@@ -9,7 +9,7 @@ public class PlayerLauncher : NetworkBehaviour
 {
 
     /// <summary>
-    /// item launched, pass itemInventoryIndex
+    /// item launched, pass itemID
     /// </summary>
     public event Action<int> OnItemLaunched; 
 
@@ -44,7 +44,8 @@ public class PlayerLauncher : NetworkBehaviour
 
     public void HandleOnPlayerStateMachineStateChanged(PlayerState state)
     {
-
+        if(!IsOwner) return;
+        
         if (state == PlayerState.DragReleaseJump || state == PlayerState.DragReleaseItem)
         {
             // Released, pause timer
@@ -77,7 +78,7 @@ public class PlayerLauncher : NetworkBehaviour
         {
             dragForce = playerDragController.DragForce, 
             dragDirection = playerDragController.DirectionOfDrag,
-            selectedItemSOIndex = playerInventory.GetSelectedItemSOIndex(), 
+            selectedItemID = playerInventory.SelectedItemID, 
             ownerPlayableState = ServiceLocator.Get<BaseTurnManager>().LocalPlayableState,
         };
 
@@ -85,7 +86,7 @@ public class PlayerLauncher : NetworkBehaviour
         
         SpawnProjectileServerRpc(itemLauncherData);
     
-        OnItemLaunched?.Invoke(playerInventory.SelectedItemInventoryIndex); //pass itemInventoryIndex
+        OnItemLaunched?.Invoke(playerInventory.SelectedItemID); //pass itemInventoryIndex
         Debug.Log("Player Launcher - Launched");
     }
 
@@ -103,9 +104,9 @@ public class PlayerLauncher : NetworkBehaviour
 
     private void SpawnProjectile(ItemLauncherData launcherData) // on client, need to pass the prefab for the other clients instantiate it
     {
-        if (!playerInventory.GetItemSOByItemSOIndex(launcherData.selectedItemSOIndex).itemPrefab)
+        if (!playerInventory.GetItemSOByItemID(launcherData.selectedItemID).itemPrefab)
         {
-            Debug.LogWarning($"Player Launcher - ItemSOIndex: {launcherData.selectedItemSOIndex} has no client prefab");
+            Debug.LogWarning($"Player Launcher - ItemSOIndex: {launcherData.selectedItemID} has no client prefab");
             return;
         }
 

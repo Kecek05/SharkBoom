@@ -29,7 +29,9 @@ public class MyTurnStartedState : IState
     private async void MyTurnStartedCallback()
     {
         await Task.Delay(2000);
-        player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleMyTurnState);
+        player.ChangePlayerState(PlayerState.IdleMyTurn);
+        /*player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleMyTurnState);
+        player.TransitionToMyTurnEndedStateServerRpc();*/
     }
 
     public void Execute()
@@ -76,12 +78,16 @@ public class IdleMyTurnState : IState
 
     private void PlayerDragController_OnDragStart()
     {
-        if (playerInventory.SelectedItemInventoryIndex == 0)
+        if (playerInventory.SelectedItemID == 0)
         {
-            player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.draggingJump);
+            player.ChangePlayerState(PlayerState.DraggingJump);
+            /*player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.draggingJump);
+            player.TransitionToDraggingJumpServerRpc();*/
         } else
         {
-            player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.draggingItem);
+            player.ChangePlayerState(PlayerState.DraggingItem);
+            /*player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.draggingItem);
+            player.TransitionToDraggingItemServerRpc();*/
         }
     }
 
@@ -124,7 +130,9 @@ public class DraggingJump : IState
 
     private void PlayerDragController_OnDragRelease()
     {
-        player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.dragReleaseJump);
+        player.ChangePlayerState(PlayerState.DraggingJump);
+        /*player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.dragReleaseJump);
+        player.TransitionToDraggingJumpServerRpc();*/
     }
 
     public void Execute()
@@ -170,7 +178,8 @@ public class DraggingItem : IState
 
     private void PlayerDragController_OnDragRelease()
     {
-        player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.dragReleaseItem);
+        player.ChangePlayerState(PlayerState.DragReleaseItem);
+        //player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.dragReleaseItem);
     }
 
     public void Execute()
@@ -285,7 +294,8 @@ public class MyTurnEndedState : IState
     private async void MyTurnEndedCallback()
     {
         await Task.Delay(2000);
-        player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleEnemyTurnState);
+        player.ChangePlayerState(PlayerState.IdleEnemyTurn);
+       //player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleEnemyTurnState);
     }
     public void Execute()
     {

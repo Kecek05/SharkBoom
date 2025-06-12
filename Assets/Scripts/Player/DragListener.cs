@@ -50,11 +50,8 @@ public abstract class DragListener : NetworkBehaviour
 
     public void InitializeOwner()
     {
-        if (!IsOwner) return;
-
-
+       // if (!IsOwner) return;
         initializeOnwer?.DoOnInitializeOnwer();
-
     }
 
     public void HandleOnPlayerDragControllerDragStart()

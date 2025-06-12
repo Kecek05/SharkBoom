@@ -109,18 +109,19 @@ public class DragAndShoot : NetworkBehaviour
     //DEBUG
     public bool isLocked = false; //to release the finger and the player still holding the item
 
-    public void InitializeOwner(Rigidbody rb)
+    public void Initialize(Rigidbody selectedRb)
+    {
+        trajectory.Initialize(startTrajectoryPos);
+
+        SetDragRb(selectedRb); //get jump's rb, default value
+
+    }
+    public void InitializeOwner()
     {
         if(!IsOwner) return;
-
         //Owner initialize code
         inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
         inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
-
-        trajectory.Initialize(startTrajectoryPos);
-
-        SetDragRb(rb); //get jump's rb, default value
-
     }
 
     /// <summary>
@@ -178,7 +179,9 @@ public class DragAndShoot : NetworkBehaviour
                 //reset all
                 SetCanCancelDrag(false);
                 SetIsDragging(false);
-                player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleMyTurnState);
+                player.ChangePlayerState(PlayerState.IdleMyTurn);
+               // player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleMyTurnState);
+               // player.TransitionToIdleMyTurnStateServerRpc();
                 OnDragCancelable?.Invoke(false);
                 return;
             }
@@ -191,6 +194,8 @@ public class DragAndShoot : NetworkBehaviour
             }
         }
     }
+
+
 
     protected void InputReader_OnPrimaryFingerPositionEvent(InputAction.CallbackContext context)
     {

@@ -54,7 +54,7 @@ public class ObjectPool : MonoBehaviour
         // Unregisters all objects in PooledPrefabsList from the cache.
         foreach (var itemSO in m_ItemsSO)
         {
-            m_PooledObjects[itemSO.itemIndex].Clear();
+            m_PooledObjects[itemSO.itemID].Clear();
         }
         m_PooledObjects.Clear();
         m_ItemsSO.Clear();
@@ -146,17 +146,17 @@ public class ObjectPool : MonoBehaviour
         m_ItemsSO.Add(itemSO);
 
         // Create the pool
-        m_PooledObjects[itemSO.itemIndex] = new ObjectPool<GameObject>(CreateFunc, ActionOnGet, ActionOnRelease, ActionOnDestroy, defaultCapacity: prewarmCount);
+        m_PooledObjects[itemSO.itemID] = new ObjectPool<GameObject>(CreateFunc, ActionOnGet, ActionOnRelease, ActionOnDestroy, defaultCapacity: prewarmCount);
 
         // Populate the pool
         var prewarmObjects = new List<GameObject>();
         for (var i = 0; i < prewarmCount; i++)
         {
-            prewarmObjects.Add(m_PooledObjects[itemSO.itemIndex].Get());
+            prewarmObjects.Add(m_PooledObjects[itemSO.itemID].Get());
         }
         foreach (var networkObject in prewarmObjects)
         {
-            m_PooledObjects[itemSO.itemIndex].Release(networkObject);
+            m_PooledObjects[itemSO.itemID].Release(networkObject);
         }
 
         // Register Netcode Spawn handlers

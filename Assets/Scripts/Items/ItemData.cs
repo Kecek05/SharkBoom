@@ -8,16 +8,10 @@ using UnityEngine;
 /// </summary>
 public struct ItemInventoryData : INetworkSerializable, IEquatable<ItemInventoryData>
 {
-
     /// <summary>
-    /// index to get the itemSO from the ItemsListSO
+    /// ID of the item in the ItemSO, Primary key
     /// </summary>
-    public int itemSOIndex;
-
-    /// <summary>
-    /// index to get the itemDataStruct from the playerInventory, Primary key
-    /// </summary>
-    public int itemInventoryIndex;
+    public int itemID;
 
     /// <summary>
     /// If the item can be used or not
@@ -32,16 +26,15 @@ public struct ItemInventoryData : INetworkSerializable, IEquatable<ItemInventory
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
-        serializer.SerializeValue(ref itemSOIndex);
+        serializer.SerializeValue(ref itemID);
         serializer.SerializeValue(ref itemCanBeUsed);
         serializer.SerializeValue(ref itemCooldownRemaining);
-        serializer.SerializeValue(ref itemInventoryIndex);
     }
 
     public bool Equals(ItemInventoryData other)
     {
         //return itemSOIndex == other.itemSOIndex && itemCanBeUsed == other.itemCanBeUsed && itemCooldownRemaining == other.itemCooldownRemaining && ownerDebug == other.ownerDebug && itemInventoryIndex == other.itemInventoryIndex;
-        return itemInventoryIndex == other.itemInventoryIndex;
+        return itemID == other.itemID;
     }
 }
 
@@ -64,9 +57,9 @@ public struct ItemLauncherData : INetworkSerializable, IEquatable<ItemLauncherDa
 
 
     /// <summary>
-    /// Index to get the itemSO from the ItemsListSO
+    /// ID to get the itemSO from the ItemsListSO
     /// </summary>
-    public int selectedItemSOIndex;
+    public int selectedItemID;
 
     /// <summary>
     /// Owner of the Item launched
@@ -78,12 +71,12 @@ public struct ItemLauncherData : INetworkSerializable, IEquatable<ItemLauncherDa
     {
         serializer.SerializeValue(ref dragForce);
         serializer.SerializeValue(ref dragDirection);
-        serializer.SerializeValue(ref selectedItemSOIndex);
+        serializer.SerializeValue(ref selectedItemID);
         serializer.SerializeValue(ref ownerPlayableState);
     }
 
     public bool Equals(ItemLauncherData other)
     {
-        return dragForce == other.dragForce && dragDirection == other.dragDirection && selectedItemSOIndex == other.selectedItemSOIndex && ownerPlayableState == other.ownerPlayableState;
+        return dragForce == other.dragForce && dragDirection == other.dragDirection && selectedItemID == other.selectedItemID && ownerPlayableState == other.ownerPlayableState;
     }
 }

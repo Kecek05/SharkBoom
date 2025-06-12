@@ -14,7 +14,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
     [SerializeField] private ItemSocket[] rightSideSockets;
 
     private ItemSocket selectedSocket;
-    private int selectedItemSOIndex = 0;
+    private int selectedItemID = 0;
     private bool isRightSocket = false; //Rotation that the player is looking
     private BaseItemThrowable spawnedItem;
 
@@ -26,21 +26,21 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         //Used to select the right side socket
         isRightSocket = isRight;
         UpdateSelectedSocket();
-        SpawnItem(selectedItemSOIndex);
+        SpawnItem(selectedItemID);
     }
 
     public void HandleOnPlayerInventoryItemSelected(int selectedItemSOIndex)
     {
         //if (!IsOwner) return;
         //Based on the item select, save the item to spawn when drag start and select the corresponding socket based on item and on rotation
-        this.selectedItemSOIndex = playerInventory.GetSelectedItemSOIndex();
+        this.selectedItemID = playerInventory.SelectedItemID;
         UpdateSelectedSocket();
     }
 
     public void HandleOnCrossfadeFinished()
     {
         //if (!IsOwner) return;
-        SpawnItem(selectedItemSOIndex);
+        SpawnItem(selectedItemID);
     }
 
     public void HandleOnPlayerStateChanged(PlayerState newState)
@@ -116,7 +116,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
 
     private void InstantiateLocalObj(int itemSOIndex)
     {
-        GameObject spawnedItemObject = ObjectPool.Instance.GetObject(playerInventory.GetItemSOByItemSOIndex(itemSOIndex).itemIndex, selectedSocket.transform.position, Quaternion.identity);
+        GameObject spawnedItemObject = ObjectPool.Instance.GetObject(playerInventory.GetItemSOByItemID(itemSOIndex).itemID, selectedSocket.transform.position, Quaternion.identity);
         spawnedItem = spawnedItemObject.GetComponent<BaseItemThrowable>();
         
         spawnedItem.Initialize(selectedSocket.transform);
@@ -189,7 +189,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         {
             foreach (ItemSocket socket in rightSideSockets)
             {
-                if (socket.ItemSO == playerInventory.GetItemSOByItemSOIndex(selectedItemSOIndex))
+                if (socket.ItemSO == playerInventory.GetItemSOByItemID(selectedItemID))
                 {
                     //Found the corresponding socket
                     selectedSocket = socket;
@@ -200,7 +200,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         {
             foreach (ItemSocket socket in leftSideSockets)
             {
-                if (socket.ItemSO == playerInventory.GetItemSOByItemSOIndex(selectedItemSOIndex))
+                if (socket.ItemSO == playerInventory.GetItemSOByItemID(selectedItemID))
                 {
                     //Found the corresponding socket
                     selectedSocket = socket;

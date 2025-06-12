@@ -51,7 +51,7 @@ public class ItemSpawnerNotNetworked : NetworkBehaviour
             {
                 dragForce = this.dragForce,
                 dragDirection = itemDirection.position,
-                selectedItemSOIndex = 0, // irrelevant
+                selectedItemID = 0, // irrelevant
                 ownerPlayableState = PlayableState.None, // irrelevant
             };
 

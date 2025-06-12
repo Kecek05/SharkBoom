@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class PlayersPublicInfoManager : BasePlayersPublicInfoManager
 {
+    private const int JUMP_ITEM_ID = 0; 
+    
     public override void Initialize(ItemsListSO itemsListSO)
     {
         this.itemsListSO = itemsListSO;
@@ -54,33 +56,35 @@ public class PlayersPublicInfoManager : BasePlayersPublicInfoManager
     public override void RandomizePlayerItems()
     {
         //int itemsInInventory = UnityEngine.Random.Range(2, itemsListSO.allItemsSOList.Count); //Random qtd of items for now
-        int itemsInInventory = itemsListSO.allItemsSOList.Count; //all items
+        //List<ItemSO> itemsInInventoryPool = itemsListSO.allItemsSOList; //all items
         List<ItemSO> itemsAdded = new List<ItemSO>();
 
         //Add Jump item first
         foreach (PlayerInventory playerInventory in FindObjectsByType<PlayerInventory>(FindObjectsSortMode.None))
         {
-            playerInventory.SetPlayerItems(0);
+            playerInventory.AddPlayerItems(JUMP_ITEM_ID);
         }
 
         int itemsAddedToInventory = 0;
-        int itemsToAddToInventory = itemsInInventory - 1; //-1 because we already added Jump item
+        int itemsToAddToInventory = itemsListSO.allItemsSOList.Count - 1; //-1 because we already added Jump item
 
         while(itemsAddedToInventory < itemsToAddToInventory)
         {
-            int randomItemSOIndex = UnityEngine.Random.Range(1, itemsListSO.allItemsSOList.Count); //start from 1 to skip Jump item
-
-            if (itemsAdded.Contains(itemsListSO.allItemsSOList[randomItemSOIndex]))
+            int randomItemIndex = Random.Range(1, itemsListSO.allItemsSOList.Count); //start from 1 to skip Jump item
+            
+            ItemSO randomItemSO = itemsListSO.allItemsSOList[randomItemIndex];
+            
+            if (itemsAdded.Contains(randomItemSO))
             {
                 continue; //If the item is already added, skip to next iteration
             }
 
             foreach (PlayerInventory playerInventory in FindObjectsByType<PlayerInventory>(FindObjectsSortMode.None))
             {
-                playerInventory.SetPlayerItems(randomItemSOIndex);
+                playerInventory.AddPlayerItems(randomItemSO.itemID);
             }
 
-            itemsAdded.Add(itemsListSO.allItemsSOList[randomItemSOIndex]); //Remove the item from the list to not repeat it
+            itemsAdded.Add(randomItemSO);
 
             itemsAddedToInventory++;
         }

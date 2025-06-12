@@ -95,7 +95,7 @@ public class PlayerAnimator : NetworkBehaviour
 
     public void HandleOnPlayerStateMachineStateChanged(PlayerState newState)
     {
-        if(!IsOwner) return; //only owner
+        //if(!IsOwner) return; //only owner
         playerState = newState;
         if (playerState == PlayerState.IdleMyTurn || playerState == PlayerState.IdleEnemyTurn || playerState == PlayerState.MyTurnEnded)
         {
@@ -121,7 +121,7 @@ public class PlayerAnimator : NetworkBehaviour
 
     public void HandleOnRotationChanged(bool isRight)
     {
-        if (!IsOwner) return;
+        //if (!IsOwner) return;
         this.isRight = isRight;
         RotationChanged();
     }
@@ -202,7 +202,7 @@ public class PlayerAnimator : NetworkBehaviour
     public void AnimationFinished()
     {
         Debug.Log("AnimationFinished");
-        if (!IsOwner) return;
+        //if (!IsOwner) return;
         if(playerState == PlayerState.DragReleaseItem)
         {
             Debug.Log("AnimationFinished - DragReleaseItem");
@@ -221,7 +221,7 @@ public class PlayerAnimator : NetworkBehaviour
 
     public void IdleAnimationFinished()
     {
-        if (!IsOwner) return;
+        //if (!IsOwner) return;
         SelectRandomIdleAnimation();
         if(playerState == PlayerState.IdleMyTurn || playerState == PlayerState.IdleEnemyTurn || playerState == PlayerState.MyTurnEnded || playerState == PlayerState.MyTurnStarted || playerState == PlayerState.DragReleaseItem)
             PlayAnimationData(selectedIdleAnimation);
