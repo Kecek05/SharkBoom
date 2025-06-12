@@ -18,11 +18,11 @@ public class ObjectPool : MonoBehaviour
     public static ObjectPool Instance { get; private set; }
 
     [SerializeField] private List<PoolConfigObject> pooledPrefabsList;
-
+    
     HashSet<ItemSO> m_ItemsSO = new HashSet<ItemSO>();
 
     Dictionary<int, ObjectPool<GameObject>> m_PooledObjects = new Dictionary<int, ObjectPool<GameObject>>();
-
+    
     private void Awake()
     {
         if (Instance == null)
@@ -99,9 +99,9 @@ public class ObjectPool : MonoBehaviour
     /// <param name="position">The position to spawn the object at.</param>
     /// <param name="rotation">The rotation to spawn the object with.</param>
     /// <returns></returns>
-    public GameObject GetObject(int itemIndex, Vector3 position, Quaternion rotation)
-    {
-        var objectPooled = m_PooledObjects[itemIndex].Get();
+    public GameObject GetObject(int itemID, Vector3 position, Quaternion rotation)
+    {   
+        var objectPooled = m_PooledObjects[itemID].Get();
 
         var objectTranform = objectPooled.transform;
         objectTranform.position = position;
@@ -113,9 +113,9 @@ public class ObjectPool : MonoBehaviour
     /// <summary>
     /// Return an object to the pool.
     /// </summary>
-    public void ReturnObject(GameObject gameObject, int itemIndex)
+    public void ReturnObject(GameObject gameObject, int itemID)
     {
-        m_PooledObjects[itemIndex].Release(gameObject);
+        m_PooledObjects[itemID].Release(gameObject);
     }
 
     /// <summary>

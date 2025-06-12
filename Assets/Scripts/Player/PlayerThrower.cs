@@ -79,7 +79,7 @@ public class PlayerThrower : NetworkBehaviour
         playerRotateToAim.InitializeOwner();
         playerDragController.Initialize(playerInventory.GetItemSOByItemID(0).rb);
         
-        playerInventory.OnItemAdded += HandleOnItemAdded;
+
         playerInventory.OnItemChanged += HandleOnItemChanged;
         playerInventory.OnItemSelected += HandleOnItemSelected;
         playerInventory.OnItemSelectedSO += HandleOnItemSelectedSO;
@@ -159,6 +159,7 @@ public class PlayerThrower : NetworkBehaviour
         playerInventory.InitializeOwner();
         playerLauncher.InitializeOwner();
         
+        playerInventory.OnItemAdded += HandleOnItemAdded;
         //playerDragController.InitializeOwner(playerInventory.GetItemSOByItemSOIndex(0).rb);
     }
 
@@ -254,9 +255,9 @@ public class PlayerThrower : NetworkBehaviour
         playerInventoryUI.UpdateOpenInventoryButton(itemSOSelected.itemIcon);
     }
 
-    private void HandleOnItemSelectedByUI(int itemInventoryIndex)
+    private void HandleOnItemSelectedByUI(int itemID)
     {
-        playerInventory.SelectItemDataByItemInventoryID(itemInventoryIndex);
+        playerInventory.SelectItemDataByItemInventoryID(itemID);
     }
 
     private void HandleOnDragChange(float forcePercent, float angle)

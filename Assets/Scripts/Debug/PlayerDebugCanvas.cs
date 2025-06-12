@@ -16,9 +16,13 @@ public class PlayerDebugCanvas : MonoBehaviour
     public TextMeshProUGUI text5;
     public TextMeshProUGUI text6;
     private void Update()
-    {
-       text1.text = $"Player State: {playerThrower.PlayerStateMachine.CurrentState}";
-       text2.text = $"Can Interact Inv: {playerThrower.PlayerInventory.CanInteractWithInventory}";
-       text3.text = $"Inv ID: {playerThrower.PlayerInventory.SelectedItemID}";
+    { 
+        if(!playerThrower) return;
+        
+        if(playerThrower.PlayerStateMachine != null)
+            text1.text = $"Player State: {playerThrower.PlayerStateMachine.CurrentState}";
+        
+        text2.text = $"Can Interact Inv: {playerThrower.PlayerInventory.CanInteractWithInventory}";
+        text3.text = $"Inv ID: {playerThrower.PlayerInventory.SelectedItemID}";
     }
 }

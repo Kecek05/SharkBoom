@@ -70,29 +70,29 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         }
     }
 
-    private void SpawnItem(int _selectedItemSOIndex)
+    private void SpawnItem(int _selectedItemID)
     {
         //Spawn selected Item on the selected socket
         if (!canSpawnItem) return; //Do nothing if the player is not in the right state
         
-        TriggerSpawnItem(_selectedItemSOIndex);
+        TriggerSpawnItem(_selectedItemID);
         
-        SpawnItemServerRpc(_selectedItemSOIndex);
+        SpawnItemServerRpc(_selectedItemID);
     }
     
     [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
-    private void SpawnItemServerRpc(int _selectedItemSOIndex)
+    private void SpawnItemServerRpc(int _selectedItemID)
     {
-        SpawnItemClientRpc(_selectedItemSOIndex);
+        SpawnItemClientRpc(_selectedItemID);
     }
     
     [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
-    private void SpawnItemClientRpc(int _selectedItemSOIndex)
+    private void SpawnItemClientRpc(int _selectedItemID)
     {
-        TriggerSpawnItem(_selectedItemSOIndex);
+        TriggerSpawnItem(_selectedItemID);
     }
     
-    private void TriggerSpawnItem(int _selectedItemSOIndex)
+    private void TriggerSpawnItem(int _selectedItemID)
     {
         UpdateSelectedSocket();
         
@@ -103,7 +103,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         else
         {
             //it's null
-            InstantiateLocalObj(_selectedItemSOIndex);
+            InstantiateLocalObj(_selectedItemID);
         }
     }
 
@@ -114,9 +114,9 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
 
     }*/
 
-    private void InstantiateLocalObj(int itemSOIndex)
+    private void InstantiateLocalObj(int _selectedItemID)
     {
-        GameObject spawnedItemObject = ObjectPool.Instance.GetObject(playerInventory.GetItemSOByItemID(itemSOIndex).itemID, selectedSocket.transform.position, Quaternion.identity);
+        GameObject spawnedItemObject = ObjectPool.Instance.GetObject(_selectedItemID, selectedSocket.transform.position, Quaternion.identity);
         spawnedItem = spawnedItemObject.GetComponent<BaseItemThrowable>();
         
         spawnedItem.Initialize(selectedSocket.transform);

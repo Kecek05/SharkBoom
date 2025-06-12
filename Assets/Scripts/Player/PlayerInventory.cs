@@ -237,6 +237,8 @@ public class PlayerInventory : NetworkBehaviour
             itemCooldownRemaining = 0,
             itemCanBeUsed = true,
         });
+        
+        OnItemAdded?.Invoke(playerItemsInventory.Find(item => item.itemID == newItemID));
         Debug.Log($"PlayerInventory - Item Added Ite SO ID {newItemID} - Player Items Inventory Index: {playerItemsInventory.Count}");
         
     }
@@ -379,7 +381,7 @@ public class PlayerInventory : NetworkBehaviour
             //Need to be a for to start from index 1, index 0 is Jump
             OnItemAdded?.Invoke(playerItemsInventory[i]);
         }
-
+        Debug.Log($"HandleOnGainOwnership - Items: {playerItemsInventory.Count}");
         SelectItemDataByItemInventoryID(SelectFirstItemInventoryIndexAvailable());
     }
 

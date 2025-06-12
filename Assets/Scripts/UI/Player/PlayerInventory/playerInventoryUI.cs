@@ -36,7 +36,7 @@ public class PlayerInventoryUI : NetworkBehaviour
 
     public void SelectJumpButton()
     {
-        SelecItem(0); //Jump Index
+        SelecItem(0); //Jump ID
     }
 
     public void OpenInventoryButton()
@@ -125,9 +125,10 @@ public class PlayerInventoryUI : NetworkBehaviour
     }
 
 
-    public void SelecItem(int itemInventoryIndex)
+    public void SelecItem(int itemID)
     {
-        OnItemSelectedByUI?.Invoke(itemInventoryIndex); //Notify the player that an item was selected by UI
+        OnItemSelectedByUI?.Invoke(itemID); //Notify the player that an item was selected by UI
+        Debug.Log($"Trying to select item with ID: {itemID}");
     }
 
     public void UpdateOpenInventoryButton(Sprite itemIcon)

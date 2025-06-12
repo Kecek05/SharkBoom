@@ -24,7 +24,10 @@ public class PlayerItemSingleUI : MonoBehaviour
     [SerializeField] private Color selectedColor;
     [SerializeField] private Color unSelectedColor;
 
-    public void SelectThisItem()
+    /// <summary>
+    /// Called from button UI
+    /// </summary>
+    public void ButtonSelectThisItem()
     {
         playerInventoryUI.SelecItem(myItemID);
     }
