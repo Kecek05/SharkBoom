@@ -11346,10 +11346,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvasGroup: {fileID: 2059564259}
   rectTransform: {fileID: 2059564258}
-  fadeTime: 1
-  distanceForMovePanel: 500
-  fadeInAnimation: 1
-  fadeOutAnimation: 1
+  fadeTime: 0.5
+  startPanelScale: 1.3
+  endPanelScale: 1
+  fadeInAnimation: 24
 --- !u!1 &2064119800
 GameObject:
   m_ObjectHideFlags: 0
