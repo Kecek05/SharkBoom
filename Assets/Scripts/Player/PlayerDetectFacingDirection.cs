@@ -1,6 +1,7 @@
 using Sortify;
 using System;
 using System.Collections;
+using Unity.Netcode;
 using UnityEngine;
 
 public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDetectDragChange, IDetectEndedTurn
@@ -74,6 +75,20 @@ public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDete
         if(!IsOwner) return;
         isDirectionRight = LocateOtherPlayer.OtherPlayerIsOnMyRight(turnManager.LocalPlayableState);
 
+        OnRotationChanged?.Invoke(isDirectionRight);
+
+        RotationChangedServerRpc(isDirectionRight);
+    }
+
+    [Rpc(SendTo.Server)]
+    private void RotationChangedServerRpc(bool isRight)
+    {
+        RotationChangedClientRpc(isRight);
+    }
+    
+    [Rpc(SendTo.NotOwner)]
+    private void RotationChangedClientRpc(bool isRight)
+    {
         OnRotationChanged?.Invoke(isDirectionRight);
     }
 

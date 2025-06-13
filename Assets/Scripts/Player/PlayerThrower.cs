@@ -30,6 +30,7 @@ public class PlayerThrower : NetworkBehaviour
     [SerializeField] private PlayerJumpUI playerJumpUI;
     [SerializeField] private GameObject itemStuckSocket;
     [SerializeField] private Transform hipsTransform;
+    [SerializeField] private ItemSO itemJumpSO;
 
     private PlayerStateMachine playerStateMachine;
 
@@ -65,19 +66,10 @@ public class PlayerThrower : NetworkBehaviour
         //DEBUG
         gameObject.name = "Player " + UnityEngine.Random.Range(0, 10000);
         
-        turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
-
-        turnManager.OnMyTurnEnded += GameFlowManager_OnMyTurnEnded;
-
-        turnManager.OnMyTurnJumped += GameFlowManager_OnMyTurnJumped;
-        
-        gameStateManager.CurrentGameState.OnValueChanged += HandleOnGameStateChanged;
-
         hitReceiveNetworked.OnHitReceive += HandleOnHitReceive;
         
-        playerDetectFacingDirection.InitializeOwner();
         playerRotateToAim.InitializeOwner();
-        playerDragController.Initialize(playerInventory.GetItemSOByItemID(0).rb);
+        playerDragController.Initialize(itemJumpSO.rb);
         
 
         playerInventory.OnItemChanged += HandleOnItemChanged;
@@ -99,6 +91,7 @@ public class PlayerThrower : NetworkBehaviour
         playerDragController.OnDragCancelable += HandleOnDragCancelable;
         
         playerInventoryUI.OnItemSelectedByUI += HandleOnItemSelectedByUI;
+        Debug.Log("PlayerThrower - Player Inventory UI Initialized");
         
         playerDetectFacingDirection.OnRotationChanged += HandleOnPlayerDetectFacingDirectionRotationChanged;
         
@@ -111,7 +104,6 @@ public class PlayerThrower : NetworkBehaviour
         playerGetUp.OnPlayerGetUp += HandleOnPlayerGetUp;
         playerRagdollEnabler.OnRagdollDisabled += HandleOnRagdollDisabled;
         
-        BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
         
         playerInventory.Initialize();
 
@@ -140,6 +132,17 @@ public class PlayerThrower : NetworkBehaviour
         PlayableStateInitialize(thisPlayableState.Value, thisPlayableState.Value);
         
         playerDragController.InitializeOwner();
+        
+        turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
+
+        turnManager.OnMyTurnEnded += GameFlowManager_OnMyTurnEnded;
+
+        turnManager.OnMyTurnJumped += GameFlowManager_OnMyTurnJumped;
+        
+        gameStateManager.CurrentGameState.OnValueChanged += HandleOnGameStateChanged;
+        
+        
+        
         /*
         turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
 
@@ -154,12 +157,15 @@ public class PlayerThrower : NetworkBehaviour
         /*hitReceiveNetworked.OnHitReceive += HandleOnHitReceive;*/
 
         cameraManager.InitializeOwner();
-        /*playerDetectFacingDirection.InitializeOwner();
-        playerRotateToAim.InitializeOwner();*/
+        playerDetectFacingDirection.InitializeOwner();
+        //playerRotateToAim.InitializeOwner();
         playerInventory.InitializeOwner();
         playerLauncher.InitializeOwner();
         
         playerInventory.OnItemAdded += HandleOnItemAdded;
+        
+        BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
+        
         //playerDragController.InitializeOwner(playerInventory.GetItemSOByItemSOIndex(0).rb);
     }
 
@@ -258,6 +264,7 @@ public class PlayerThrower : NetworkBehaviour
     private void HandleOnItemSelectedByUI(int itemID)
     {
         playerInventory.SelectItemDataByItemInventoryID(itemID);
+        Debug.Log($"HandleOnItemSelectedByUI - Item ID: {itemID}");
     }
 
     private void HandleOnDragChange(float forcePercent, float angle)

@@ -103,19 +103,19 @@ public class PlayerAnimator : NetworkBehaviour
         }
         else if (playerState == PlayerState.DraggingItem)
         {
-            PlayAnimationData(selectedAimAnimation);
+            TriggerSyncAnimation(selectedAimAnimation);
         }
         else if (playerState == PlayerState.DraggingJump)
         {
-            PlayAnimationData(aimJumpAnimationData);
+            TriggerSyncAnimation(aimJumpAnimationData);
         }
         else if (playerState == PlayerState.DragReleaseItem)
         {
-            PlayAnimationData(selectedShootAnimation);
+            TriggerSyncAnimation(selectedShootAnimation);
         }
         else if (playerState == PlayerState.DragReleaseJump)
         {
-            PlayAnimationData(jumpAnimationData);
+            TriggerSyncAnimation(jumpAnimationData);
         }
     }
 
@@ -128,7 +128,26 @@ public class PlayerAnimator : NetworkBehaviour
 
     private void RotationChanged()
     {
-        PlayAnimationData(currentAnimationData);
+        TriggerSyncAnimation(currentAnimationData);
+    }
+
+    private void TriggerSyncAnimation(AnimationData animationData)
+    {
+        PlayAnimationData(animationData);
+        
+        TriggerAnimationServerRpc(animationData);
+    }
+
+    [Rpc(SendTo.Server, Delivery = RpcDelivery.Unreliable)]
+    private void TriggerAnimationServerRpc(AnimationData animationData)
+    {
+        TriggerAnimationClientRpc(animationData);
+    }
+
+    [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Unreliable)]
+    private void TriggerAnimationClientRpc(AnimationData animationData)
+    {
+        PlayAnimationData(animationData);
     }
 
     private void PlayAnimationData(AnimationData animationData)
@@ -287,7 +306,7 @@ public enum Animations
 }
 
 [Serializable]
-public struct AnimationData : IEquatable<AnimationData>
+public struct AnimationData : INetworkSerializable, IEquatable<AnimationData>
 {
     [BetterHeader("Animations", 12)]
     public Animations animationL;
@@ -322,5 +341,13 @@ public struct AnimationData : IEquatable<AnimationData>
             animationR == other.animationR &&
             crossFade == other.crossFade &&
             crossFadeBetweenSides == other.crossFadeBetweenSides;
+    }
+
+    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+    {
+        serializer.SerializeValue(ref animationL);
+        serializer.SerializeValue(ref animationR);
+        serializer.SerializeValue(ref crossFade);
+        serializer.SerializeValue(ref crossFadeBetweenSides);
     }
 }

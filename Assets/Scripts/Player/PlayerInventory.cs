@@ -1,6 +1,4 @@
-using QFSW.QC;
 using System;
-using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using System.Linq;
@@ -21,9 +19,9 @@ public class PlayerInventory : NetworkBehaviour
 
     [SerializeField] private ItemsListSO itemsListSO;
     
-   // private NetworkList<ItemInventoryData> playerItemsInventory = new();
+    private NetworkList<ItemInventoryData> playerItemsInventory = new();
 
-   private List<ItemInventoryData> playerItemsInventory = new();
+   //private List<ItemInventoryData> playerItemsInventory = new();
     /// <summary>
     /// The index of the selected item in the player's inventory
     /// </summary>
@@ -61,7 +59,7 @@ public class PlayerInventory : NetworkBehaviour
         //OnItemSelected?.Invoke(selectedItemInventoryIndex);
         OnItemSelected?.Invoke(selectedItemID);
         
-        //playerItemsInventory.OnListChanged += PlayerInventory_OnListChanged; //Local event
+        playerItemsInventory.OnListChanged += PlayerInventory_OnListChanged; //Local event
 
         /*SetCanInteractWithInventory(true);*/
     }
@@ -102,23 +100,23 @@ public class PlayerInventory : NetworkBehaviour
                 if (state == PlayerState.DragReleaseJump)
                 {
                     // Jumped, can shoot
-                    SetPlayerCanJump(false);
+                    ChangeJumpItemServerRpc(false);
                 }
                 break;
             case PlayerState.DragReleaseItem:
             case PlayerState.DragReleaseJump:
                 SetCanInteractWithInventory(false);
-                TriggerUseItemID(selectedItemID); //item released, use item
+                UseAnyItemByIDServerRpc(selectedItemID); //item released, use item
                 if (state == PlayerState.DragReleaseJump)
                 {
                     // Jumped, can shoot
-                    SetPlayerCanJump(false);
+                    ChangeJumpItemServerRpc(false);
                 }
                 break;
             case PlayerState.MyTurnEnded:
                 SetCanInteractWithInventory(false);
-                TriggerDecreaseItemsCooldown();
-                SetPlayerCanJump(true); // Can jump, set before next round to be able to select
+                DecreaseItemsCooldownServerRpc();
+                ChangeJumpItemServerRpc(true); // Can jump, set before next round to be able to select
                 break;
             case PlayerState.PlayerGameOver:
                 SetCanInteractWithInventory(false);
@@ -126,19 +124,21 @@ public class PlayerInventory : NetworkBehaviour
         }
     }
 
-    private void SetPlayerCanJump(bool canJump)
+    /*private void SetPlayerCanJump(bool canJump)
     {
         ChangeJumpItem(canJump);
         SetPlayerCanJumpServerRpc(canJump);
     }
     
+    
     [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
     private void SetPlayerCanJumpServerRpc(bool canJump)
     {
         ChangeJumpItem(canJump);
-    }
+    }*/
     
-    private void ChangeJumpItem(bool canJump)
+    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    private void ChangeJumpItemServerRpc(bool canJump)
     {
         playerItemsInventory[JUMP_ITEM_ID] = new ItemInventoryData
         {
@@ -149,7 +149,7 @@ public class PlayerInventory : NetworkBehaviour
         OnItemChanged?.Invoke(playerItemsInventory[JUMP_ITEM_ID]);
     }
 
-    private void TriggerDecreaseItemsCooldown()
+    /*private void TriggerDecreaseItemsCooldown()
     {
         DecreaseItemsCooldown();
         DecreaseAllItemsCooldownServerRpc();
@@ -159,9 +159,10 @@ public class PlayerInventory : NetworkBehaviour
     private void DecreaseAllItemsCooldownServerRpc()
     {
         DecreaseItemsCooldown();
-    }
+    }*/
 
-    private void DecreaseItemsCooldown()
+    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    private void DecreaseItemsCooldownServerRpc()
     {
         for (int i = 0; i < playerItemsInventory.Count; i++)
         {
@@ -173,7 +174,6 @@ public class PlayerInventory : NetworkBehaviour
                     itemCooldownRemaining = playerItemsInventory[i].itemCooldownRemaining - 1,
                     itemCanBeUsed = playerItemsInventory[i].itemCooldownRemaining - 1 <= 0, // if less or equal than 0, can be used
                 };
-                
                 OnItemChanged?.Invoke(playerItemsInventory[i]);
             }
         }
@@ -192,7 +192,7 @@ public class PlayerInventory : NetworkBehaviour
         return -1;
     }
 
-    /*private void PlayerInventory_OnListChanged(NetworkListEvent<ItemInventoryData> changeEvent)
+    private void PlayerInventory_OnListChanged(NetworkListEvent<ItemInventoryData> changeEvent)
     {
         switch(changeEvent.Type)
         {
@@ -204,19 +204,30 @@ public class PlayerInventory : NetworkBehaviour
                 OnItemChanged?.Invoke(changeEvent.Value);
                 break;
         }
-    }*/
+    }
 
     /// <summary>
     /// Add the items that player have when starting the game
     /// </summary>
     /// <param name="itemSOIndex"></param>
-    public void AddPlayerItems(int newItemID)
+    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    public void AddPlayerItemsServerRpc(int newItemID, int startCooldown = 0)
     {
-        AddItemIDToList(newItemID);
-        AddPlayerItemsServerRpc(newItemID);
+        playerItemsInventory.Add(new ItemInventoryData
+        {
+            itemID = newItemID, //get the index
+            itemCooldownRemaining = startCooldown,
+            itemCanBeUsed = true,
+        });
+        
+        //OnItemAdded?.Invoke(playerItemsInventory.Find(item => item.itemID == newItemID));
+        Debug.Log($"PlayerInventory - Item Added Ite SO ID {newItemID} - Player Items Inventory Index: {playerItemsInventory.Count}");
+        
+        /*AddItemIDToList(newItemID);
+        AddPlayerItemsServerRpc(newItemID);*/
     }
     
-    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    /*[Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
     private void AddPlayerItemsServerRpc(int newItemID)
     {
         AddItemIDToList(newItemID);
@@ -227,9 +238,9 @@ public class PlayerInventory : NetworkBehaviour
     private void AddPlayerItemsClientRpc(int newItemID)
     {
         AddItemIDToList(newItemID);
-    }
+    }*/
 
-    private void AddItemIDToList(int newItemID)
+    /*private void AddItemIDToList(int newItemID)
     {
         playerItemsInventory.Add(new ItemInventoryData
         {
@@ -238,13 +249,14 @@ public class PlayerInventory : NetworkBehaviour
             itemCanBeUsed = true,
         });
         
-        OnItemAdded?.Invoke(playerItemsInventory.Find(item => item.itemID == newItemID));
+        //OnItemAdded?.Invoke(playerItemsInventory.Find(item => item.itemID == newItemID));
         Debug.Log($"PlayerInventory - Item Added Ite SO ID {newItemID} - Player Items Inventory Index: {playerItemsInventory.Count}");
         
-    }
+    }*/
 
     public void SelectItemDataByItemInventoryID(int itemInventoryID = 0) // Select a item to use, UI will call this, default (0) its Jump
     {
+        Debug.Log($"SelectItemDataByItemInventoryID - {itemInventoryID} - CanInteractWithInventory: {canInteractWithInventory}");
         if (!canInteractWithInventory) return;
 
 
@@ -258,7 +270,7 @@ public class PlayerInventory : NetworkBehaviour
 
     }
 
-    private void TriggerUseItemID(int itemInventoryID)
+    /*private void TriggerUseItemID(int itemInventoryID)
     {
         if (ItemCanBeUsed(itemInventoryID))
         {
@@ -276,10 +288,29 @@ public class PlayerInventory : NetworkBehaviour
     private void UseItemByIDServerRpc(int itemInventoryID) // Use the item, Server will call this when both players ready
     {
         UseAnyItemByID(itemInventoryID);
-    }
+    }*/
 
-    private void UseAnyItemByID(int itemInventoryID)
+    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    private void UseAnyItemByIDServerRpc(int itemIdToUse)
     {
+        for (int i = 0; i < playerItemsInventory.Count; i++)
+        {
+            if (playerItemsInventory[i].itemID == itemIdToUse)
+            {
+                playerItemsInventory[i] = new ItemInventoryData
+                {
+                    itemID = itemIdToUse, //do not lose the index
+                    itemCooldownRemaining = GetItemSOByItemID(itemIdToUse).cooldown,
+                    itemCanBeUsed = false,
+                };
+                OnItemChanged?.Invoke(playerItemsInventory[i]);
+                return;
+            }
+        }
+        Debug.LogWarning($"Not Found Any Item with ID: {itemIdToUse} in the Inventory to use it!");
+        return;
+        
+        /*
         int index = playerItemsInventory.FindIndex(item => item.itemID == itemInventoryID);
         if (index == -1)
         {
@@ -293,13 +324,21 @@ public class PlayerInventory : NetworkBehaviour
             itemCooldownRemaining = GetItemSOByItemID(itemInventoryID).cooldown,
             itemCanBeUsed = false,
         };
-        OnItemChanged?.Invoke(playerItemsInventory[index]);
+        OnItemChanged?.Invoke(playerItemsInventory[index]);*/
     }
 
-    public bool ItemCanBeUsed(int itemIDToCheck) // Returns if the item can be used
+    public bool ItemCanBeUsed(int itemID) // Returns if the item can be used
     {
-        ItemInventoryData checkItemInventoryData = playerItemsInventory.FirstOrDefault(inventoryData => inventoryData.itemID == itemIDToCheck);
-        return checkItemInventoryData.itemID == itemIDToCheck && checkItemInventoryData.itemCanBeUsed;
+        foreach (ItemInventoryData checkItemInventoryData in playerItemsInventory)
+        {
+            if (checkItemInventoryData.itemID == itemID)
+            {
+                Debug.Log($"Checking Item ID: {itemID} - Can be used: {checkItemInventoryData.itemCanBeUsed}");
+                return checkItemInventoryData.itemCanBeUsed;
+            }
+        }
+        Debug.LogWarning($"Not Found Item with ID: {itemID} in the Player Inventory to check if can be used");
+        return false;
         
         //return playerItemsInventory[itemInventoryIndex].itemCanBeUsed;
     }
@@ -319,18 +358,22 @@ public class PlayerInventory : NetworkBehaviour
 
     public ItemSO GetItemSOByItemID(int itemID)
     {
-        bool hasItem = playerItemsInventory.Any(item => item.itemID == itemID);
-        if (!hasItem)
-            return null;
-        
-        selectedItemID = itemID;
-        return itemsListSO.allItemsSOList.FirstOrDefault(itemSO => itemSO.itemID == itemID);
-        
+        foreach (ItemInventoryData checkItemInventoryData in playerItemsInventory)
+        {
+            if (checkItemInventoryData.itemID == itemID)
+            {
+                selectedItemID = itemID;
+                return itemsListSO.allItemsSOList.FirstOrDefault(itemSO => itemSO.itemID == itemID);
+            }
+        }
+        Debug.LogWarning($"Didnt found any ItemSO with ID: {itemID} in the Player Inventory");
+        return null;
+
         /*ItemInventoryData foundItemInventoryData = playerItemsInventory.FirstOrDefault(item => item.itemID == itemID);
-        
-        
+
+
         return itemsListSO.allItemsSOList[playerItemsInventory.IndexOf(foundItemInventoryData)];
-        
+
         for (int i = 0; i < playerItemsInventory.Count; i++)
         {
             if (itemID == playerItemsInventory[i].itemID)
@@ -359,7 +402,7 @@ public class PlayerInventory : NetworkBehaviour
         PassItemIndexToClientRpc(newItemInventoryID);
     }
 
-    [Rpc(SendTo.NotMe, Delivery = RpcDelivery.Reliable)]
+    [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
     private void PassItemIndexToClientRpc(int newItemInventoryID)
     {
         SetItem(newItemInventoryID);
@@ -372,6 +415,8 @@ public class PlayerInventory : NetworkBehaviour
         OnItemSelected?.Invoke(selectedItemID);
 
         OnItemSelectedSO?.Invoke(GetItemSOByItemID(selectedItemID));
+        
+        Debug.Log($"SetItem - Selected Item ID: {selectedItemID} - CanInteractWithInventory: {canInteractWithInventory}");
     }
     
     public void HandleOnGainOwnership()

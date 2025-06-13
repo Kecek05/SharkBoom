@@ -62,7 +62,7 @@ public class PlayersPublicInfoManager : BasePlayersPublicInfoManager
         //Add Jump item first
         foreach (PlayerInventory playerInventory in FindObjectsByType<PlayerInventory>(FindObjectsSortMode.None))
         {
-            playerInventory.AddPlayerItems(JUMP_ITEM_ID);
+            playerInventory.AddPlayerItemsServerRpc(JUMP_ITEM_ID);
         }
 
         int itemsAddedToInventory = 0;
@@ -81,7 +81,7 @@ public class PlayersPublicInfoManager : BasePlayersPublicInfoManager
 
             foreach (PlayerInventory playerInventory in FindObjectsByType<PlayerInventory>(FindObjectsSortMode.None))
             {
-                playerInventory.AddPlayerItems(randomItemSO.itemID);
+                playerInventory.AddPlayerItemsServerRpc(randomItemSO.itemID);
             }
 
             itemsAdded.Add(randomItemSO);
