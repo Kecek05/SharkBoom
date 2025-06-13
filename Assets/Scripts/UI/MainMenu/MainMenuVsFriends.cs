@@ -50,8 +50,8 @@ public class MainMenuVsFriends : MonoBehaviour
         }
         catch (Exception ex)
         {
+            if(errorCreatingLobbyBtn != null)
             errorCreatingLobbyBtn.enabled = true;
-            
         }
     }
 

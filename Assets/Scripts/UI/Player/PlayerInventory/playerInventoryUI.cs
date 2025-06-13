@@ -39,7 +39,7 @@ public class PlayerInventoryUI : NetworkBehaviour
         SelecItem(0); //Jump Index
     }
 
-    public void OpenInventoryButton()
+    public void InventoryButton()
     {
         ToggleInventory();
     }
