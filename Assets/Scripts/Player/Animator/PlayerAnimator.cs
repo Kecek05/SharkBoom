@@ -128,7 +128,7 @@ public class PlayerAnimator : NetworkBehaviour
 
     private void RotationChanged()
     {
-        TriggerSyncAnimation(currentAnimationData);
+        PlayAnimationData(currentAnimationData);
     }
 
     private void TriggerSyncAnimation(AnimationData animationData)

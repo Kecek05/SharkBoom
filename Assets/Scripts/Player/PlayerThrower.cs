@@ -71,6 +71,7 @@ public class PlayerThrower : NetworkBehaviour
         playerRotateToAim.InitializeOwner();
         playerDragController.Initialize(itemJumpSO.rb);
         
+        gameStateManager.CurrentGameState.OnValueChanged += HandleOnGameStateChanged;
 
         playerInventory.OnItemChanged += HandleOnItemChanged;
         playerInventory.OnItemSelected += HandleOnItemSelected;
@@ -139,7 +140,6 @@ public class PlayerThrower : NetworkBehaviour
 
         turnManager.OnMyTurnJumped += GameFlowManager_OnMyTurnJumped;
         
-        gameStateManager.CurrentGameState.OnValueChanged += HandleOnGameStateChanged;
         
         
         

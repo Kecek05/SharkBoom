@@ -7,6 +7,7 @@ public class PlayerDebugCanvas : MonoBehaviour
 
     [BetterHeader("References")]
     public PlayerThrower playerThrower;
+    public PlayerDetectFacingDirection playerDetectFacingDirection;
 
     [BetterHeader("Texts")]
     public TextMeshProUGUI text1;
@@ -24,5 +25,7 @@ public class PlayerDebugCanvas : MonoBehaviour
         
         text2.text = $"Can Interact Inv: {playerThrower.PlayerInventory.CanInteractWithInventory}";
         text3.text = $"Inv ID: {playerThrower.PlayerInventory.SelectedItemID}";
+        text4.text = $"Playable State: {playerThrower.ThisPlayableState.Value}";
+        text5.text = $"Is Direction Right: {playerDetectFacingDirection.IsDirectionRight}";
     }
 }

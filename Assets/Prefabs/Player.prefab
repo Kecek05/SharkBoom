@@ -2732,6 +2732,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerThrower: {fileID: 2871544100916734757}
+  playerDetectFacingDirection: {fileID: 8219345119279371754}
   text1: {fileID: 1576274015093935829}
   text2: {fileID: 6379452729668931535}
   text3: {fileID: 3321589396493213526}
@@ -5122,6 +5123,7 @@ MonoBehaviour:
   playerGfxTransform: {fileID: 2927350467601940059}
   playerDragController: {fileID: 5120579722876303172}
   angleOffset: 0.5
+  playerThrower: {fileID: 2871544100916734757}
 --- !u!114 &2468292975892475623
 MonoBehaviour:
   m_ObjectHideFlags: 0

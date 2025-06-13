@@ -17,11 +17,15 @@ public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDete
     [SerializeField] private PlayerDragController playerDragController;
     [Tooltip("Value to be add to not rotate the object to close to the 90 degrees")]
     [SerializeField] private float angleOffset = 0.5f;
-
+    [SerializeField] private PlayerThrower playerThrower;
+    
     private BaseTurnManager turnManager;
     private bool isDirectionRight = false;
 
     private Coroutine delayStartFaceOtherPlayerCoroutine;
+    
+    //DEBUG
+    public bool IsDirectionRight => isDirectionRight;
 
     public void DoOnInitializeOnwer()
     {
@@ -32,7 +36,7 @@ public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDete
 
     public void SetupDetectFacingDirection()
     {
-        turnManager = ServiceLocator.Get<BaseTurnManager>();
+       // turnManager = ServiceLocator.Get<BaseTurnManager>();
         
         if(delayStartFaceOtherPlayerCoroutine != null)
         {
@@ -51,6 +55,8 @@ public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDete
             isDirectionRight = true;
 
             OnRotationChanged?.Invoke(true);
+            
+            RotationChangedServerRpc(true);
         }
         else if (playerDragController.GetOpositeFingerPos().x < playerGfxTransform.position.x - angleOffset)
         {
@@ -60,24 +66,24 @@ public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDete
             isDirectionRight = false;
 
             OnRotationChanged?.Invoke(false);
+            
+            RotationChangedServerRpc(false);
         }
     }
 
     private IEnumerator DelayStartFaceOtherPlayer()
     {
         //Wait for the end of the frame before executing the code to ensure that all scripts subscribe to the event OnRotationChanged
-        yield return new WaitForEndOfFrame();
+        yield return new WaitForSeconds(0.2f);
         FaceOtherPlayer();
     }
 
     public void FaceOtherPlayer()
     {
-        if(!IsOwner) return;
-        isDirectionRight = LocateOtherPlayer.OtherPlayerIsOnMyRight(turnManager.LocalPlayableState);
+       // if(!IsOwner) return;
+        isDirectionRight = LocateOtherPlayer.OtherPlayerIsOnMyRight(playerThrower.ThisPlayableState.Value);
 
         OnRotationChanged?.Invoke(isDirectionRight);
-
-        RotationChangedServerRpc(isDirectionRight);
     }
 
     [Rpc(SendTo.Server)]
@@ -89,7 +95,9 @@ public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDete
     [Rpc(SendTo.NotOwner)]
     private void RotationChangedClientRpc(bool isRight)
     {
-        OnRotationChanged?.Invoke(isDirectionRight);
+        isDirectionRight = isRight;
+        
+        OnRotationChanged?.Invoke(isRight);
     }
 
     public void DoOnEndedTurn()
