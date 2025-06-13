@@ -164,6 +164,7 @@ public class DragAndShoot : NetworkBehaviour
 
                         SetIsDragging(true);
                         OnDragStart?.Invoke();
+                        TriggerOnDragStartServerRpc();
                     }
                 }
             }
@@ -194,7 +195,45 @@ public class DragAndShoot : NetworkBehaviour
             }
         }
     }
+    
+    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    private void TriggerOnDragStartServerRpc()
+    {
+        TriggerOnDragStartClientRpc();
+    }
 
+    [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
+    private void TriggerOnDragStartClientRpc()
+    {
+        OnDragStart?.Invoke();
+    }
+    
+    // [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    // private void TriggerOnDragCancelableServerRpc(bool cancelable)
+    // {
+    //     TriggerOnDragCancelableClientRpc(cancelable);
+    // }
+    //
+    // [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
+    // private void TriggerOnDragCancelableClientRpc(bool cancelable)
+    // {
+    //     OnDragCancelable?.Invoke(cancelable);
+    // }
+
+    /// <summary>
+    /// On The Client, called after the aim position finished sync
+    /// </summary>
+    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    public void TriggerOnDragReleaseServerRpc()
+    {
+        TriggerOnDragReleaseClientRpc();
+    }
+    
+    [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
+    private void TriggerOnDragReleaseClientRpc()
+    {
+        OnDragRelease?.Invoke();
+    }
 
 
     protected void InputReader_OnPrimaryFingerPositionEvent(InputAction.CallbackContext context)

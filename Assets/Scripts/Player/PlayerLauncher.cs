@@ -15,9 +15,10 @@ public class PlayerLauncher : NetworkBehaviour
 
     [BetterHeader("References")]
     [SerializeField] private InputReader inputReader;
-    [SerializeField] private Transform spawnItemPos;
     [SerializeField] private PlayerDragController playerDragController;
     [SerializeField] private PlayerInventory playerInventory;
+    [SerializeField] private PlayerThrower playerThrower;
+    [SerializeField] private PlayerSpawnItemOnHand playerSpawnItemOnHand;
     
     private BaseItemActivableManager itemActivableManager;
     private BaseItemThrowable lastProjectile;
@@ -65,13 +66,19 @@ public class PlayerLauncher : NetworkBehaviour
             lastProjectile = null;
         }
     }
+    
+    private float lastDragForce = 0f;
+    private Vector3 lastDragDirection = Vector3.zero;
+    private int lastItemID = 0;
+    private PlayableState lastPlayableState = PlayableState.None;
 
-
+    private ItemLauncherData lastItemLauncherData;
+    
     public void Launch() //Called by the script on animator
     {
-        if (!IsOwner) return;
+        //if (!IsOwner) return;
 
-        itemActivableManager.ResetItemActivable();
+
 
 
         ItemLauncherData itemLauncherData = new ItemLauncherData
@@ -79,15 +86,36 @@ public class PlayerLauncher : NetworkBehaviour
             dragForce = playerDragController.DragForce, 
             dragDirection = playerDragController.DirectionOfDrag,
             selectedItemID = playerInventory.SelectedItemID, 
-            ownerPlayableState = ServiceLocator.Get<BaseTurnManager>().LocalPlayableState,
+            ownerPlayableState = playerThrower.ThisPlayableState.Value,
+            itemStartPosition = playerSpawnItemOnHand.SelectedSocketTransform.position,
+            itemStartRotation = playerSpawnItemOnHand.SelectedSocketTransform.rotation,
         };
-
+        
+        if (IsOwner)
+        {
+            itemActivableManager.ResetItemActivable(); //Only owner can activate the item.
+            lastItemLauncherData = itemLauncherData;
+        }
+        
+        Debug.Log($"Item Launcher - Launching item with ID: {itemLauncherData.selectedItemID}, Force: {itemLauncherData.dragForce}, Direction: {itemLauncherData.dragDirection} - Owner: {itemLauncherData.ownerPlayableState}");
         SpawnProjectile(itemLauncherData); 
         
-        SpawnProjectileServerRpc(itemLauncherData);
+        //SpawnProjectileServerRpc(itemLauncherData);
     
         OnItemLaunched?.Invoke(playerInventory.SelectedItemID); //pass itemInventoryIndex
         Debug.Log("Player Launcher - Launched");
+    }
+
+    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    private void SyncItemLauncherDataServerRpc(ItemLauncherData itemLauncherData)
+    {
+        SyncItemLauncherDataClientRpc(itemLauncherData);
+    }
+
+    [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
+    private void SyncItemLauncherDataClientRpc(ItemLauncherData itemLauncherData)
+    {
+        lastItemLauncherData = itemLauncherData;
     }
 
     [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]

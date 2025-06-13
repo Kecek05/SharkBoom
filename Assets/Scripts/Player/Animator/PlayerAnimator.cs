@@ -86,6 +86,9 @@ public class PlayerAnimator : NetworkBehaviour
 
     private Coroutine crossFadeCoroutine;
     private PlayerState playerState;
+    
+    //DEBUG
+    public Animations CurrentAnimation => currentAnimation;
 
     public void HandleOnItemSelectedSO(ItemSO itemSelectedSO)
     {

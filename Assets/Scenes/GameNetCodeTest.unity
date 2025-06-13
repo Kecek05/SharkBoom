@@ -6111,7 +6111,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -100, y: -132}
+  m_AnchoredPosition: {x: -99.99994, y: -132}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &856851692
@@ -8673,7 +8673,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4845276930943762971, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000030517578
+      value: -0.000015258789
       objectReference: {fileID: 0}
     - target: {fileID: 4845637959249703711, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchorMax.y
@@ -10392,7 +10392,7 @@ Transform:
   m_GameObject: {fileID: 1658826649}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 6.1, y: 3.6, z: 0}
+  m_LocalPosition: {x: 12.64, y: 5.49, z: 0}
   m_LocalScale: {x: 8.1, y: 1, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11392,7 +11392,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03f20852a452ded4b94caae569ed5d49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
   pooledPrefabsList:
   - itemSO: {fileID: 11400000, guid: c4047f17a9430314ab9b65ede680009f, type: 2}
     PrewarmCount: 1

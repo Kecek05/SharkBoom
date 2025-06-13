@@ -88,8 +88,6 @@ public class PlayerThrower : NetworkBehaviour
         
                 
         playerDragController.OnDragStart += HandleOnDragStart;
-        playerDragController.OnDragChange += HandleOnDragChange;
-        playerDragController.OnDragCancelable += HandleOnDragCancelable;
         
         playerInventoryUI.OnItemSelectedByUI += HandleOnItemSelectedByUI;
         Debug.Log("PlayerThrower - Player Inventory UI Initialized");
@@ -141,8 +139,9 @@ public class PlayerThrower : NetworkBehaviour
         turnManager.OnMyTurnJumped += GameFlowManager_OnMyTurnJumped;
         
         
-        
-        
+        playerDragController.OnDragChange += HandleOnDragChange;
+        playerDragController.OnDragCancelable += HandleOnDragCancelable;
+        playerDragController.OnDragRelease += HandleOnDragRelease;
         /*
         turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
 
@@ -235,6 +234,16 @@ public class PlayerThrower : NetworkBehaviour
         cameraManager.UnInitializeOwner();
         playerLauncher.UnInitializeOwner();
         playerInventoryUI.UnHandleInitializeOwner();
+    }
+    
+    private void HandleOnDragRelease()
+    {
+       //Used to the Owner tells the client that the drag has been released and its time to Lerp the aim position and spawn item
+       playerRotateToAim.SyncAimPosition(playerRotateToAim.AimTransform.position, () =>
+       {
+           //Finished Lerp Aim Position
+           playerDragController.TriggerOnDragReleaseServerRpc();
+       });
     }
 
     private void HandleOnPlayerDetectFacingDirectionRotationChanged(bool isRight)

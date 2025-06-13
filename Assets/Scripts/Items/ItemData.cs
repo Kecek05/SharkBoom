@@ -66,6 +66,16 @@ public struct ItemLauncherData : INetworkSerializable, IEquatable<ItemLauncherDa
     /// </summary>
     public PlayableState ownerPlayableState;
 
+    /// <summary>
+    /// The Start Position of the item in the Owner when launched
+    /// </summary>
+    public Vector2 itemStartPosition;
+
+    /// <summary>
+    /// The Start Rotation of the item in the Owner when launched
+    /// </summary>
+    public Quaternion itemStartRotation;
+
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
@@ -73,10 +83,12 @@ public struct ItemLauncherData : INetworkSerializable, IEquatable<ItemLauncherDa
         serializer.SerializeValue(ref dragDirection);
         serializer.SerializeValue(ref selectedItemID);
         serializer.SerializeValue(ref ownerPlayableState);
+        serializer.SerializeValue(ref itemStartPosition);
+        serializer.SerializeValue(ref itemStartRotation);
     }
 
     public bool Equals(ItemLauncherData other)
     {
-        return dragForce == other.dragForce && dragDirection == other.dragDirection && selectedItemID == other.selectedItemID && ownerPlayableState == other.ownerPlayableState;
+        return dragForce == other.dragForce && dragDirection == other.dragDirection && selectedItemID == other.selectedItemID && ownerPlayableState == other.ownerPlayableState && itemStartPosition == other.itemStartPosition && itemStartRotation == other.itemStartRotation;
     }
 }
