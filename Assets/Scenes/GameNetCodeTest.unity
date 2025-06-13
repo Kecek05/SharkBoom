@@ -3965,6 +3965,8 @@ GameObject:
   - component: {fileID: 531838781}
   - component: {fileID: 531838783}
   - component: {fileID: 531838782}
+  - component: {fileID: 531838785}
+  - component: {fileID: 531838784}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
@@ -4031,6 +4033,36 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 531838780}
   m_CullTransparentMesh: 1
+--- !u!114 &531838784
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 531838780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdaa25776954eb43a66b501d1576bb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canvasGroup: {fileID: 531838785}
+  rectTransform: {fileID: 531838781}
+  fadeTime: 0.2
+  startPanelScale: 1.1
+  endPanelScale: 1
+  fadeInAnimation: 1
+--- !u!225 &531838785
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 531838780}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &546110011
 GameObject:
   m_ObjectHideFlags: 0
@@ -10113,7 +10145,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4845276930943762971, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000022888184
+      value: -0.0000076293945
       objectReference: {fileID: 0}
     - target: {fileID: 4845637959249703711, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchorMax.y
@@ -11556,16 +11588,16 @@ MonoBehaviour:
   pearlsBackground: {fileID: 218046337}
   gameOverImage: {fileID: 531838782}
   returnBtnImage: {fileID: 1741645482}
-  animateBackground: {fileID: 0}
-  winBackgroundMaterial: {fileID: 0}
+  animateBackground: {fileID: 1126556508}
+  winBackgroundMaterial: {fileID: 2100000, guid: f7dac5a5661a30248ad76ce4feb66d2f, type: 2}
   winBackground: {fileID: 21300000, guid: f6c9753affa5dd244a1bcd0dc66e52ab, type: 3}
   winPearlsBackground: {fileID: 21300000, guid: 78ee5836f37dd4748bc58339da2ec79e, type: 3}
   winReturnButton: {fileID: 21300000, guid: e0a58850144f4a7478f1c73724db2d87, type: 3}
-  loseBackgroundMaterial: {fileID: 0}
+  loseBackgroundMaterial: {fileID: 2100000, guid: 7c1d26afad2a6ac4e8d9459cf156b35b, type: 2}
   loseBackground: {fileID: 21300000, guid: d9dd494e20128b741804917d4931f53a, type: 3}
   losePearlsBackground: {fileID: 21300000, guid: b51923eb24627eb46b7745841d499cb9, type: 3}
   loseReturnButton: {fileID: 21300000, guid: e5956ce19a3f1664ab32c4a80fac6a64, type: 3}
-  tieBackgroundMaterial: {fileID: 0}
+  tieBackgroundMaterial: {fileID: 2100000, guid: e58359785c8746345a90d75a7fb45dd8, type: 2}
   tieBackground: {fileID: 21300000, guid: 4b1304ec14f0e62489bd2ffc46be3b92, type: 3}
   tiePearlsBackground: {fileID: 21300000, guid: c5c4da0077010314fabd44713e9ab4ee, type: 3}
   tieReturnButton: {fileID: 21300000, guid: 5784df549036a5d4d90991bdbfba4673, type: 3}
@@ -13058,7 +13090,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1934400094
 MonoBehaviour:
   m_ObjectHideFlags: 0
