@@ -683,6 +683,8 @@ GameObject:
   m_Component:
   - component: {fileID: 124950431}
   - component: {fileID: 124950433}
+  - component: {fileID: 124950435}
+  - component: {fileID: 124950434}
   m_Layer: 5
   m_Name: BackgroundCreatingLobby
   m_TagString: Untagged
@@ -721,6 +723,36 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 124950430}
   m_CullTransparentMesh: 1
+--- !u!225 &124950434
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 124950430}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &124950435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 124950430}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdaa25776954eb43a66b501d1576bb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canvasGroup: {fileID: 124950434}
+  rectTransform: {fileID: 124950431}
+  fadeTime: 0.2
+  startPanelScale: 1.1
+  endPanelScale: 1
+  fadeInAnimation: 28
 --- !u!1 &131415581
 GameObject:
   m_ObjectHideFlags: 0
@@ -3461,7 +3493,7 @@ MonoBehaviour:
   fadeTime: 0.2
   startPanelScale: 1.1
   endPanelScale: 1
-  fadeInAnimation: 28
+  fadeInAnimation: 1
 --- !u!225 &633795559
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -4290,7 +4322,7 @@ MonoBehaviour:
   fadeTime: 0.2
   startPanelScale: 1.1
   endPanelScale: 1
-  fadeInAnimation: 28
+  fadeInAnimation: 1
 --- !u!225 &805607076
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -4359,7 +4391,7 @@ MonoBehaviour:
   fadeTime: 0.2
   startPanelScale: 1.1
   endPanelScale: 1
-  fadeInAnimation: 28
+  fadeInAnimation: 1
 --- !u!225 &814645012
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -5627,6 +5659,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1128126302}
   - component: {fileID: 1128126304}
+  - component: {fileID: 1128126306}
+  - component: {fileID: 1128126305}
   m_Layer: 5
   m_Name: BackgroundJoiningLobby
   m_TagString: Untagged
@@ -5664,6 +5698,36 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1128126301}
   m_CullTransparentMesh: 1
+--- !u!225 &1128126305
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1128126301}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &1128126306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1128126301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdaa25776954eb43a66b501d1576bb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canvasGroup: {fileID: 1128126305}
+  rectTransform: {fileID: 1128126302}
+  fadeTime: 0.2
+  startPanelScale: 1.1
+  endPanelScale: 1
+  fadeInAnimation: 28
 --- !u!1 &1140623478
 GameObject:
   m_ObjectHideFlags: 0
@@ -9969,6 +10033,8 @@ GameObject:
   - component: {fileID: 1832092066}
   - component: {fileID: 1832092068}
   - component: {fileID: 1832092067}
+  - component: {fileID: 1832092070}
+  - component: {fileID: 1832092069}
   m_Layer: 5
   m_Name: BackgroundErrorCode
   m_TagString: Untagged
@@ -10037,6 +10103,36 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1832092065}
   m_CullTransparentMesh: 1
+--- !u!225 &1832092069
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1832092065}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &1832092070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1832092065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdaa25776954eb43a66b501d1576bb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canvasGroup: {fileID: 1832092069}
+  rectTransform: {fileID: 1832092066}
+  fadeTime: 0.2
+  startPanelScale: 1.3
+  endPanelScale: 1
+  fadeInAnimation: 28
 --- !u!1 &1843493817
 GameObject:
   m_ObjectHideFlags: 0
