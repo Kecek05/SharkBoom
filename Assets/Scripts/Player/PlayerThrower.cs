@@ -329,13 +329,13 @@ public class PlayerThrower : NetworkBehaviour
 
     }
     
-    private void HandleOnLastItemSynced()
+    private void HandleOnLastItemSynced(Vector3 aimPosition)
     {
         //Used to the Owner tells the client that the drag has been released and its time to Lerp the aim position and spawn item
-        playerRotateToAim.SyncAimPosition(playerRotateToAim.AimTransform.position, () =>
+        playerRotateToAim.SyncAimPosition(aimPosition, () =>
         {
             //Finished Lerp Aim Position
-            Debug.Log($"STEPS CLIENT 2 - AIM POSITION SYNCED - AIM POSITION: {playerRotateToAim.AimTransform.position} - {gameObject.name}");
+            Debug.Log($"STEPS CLIENT 2 - AIM POSITION SYNCED - AIM POSITION: {aimPosition} - {gameObject.name}");
             playerDragController.InvokeOnDragRelease();
         });
     }
