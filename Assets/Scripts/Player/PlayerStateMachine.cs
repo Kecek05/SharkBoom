@@ -6,22 +6,23 @@ using UnityEngine;
 [Serializable]
 public class PlayerStateMachine
 {
+    private bool isOwner = false;
     private IState currentState;
     public IState CurrentState => currentState;
     
     private readonly Dictionary<PlayerState, IState> stateMap = new();
 
     //refs to state objects
-    /*private MyTurnStartedState myTurnStartedState;
-    private IdleMyTurnState idleMyTurnState;
-    private DraggingJump draggingJump;
-    private DraggingItem draggingItem;
-    private DragReleaseJump dragReleaseJump;
-    private DragReleaseItem dragReleaseItem;
+    // private MyTurnStartedState myTurnStartedState;
+    // private IdleMyTurnState idleMyTurnState;
+    // private DraggingJump draggingJump;
+    // private DraggingItem draggingItem;
+    // private DragReleaseJump dragReleaseJump;
+    // private DragReleaseItem dragReleaseItem;
     private MyTurnEndedState myTurnEndedState;
-    private IdleEnemyTurnState idleEnemyTurnState;
-    private PlayerWatchingState playerWatchingState;
-    private PlayerGameOverState playerGameOverState;*/
+    // private IdleEnemyTurnState idleEnemyTurnState;
+    // private PlayerWatchingState playerWatchingState;
+    // private PlayerGameOverState playerGameOverState;
     
     //private PlayerThrower playerThrower;
     public event Action<PlayerState> OnStateChanged;
@@ -36,7 +37,7 @@ public class PlayerStateMachine
         Register(new DraggingItem(player, playerDragController));
         Register(new DragReleaseJump());
         Register(new DragReleaseItem());
-        Register(new MyTurnEndedState(player, isOwner));
+        Register(myTurnEndedState = new MyTurnEndedState(player, isOwner));
         Register(new IdleEnemyTurnState());
         Register(new PlayerWatchingState());
         Register(new PlayerGameOverState());
@@ -92,6 +93,12 @@ public class PlayerStateMachine
 
         OnStateChanged?.Invoke(currentState.State);
 
+    }
+
+    public void ChangeOwnership(bool isOwner)
+    {
+        this.isOwner = isOwner;
+        myTurnEndedState.ChangeOwnership(this.isOwner);
     }
     
     /// <summary>

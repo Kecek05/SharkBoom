@@ -23,16 +23,40 @@ public class PlayerDebugCanvas : MonoBehaviour
     private void Update()
     { 
         if(!playerThrower) return;
-        
-        if(playerThrower.PlayerStateMachine != null)
-            text1.text = $"Player State: {playerThrower.PlayerStateMachine.CurrentState}";
-        
-        text2.text = $"Can Interact Inv: {playerThrower.PlayerInventory.CanInteractWithInventory}";
-        text3.text = $"Inv ID: {playerThrower.PlayerInventory.SelectedItemID}";
-        text4.text = $"Playable State: {playerThrower.ThisPlayableState.Value}";
-        text5.text = $"Is Direction Right: {playerDetectFacingDirection.IsDirectionRight}";
-        text6.text = $"Animator State: {playerAnimator.CurrentAnimation}";
-        text7.text = $"Item Socket Selected: {playerSpawnItemOnHand.SelectedSocketTransform.name}";
-        text8.text = $"Item On Hand: {playerSpawnItemOnHand.SpawnedItem?.name ?? "None"}";
+
+        if (playerThrower?.PlayerStateMachine != null)
+        {
+            text1.text = $"Player State: {playerThrower?.PlayerStateMachine?.CurrentState}";
+        }
+
+        if (playerThrower?.PlayerInventory)
+        {
+            text2.text = $"Can Interact Inv: {playerThrower.PlayerInventory?.CanInteractWithInventory}";
+            text3.text = $"Inv ID: {playerThrower?.PlayerInventory?.SelectedItemID}";
+        }
+
+        if (playerThrower)
+        {
+            text4.text = $"Playable State: {playerThrower?.ThisPlayableState?.Value}";
+        }
+
+        if (playerDetectFacingDirection)
+        {
+            text5.text = $"Is Direction Right: {playerDetectFacingDirection?.IsDirectionRight}";
+        }
+
+        if (playerAnimator)
+        {
+            text6.text = $"Animator State: {playerAnimator?.CurrentAnimation}";
+        }
+
+        if (playerSpawnItemOnHand != null)
+        {
+            // if(playerSpawnItemOnHand.SelectedSocketTransform != null)
+            //     text7.text = $"Item Socket Selected: {playerSpawnItemOnHand?.SelectedSocketTransform?.name}";
+            
+            text8.text = $"Item On Hand: {playerSpawnItemOnHand?.SpawnedItem?.name ?? "None"}";
+        }
+
     }
 }

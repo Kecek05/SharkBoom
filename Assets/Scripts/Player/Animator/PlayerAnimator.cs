@@ -114,6 +114,7 @@ public class PlayerAnimator : NetworkBehaviour
         }
         else if (playerState == PlayerState.DragReleaseItem)
         {
+            Debug.Log($"STEPS CLIENT 5 - PLAY RELEASE ITEM ANIMATION L - {selectedShootAnimation.animationL}");
             TriggerSyncAnimation(selectedShootAnimation);
         }
         else if (playerState == PlayerState.DragReleaseJump)
@@ -137,8 +138,7 @@ public class PlayerAnimator : NetworkBehaviour
     private void TriggerSyncAnimation(AnimationData animationData)
     {
         PlayAnimationData(animationData);
-        
-        TriggerAnimationServerRpc(animationData);
+        //TriggerAnimationServerRpc(animationData);
     }
 
     [Rpc(SendTo.Server, Delivery = RpcDelivery.Unreliable)]

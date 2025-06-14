@@ -52,60 +52,11 @@ public class PlayerThrower : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        GameManager.OnClientOwnershipChanged += HandleOnClientOwnershipChanged;
-
-        gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
-        turnManager = ServiceLocator.Get<BaseTurnManager>();
-
-        thisPlayableState.OnValueChanged += PlayableStateInitialize;
-
-        PlayableStateInitialize(thisPlayableState.Value, thisPlayableState.Value);
-
-        playerTouchColl.enabled = false;
-
-        //DEBUG
         gameObject.name = "Player " + UnityEngine.Random.Range(0, 10000);
+        HandleEvents();
+        Initialize();
+        //DEBUG
         
-        hitReceiveNetworked.OnHitReceive += HandleOnHitReceive;
-        
-        playerRotateToAim.InitializeOwner();
-        playerDragController.Initialize(itemJumpSO.rb);
-        
-        gameStateManager.CurrentGameState.OnValueChanged += HandleOnGameStateChanged;
-
-        playerInventory.OnItemChanged += HandleOnItemChanged;
-        playerInventory.OnItemSelected += HandleOnItemSelected;
-        playerInventory.OnItemSelectedSO += HandleOnItemSelectedSO;
-        
-        playerLauncher.OnItemLaunched += HandleOnItemLaunched;
-        
-        playerStateMachine = new PlayerStateMachine(this, playerDragController, playerInventory, IsOwner);
-
-        playerStateMachine.Initialize(PlayerState.IdleEnemyTurn);
-        
-        if(playerStateMachine != null)
-            playerStateMachine.OnStateChanged += HandleOnStateChanged;
-        
-                
-        playerDragController.OnDragStart += HandleOnDragStart;
-        
-        playerInventoryUI.OnItemSelectedByUI += HandleOnItemSelectedByUI;
-        Debug.Log("PlayerThrower - Player Inventory UI Initialized");
-        
-        playerDetectFacingDirection.OnRotationChanged += HandleOnPlayerDetectFacingDirectionRotationChanged;
-        
-        playerAnimator.OnCrossfadeFinished += HandleOnPlayerAnimatorCrossfadeFinished;
-        
-        playerSpawnItemOnHand.OnItemOnHandSpawned += HandleOnPlayerSpawnItemOnHandItemOnHandSpawned;
-        playerSpawnItemOnHand.OnItemOnHandDespawned += HandleOnPlayerSpawnItemOnHandItemOnHandDespawned;
-        playerSpawnItemOnHand.OnItemSocketSelected += OnPlayerSpawnItemOnHandItemSocketSelected;
-        
-        playerGetUp.OnPlayerGetUp += HandleOnPlayerGetUp;
-        playerRagdollEnabler.OnRagdollDisabled += HandleOnRagdollDisabled;
-        
-        playerLauncher.OnLastItemSynced += HandleOnLastItemSynced;
-        playerInventory.Initialize();
-
     }
 
     private void HandleOnClientOwnershipChanged(ulong newOwnerClientId)
@@ -114,33 +65,69 @@ public class PlayerThrower : NetworkBehaviour
 
         if(newOwnerClientId == OwnerClientId)
         {
-
+            HandleOwnerEvents();
             InitializeOwner();
-            HandleEvents();
-            playerTouchColl.enabled = true;
-
-            playerInventory.HandleOnGainOwnership();
-            playerInventoryUI.HandleOnGainOwnership();
         }
+    }
+
+    private void CreatePlayerStateMachine()
+    {
+        playerStateMachine = new PlayerStateMachine(this, playerDragController, playerInventory, false);
+
+        playerStateMachine.Initialize(PlayerState.IdleEnemyTurn);
+        
+        playerStateMachine.OnStateChanged += HandleOnStateChanged; //Event must be here 
+        
+        Debug.Log($"Created Player State Machine: {playerStateMachine} - OBJ: {gameObject.name}");
+    }
+
+    private void Initialize()
+    {
+        gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
+        turnManager = ServiceLocator.Get<BaseTurnManager>();
+        
+        PlayableStateInitialize(thisPlayableState.Value, thisPlayableState.Value);
+        
+        playerTouchColl.enabled = false;
+        
+        playerRotateToAim.InitializeOwner();
+        playerDragController.Initialize(itemJumpSO.rb);
+        
+        CreatePlayerStateMachine();
+        
+        Debug.Log($"SPAWNED PLAYER STATE MACHINE: {playerStateMachine} - CURRENT STATE: {playerStateMachine.CurrentState} - OBJ: {gameObject.name}");
+        
+        
+        playerDetectFacingDirection.InitializeOwner();
+        // playerInventory.Initialize();
+        
+        
     }
 
     private void InitializeOwner()
     {
         //Owner initialize code
-
+        if (playerStateMachine == null)
+        {
+            CreatePlayerStateMachine();
+        }
+        
+        playerStateMachine.ChangeOwnership(IsOwner);
+        
         PlayableStateInitialize(thisPlayableState.Value, thisPlayableState.Value);
         
         playerDragController.InitializeOwner();
         
-        turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
-
-        turnManager.OnMyTurnEnded += GameFlowManager_OnMyTurnEnded;
-
-        turnManager.OnMyTurnJumped += GameFlowManager_OnMyTurnJumped;
+        cameraManager.InitializeOwner();
         
+        playerInventory.InitializeOwner();
+        playerLauncher.InitializeOwner();
         
-        playerDragController.OnDragChange += HandleOnDragChange;
-        playerDragController.OnDragCancelable += HandleOnDragCancelable;
+        playerTouchColl.enabled = true;
+
+        playerInventoryUI.HandleOnGainOwnership();
+        playerInventory.HandleOnGainOwnership();
+        
         //playerDragController.OnDragRelease += HandleOnDragRelease;
         /*
         turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
@@ -155,22 +142,69 @@ public class PlayerThrower : NetworkBehaviour
 
         /*hitReceiveNetworked.OnHitReceive += HandleOnHitReceive;*/
 
-        cameraManager.InitializeOwner();
-        playerDetectFacingDirection.InitializeOwner();
+
+        // playerDetectFacingDirection.InitializeOwner();
         //playerRotateToAim.InitializeOwner();
-        playerInventory.InitializeOwner();
-        playerLauncher.InitializeOwner();
-        
-        playerInventory.OnItemAdded += HandleOnItemAdded;
-        
-        BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
+
         
         //playerDragController.InitializeOwner(playerInventory.GetItemSOByItemSOIndex(0).rb);
     }
 
+    private void HandleOwnerEvents()
+    {
+        if (!turnManager)
+        {
+            turnManager = ServiceLocator.Get<BaseTurnManager>();
+        }
+        
+        turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
+        
+        turnManager.OnMyTurnEnded += GameFlowManager_OnMyTurnEnded;
+        
+        turnManager.OnMyTurnJumped += GameFlowManager_OnMyTurnJumped;
+        
+        
+        playerDragController.OnDragChange += HandleOnDragChange;
+        playerDragController.OnDragCancelable += HandleOnDragCancelable;
+        
+        playerInventory.OnItemAdded += HandleOnItemAdded;
+        
+        BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
+    }
+
     private void HandleEvents()
     {
+        GameManager.OnClientOwnershipChanged += HandleOnClientOwnershipChanged;
 
+        thisPlayableState.OnValueChanged += PlayableStateInitialize;
+        
+        hitReceiveNetworked.OnHitReceive += HandleOnHitReceive;
+        
+        gameStateManager.CurrentGameState.OnValueChanged += HandleOnGameStateChanged;
+
+        playerInventory.OnItemChanged += HandleOnItemChanged;
+        playerInventory.OnItemSelected += HandleOnItemSelected;
+        playerInventory.OnItemSelectedSO += HandleOnItemSelectedSO;
+        
+        playerLauncher.OnItemLaunched += HandleOnItemLaunched;
+                
+        playerDragController.OnDragStart += HandleOnDragStart;
+        
+        playerInventoryUI.OnItemSelectedByUI += HandleOnItemSelectedByUI;
+        
+        playerDetectFacingDirection.OnRotationChanged += HandleOnPlayerDetectFacingDirectionRotationChanged;
+        
+        playerAnimator.OnCrossfadeFinished += HandleOnPlayerAnimatorCrossfadeFinished;
+        
+        playerSpawnItemOnHand.OnItemOnHandSpawned += HandleOnPlayerSpawnItemOnHandItemOnHandSpawned;
+        playerSpawnItemOnHand.OnItemOnHandDespawned += HandleOnPlayerSpawnItemOnHandItemOnHandDespawned;
+        playerSpawnItemOnHand.OnItemSocketSelected += OnPlayerSpawnItemOnHandItemSocketSelected;
+        
+        playerGetUp.OnPlayerGetUp += HandleOnPlayerGetUp;
+        playerRagdollEnabler.OnRagdollDisabled += HandleOnRagdollDisabled;
+
+        playerLauncher.OnLastItemSynced += HandleOnLastItemSynced;
+        
         /*playerInventory.OnItemAdded += HandleOnItemAdded;
         playerInventory.OnItemChanged += HandleOnItemChanged;*/
         /*playerInventory.OnItemSelected += HandleOnItemSelected;
@@ -203,48 +237,115 @@ public class PlayerThrower : NetworkBehaviour
 
     private void UnHandleEvents()
     {
+        GameManager.OnClientOwnershipChanged -= HandleOnClientOwnershipChanged;
 
-        playerInventory.OnItemAdded -= HandleOnItemAdded;
+        thisPlayableState.OnValueChanged -= PlayableStateInitialize;
+        
+        hitReceiveNetworked.OnHitReceive -= HandleOnHitReceive;
+        
+        gameStateManager.CurrentGameState.OnValueChanged -= HandleOnGameStateChanged;
+
         playerInventory.OnItemChanged -= HandleOnItemChanged;
-        /*playerInventory.OnItemSelected -= HandleOnItemSelected;
-        playerInventory.OnItemSelectedSO -= HandleOnItemSelectedSO;*/
-
+        playerInventory.OnItemSelected -= HandleOnItemSelected;
+        playerInventory.OnItemSelectedSO -= HandleOnItemSelectedSO;
+        
         playerLauncher.OnItemLaunched -= HandleOnItemLaunched;
 
-        /*if (playerStateMachine != null)
-            playerStateMachine.OnStateChanged -= HandleOnStateChanged;*/
-
+        playerStateMachine.OnStateChanged -= HandleOnStateChanged;
+                
         playerDragController.OnDragStart -= HandleOnDragStart;
-        playerDragController.OnDragChange -= HandleOnDragChange;
-        playerDragController.OnDragCancelable -= HandleOnDragCancelable;
-
+        
         playerInventoryUI.OnItemSelectedByUI -= HandleOnItemSelectedByUI;
-
+        
         playerDetectFacingDirection.OnRotationChanged -= HandleOnPlayerDetectFacingDirectionRotationChanged;
-
+        
         playerAnimator.OnCrossfadeFinished -= HandleOnPlayerAnimatorCrossfadeFinished;
-
-        /*playerSpawnItemOnHand.OnItemOnHandSpawned -= HandleOnPlayerSpawnItemOnHandItemOnHandSpawned;
+        
+        playerSpawnItemOnHand.OnItemOnHandSpawned -= HandleOnPlayerSpawnItemOnHandItemOnHandSpawned;
         playerSpawnItemOnHand.OnItemOnHandDespawned -= HandleOnPlayerSpawnItemOnHandItemOnHandDespawned;
-        playerSpawnItemOnHand.OnItemSocketSelected -= OnPlayerSpawnItemOnHandItemSocketSelected;*/
-
+        playerSpawnItemOnHand.OnItemSocketSelected -= OnPlayerSpawnItemOnHandItemSocketSelected;
+        
         playerGetUp.OnPlayerGetUp -= HandleOnPlayerGetUp;
         playerRagdollEnabler.OnRagdollDisabled -= HandleOnRagdollDisabled;
 
+        playerLauncher.OnLastItemSynced -= HandleOnLastItemSynced;
+        
+        
+        // playerInventory.OnItemAdded -= HandleOnItemAdded;
+        // playerInventory.OnItemChanged -= HandleOnItemChanged;
+        // /*playerInventory.OnItemSelected -= HandleOnItemSelected;
+        // playerInventory.OnItemSelectedSO -= HandleOnItemSelectedSO;*/
+        //
+        // playerLauncher.OnItemLaunched -= HandleOnItemLaunched;
+        //
+        // /*if (playerStateMachine != null)
+        //     playerStateMachine.OnStateChanged -= HandleOnStateChanged;*/
+        //
+        // playerDragController.OnDragStart -= HandleOnDragStart;
+        // playerDragController.OnDragChange -= HandleOnDragChange;
+        // playerDragController.OnDragCancelable -= HandleOnDragCancelable;
+        //
+        // playerInventoryUI.OnItemSelectedByUI -= HandleOnItemSelectedByUI;
+        //
+        // playerDetectFacingDirection.OnRotationChanged -= HandleOnPlayerDetectFacingDirectionRotationChanged;
+        //
+        // playerAnimator.OnCrossfadeFinished -= HandleOnPlayerAnimatorCrossfadeFinished;
+        //
+        // /*playerSpawnItemOnHand.OnItemOnHandSpawned -= HandleOnPlayerSpawnItemOnHandItemOnHandSpawned;
+        // playerSpawnItemOnHand.OnItemOnHandDespawned -= HandleOnPlayerSpawnItemOnHandItemOnHandDespawned;
+        // playerSpawnItemOnHand.OnItemSocketSelected -= OnPlayerSpawnItemOnHandItemSocketSelected;*/
+        //
+        // playerGetUp.OnPlayerGetUp -= HandleOnPlayerGetUp;
+        // playerRagdollEnabler.OnRagdollDisabled -= HandleOnRagdollDisabled;
+        //
+        // cameraManager.UnInitializeOwner();
+        // playerLauncher.UnInitializeOwner();
+        // playerInventoryUI.UnHandleInitializeOwner();
+    }
+
+    private void UnHandleOwnerEvents()
+    {
+        if (turnManager)
+        {
+            turnManager.OnMyTurnStarted -= GameFlowManager_OnMyTurnStarted;
+        
+            turnManager.OnMyTurnEnded -= GameFlowManager_OnMyTurnEnded;
+        
+            turnManager.OnMyTurnJumped -= GameFlowManager_OnMyTurnJumped;
+        }
+        
+        playerDragController.OnDragChange -= HandleOnDragChange;
+        playerDragController.OnDragCancelable -= HandleOnDragCancelable;
+        
+        playerInventory.OnItemAdded -= HandleOnItemAdded;
+        
+        BaseItemThrowable.OnItemCallbackAction -= HandleOnItemCallbackAction;
+    }
+
+    private void UnInitializeOwner()
+    {
+        playerTouchColl.enabled = false;
+        playerStateMachine.ChangeOwnership(false);
+        
         cameraManager.UnInitializeOwner();
         playerLauncher.UnInitializeOwner();
         playerInventoryUI.UnHandleInitializeOwner();
     }
 
+    private void UnInitialize()
+    {
+
+    }
+    
     private void HandleOnLastItemSynced()
     {
         //Used to the Owner tells the client that the drag has been released and its time to Lerp the aim position and spawn item
         playerRotateToAim.SyncAimPosition(playerRotateToAim.AimTransform.position, () =>
         {
             //Finished Lerp Aim Position
+            Debug.Log($"STEPS CLIENT 2 - AIM POSITION SYNCED - AIM POSITION: {playerRotateToAim.AimTransform.position}");
             playerDragController.InvokeOnDragRelease();
         });
-        Debug.Log($"PlayerThrower - HandleOnLastItemSynced");
     }
     
     // private void HandleOnDragRelease()
@@ -291,6 +392,7 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleOnStateChanged(PlayerState state)
     {
+        Debug.Log($"PlayerThrower - Player State Changed to: {state} - OBJ: {gameObject.name}");
         cameraManager.HandleOnPlayerStateMachineStateChanged(state);
         playerInventory.HandleOnPlayerStateMachineStateChanged(state);
 
@@ -438,7 +540,7 @@ public class PlayerThrower : NetworkBehaviour
             return;
         }
         
-        Debug.Log($"PlayerThrower - Changing Player State to: {playerState} - Old State Was: {playerStateMachine.CurrentState}");
+        Debug.Log($"PlayerThrower - Changing Player State to: {playerState} - Old State Was: {playerStateMachine.CurrentState} - GameObject: {gameObject.name}");
         playerStateMachine.ChangeStateWithPlayerState(playerState);
         TransitionToStateServerRpc(playerState);
     }
@@ -449,7 +551,7 @@ public class PlayerThrower : NetworkBehaviour
         TransitionToStateClientRpc(playerState);
     }
 
-    [Rpc(SendTo.NotMe, Delivery = RpcDelivery.Reliable)]
+    [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
     private void TransitionToStateClientRpc(PlayerState playerState)
     {
         playerStateMachine.ChangeStateWithPlayerState(playerState);
@@ -506,42 +608,47 @@ public class PlayerThrower : NetworkBehaviour
 
     public override void OnNetworkDespawn()
     {
-        GameManager.OnClientOwnershipChanged -= HandleOnClientOwnershipChanged;
-        thisPlayableState.OnValueChanged -= PlayableStateInitialize;
-
-
-        if (IsOwner)
-        {
-            turnManager.OnMyTurnStarted -= GameFlowManager_OnMyTurnStarted;
-
-            turnManager.OnMyTurnEnded -= GameFlowManager_OnMyTurnEnded;
-
-            turnManager.OnMyTurnJumped -= GameFlowManager_OnMyTurnJumped;
-
-            gameStateManager.CurrentGameState.OnValueChanged -= HandleOnGameStateChanged;
-
-            BaseItemThrowable.OnItemCallbackAction -= HandleOnItemCallbackAction;
-
-            hitReceiveNetworked.OnHitReceive -= HandleOnHitReceive;
-
-            UnHandleEvents();
-        }
-        
-        playerSpawnItemOnHand.OnItemOnHandSpawned -= HandleOnPlayerSpawnItemOnHandItemOnHandSpawned;
-        playerSpawnItemOnHand.OnItemOnHandDespawned -= HandleOnPlayerSpawnItemOnHandItemOnHandDespawned;
-        playerSpawnItemOnHand.OnItemSocketSelected -= OnPlayerSpawnItemOnHandItemSocketSelected;
-        
-        playerInventory.OnItemSelected -= HandleOnItemSelected;
-        playerInventory.OnItemSelectedSO -= HandleOnItemSelectedSO;
-        
-        if (playerStateMachine != null)
-            playerStateMachine.OnStateChanged -= HandleOnStateChanged;
+        UnInitialize();
+        UnHandleEvents();
+        // GameManager.OnClientOwnershipChanged -= HandleOnClientOwnershipChanged;
+        // thisPlayableState.OnValueChanged -= PlayableStateInitialize;
+        //
+        //
+        // if (IsOwner)
+        // {
+        //     turnManager.OnMyTurnStarted -= GameFlowManager_OnMyTurnStarted;
+        //
+        //     turnManager.OnMyTurnEnded -= GameFlowManager_OnMyTurnEnded;
+        //
+        //     turnManager.OnMyTurnJumped -= GameFlowManager_OnMyTurnJumped;
+        //
+        //     gameStateManager.CurrentGameState.OnValueChanged -= HandleOnGameStateChanged;
+        //
+        //     BaseItemThrowable.OnItemCallbackAction -= HandleOnItemCallbackAction;
+        //
+        //     hitReceiveNetworked.OnHitReceive -= HandleOnHitReceive;
+        //
+        //     UnHandleEvents();
+        // }
+        //
+        // playerSpawnItemOnHand.OnItemOnHandSpawned -= HandleOnPlayerSpawnItemOnHandItemOnHandSpawned;
+        // playerSpawnItemOnHand.OnItemOnHandDespawned -= HandleOnPlayerSpawnItemOnHandItemOnHandDespawned;
+        // playerSpawnItemOnHand.OnItemSocketSelected -= OnPlayerSpawnItemOnHandItemSocketSelected;
+        //
+        // playerInventory.OnItemSelected -= HandleOnItemSelected;
+        // playerInventory.OnItemSelectedSO -= HandleOnItemSelectedSO;
+        //
+        // if (playerStateMachine != null)
+        //     playerStateMachine.OnStateChanged -= HandleOnStateChanged;
     }
 
     public override void OnLostOwnership()
     {
-        playerTouchColl.enabled = false;
-        UnHandleEvents();
+        UnInitializeOwner();
+        UnHandleOwnerEvents();
+        // playerTouchColl.enabled = false;
+        // playerStateMachine.ChangeOwnership(false);
+        // UnHandleEvents();
     }
     
 }

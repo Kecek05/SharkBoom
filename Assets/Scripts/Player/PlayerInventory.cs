@@ -41,14 +41,14 @@ public class PlayerInventory : NetworkBehaviour
     
     public int SelectedItemID => selectedItemID; //DEBUG
 
-    public void Initialize()
-    {
-        /*SetCanInteractWithInventory(true);
-
-        OnItemSelected?.Invoke(selectedItemInventoryIndex);
-        playerItemsInventory.OnListChanged += PlayerInventory_OnListChanged; //Local event*/
-        
-    }
+//     public void Initialize()
+//     {
+//         /*SetCanInteractWithInventory(true);
+//
+//         OnItemSelected?.Invoke(selectedItemInventoryIndex);
+//         playerItemsInventory.OnListChanged += PlayerInventory_OnListChanged; //Local event*/
+//         
+//     }
     
     public void InitializeOwner()
     {

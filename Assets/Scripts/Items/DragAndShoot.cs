@@ -236,8 +236,8 @@ public class DragAndShoot : NetworkBehaviour
 
     public void InvokeOnDragRelease()
     {
+        Debug.Log($"STEPS CLIENT 3 - ON DRAG RELEASED");
         OnDragRelease?.Invoke();
-        Debug.Log("OnDragRelease");
     }
     
     protected void InputReader_OnPrimaryFingerPositionEvent(InputAction.CallbackContext context)

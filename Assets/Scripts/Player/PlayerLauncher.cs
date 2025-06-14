@@ -96,12 +96,14 @@ public class PlayerLauncher : NetworkBehaviour
             lastItemLauncherData = itemLauncherData;
             
             SyncItemLauncherDataServerRpc(lastItemLauncherData);
+            
+            Debug.Log($"STEPS OWNER 1 - OWNER CREATED LAUNCHER DATA - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Owner: {lastItemLauncherData.ownerPlayableState}");
         }
         
         SpawnProjectile(lastItemLauncherData); 
-        
+        Debug.Log($"STEPS LAST - ITEM LAUNCHED - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Owner: {lastItemLauncherData.ownerPlayableState}");
         //SpawnProjectileServerRpc(itemLauncherData);
-        Debug.Log($"Item Launcher - Launching item with ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Owner: {lastItemLauncherData.ownerPlayableState}");
+        //Debug.Log($"Item Launcher - Launching item with ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Owner: {lastItemLauncherData.ownerPlayableState}");
         
         OnItemLaunched?.Invoke(playerInventory.SelectedItemID); //pass itemInventoryIndex
     }
@@ -116,6 +118,7 @@ public class PlayerLauncher : NetworkBehaviour
     private void SyncItemLauncherDataClientRpc(ItemLauncherData itemLauncherData)
     {
         lastItemLauncherData = itemLauncherData;
+        Debug.Log($"STEPS CLIENT 1 - ITEM LAUNCHER DATA SYNCED - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Owner: {lastItemLauncherData.ownerPlayableState}");
         OnLastItemSynced?.Invoke();
     }
 

@@ -178,6 +178,7 @@ public class DraggingItem : IState
 
     private void PlayerDragController_OnDragRelease()
     {
+        Debug.Log($"STEPS CLIENT 4 - DRAGGING ITEM TO DRAG RELEASE ITEM");
         player.ChangePlayerState(PlayerState.DragReleaseItem);
         //player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.dragReleaseItem);
     }
@@ -291,6 +292,12 @@ public class MyTurnEndedState : IState
         }
 
         MyTurnEndedCallback();
+    }
+    
+    public void ChangeOwnership(bool isOwner)
+    {
+        this.isOwner = isOwner;
+        Debug.Log($"MyTurnEndedState ChangeOwnership: {this.isOwner}");
     }
 
     private async void MyTurnEndedCallback()
