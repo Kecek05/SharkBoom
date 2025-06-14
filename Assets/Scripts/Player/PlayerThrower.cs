@@ -53,6 +53,13 @@ public class PlayerThrower : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         gameObject.name = "Player " + UnityEngine.Random.Range(0, 10000);
+        Debug.Log($"Events - OnNetworkSpawn - {gameObject.name}");
+        
+        gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
+        turnManager = ServiceLocator.Get<BaseTurnManager>();
+        
+        playerStateMachine = new PlayerStateMachine(this, playerDragController, playerInventory, false);
+        
         HandleEvents();
         Initialize();
         //DEBUG
@@ -61,6 +68,7 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleOnClientOwnershipChanged(ulong newOwnerClientId)
     {
+        Debug.Log($"Events - HandleOnClientOwnershipChanged - {gameObject.name} - Owner: {IsOwner}");
         if (!IsOwner) return;
 
         if(newOwnerClientId == OwnerClientId)
@@ -70,21 +78,9 @@ public class PlayerThrower : NetworkBehaviour
         }
     }
 
-    private void CreatePlayerStateMachine()
-    {
-        playerStateMachine = new PlayerStateMachine(this, playerDragController, playerInventory, false);
-
-        playerStateMachine.Initialize(PlayerState.IdleEnemyTurn);
-        
-        playerStateMachine.OnStateChanged += HandleOnStateChanged; //Event must be here 
-        
-        Debug.Log($"Created Player State Machine: {playerStateMachine} - OBJ: {gameObject.name}");
-    }
-
     private void Initialize()
     {
-        gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
-        turnManager = ServiceLocator.Get<BaseTurnManager>();
+        Debug.Log($"Events - Initialize - {gameObject.name}");
         
         PlayableStateInitialize(thisPlayableState.Value, thisPlayableState.Value);
         
@@ -93,10 +89,9 @@ public class PlayerThrower : NetworkBehaviour
         playerRotateToAim.InitializeOwner();
         playerDragController.Initialize(itemJumpSO.rb);
         
-        CreatePlayerStateMachine();
+        playerStateMachine.Initialize(PlayerState.IdleEnemyTurn);
         
         Debug.Log($"SPAWNED PLAYER STATE MACHINE: {playerStateMachine} - CURRENT STATE: {playerStateMachine.CurrentState} - OBJ: {gameObject.name}");
-        
         
         playerDetectFacingDirection.InitializeOwner();
         // playerInventory.Initialize();
@@ -106,11 +101,8 @@ public class PlayerThrower : NetworkBehaviour
 
     private void InitializeOwner()
     {
+        Debug.Log($"Events - InitializeOwner - {gameObject.name}");
         //Owner initialize code
-        if (playerStateMachine == null)
-        {
-            CreatePlayerStateMachine();
-        }
         
         playerStateMachine.ChangeOwnership(IsOwner);
         
@@ -152,10 +144,7 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleOwnerEvents()
     {
-        if (!turnManager)
-        {
-            turnManager = ServiceLocator.Get<BaseTurnManager>();
-        }
+        Debug.Log($"Events - HandleOwnerEvents - {gameObject.name}");
         
         turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
         
@@ -174,6 +163,7 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleEvents()
     {
+        Debug.Log($"Events - HandleEvents - {gameObject.name}");
         GameManager.OnClientOwnershipChanged += HandleOnClientOwnershipChanged;
 
         thisPlayableState.OnValueChanged += PlayableStateInitialize;
@@ -204,6 +194,8 @@ public class PlayerThrower : NetworkBehaviour
         playerRagdollEnabler.OnRagdollDisabled += HandleOnRagdollDisabled;
 
         playerLauncher.OnLastItemSynced += HandleOnLastItemSynced;
+        
+        playerStateMachine.OnStateChanged += HandleOnStateChanged;
         
         /*playerInventory.OnItemAdded += HandleOnItemAdded;
         playerInventory.OnItemChanged += HandleOnItemChanged;*/
@@ -608,6 +600,7 @@ public class PlayerThrower : NetworkBehaviour
 
     public override void OnNetworkDespawn()
     {
+        Debug.Log($"Events - OnNetworkDespawn - {gameObject.name}");
         UnInitialize();
         UnHandleEvents();
         // GameManager.OnClientOwnershipChanged -= HandleOnClientOwnershipChanged;
@@ -644,6 +637,7 @@ public class PlayerThrower : NetworkBehaviour
 
     public override void OnLostOwnership()
     {
+        Debug.Log($"Events - OnLostOwnership - {gameObject.name} - Owner: {IsOwner}");
         UnInitializeOwner();
         UnHandleOwnerEvents();
         // playerTouchColl.enabled = false;
