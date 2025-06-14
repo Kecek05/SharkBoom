@@ -223,19 +223,23 @@ public class DragAndShoot : NetworkBehaviour
     /// <summary>
     /// On The Client, called after the aim position finished sync
     /// </summary>
-    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
-    public void TriggerOnDragReleaseServerRpc()
-    {
-        TriggerOnDragReleaseClientRpc();
-    }
-    
-    [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
-    private void TriggerOnDragReleaseClientRpc()
+    // [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    // public void TriggerOnDragReleaseServerRpc()
+    // {
+    //     TriggerOnDragReleaseClientRpc();
+    // }
+    //
+    // [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
+    // private void TriggerOnDragReleaseClientRpc()
+    // {
+    // }
+
+    public void InvokeOnDragRelease()
     {
         OnDragRelease?.Invoke();
+        Debug.Log("OnDragRelease");
     }
-
-
+    
     protected void InputReader_OnPrimaryFingerPositionEvent(InputAction.CallbackContext context)
     {
 

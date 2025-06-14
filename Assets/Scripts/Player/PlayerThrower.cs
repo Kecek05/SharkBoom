@@ -103,7 +103,7 @@ public class PlayerThrower : NetworkBehaviour
         playerGetUp.OnPlayerGetUp += HandleOnPlayerGetUp;
         playerRagdollEnabler.OnRagdollDisabled += HandleOnRagdollDisabled;
         
-        
+        playerLauncher.OnLastItemSynced += HandleOnLastItemSynced;
         playerInventory.Initialize();
 
     }
@@ -141,7 +141,7 @@ public class PlayerThrower : NetworkBehaviour
         
         playerDragController.OnDragChange += HandleOnDragChange;
         playerDragController.OnDragCancelable += HandleOnDragCancelable;
-        playerDragController.OnDragRelease += HandleOnDragRelease;
+        //playerDragController.OnDragRelease += HandleOnDragRelease;
         /*
         turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
 
@@ -235,16 +235,22 @@ public class PlayerThrower : NetworkBehaviour
         playerLauncher.UnInitializeOwner();
         playerInventoryUI.UnHandleInitializeOwner();
     }
-    
-    private void HandleOnDragRelease()
+
+    private void HandleOnLastItemSynced()
     {
-       //Used to the Owner tells the client that the drag has been released and its time to Lerp the aim position and spawn item
-       playerRotateToAim.SyncAimPosition(playerRotateToAim.AimTransform.position, () =>
-       {
-           //Finished Lerp Aim Position
-           playerDragController.TriggerOnDragReleaseServerRpc();
-       });
+        //Used to the Owner tells the client that the drag has been released and its time to Lerp the aim position and spawn item
+        playerRotateToAim.SyncAimPosition(playerRotateToAim.AimTransform.position, () =>
+        {
+            //Finished Lerp Aim Position
+            playerDragController.InvokeOnDragRelease();
+        });
+        Debug.Log($"PlayerThrower - HandleOnLastItemSynced");
     }
+    
+    // private void HandleOnDragRelease()
+    // {
+    //
+    // }
 
     private void HandleOnPlayerDetectFacingDirectionRotationChanged(bool isRight)
     {

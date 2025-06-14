@@ -37,9 +37,11 @@ public class PlayerRotateToAim : DragListener, IInitializeOnwer, IDetectDragChan
 
     private IEnumerator LerpAimPositionCoroutine(Vector3 targetPosition, Action onFinishLerpAim)
     {
+        Debug.Log($"LerpAimPositionCoroutine - Target Position: {targetPosition}, Current Position: {aimTransform.position}");
         while (Vector3.Distance(aimTransform.position, targetPosition) > lerpFinishThreshold)
         {
             aimTransform.position = Vector3.Lerp(aimTransform.position, targetPosition, Time.deltaTime * lerpSpeed);
+            Debug.Log($"Lerping aim position to {targetPosition}, current position: {aimTransform.position}");
             yield return null;
         }
         aimTransform.position = targetPosition;

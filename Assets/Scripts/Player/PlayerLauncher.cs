@@ -11,8 +11,13 @@ public class PlayerLauncher : NetworkBehaviour
     /// <summary>
     /// item launched, pass itemID
     /// </summary>
-    public event Action<int> OnItemLaunched; 
+    public event Action<int> OnItemLaunched;
 
+    /// <summary>
+    /// Called when the last item used was synced. It will trigger all the chain reaction to throw an item.
+    /// </summary>
+    public event Action OnLastItemSynced;
+    
     [BetterHeader("References")]
     [SerializeField] private InputReader inputReader;
     [SerializeField] private PlayerDragController playerDragController;
@@ -76,34 +81,31 @@ public class PlayerLauncher : NetworkBehaviour
     
     public void Launch() //Called by the script on animator
     {
-        //if (!IsOwner) return;
-
-
-
-
-        ItemLauncherData itemLauncherData = new ItemLauncherData
-        {
-            dragForce = playerDragController.DragForce, 
-            dragDirection = playerDragController.DirectionOfDrag,
-            selectedItemID = playerInventory.SelectedItemID, 
-            ownerPlayableState = playerThrower.ThisPlayableState.Value,
-            itemStartPosition = playerSpawnItemOnHand.SelectedSocketTransform.position,
-            itemStartRotation = playerSpawnItemOnHand.SelectedSocketTransform.rotation,
-        };
-        
         if (IsOwner)
         {
             itemActivableManager.ResetItemActivable(); //Only owner can activate the item.
+            
+            ItemLauncherData itemLauncherData = new ItemLauncherData
+            {
+                dragForce = playerDragController.DragForce, 
+                dragDirection = playerDragController.DirectionOfDrag,
+                selectedItemID = playerInventory.SelectedItemID, 
+                ownerPlayableState = playerThrower.ThisPlayableState.Value,
+                itemStartPosition = playerSpawnItemOnHand.SelectedSocketTransform.position,
+                itemStartRotation = playerSpawnItemOnHand.SelectedSocketTransform.rotation,
+            };
+            
             lastItemLauncherData = itemLauncherData;
+            
+            SyncItemLauncherDataServerRpc(lastItemLauncherData);
         }
         
-        Debug.Log($"Item Launcher - Launching item with ID: {itemLauncherData.selectedItemID}, Force: {itemLauncherData.dragForce}, Direction: {itemLauncherData.dragDirection} - Owner: {itemLauncherData.ownerPlayableState}");
-        SpawnProjectile(itemLauncherData); 
+        SpawnProjectile(lastItemLauncherData); 
         
         //SpawnProjectileServerRpc(itemLauncherData);
-    
+        Debug.Log($"Item Launcher - Launching item with ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Owner: {lastItemLauncherData.ownerPlayableState}");
+        
         OnItemLaunched?.Invoke(playerInventory.SelectedItemID); //pass itemInventoryIndex
-        Debug.Log("Player Launcher - Launched");
     }
 
     [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
@@ -116,6 +118,7 @@ public class PlayerLauncher : NetworkBehaviour
     private void SyncItemLauncherDataClientRpc(ItemLauncherData itemLauncherData)
     {
         lastItemLauncherData = itemLauncherData;
+        OnLastItemSynced?.Invoke();
     }
 
     [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
