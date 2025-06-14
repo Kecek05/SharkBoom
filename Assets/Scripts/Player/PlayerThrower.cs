@@ -79,7 +79,7 @@ public class PlayerThrower : NetworkBehaviour
         
         playerLauncher.OnItemLaunched += HandleOnItemLaunched;
         
-        playerStateMachine = new PlayerStateMachine(this, playerDragController, playerInventory);
+        playerStateMachine = new PlayerStateMachine(this, playerDragController, playerInventory, IsOwner);
 
         playerStateMachine.Initialize(PlayerState.IdleEnemyTurn);
         

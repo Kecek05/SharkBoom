@@ -91,8 +91,6 @@ public class PlayerLauncher : NetworkBehaviour
                 dragDirection = playerDragController.DirectionOfDrag,
                 selectedItemID = playerInventory.SelectedItemID, 
                 ownerPlayableState = playerThrower.ThisPlayableState.Value,
-                itemStartPosition = playerSpawnItemOnHand.SelectedSocketTransform.position,
-                itemStartRotation = playerSpawnItemOnHand.SelectedSocketTransform.rotation,
             };
             
             lastItemLauncherData = itemLauncherData;
@@ -121,17 +119,17 @@ public class PlayerLauncher : NetworkBehaviour
         OnLastItemSynced?.Invoke();
     }
 
-    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
-    private void SpawnProjectileServerRpc(ItemLauncherData itemLauncherData)
-    {
-        SpawnProjectileClientRpc(itemLauncherData);
-    }
-    
-    [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
-    private void SpawnProjectileClientRpc(ItemLauncherData itemLauncherData)
-    {
-        SpawnProjectile(itemLauncherData);
-    }
+    // [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    // private void SpawnProjectileServerRpc(ItemLauncherData itemLauncherData)
+    // {
+    //     SpawnProjectileClientRpc(itemLauncherData);
+    // }
+    //
+    // [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
+    // private void SpawnProjectileClientRpc(ItemLauncherData itemLauncherData)
+    // {
+    //     SpawnProjectile(itemLauncherData);
+    // }
 
     private void SpawnProjectile(ItemLauncherData launcherData) // on client, need to pass the prefab for the other clients instantiate it
     {

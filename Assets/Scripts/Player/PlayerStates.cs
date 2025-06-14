@@ -271,24 +271,26 @@ public class MyTurnEndedState : IState
     private PlayerThrower player;
     private BaseTurnManager turnManager;
     private PlayerState state = PlayerState.MyTurnEnded;
-
+    private bool isOwner;
+    
     public PlayerState State => state;
 
-    public MyTurnEndedState(PlayerThrower player)
+    public MyTurnEndedState(PlayerThrower player, bool isOwner)
     {
         //our builder
         this.player = player;
+        this.isOwner = isOwner;
     }
     public void Enter()
     {
         //Debug.Log("Entering My Turn End State");
-
-        turnManager = ServiceLocator.Get<BaseTurnManager>();
-
-        turnManager.PlayerPlayed(turnManager.LocalPlayableState);
+        if (isOwner)
+        {
+            turnManager = ServiceLocator.Get<BaseTurnManager>();
+            turnManager.PlayerPlayed(turnManager.LocalPlayableState);
+        }
 
         MyTurnEndedCallback();
-
     }
 
     private async void MyTurnEndedCallback()

@@ -27,7 +27,7 @@ public class PlayerStateMachine
     public event Action<PlayerState> OnStateChanged;
 
 
-    public PlayerStateMachine(PlayerThrower player, PlayerDragController playerDragController, PlayerInventory playerInventory)
+    public PlayerStateMachine(PlayerThrower player, PlayerDragController playerDragController, PlayerInventory playerInventory, bool isOwner)
     {
         // Build all your state instances
         Register(new MyTurnStartedState(player));
@@ -36,7 +36,7 @@ public class PlayerStateMachine
         Register(new DraggingItem(player, playerDragController));
         Register(new DragReleaseJump());
         Register(new DragReleaseItem());
-        Register(new MyTurnEndedState(player));
+        Register(new MyTurnEndedState(player, isOwner));
         Register(new IdleEnemyTurnState());
         Register(new PlayerWatchingState());
         Register(new PlayerGameOverState());
