@@ -26,7 +26,7 @@ public class PlayerDebugCanvas : MonoBehaviour
 
         if (playerThrower?.PlayerStateMachine != null)
         {
-            text1.text = $"Player State: {playerThrower?.PlayerStateMachine?.CurrentState}";
+            text1.text = $"Player State: {playerThrower?.PlayerStateMachine?.CurrentState} - Is Owner: {playerThrower?.IsOwner}";
         }
 
         if (playerThrower?.PlayerInventory)

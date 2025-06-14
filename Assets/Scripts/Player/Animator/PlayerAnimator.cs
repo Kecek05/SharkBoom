@@ -114,7 +114,7 @@ public class PlayerAnimator : NetworkBehaviour
         }
         else if (playerState == PlayerState.DragReleaseItem)
         {
-            Debug.Log($"STEPS CLIENT 5 - PLAY RELEASE ITEM ANIMATION L - {selectedShootAnimation.animationL}");
+            Debug.Log($"STEPS CLIENT 5 - PLAY RELEASE ITEM ANIMATION L - {selectedShootAnimation.animationL} - {gameObject.name}");
             TriggerSyncAnimation(selectedShootAnimation);
         }
         else if (playerState == PlayerState.DragReleaseJump)

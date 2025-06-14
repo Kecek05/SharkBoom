@@ -335,7 +335,7 @@ public class PlayerThrower : NetworkBehaviour
         playerRotateToAim.SyncAimPosition(playerRotateToAim.AimTransform.position, () =>
         {
             //Finished Lerp Aim Position
-            Debug.Log($"STEPS CLIENT 2 - AIM POSITION SYNCED - AIM POSITION: {playerRotateToAim.AimTransform.position}");
+            Debug.Log($"STEPS CLIENT 2 - AIM POSITION SYNCED - AIM POSITION: {playerRotateToAim.AimTransform.position} - {gameObject.name}");
             playerDragController.InvokeOnDragRelease();
         });
     }
@@ -534,7 +534,12 @@ public class PlayerThrower : NetworkBehaviour
         
         Debug.Log($"PlayerThrower - Changing Player State to: {playerState} - Old State Was: {playerStateMachine.CurrentState} - GameObject: {gameObject.name}");
         playerStateMachine.ChangeStateWithPlayerState(playerState);
-        TransitionToStateServerRpc(playerState);
+        
+        if(playerState != PlayerState.DragReleaseItem && playerState != PlayerState.DragReleaseJump)
+        {
+            //Dont sync DragRelease states, they are only for the owner
+            TransitionToStateServerRpc(playerState);
+        }
     }
     
     [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]

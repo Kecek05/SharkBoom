@@ -170,7 +170,7 @@ public class DraggingItem : IState
     public void Enter()
     {
         //Debug.Log("Entering Dragging Item State");
-
+        Debug.Log($"STEPS SUBSCRIBING TO DRAG RELEASE - {player.gameObject.name} - {playerDragController.gameObject.name}");
         playerDragController.OnDragRelease += PlayerDragController_OnDragRelease;
         //Set Cant move camera
 
@@ -178,7 +178,7 @@ public class DraggingItem : IState
 
     private void PlayerDragController_OnDragRelease()
     {
-        Debug.Log($"STEPS CLIENT 4 - DRAGGING ITEM TO DRAG RELEASE ITEM");
+        Debug.Log($"STEPS CLIENT 4 - DRAGGING ITEM TO DRAG RELEASE ITEM - {player.gameObject.name}");
         player.ChangePlayerState(PlayerState.DragReleaseItem);
         //player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.dragReleaseItem);
     }
@@ -190,6 +190,7 @@ public class DraggingItem : IState
 
     public void Exit()
     {
+        Debug.Log($"STEPS UNSUBSCRIBING TO DRAG RELEASE - {player.gameObject.name} - {playerDragController.gameObject.name}");
         playerDragController.OnDragRelease -= PlayerDragController_OnDragRelease;
 
         //Debug.Log("Exiting Dragging Item State");
