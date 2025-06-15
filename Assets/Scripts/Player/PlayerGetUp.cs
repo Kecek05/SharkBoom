@@ -138,8 +138,6 @@ public class PlayerGetUp : NetworkBehaviour
         }
     }
 
-
-
     [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
     private void PassPlayerFreePosServerRpc(Vector3 finalPos)
     {

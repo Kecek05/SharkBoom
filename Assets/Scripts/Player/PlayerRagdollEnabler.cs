@@ -56,9 +56,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     public void HandleOnPlayerGetUp()
     {
-        if (!IsOwner) return;
-
-        RequestRagdollDisableServerRpc();
+        DisableRagdoll();
     }
 
     public void TriggerRagdoll(float knockbackStrength, Vector3 hitPoint)
@@ -121,6 +119,11 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     private void EnableRagdoll()
     {
+        foreach (Rigidbody ragdollRb in ragdollRbs)
+        {
+            ragdollRb.isKinematic = false;
+        }
+
         animator.enabled = false;
         
         foreach (Collider ragdollCollider in ragdollColliders)
@@ -128,11 +131,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             ragdollCollider.enabled = true;
         }
 
-        foreach (Rigidbody ragdollRb in ragdollRbs)
-        {
-            ragdollRb.isKinematic = false;
-            Debug.Log("Enabled Ragdoll");
-        }
 
         foreach (Collider playerCollider in playerColliders)
         {
@@ -143,30 +141,33 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     }
 
 
-    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
-    private void RequestRagdollDisableServerRpc()
-    {
-        DisableRagdollClientRpc();
-    }
+    //[Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    //private void RequestRagdollDisableServerRpc()
+    //{
+    //    DisableRagdollClientRpc();
+    //}
 
-    [Rpc(SendTo.ClientsAndHost, Delivery = RpcDelivery.Reliable)]
-    private void DisableRagdollClientRpc()
-    {
-        DisableRagdoll();
-    }
+    //[Rpc(SendTo.ClientsAndHost, Delivery = RpcDelivery.Reliable)]
+    //private void DisableRagdollClientRpc()
+    //{
+    //    DisableRagdoll();
+    //}
 
     private void DisableRagdoll()
     {
 
-        foreach (Collider ragdollCollider in ragdollColliders)
-        {
-            ragdollCollider.enabled = false;
-        }
-
         foreach (Rigidbody ragdollRb in ragdollRbs)
         {
             ragdollRb.isKinematic = true;
-            Debug.Log("Disabled Ragdoll");
+            Debug.Log($"RAGDOLL - Disabled Ragdoll: {ragdollRb}, isKinematic: {ragdollRb.isKinematic} - {gameObject.transform.parent.name}");
+        }
+
+        animator.enabled = true;
+
+
+        foreach (Collider ragdollCollider in ragdollColliders)
+        {
+            ragdollCollider.enabled = false;
         }
 
         foreach (Collider playerCollider in playerColliders)
@@ -175,8 +176,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         }
 
         parentRigidbody.isKinematic = false;
-        
-        animator.enabled = true;
         
         hips.localRotation = Quaternion.Euler(defaultHipsRotation);
         hips.localPosition = Vector3.zero;
