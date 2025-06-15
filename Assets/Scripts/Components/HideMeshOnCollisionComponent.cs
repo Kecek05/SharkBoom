@@ -2,7 +2,7 @@ using System;
 using Unity.Netcode;
 using UnityEngine;
 
-public class HideMeshOnCollisionComponent : NetworkBehaviour
+public class HideMeshOnCollisionComponent : MonoBehaviour
 {
     public event Action OnMeshHidden;
 
@@ -30,17 +30,19 @@ public class HideMeshOnCollisionComponent : NetworkBehaviour
 
     private void BaseCollisionController_OnCollidedWithPlayer(PlayerThrower playerThrower)
     {
-        if (!IsOwner) return;
-        HideMeshServerRpc();
+        //if (!IsOwner) return;
+        //HideMeshServerRpc();
+        meshToHide.SetActive(false);
     }
 
     private void BaseCollisionController_OnCollided(GameObject collidedObject)
     {
-        if (!IsOwner) return;
-        HideMeshServerRpc();
+        //if (!IsOwner) return;
+       // HideMeshServerRpc();
+        meshToHide.SetActive(false);
     }
 
-    [Rpc(SendTo.Server)]
+    /*[Rpc(SendTo.Server)]
     private void HideMeshServerRpc()
     {
         HideMeshClientRpc();
@@ -50,7 +52,7 @@ public class HideMeshOnCollisionComponent : NetworkBehaviour
     private void HideMeshClientRpc()
     {
         meshToHide.SetActive(false);
-    }
+    }*/
 
     private void ShowMesh()
     {

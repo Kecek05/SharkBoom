@@ -24,7 +24,7 @@ public class JumpItemThrowable : BaseItemThrowable
     {
         base.ItemReleased(itemLauncherData);
 
-        if (!IsOwner) return;
+       // if (!IsOwner) return;
 
         objectToFollowTransform = ServiceLocator.Get<BasePlayersPublicInfoManager>().GetPlayerObjectByPlayableState(thisItemLaucherData.ownerPlayableState).transform;
         Debug.Log($"JUMP OBJECT TO FOLLOW: {objectToFollowTransform} - Owner: {thisItemLaucherData.ownerPlayableState}");
@@ -35,10 +35,10 @@ public class JumpItemThrowable : BaseItemThrowable
 
     protected override void ItemCallbackAction()
     {
-        if (!IsOwner) return;
+      //  if (!IsOwner) return;
 
         timerManager.TogglePauseTimer(false); //unpause
-        FireItemCallbackAction();
+     //   FireItemCallbackAction();
         turnManager.PlayerJumped(thisItemLaucherData.ownerPlayableState);
     }
 

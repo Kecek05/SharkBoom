@@ -113,12 +113,22 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
             //it's null
             InstantiateLocalObj(_selectedItemID);
         }
-        
+    }
+    
+    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    private void SpawnItemServerRpc(int _selectedItemSOIndex)
+    {
+        SpawnItemClientRpc(_selectedItemSOIndex);
+    }
+    
+    [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
+    private void SpawnItemClientRpc(int _selectedItemSOIndex)
+    {
+        TriggerSpawnItem(_selectedItemSOIndex);
     }
 
    /* private void InstantiateObj()
     {
-        if(!IsOwner) return; //Only the owner can spawn the item
         UpdateSelectedSocket();
         InstantiateObjServerRpc(NetworkManager.Singleton.LocalClientId, selectedSocket.transform.position, selectedItemSOIndex);
 
