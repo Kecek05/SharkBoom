@@ -1,0 +1,85 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5541563451434038893
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3658393847828354427}
+  - component: {fileID: 1920730359144059252}
+  - component: {fileID: 361762109713204629}
+  m_Layer: 0
+  m_Name: TutorialController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3658393847828354427
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5541563451434038893}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1920730359144059252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5541563451434038893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 2130518637
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
+--- !u!114 &361762109713204629
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5541563451434038893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e60dd65c11253304d9236f956643f444, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  tutorialInfo:
+  - {fileID: 11400000, guid: 245ba68092c41354f8c173e3c974761e, type: 2}
+  - {fileID: 11400000, guid: 6b8b53693da1ff845802567063fdba85, type: 2}
+  - {fileID: 11400000, guid: 69151b4a7efd2ad4fb4eff7007c260f1, type: 2}
+  - {fileID: 11400000, guid: 32f24af0b01bf5046b7cdf590047e6fc, type: 2}
+  - {fileID: 11400000, guid: 12fb1c8fb476fe246b2a825822d95168, type: 2}
+  - {fileID: 11400000, guid: 22532674bd1b8e84bb1b1731ecb87dfd, type: 2}
+  - {fileID: 11400000, guid: a25967abeb7de6e4db6fd5315f99f227, type: 2}
+  - {fileID: 11400000, guid: b5e733f0e40b56f4c9e3269e454208ad, type: 2}
+  - {fileID: 11400000, guid: 64991282febc3bd4aa8fea41a998ee0d, type: 2}
+  - {fileID: 11400000, guid: 05fda7969eaaf60488859ff5b9cf377e, type: 2}
+  - {fileID: 11400000, guid: dc41b900bc6690e439f962233485c268, type: 2}
