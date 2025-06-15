@@ -8,10 +8,10 @@ public class ItemActivableManager : BaseItemActivableManager
     {
         //always local machine will call this
 
-        if (itemThrowableActivableClient)
+        if (itemThrowableActivable)
         {
-            itemThrowableActivableClient.TryActivate();
-            UseItemServerRpc();
+            itemThrowableActivable.TryActivate();
+            //UseItemServerRpc();
         }
         else
         {
@@ -45,13 +45,13 @@ public class ItemActivableManager : BaseItemActivableManager
     {
         if (clientIdUsed == NetworkManager.Singleton.LocalClientId) return; //already called on client
 
-        if (itemThrowableActivableClient)
-            itemThrowableActivableClient.TryActivate();
+        if (itemThrowableActivable)
+            itemThrowableActivable.TryActivate();
     }
 
-    public override void SetItemThrowableActivableClient(BaseItemThrowableActivable itemThrowableActivableClient)
+    public override void SetItemThrowableActivable(BaseItemThrowableActivable itemThrowableActivable)
     {
-        this.itemThrowableActivableClient = itemThrowableActivableClient;
+        this.itemThrowableActivable = itemThrowableActivable;
     }
 
     public override void SetItemThrowableActivableServer(BaseItemThrowableActivable itemThrowableActivableServer)
@@ -61,7 +61,7 @@ public class ItemActivableManager : BaseItemActivableManager
 
     public override void ResetItemActivable()
     {
-        itemThrowableActivableClient = null;
+        itemThrowableActivable = null;
         itemThrowableActivableServer = null;
     }
 

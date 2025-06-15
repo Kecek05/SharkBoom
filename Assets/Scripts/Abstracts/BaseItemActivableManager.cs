@@ -3,10 +3,10 @@ using Unity.Netcode;
 public abstract class BaseItemActivableManager : NetworkBehaviour
 {
 
-    protected BaseItemThrowableActivable itemThrowableActivableClient;
+    protected BaseItemThrowableActivable itemThrowableActivable;
     protected BaseItemThrowableActivable itemThrowableActivableServer;
 
-    public BaseItemThrowableActivable ItemThrowableActivableClient => itemThrowableActivableClient;
+    public BaseItemThrowableActivable ItemThrowableActivable => itemThrowableActivable;
     public BaseItemThrowableActivable ItemThrowableActivableServer => itemThrowableActivableServer;
 
 
@@ -18,7 +18,7 @@ public abstract class BaseItemActivableManager : NetworkBehaviour
     //[Rpc(SendTo.ClientsAndHost)]
     protected abstract void UseItemClient(ulong clientIdUsed); //change to other thing rather than clientId
 
-    public abstract void SetItemThrowableActivableClient(BaseItemThrowableActivable itemThrowableActivableClient);
+    public abstract void SetItemThrowableActivable(BaseItemThrowableActivable itemThrowableActivable);
 
     public abstract void SetItemThrowableActivableServer(BaseItemThrowableActivable itemThrowableActivableServer);
 

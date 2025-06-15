@@ -8,8 +8,10 @@ public abstract class BaseItemThrowableActivable : BaseItemThrowable
     protected bool itemCanBeActivated = true;
     [SerializeField] protected KnockbackSO knockbackSOActivated;
     [SerializeField] protected HitTriggerComponent hitTriggerComponent;
+    
     protected void OnEnable()
     {
+        base.OnEnable();
         itemActivated = false;
         itemCanBeActivated = true;
     }
@@ -23,6 +25,8 @@ public abstract class BaseItemThrowableActivable : BaseItemThrowable
     public void TryActivate()
     {
         if(gameObject.activeInHierarchy == false) return; //If the item is not active, don't activate it
+        
+        if(ownerPlayableState != turnManager.LocalPlayableState) return; // Trying to activate an item that is not owned by the local player
         
         if (itemActivated) return;
         

@@ -2,6 +2,7 @@ using QFSW.QC;
 using Sortify;
 using System;
 using System.Collections;
+using Mono.CSharp;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -44,8 +45,8 @@ public class PlayerLauncher : NetworkBehaviour
 
     private void InputReader_OnTouchPressEvent(InputAction.CallbackContext context)
     {
-
-        if(context.started && (itemActivableManager.ItemThrowableActivableClient != null || itemActivableManager.ItemThrowableActivableServer != null))
+        if(!IsOwner) return; //To be shure that only the owner can activate items
+        if(context.started && itemActivableManager.ItemThrowableActivable != null)
         {
             itemActivableManager.UseItem();
         }
@@ -170,14 +171,11 @@ public class PlayerLauncher : NetworkBehaviour
             Debug.Log($"Player Launcher - Item released: {itemThrowable.name}");
         }
 
-        if (IsOwner)
+        if (lastProjectile.TryGetComponent(out BaseItemThrowableActivable activable))
         {
-            //Only the owner can activate the item
-            if (lastProjectile.TryGetComponent(out BaseItemThrowableActivable activable))
-            {
-                itemActivableManager.SetItemThrowableActivableClient(activable);
-            }
+            itemActivableManager.SetItemThrowableActivable(activable);
         }
+        
     }
 
     // private void SpawnProjectile(ItemLauncherData launcherData) // on client, need to pass the prefab for the other clients instantiate it

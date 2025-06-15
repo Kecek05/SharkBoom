@@ -44,9 +44,17 @@ public abstract class BaseItemThrowable : MonoBehaviour
     protected BaseTurnManager turnManager;
 
     protected bool itemReleased = false;
+    
+    protected PlayableState ownerPlayableState;
+    
 
     //DEBUG
     public bool IsItemReleased => itemReleased;
+
+    protected void OnEnable()
+    {
+        ownerPlayableState = PlayableState.None;
+    }
 
     /// <summary>
     /// Called when the item spawns in hand
@@ -119,10 +127,11 @@ public abstract class BaseItemThrowable : MonoBehaviour
     /// <param name="direction"></param>
     public virtual void ItemReleased(ItemLauncherData itemLauncherData)
     {
+        ownerPlayableState = itemLauncherData.ownerPlayableState;
+        turnManager = ServiceLocator.Get<BaseTurnManager>();
         UpdateOnRelease(itemLauncherData);
 
         followTransformComponent.DisableComponent();
-        turnManager = ServiceLocator.Get<BaseTurnManager>();
         transform.position = new Vector3(transform.position.x, transform.position.y, ITEM_Z_POSITION);
         rb.AddForce(itemLauncherData.dragDirection * itemLauncherData.dragForce, ForceMode.Impulse);
 
