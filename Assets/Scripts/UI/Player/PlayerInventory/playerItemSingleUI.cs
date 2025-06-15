@@ -17,25 +17,29 @@ public class PlayerItemSingleUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI itemDamageText;
     private PlayerInventoryUI playerInventoryUI;
 
-    private int myIndexItemInventory;
-    public int ItemIndex => myIndexItemInventory;
+    private int myItemID;
+    public int MyItemID => myItemID;
 
     [BetterHeader("Settings")]
     [SerializeField] private Color selectedColor;
     [SerializeField] private Color unSelectedColor;
 
-    public void SelectThisItem()
+    /// <summary>
+    /// Called from button UI
+    /// </summary>
+    public void ButtonSelectThisItem()
     {
-        playerInventoryUI.SelecItem(myIndexItemInventory);
+        playerInventoryUI.SelecItem(myItemID);
+        Debug.Log($"ButtonSelectThisItem - Item ID: {myItemID} - PlayerInventoryUI: {playerInventoryUI}");
     }
 
-    public void Setup(string itemName, Sprite itemIcon, int itemCooldown, bool itemCanBeUsed, int indexItemInventory, float itemDamage ,PlayerInventoryUI _playerInventoryUI)
+    public void Setup(string itemName, Sprite itemIcon, int itemCooldown, bool itemCanBeUsed, int itemID, float itemDamage ,PlayerInventoryUI _playerInventoryUI)
     {
         itemNameText.text = itemName;
         itemImageIcon.sprite = itemIcon;
         UpdateCooldown(itemCooldown);
         itemDamageText.text = itemDamage.ToString();
-        myIndexItemInventory = indexItemInventory;
+        myItemID = itemID;
         playerInventoryUI = _playerInventoryUI;
 
         UnSelectedThisItem();
@@ -82,7 +86,7 @@ public class PlayerItemSingleUI : MonoBehaviour
 
     public string GetItemCooldown() { return itemCooldownText.text; }
 
-    public int GetIndexItemInventory() { return myIndexItemInventory; }
+    public int GetIndexItemInventory() { return myItemID; }
     public PlayerInventoryUI GetPlayerInventoryUI() {  return playerInventoryUI; }
 
 }

@@ -34,55 +34,61 @@ public class CameraGlobalFollow : NetworkBehaviour
 
     private void HandleOnItemReleasedAction(Transform itemObject)
     {
-        FollowObject(itemObject.GetComponent<NetworkObject>());
+        FollowObject(itemObject);
     }
-    
+
     /// <summary>
-    /// Called to follow a NetworkObject 
+    /// Called to follow an object in the scene.
     /// </summary>
-    /// <param name="objectToFollow"> pass the NetworkObject to follow. MUST BE!</param>
-    /// <param name="duration"> duration if want</param>
-    /// <param name="followByDuration"> if should follow indefinitely or follow for a short period</param>
-    public void FollowObject(NetworkObjectReference objectToFollow, float duration = 0, bool followByDuration = false, Action onComplete = null, bool isJump = false)
+    /// <param name="objectToFollow"> Transform of the Object to Follow</param>
+    /// <param name="duration"> Duration of the Follow</param>
+    /// <param name="followByDuration"> If Should Follow by duration | If false, will follow until some callback to stop it</param>
+    /// <param name="onComplete"> Callback on complete following</param>
+    /// <param name="isJump"> True if is jump, jump shouldnt follow the player hited by the jump</param>
+    public void FollowObject(Transform objectToFollow, float duration = 0, bool followByDuration = false, Action onComplete = null, bool isJump = false)
     {
         if(isJump) return;
         this.OnComplete = onComplete;
-        FollowObjectServerRpc(objectToFollow, duration, followByDuration);
-    }
 
-    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
-    private void FollowObjectServerRpc(NetworkObjectReference objectToFollow, float duration, bool followByDuration)
-    {
-        FollowObjectClientRpc(objectToFollow, duration, followByDuration);
-    }
-    
-    [Rpc(SendTo.ClientsAndHost, Delivery = RpcDelivery.Reliable)]
-    private void FollowObjectClientRpc(NetworkObjectReference objectToFollow, float duration, bool followByDuration)
-    {
-        if (objectToFollow.TryGet(out NetworkObject networkObject))
-        {
-            if (networkObject.transform.TryGetComponent(out PlayerThrower playerThrower))
-            {
-                //If is player, follow hips transform
-                followTargetTransform = playerThrower.HipsTransform;
-                Debug.Log($"CameraGlobalFollow - FollowObject called with object: {playerThrower.gameObject.name}");
-                
-            }
-            else
-            {
-                followTargetTransform = networkObject.transform;
-                Debug.Log($"CameraGlobalFollow - FollowObject called with object: {followTargetTransform.name}");
-            }
-        }
-        else
-        {
-            Debug.LogWarning("CameraGlobalFollow - FollowObjectClientRpc: NetworkObjectReference is not valid.");
-            return;
-        }
+        followTargetTransform = objectToFollow;
         
         StopFollowingCoroutine();
         followObjectCoroutine = StartCoroutine(FollowPositionCoroutine(duration, followByDuration)); 
     }
+
+    // [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    // private void FollowObjectServerRpc(NetworkObjectReference objectToFollow, float duration, bool followByDuration)
+    // {
+    //     FollowObjectClientRpc(objectToFollow, duration, followByDuration);
+    // }
+    //
+    // [Rpc(SendTo.ClientsAndHost, Delivery = RpcDelivery.Reliable)]
+    // private void FollowObjectClientRpc(NetworkObjectReference objectToFollow, float duration, bool followByDuration)
+    // {
+    //     if (objectToFollow.TryGet(out NetworkObject networkObject))
+    //     {
+    //         if (networkObject.transform.TryGetComponent(out PlayerThrower playerThrower))
+    //         {
+    //             //If is player, follow hips transform
+    //             followTargetTransform = playerThrower.HipsTransform;
+    //             Debug.Log($"CameraGlobalFollow - FollowObject called with object: {playerThrower.gameObject.name}");
+    //             
+    //         }
+    //         else
+    //         {
+    //             followTargetTransform = networkObject.transform;
+    //             Debug.Log($"CameraGlobalFollow - FollowObject called with object: {followTargetTransform.name}");
+    //         }
+    //     }
+    //     else
+    //     {
+    //         Debug.LogWarning("CameraGlobalFollow - FollowObjectClientRpc: NetworkObjectReference is not valid.");
+    //         return;
+    //     }
+    //     
+    //     StopFollowingCoroutine();
+    //     followObjectCoroutine = StartCoroutine(FollowPositionCoroutine(duration, followByDuration)); 
+    // }
 
     /*public void StopFollowingObject()
     {

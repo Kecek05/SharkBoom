@@ -5,5 +5,4 @@ using UnityEngine;
 public class ItemsListSO : ScriptableObject
 {
     public List<ItemSO> allItemsSOList;
-
 }

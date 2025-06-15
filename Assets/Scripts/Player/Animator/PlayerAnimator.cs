@@ -86,6 +86,9 @@ public class PlayerAnimator : NetworkBehaviour
 
     private Coroutine crossFadeCoroutine;
     private PlayerState playerState;
+    
+    //DEBUG
+    public Animations CurrentAnimation => currentAnimation;
 
     public void HandleOnItemSelectedSO(ItemSO itemSelectedSO)
     {
@@ -95,7 +98,7 @@ public class PlayerAnimator : NetworkBehaviour
 
     public void HandleOnPlayerStateMachineStateChanged(PlayerState newState)
     {
-        if(!IsOwner) return; //only owner
+        //if(!IsOwner) return; //only owner
         playerState = newState;
         if (playerState == PlayerState.IdleMyTurn || playerState == PlayerState.IdleEnemyTurn || playerState == PlayerState.MyTurnEnded)
         {
@@ -103,25 +106,26 @@ public class PlayerAnimator : NetworkBehaviour
         }
         else if (playerState == PlayerState.DraggingItem)
         {
-            PlayAnimationData(selectedAimAnimation);
+            TriggerSyncAnimation(selectedAimAnimation);
         }
         else if (playerState == PlayerState.DraggingJump)
         {
-            PlayAnimationData(aimJumpAnimationData);
+            TriggerSyncAnimation(aimJumpAnimationData);
         }
         else if (playerState == PlayerState.DragReleaseItem)
         {
-            PlayAnimationData(selectedShootAnimation);
+            Debug.Log($"STEPS CLIENT 5 - PLAY RELEASE ITEM ANIMATION L - {selectedShootAnimation.animationL} - {gameObject.name}");
+            TriggerSyncAnimation(selectedShootAnimation);
         }
         else if (playerState == PlayerState.DragReleaseJump)
         {
-            PlayAnimationData(jumpAnimationData);
+            TriggerSyncAnimation(jumpAnimationData);
         }
     }
 
     public void HandleOnRotationChanged(bool isRight)
     {
-        if (!IsOwner) return;
+        //if (!IsOwner) return;
         this.isRight = isRight;
         RotationChanged();
     }
@@ -129,6 +133,24 @@ public class PlayerAnimator : NetworkBehaviour
     private void RotationChanged()
     {
         PlayAnimationData(currentAnimationData);
+    }
+
+    private void TriggerSyncAnimation(AnimationData animationData)
+    {
+        PlayAnimationData(animationData);
+        //TriggerAnimationServerRpc(animationData);
+    }
+
+    [Rpc(SendTo.Server, Delivery = RpcDelivery.Unreliable)]
+    private void TriggerAnimationServerRpc(AnimationData animationData)
+    {
+        TriggerAnimationClientRpc(animationData);
+    }
+
+    [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Unreliable)]
+    private void TriggerAnimationClientRpc(AnimationData animationData)
+    {
+        PlayAnimationData(animationData);
     }
 
     private void PlayAnimationData(AnimationData animationData)
@@ -202,7 +224,7 @@ public class PlayerAnimator : NetworkBehaviour
     public void AnimationFinished()
     {
         Debug.Log("AnimationFinished");
-        if (!IsOwner) return;
+        //if (!IsOwner) return;
         if(playerState == PlayerState.DragReleaseItem)
         {
             Debug.Log("AnimationFinished - DragReleaseItem");
@@ -221,7 +243,7 @@ public class PlayerAnimator : NetworkBehaviour
 
     public void IdleAnimationFinished()
     {
-        if (!IsOwner) return;
+        //if (!IsOwner) return;
         SelectRandomIdleAnimation();
         if(playerState == PlayerState.IdleMyTurn || playerState == PlayerState.IdleEnemyTurn || playerState == PlayerState.MyTurnEnded || playerState == PlayerState.MyTurnStarted || playerState == PlayerState.DragReleaseItem)
             PlayAnimationData(selectedIdleAnimation);
@@ -287,7 +309,7 @@ public enum Animations
 }
 
 [Serializable]
-public struct AnimationData : IEquatable<AnimationData>
+public struct AnimationData : INetworkSerializable, IEquatable<AnimationData>
 {
     [BetterHeader("Animations", 12)]
     public Animations animationL;
@@ -322,5 +344,13 @@ public struct AnimationData : IEquatable<AnimationData>
             animationR == other.animationR &&
             crossFade == other.crossFade &&
             crossFadeBetweenSides == other.crossFadeBetweenSides;
+    }
+
+    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+    {
+        serializer.SerializeValue(ref animationL);
+        serializer.SerializeValue(ref animationR);
+        serializer.SerializeValue(ref crossFade);
+        serializer.SerializeValue(ref crossFadeBetweenSides);
     }
 }

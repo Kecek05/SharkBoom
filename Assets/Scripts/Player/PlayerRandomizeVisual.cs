@@ -34,7 +34,7 @@ public class PlayerRandomizeVisual : NetworkBehaviour
         SetVisualClientRpc(_type);
     }
 
-    [Rpc(SendTo.ClientsAndHost)]
+    [Rpc(SendTo.ClientsAndHost, Delivery = RpcDelivery.Reliable)]
     private void SetVisualClientRpc(PlayerVisualType type)
     {
         if (!IsOwner) return;

@@ -14,38 +14,45 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
     [SerializeField] private ItemSocket[] rightSideSockets;
 
     private ItemSocket selectedSocket;
-    private int selectedItemSOIndex = 0;
+    private int selectedItemID = 0;
     private bool isRightSocket = false; //Rotation that the player is looking
     private BaseItemThrowable spawnedItem;
 
     private bool canSpawnItem = false;
 
+    //Publics
+    public Transform SelectedSocketTransform => selectedSocket.transform;
+    
+    //DEBUG
+    public BaseItemThrowable SpawnedItem => spawnedItem;
+    
     public void HandleOnRotationChanged(bool isRight)
     {
-        if (!IsOwner) return;
+        //if (!IsOwner) return;
         //Used to select the right side socket
         isRightSocket = isRight;
         UpdateSelectedSocket();
-        SpawnItem();
+        //SpawnItem(selectedItemID);
+        TriggerSpawnItem(selectedItemID);
     }
 
     public void HandleOnPlayerInventoryItemSelected(int selectedItemSOIndex)
     {
-        if (!IsOwner) return;
+        //if (!IsOwner) return;
         //Based on the item select, save the item to spawn when drag start and select the corresponding socket based on item and on rotation
-        this.selectedItemSOIndex = playerInventory.GetSelectedItemSOIndex();
+        selectedItemID = selectedItemSOIndex;
         UpdateSelectedSocket();
     }
 
     public void HandleOnCrossfadeFinished()
     {
-        if (!IsOwner) return;
-        SpawnItem();
+        //if (!IsOwner) return;
+        SpawnItem(selectedItemID);
     }
 
     public void HandleOnPlayerStateChanged(PlayerState newState)
     {
-        if (!IsOwner) return;
+        //if (!IsOwner) return;
         canSpawnItem = false;
         switch (newState)
         {
@@ -70,11 +77,33 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         }
     }
 
-    private void SpawnItem()
+    private void SpawnItem(int _selectedItemID)
     {
         //Spawn selected Item on the selected socket
         if (!canSpawnItem) return; //Do nothing if the player is not in the right state
-
+        
+        TriggerSpawnItem(_selectedItemID);
+        
+        if(IsOwner)
+            SpawnItemServerRpc(_selectedItemID);
+    }
+    
+    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    private void SpawnItemServerRpc(int _selectedItemID)
+    {
+        SpawnItemClientRpc(_selectedItemID);
+    }
+    
+    [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
+    private void SpawnItemClientRpc(int _selectedItemID)
+    {
+        TriggerSpawnItem(_selectedItemID);
+    }
+    
+    private void TriggerSpawnItem(int _selectedItemID)
+    {
+        UpdateSelectedSocket();
+        
         if (spawnedItem)
         {
             spawnedItem.ChangeFollowTransform(selectedSocket.transform);
@@ -82,23 +111,34 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         else
         {
             //it's null
-            InstantiateObj();
+            InstantiateLocalObj(_selectedItemID);
         }
         
     }
 
-    private void InstantiateObj()
+   /* private void InstantiateObj()
     {
         if(!IsOwner) return; //Only the owner can spawn the item
         UpdateSelectedSocket();
         InstantiateObjServerRpc(NetworkManager.Singleton.LocalClientId, selectedSocket.transform.position, selectedItemSOIndex);
 
-    }
+    }*/
 
+    private void InstantiateLocalObj(int _selectedItemID)
+    {
+        GameObject spawnedItemObject = ObjectPool.Instance.GetObject(_selectedItemID, selectedSocket.transform.position, Quaternion.identity);
+        spawnedItem = spawnedItemObject.GetComponent<BaseItemThrowable>();
+        
+        spawnedItem.Initialize(selectedSocket.transform);
+        spawnedItem.transform.localRotation = Quaternion.identity;
+        
+        OnItemOnHandSpawned?.Invoke(spawnedItem);
+    }
+    /*
     [Rpc(SendTo.Server)]
     private void InstantiateObjServerRpc(ulong ownerClientId, Vector3 selectedSocketPos, int itemSOIndex)
     {
-        NetworkObject spawnedItemNetworkObject = NetworkObjectPool.Instance.GetNetworkObject(playerInventory.GetItemSOByItemSOIndex(itemSOIndex).itemIndex, selectedSocketPos, Quaternion.identity);
+        NetworkObject spawnedItemNetworkObject = ObjectPool.Instance.GetObject(playerInventory.GetItemSOByItemSOIndex(itemSOIndex).itemIndex, selectedSocketPos, Quaternion.identity);
         spawnedItemNetworkObject.Spawn();
         spawnedItemNetworkObject.ChangeOwnership(ownerClientId);
 
@@ -106,9 +146,9 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
             spawnedItem = spawnedItemNetworkObject.GetComponent<BaseItemThrowable>();
 
         CallOnItemOnHandClientRpc(spawnedItemNetworkObject);
-    }
+    }*/
 
-    [Rpc(SendTo.ClientsAndHost)]
+    /*[Rpc(SendTo.ClientsAndHost)]
     private void CallOnItemOnHandClientRpc(NetworkObjectReference itemNetworkObject)
     {
         if(itemNetworkObject.TryGet(out NetworkObject itemNetworkObjectRef))
@@ -131,7 +171,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         }
 
         OnItemOnHandSpawned?.Invoke(spawnedItem);
-    }
+    }*/
 
     public void HandleOnShoot()
     {
@@ -154,12 +194,11 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
 
     private void UpdateSelectedSocket()
     {
-
         if (isRightSocket)
         {
             foreach (ItemSocket socket in rightSideSockets)
             {
-                if (socket.ItemSO == playerInventory.GetItemSOByItemSOIndex(selectedItemSOIndex))
+                if (socket.ItemSO.itemID == playerInventory.SelectedItemID)
                 {
                     //Found the corresponding socket
                     selectedSocket = socket;
@@ -170,7 +209,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         {
             foreach (ItemSocket socket in leftSideSockets)
             {
-                if (socket.ItemSO == playerInventory.GetItemSOByItemSOIndex(selectedItemSOIndex))
+                if (socket.ItemSO.itemID == playerInventory.SelectedItemID)
                 {
                     //Found the corresponding socket
                     selectedSocket = socket;

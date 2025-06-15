@@ -24,7 +24,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [SerializeField] private bool debugRagdollDisabler;
 
     //Debug
-    public Rigidbody hitedRbDebug;
+    [HideInInspector] public Rigidbody hitedRbDebug;
     
     public override void OnNetworkSpawn()
     { 

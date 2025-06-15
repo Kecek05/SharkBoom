@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using DG.Tweening;
 using UnityEngine;
 
 public class JumpItemThrowable : BaseItemThrowable
@@ -10,6 +11,7 @@ public class JumpItemThrowable : BaseItemThrowable
     private Transform objectToFollowTransform;
     private float lockedZ;
     private Coroutine followCoroutine;
+    private float followSpeed = 10f;
 
     private BaseTimerManager timerManager;
 
@@ -25,6 +27,7 @@ public class JumpItemThrowable : BaseItemThrowable
         if (!IsOwner) return;
 
         objectToFollowTransform = ServiceLocator.Get<BasePlayersPublicInfoManager>().GetPlayerObjectByPlayableState(thisItemLaucherData.ownerPlayableState).transform;
+        Debug.Log($"JUMP OBJECT TO FOLLOW: {objectToFollowTransform} - Owner: {thisItemLaucherData.ownerPlayableState}");
         lockedZ = objectToFollowTransform.position.z;
 
         followCoroutine ??= StartCoroutine(PlayerFollowJump());
@@ -42,19 +45,22 @@ public class JumpItemThrowable : BaseItemThrowable
     private IEnumerator PlayerFollowJump()
     {
         if (!objectToFollowTransform) yield break;
-
+        
         currentFollowingTime = 0f;
         while (currentFollowingTime < followingTime)
         {
             Vector3 itemPos = transform.position;
             objectToFollowTransform.position =
                 new Vector3(itemPos.x, itemPos.y, lockedZ);
+            
+            Vector3 targetPos = new Vector3(transform.position.x, transform.position.y, lockedZ);
+            objectToFollowTransform.position = Vector3.Lerp(objectToFollowTransform.position, targetPos, Time.deltaTime * followSpeed);
 
             currentFollowingTime += Time.deltaTime;
             yield return null;
         }
     }
-
+    
     protected override void ResetItemThrowableState()
     {
         base.ResetItemThrowableState();

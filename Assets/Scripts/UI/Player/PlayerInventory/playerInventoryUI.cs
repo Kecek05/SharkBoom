@@ -36,7 +36,7 @@ public class PlayerInventoryUI : NetworkBehaviour
 
     public void SelectJumpButton()
     {
-        SelecItem(0); //Jump Index
+        SelecItem(0); //Jump ID
     }
 
     public void InventoryButton()
@@ -79,7 +79,7 @@ public class PlayerInventoryUI : NetworkBehaviour
         //Update item on list
         foreach (PlayerItemSingleUI playerItemSingleUI in playerItemSingleUIs)
         {
-            if (playerItemSingleUI.ItemIndex == itemInventoryIndex)
+            if (playerItemSingleUI.MyItemID == itemInventoryIndex)
             {
                 playerItemSingleUI.SelectedThisItem();
             } else
@@ -98,7 +98,7 @@ public class PlayerInventoryUI : NetworkBehaviour
         //Update item on list
         foreach (PlayerItemSingleUI playerItemSingleUI in playerItemSingleUIs)
         {
-            if (playerItemSingleUI.ItemIndex == itemData.itemInventoryIndex)
+            if (playerItemSingleUI.MyItemID == itemData.itemID)
             {
                 playerItemSingleUI.UpdateCooldown(itemData.itemCooldownRemaining);
                 playerItemSingleUI.UpdateCanBeUsed(itemData.itemCanBeUsed);
@@ -117,14 +117,18 @@ public class PlayerInventoryUI : NetworkBehaviour
 
         //Add item on list
         PlayerItemSingleUI playerItemSingleUI = Instantiate(playerItemSingleUIPrefab, inventoryItemHolder).GetComponent<PlayerItemSingleUI>();
-        playerItemSingleUI.Setup(itemsListSO.allItemsSOList[itemData.itemSOIndex].itemName, itemsListSO.allItemsSOList[itemData.itemSOIndex].itemIcon, itemData.itemCooldownRemaining, itemData.itemCanBeUsed, itemData.itemInventoryIndex, itemsListSO.allItemsSOList[itemData.itemSOIndex].damageableSO.damage, this);
+        
+        ItemSO newItemSO = itemsListSO.allItemsSOList.Find(itemSO => itemSO.itemID == itemData.itemID);
+        
+        playerItemSingleUI.Setup(newItemSO.itemName, newItemSO.itemIcon, itemData.itemCooldownRemaining, itemData.itemCanBeUsed, newItemSO.itemID, newItemSO.damageableSO.damage, this);
         playerItemSingleUIs.Add(playerItemSingleUI);
     }
 
 
-    public void SelecItem(int itemInventoryIndex)
+    public void SelecItem(int itemID)
     {
-        OnItemSelectedByUI?.Invoke(itemInventoryIndex); //Notify the player that an item was selected by UI
+        OnItemSelectedByUI?.Invoke(itemID); //Notify the player that an item was selected by UI
+        Debug.Log($"Trying to select item with ID: {itemID}");
     }
 
     public void UpdateOpenInventoryButton(Sprite itemIcon)
