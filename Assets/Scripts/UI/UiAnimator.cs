@@ -13,7 +13,8 @@ public class UiAnimator : MonoBehaviour
     [SerializeField] private float fadeTime;
     [SerializeField] private float startPanelScale;
     [SerializeField] private float endPanelScale;
-    [SerializeField] private Vector3 movePosition;
+    [SerializeField] private Vector2 moveStart;
+    [SerializeField] private Vector2 moveEnd;
     [SerializeField] private Ease fadeInAnimation;
 
     public UnityEvent OnUiAnimation;
@@ -37,7 +38,7 @@ public class UiAnimator : MonoBehaviour
 
     public void ChangeMove()
     {
-        rectTransform.transform.localPosition = movePosition;
-        rectTransform.DOAnchorPos(new Vector2(0f, 0f), fadeTime, false).SetEase(fadeInAnimation);
+        rectTransform.anchoredPosition = moveStart;
+        rectTransform.DOAnchorPos(moveEnd, fadeTime).SetEase(fadeInAnimation);
     }
 }
