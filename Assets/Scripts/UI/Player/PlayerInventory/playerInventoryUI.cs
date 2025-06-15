@@ -17,6 +17,8 @@ public class PlayerInventoryUI : NetworkBehaviour
 
     [BetterHeader("References")]
     [SerializeField] private GameObject playerInventoryUIBackground;
+
+    [SerializeField] private Transform inventoryParent;
     [SerializeField] private Transform inventoryItemHolder;
     [SerializeField] private GameObject playerItemSingleUIPrefab;
     [SerializeField] private Image selectedItemImage;
@@ -29,9 +31,11 @@ public class PlayerInventoryUI : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        HideInventory();
+        HideInventoryBackground();
         HideInventoryButton();
+        HideInventoryParent();
         SetupInventoryWorldCamera();
+        Debug.Log($"HIDE INVENTOR - {gameObject.transform.parent.parent.name}");
     }
 
     public void SelectJumpButton()
@@ -64,7 +68,7 @@ public class PlayerInventoryUI : NetworkBehaviour
 
         if (state == PlayerState.DraggingItem || state == PlayerState.DraggingJump)
         {
-            HideInventory();
+            HideInventoryBackground();
             HideInventoryButton();
         } else
         {
@@ -88,7 +92,7 @@ public class PlayerInventoryUI : NetworkBehaviour
             }
         }
 
-        HideInventory();
+        HideInventoryBackground();
     }
 
     public void HandleOnPlayerInventoryItemChanged(ItemInventoryData itemData)
@@ -142,7 +146,7 @@ public class PlayerInventoryUI : NetworkBehaviour
     {
         if (playerInventoryUIBackground.activeSelf)
         {
-            HideInventory();
+            HideInventoryBackground();
         }
         else
         {
@@ -150,7 +154,7 @@ public class PlayerInventoryUI : NetworkBehaviour
         }
     }
 
-    private void HideInventory()
+    private void HideInventoryBackground()
     {
         playerInventoryUIBackground.SetActive(false);
     }
@@ -165,6 +169,16 @@ public class PlayerInventoryUI : NetworkBehaviour
         openInventoryBackground.SetActive(false);
     }
 
+    private void HideInventoryParent()
+    {
+        inventoryParent.gameObject.SetActive(false);
+    }
+    
+    private void ShowInventoryParent()
+    {
+        inventoryParent.gameObject.SetActive(true);
+    }
+
     private void ShowInventoryButton()
     {
         openInventoryBackground.SetActive(true);
@@ -172,13 +186,17 @@ public class PlayerInventoryUI : NetworkBehaviour
 
     public void HandleOnGainOwnership()
     {
+        ShowInventoryParent();
         ShowInventory();
         ShowInventoryButton();
+        Debug.Log($"OWNERSHIP INVENTOR - {gameObject.transform.parent.parent.name}");
     }
 
     public void UnHandleInitializeOwner()
     {
-        HideInventory();
+        HideInventoryParent();
+        HideInventoryBackground();
         HideInventoryButton();
+        
     }
 }

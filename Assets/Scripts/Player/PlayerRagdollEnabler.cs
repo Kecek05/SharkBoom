@@ -92,18 +92,19 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             return;
         }
         Debug.Log($"Ragdoll - Trigger");
-        TriggerRagdollServerRpc(hitRigidbodyIndex, force, hitPoint, hitRigidbody.position, hitRigidbody.rotation);
+        
+        TriggerRagdoll(hitRigidbodyIndex, force, hitPoint, hitRigidbody.position, hitRigidbody.rotation);
     }
 
-    [Rpc(SendTo.Server)]
-    private void TriggerRagdollServerRpc(int hitRigidbodyIndex, Vector3 force, Vector3 hitPoint, Vector3 hitRigidbodyPosition, Quaternion hitRigidbodyRotation)
-    {
-        TriggerRagdollClientRpc(hitRigidbodyIndex, force, hitPoint, hitRigidbodyPosition, hitRigidbodyRotation);
+    // [Rpc(SendTo.Server)]
+    // private void TriggerRagdollServerRpc(int hitRigidbodyIndex, Vector3 force, Vector3 hitPoint, Vector3 hitRigidbodyPosition, Quaternion hitRigidbodyRotation)
+    // {
+    //     TriggerRagdollClientRpc(hitRigidbodyIndex, force, hitPoint, hitRigidbodyPosition, hitRigidbodyRotation);
+    //
+    // }
 
-    }
-
-    [Rpc(SendTo.ClientsAndHost)]
-    private void TriggerRagdollClientRpc(int hitRigidbodyIndex, Vector3 force, Vector3 hitPoint, Vector3 hitRigidbodyPosition, Quaternion hitRigidbodyRotation)
+    //[Rpc(SendTo.ClientsAndHost)]
+    private void TriggerRagdoll(int hitRigidbodyIndex, Vector3 force, Vector3 hitPoint, Vector3 hitRigidbodyPosition, Quaternion hitRigidbodyRotation)
     {
         EnableRagdoll();
         Debug.Log($"Ragdoll - ParentRb Kinematic: {parentRigidbody.isKinematic}, Animator Enabled: {animator.enabled}");

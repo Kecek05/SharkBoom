@@ -34,7 +34,7 @@ public class CameraGlobalFollow : NetworkBehaviour
 
     private void HandleOnItemReleasedAction(Transform itemObject)
     {
-        FollowObject(itemObject);
+        //FollowObject(itemObject); //TO DO: FIX THIS
     }
 
     /// <summary>

@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class PlayerThrower : NetworkBehaviour
 {
-
-
     [BetterHeader("References")]
     [SerializeField] private GameObject playerGFX;
     [SerializeField] private PlayerDragUi playerDragUi;
@@ -31,6 +29,8 @@ public class PlayerThrower : NetworkBehaviour
     [SerializeField] private GameObject itemStuckSocket;
     [SerializeField] private Transform hipsTransform;
     [SerializeField] private ItemSO itemJumpSO;
+    [SerializeField] private PlayerTutorialController playerTutorialController;
+    [SerializeField] private PlayerTutorialUi playerTutorialUi;
 
     private PlayerStateMachine playerStateMachine;
 
@@ -119,6 +119,8 @@ public class PlayerThrower : NetworkBehaviour
 
         playerInventoryUI.HandleOnGainOwnership();
         playerInventory.HandleOnGainOwnership();
+        
+        playerTutorialUi.InitializeOwner();
         
         //playerDragController.OnDragRelease += HandleOnDragRelease;
         /*
@@ -321,6 +323,7 @@ public class PlayerThrower : NetworkBehaviour
         cameraManager.UnInitializeOwner();
         playerLauncher.UnInitializeOwner();
         playerInventoryUI.UnHandleInitializeOwner();
+        playerTutorialUi.UnInitializeOwner();
     }
 
     private void UnInitialize()
@@ -406,14 +409,16 @@ public class PlayerThrower : NetworkBehaviour
         playerInventory.HandleOnPlayerLauncherItemLaunched(itemInventoryIndex);
     }
 
-    private void HandleOnItemSelected(int selectedItemInventoryIndex)
+    private void HandleOnItemSelected(int selectedItemInventoryID)
     {
         playerDragController.SetDragRb(playerInventory.GetSelectedItemSO().rb);
 
-        playerInventoryUI.HandleOnPlayerInventoryItemSelected(selectedItemInventoryIndex);
-        playerJumpUI.HandleOnPlayerInventoryItemSelected(selectedItemInventoryIndex);
+        playerInventoryUI.HandleOnPlayerInventoryItemSelected(selectedItemInventoryID);
+        playerJumpUI.HandleOnPlayerInventoryItemSelected(selectedItemInventoryID);
 
-        playerSpawnItemOnHand.HandleOnPlayerInventoryItemSelected(selectedItemInventoryIndex);
+        playerSpawnItemOnHand.HandleOnPlayerInventoryItemSelected(selectedItemInventoryID);
+        
+        playerTutorialController.HandleOnItemSelectedSO(selectedItemInventoryID);
     }
 
     private void HandleOnItemChanged(ItemInventoryData itemChanged)

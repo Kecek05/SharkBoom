@@ -753,7 +753,7 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: 1322143595
   m_SortingOrder: 60
   m_TargetDisplay: 0
 --- !u!224 &227239974
@@ -1243,7 +1243,7 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: 1322143595
   m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!224 &358991114
@@ -4050,7 +4050,8 @@ MonoBehaviour:
   fadeTime: 0.2
   startPanelScale: 1.1
   endPanelScale: 1
-  movePosition: {x: 0, y: 0, z: 0}
+  moveStart: {x: 0, y: 0}
+  moveEnd: {x: 0, y: 0}
   fadeInAnimation: 1
   OnUiAnimation:
     m_PersistentCalls:
@@ -7347,7 +7348,7 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: 1322143595
   m_SortingOrder: 60
   m_TargetDisplay: 0
 --- !u!224 &862950740
@@ -10173,7 +10174,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4845276930943762971, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000022888184
+      value: -0.000061035156
       objectReference: {fileID: 0}
     - target: {fileID: 4845637959249703711, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchorMax.y
@@ -10854,7 +10855,7 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: 1322143595
   m_SortingOrder: 60
   m_TargetDisplay: 0
 --- !u!224 &1506362365
@@ -12857,9 +12858,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1849520193}
   - component: {fileID: 1849520194}
-  - component: {fileID: 1849520195}
   m_Layer: 0
-  m_Name: NetworkObjectPool
+  m_Name: ObjectPool
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12909,31 +12909,6 @@ MonoBehaviour:
     PrewarmCount: 1
   - itemSO: {fileID: 11400000, guid: b28405bd701509c4788af38f9292bf3c, type: 2}
     PrewarmCount: 1
---- !u!114 &1849520195
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1849520192}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3103076887
-  InScenePlacedSourceGlobalObjectIdHash: 0
-  DeferredDespawnTick: 0
-  Ownership: 1
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
-  SyncOwnerTransformWhenParented: 1
-  AllowOwnerToParent: 0
 --- !u!1 &1880079991
 GameObject:
   m_ObjectHideFlags: 0
@@ -13178,7 +13153,7 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: 1322143595
   m_SortingOrder: 70
   m_TargetDisplay: 0
 --- !u!224 &1934400097
@@ -13791,7 +13766,7 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: 1322143595
   m_SortingOrder: 50
   m_TargetDisplay: 0
 --- !u!224 &2129052414

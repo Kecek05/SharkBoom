@@ -88,18 +88,6 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
             SpawnItemServerRpc(_selectedItemID);
     }
     
-    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
-    private void SpawnItemServerRpc(int _selectedItemID)
-    {
-        SpawnItemClientRpc(_selectedItemID);
-    }
-    
-    [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
-    private void SpawnItemClientRpc(int _selectedItemID)
-    {
-        TriggerSpawnItem(_selectedItemID);
-    }
-    
     private void TriggerSpawnItem(int _selectedItemID)
     {
         UpdateSelectedSocket();

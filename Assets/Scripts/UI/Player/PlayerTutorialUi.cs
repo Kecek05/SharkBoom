@@ -1,16 +1,20 @@
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Video;
 
-public class PlayerTutorialUi : MonoBehaviour
+public class PlayerTutorialUi : NetworkBehaviour
 {
     [SerializeField] private PlayerTutorialController playerTutorialController;
     [SerializeField] private VideoPlayer tutorialVideoPlayer;
     [SerializeField] private TextMeshProUGUI tutorialTitle;
     [SerializeField] private GameObject tutorialPanel;
 
-
-    private void Start()
+    public override void OnNetworkSpawn()
+    {
+        HideTutorialPanel();
+    }
+    public void InitializeOwner()
     {
         playerTutorialController.OnTutorialSelected += HandleOnTutorialSelected;
     }
@@ -19,7 +23,6 @@ public class PlayerTutorialUi : MonoBehaviour
     {
         tutorialVideoPlayer.clip = tutorialData.tutorialVideo;
         tutorialTitle.text = tutorialData.tutorialTitle;
-        Debug.Log($"TUTORIAL TEST - Recieve tutorial data, title: {tutorialData.tutorialTitle}, video: {tutorialData.tutorialVideo}");
     }
 
     public void ShowTutorialPanel()
@@ -34,7 +37,7 @@ public class PlayerTutorialUi : MonoBehaviour
         tutorialVideoPlayer.Stop();
     }
 
-    private void OnDestroy()
+    public void UnInitializeOwner()
     {
         playerTutorialController.OnTutorialSelected -= HandleOnTutorialSelected;
     }
