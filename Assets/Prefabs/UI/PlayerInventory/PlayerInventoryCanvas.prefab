@@ -1112,6 +1112,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3518166470136175835}
   - component: {fileID: 3360001506056658822}
+  - component: {fileID: 4331852312395015981}
   m_Layer: 5
   m_Name: TutorialPanel
   m_TagString: Untagged
@@ -1149,7 +1150,7 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5630668898692826954}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: 3a34dcd9aa768344492df37b30611e35, type: 3}
+  m_VideoClip: {fileID: 0}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 0}
@@ -1175,6 +1176,14 @@ VideoPlayer:
   m_WaitForFirstFrame: 1
   m_FrameReadyEventEnabled: 0
   m_VideoShaders: []
+--- !u!222 &4331852312395015981
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5630668898692826954}
+  m_CullTransparentMesh: 1
 --- !u!1 &5890781521349409666
 GameObject:
   m_ObjectHideFlags: 0

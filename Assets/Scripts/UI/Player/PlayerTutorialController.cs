@@ -9,9 +9,7 @@ public class PlayerTutorialController : NetworkBehaviour
 {
 
     public event Action<TutorialData> OnTutorialSelected;
-
     [SerializeField] private TutorialInfoSO[] tutorialInfo;
-
     private TutorialData selectedTutorialData;
 
 
@@ -22,8 +20,7 @@ public class PlayerTutorialController : NetworkBehaviour
 
         for (int i = 0; i < tutorialInfo.Length; i++)
         {
-            
-            if(itemId == tutorialInfo[i].itemId)
+            if (itemId == tutorialInfo[i].itemId)
             {
                 selectedTutorialData = new TutorialData
                 {
@@ -32,11 +29,11 @@ public class PlayerTutorialController : NetworkBehaviour
                 };
 
                 OnTutorialSelected?.Invoke(selectedTutorialData);
+                return;
             }
         }
     }
 }
-
 
 public struct TutorialData
 {

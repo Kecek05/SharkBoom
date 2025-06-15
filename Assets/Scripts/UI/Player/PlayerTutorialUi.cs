@@ -19,16 +19,23 @@ public class PlayerTutorialUi : MonoBehaviour
     {
         tutorialVideoPlayer.clip = tutorialData.tutorialVideo;
         tutorialTitle.text = tutorialData.tutorialTitle;
+        Debug.Log($"TUTORIAL TEST - Recieve tutorial data, title: {tutorialData.tutorialTitle}, video: {tutorialData.tutorialVideo}");
     }
 
     public void ShowTutorialPanel()
     {
         tutorialPanel.SetActive(true);
+        tutorialVideoPlayer.Play();
     }
 
     public void HideTutorialPanel()
     {
         tutorialPanel.SetActive(false);
+        tutorialVideoPlayer.Stop();
     }
 
+    private void OnDestroy()
+    {
+        playerTutorialController.OnTutorialSelected -= HandleOnTutorialSelected;
+    }
 }
