@@ -36,8 +36,6 @@ public class PlayerLauncher : NetworkBehaviour
 
     public void InitializeOwner()
     {
-        if (!IsOwner) return;
-
         itemActivableManager = ServiceLocator.Get<BaseItemActivableManager>();
         timerManager = ServiceLocator.Get<BaseTimerManager>();
 
@@ -172,9 +170,13 @@ public class PlayerLauncher : NetworkBehaviour
             Debug.Log($"Player Launcher - Item released: {itemThrowable.name}");
         }
 
-        if (lastProjectile.TryGetComponent(out BaseItemThrowableActivable activable))
+        if (IsOwner)
         {
-            itemActivableManager.SetItemThrowableActivableClient(activable);
+            //Only the owner can activate the item
+            if (lastProjectile.TryGetComponent(out BaseItemThrowableActivable activable))
+            {
+                itemActivableManager.SetItemThrowableActivableClient(activable);
+            }
         }
     }
 
@@ -205,8 +207,6 @@ public class PlayerLauncher : NetworkBehaviour
 
     public void UnInitializeOwner()
     {
-        if(!IsOwner) return;
-
         inputReader.OnTouchPressEvent -= InputReader_OnTouchPressEvent;
     }
 

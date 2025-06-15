@@ -13,7 +13,7 @@ public abstract class BaseItemActivableManager : NetworkBehaviour
     public abstract void UseItem();
 
     //[ServerRpc(RequireOwnership = false)]
-    protected abstract void UseItemServer(ServerRpcParams serverRpc = default);
+    protected abstract void UseItemServer();
 
     //[Rpc(SendTo.ClientsAndHost)]
     protected abstract void UseItemClient(ulong clientIdUsed); //change to other thing rather than clientId

@@ -20,7 +20,6 @@ public class AnchorItemThrowable : BaseItemThrowableActivable
     }
     protected override void ActivateItem()
     {
-        
         canDoDamageComponent.SetDamageableSO(anchorActivatedDamageableSO);
 
         rb.linearVelocity = Vector3.zero;
