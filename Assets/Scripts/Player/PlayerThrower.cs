@@ -157,8 +157,6 @@ public class PlayerThrower : NetworkBehaviour
         playerDragController.OnDragCancelable += HandleOnDragCancelable;
         
         playerInventory.OnItemAdded += HandleOnItemAdded;
-        
-        BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
     }
 
     private void HandleEvents()
@@ -196,6 +194,8 @@ public class PlayerThrower : NetworkBehaviour
         playerLauncher.OnLastItemSynced += HandleOnLastItemSynced;
         
         playerStateMachine.OnStateChanged += HandleOnStateChanged;
+        
+        BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
         
         /*playerInventory.OnItemAdded += HandleOnItemAdded;
         playerInventory.OnItemChanged += HandleOnItemChanged;*/
@@ -262,6 +262,7 @@ public class PlayerThrower : NetworkBehaviour
 
         playerLauncher.OnLastItemSynced -= HandleOnLastItemSynced;
         
+        BaseItemThrowable.OnItemCallbackAction -= HandleOnItemCallbackAction;
         
         // playerInventory.OnItemAdded -= HandleOnItemAdded;
         // playerInventory.OnItemChanged -= HandleOnItemChanged;
@@ -310,8 +311,6 @@ public class PlayerThrower : NetworkBehaviour
         playerDragController.OnDragCancelable -= HandleOnDragCancelable;
         
         playerInventory.OnItemAdded -= HandleOnItemAdded;
-        
-        BaseItemThrowable.OnItemCallbackAction -= HandleOnItemCallbackAction;
     }
 
     private void UnInitializeOwner()

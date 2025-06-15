@@ -1,6 +1,7 @@
 using QFSW.QC;
 using Sortify;
 using System;
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -139,31 +140,68 @@ public class PlayerLauncher : NetworkBehaviour
     // {
     //     SpawnProjectile(itemLauncherData);
     // }
-
-    private void SpawnProjectile(ItemLauncherData launcherData) // on client, need to pass the prefab for the other clients instantiate it
+    
+    private void SpawnProjectile(ItemLauncherData launcherData)
     {
+        StartCoroutine(WaitForProjectileAndSpawn(launcherData));
+    }
+
+    private IEnumerator WaitForProjectileAndSpawn(ItemLauncherData launcherData)
+    {
+        // Wait for lastProjectile to be assigned
+        while (!lastProjectile)
+        {
+            Debug.Log($"WAITING FOR LAST PROJECTILE TO BE ASSIGNED - {gameObject.name}");
+            yield return null;
+        }
+
         if (!playerInventory.GetItemSOByItemID(launcherData.selectedItemID).itemPrefab)
         {
             Debug.LogWarning($"Player Launcher - ItemSOIndex: {launcherData.selectedItemID} has no client prefab");
-            return;
+            yield break;
         }
-        
+
         Debug.Log($"SPAWNING PROJECTILE - SETTING POSITION - LAST POSITION: {lastProjectile.transform.position} - NEW POSITION: {launcherData.shootPosition} - LAST ROTATION: {lastProjectile.transform.rotation} NEW ROTATION: {launcherData.shootRotation}");
+
         lastProjectile.transform.position = lastItemLauncherData.shootPosition;
         lastProjectile.transform.rotation = lastItemLauncherData.shootRotation;
 
-        if (lastProjectile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
+        if (lastProjectile.TryGetComponent(out BaseItemThrowable itemThrowable))
         {
             itemThrowable.ItemReleased(launcherData);
             Debug.Log($"Player Launcher - Item released: {itemThrowable.name}");
         }
 
-        if (lastProjectile.transform.TryGetComponent(out BaseItemThrowableActivable activable))
+        if (lastProjectile.TryGetComponent(out BaseItemThrowableActivable activable))
         {
-            //Get the ref to active the item
             itemActivableManager.SetItemThrowableActivableClient(activable);
         }
     }
+
+    // private void SpawnProjectile(ItemLauncherData launcherData) // on client, need to pass the prefab for the other clients instantiate it
+    // {
+    //     if (!playerInventory.GetItemSOByItemID(launcherData.selectedItemID).itemPrefab)
+    //     {
+    //         Debug.LogWarning($"Player Launcher - ItemSOIndex: {launcherData.selectedItemID} has no client prefab");
+    //         return;
+    //     }
+    //     
+    //     Debug.Log($"SPAWNING PROJECTILE - SETTING POSITION - LAST POSITION: {lastProjectile.transform.position} - NEW POSITION: {launcherData.shootPosition} - LAST ROTATION: {lastProjectile.transform.rotation} NEW ROTATION: {launcherData.shootRotation}");
+    //     lastProjectile.transform.position = lastItemLauncherData.shootPosition;
+    //     lastProjectile.transform.rotation = lastItemLauncherData.shootRotation;
+    //
+    //     if (lastProjectile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
+    //     {
+    //         itemThrowable.ItemReleased(launcherData);
+    //         Debug.Log($"Player Launcher - Item released: {itemThrowable.name}");
+    //     }
+    //
+    //     if (lastProjectile.transform.TryGetComponent(out BaseItemThrowableActivable activable))
+    //     {
+    //         //Get the ref to active the item
+    //         itemActivableManager.SetItemThrowableActivableClient(activable);
+    //     }
+    // }
 
     public void UnInitializeOwner()
     {

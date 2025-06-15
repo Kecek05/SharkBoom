@@ -3,7 +3,7 @@ using System.Collections;
 using Sortify;
 using UnityEngine;
 
-public class PlayerRotateToAim : DragListener, IInitializeOnwer, IDetectDragChange, IDetectEndedTurn
+public class PlayerRotateToAim : DragListener, IInitializeOnwer, IDetectDragChange, IDetectEndedTurn, IDetectIdleMyTurn
 {
     [BetterHeader("References")]
     [SerializeField] private Transform aimTransform;
@@ -19,13 +19,16 @@ public class PlayerRotateToAim : DragListener, IInitializeOnwer, IDetectDragChan
     {
         ResetAimPosition();
     }
+    
+    public void DoOnIdleMyTurn()
+    {
+        ResetAimPosition();
+    }
 
     public void DoOnDragChange(float forcePercent, float andlePercent)
     {
         aimTransform.position = playerDragController.GetOpositeFingerPos();
     }
-    
-    
 
     public void SyncAimPosition(Vector3 targetPosition, Action onFinishLerpAim = null)
     {

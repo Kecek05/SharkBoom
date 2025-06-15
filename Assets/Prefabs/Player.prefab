@@ -816,6 +816,7 @@ MonoBehaviour:
   playerInventory: {fileID: 6377254783256832976}
   playerThrower: {fileID: 2871544100916734757}
   playerSpawnItemOnHand: {fileID: 5846641034301650373}
+  playerRotateToAim: {fileID: 5182517899106838082}
 --- !u!114 &5120579722876303172
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1239,7 +1240,7 @@ MonoBehaviour:
   cameraMovement: {fileID: 8450544055641021374}
   cameraZoom: {fileID: 2903552973942911587}
   playerReference: {fileID: 2871544100916734757}
-  playerNetworkObject: {fileID: 6789602644162241133}
+  playerTransform: {fileID: 2498330595957626671}
 --- !u!114 &8450544055641021374
 MonoBehaviour:
   m_ObjectHideFlags: 0

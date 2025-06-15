@@ -8,6 +8,7 @@ public abstract class DragListener : NetworkBehaviour
     private IDetectEndedTurn detectEndedTurn;
     private IDetectDragCancelable detectDragCancelable;
     private IDetectDragStart detectDragStart;
+    private IDetectIdleMyTurn detectIdleMyTurn;
 
     public override void OnNetworkSpawn()
     {
@@ -56,20 +57,20 @@ public abstract class DragListener : NetworkBehaviour
 
     public void HandleOnPlayerDragControllerDragStart()
     {
-        if (!IsOwner) return; //only owner
+        //if (!IsOwner) return; //only owner
 
         detectDragStart?.DoOnDragStart();
     }
 
     public void HandleOnPlayerDragControllerDragCancelable(bool isCancelable)
     {
-        if (!IsOwner) return; //only owner
+        //if (!IsOwner) return; //only owner
         detectDragCancelable?.DoOnDragCancelable(isCancelable);
     }
 
     public void HandleOnPlayerDragControllerDragChange(float forcePercent, float angle)
     {
-        if(!IsOwner) return; //only owner
+        //if(!IsOwner) return; //only owner
 
         detectDragChange?.DoOnDragChange(forcePercent, angle);
 
@@ -77,16 +78,17 @@ public abstract class DragListener : NetworkBehaviour
 
     public void HandleOnPlayerStateMachineStateChanged(PlayerState newState)
     {
-        if (!IsOwner) return; //only owner
-
+        //if (!IsOwner) return; //only owner
         if (newState == PlayerState.DragReleaseItem || newState == PlayerState.DragReleaseJump)
         {
             detectDragRelease?.DoOnDragRelease();
 
         } else if (newState == PlayerState.MyTurnEnded)
         {
-
             detectEndedTurn?.DoOnEndedTurn();
+        } else if (newState == PlayerState.IdleMyTurn)
+        {
+            detectIdleMyTurn?.DoOnIdleMyTurn();
         }
     }
 }

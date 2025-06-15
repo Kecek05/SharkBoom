@@ -125,12 +125,13 @@ public class DraggingJump : IState
     {
         //Debug.Log("Entering Dragging Jump State");
         //Set Cant move camera
+        Debug.Log($"STEPS SUBSCRIBING TO DRAG JUMP RELEASE - {player.gameObject.name} - {playerDragController.gameObject.name}");
         playerDragController.OnDragRelease += PlayerDragController_OnDragRelease;
     }
 
     private void PlayerDragController_OnDragRelease()
     {
-        player.ChangePlayerState(PlayerState.DraggingJump);
+        player.ChangePlayerState(PlayerState.DragReleaseJump);
         /*player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.dragReleaseJump);
         player.TransitionToDraggingJumpServerRpc();*/
     }
@@ -298,7 +299,7 @@ public class MyTurnEndedState : IState
     public void ChangeOwnership(bool isOwner)
     {
         this.isOwner = isOwner;
-        Debug.Log($"MyTurnEndedState ChangeOwnership: {this.isOwner}");
+        Debug.Log($"MyTurnEndedState ChangeOwnership: {this.isOwner} - {player.gameObject.name}");
     }
 
     private async void MyTurnEndedCallback()

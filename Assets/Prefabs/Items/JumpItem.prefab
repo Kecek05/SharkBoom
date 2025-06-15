@@ -202,6 +202,9 @@ PrefabInstance:
     - {fileID: 8410119999329485946, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
     - {fileID: 4423698351422297061, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
     - {fileID: 4196873844735081561, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+    - {fileID: 8085572199680990693, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+    - {fileID: 5263959955919774353, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+    - {fileID: 8843573594692602520, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
     m_RemovedGameObjects:
     - {fileID: 851746441201601633, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
     - {fileID: 3097256904045342881, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
@@ -245,17 +248,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5292276183696153246, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
   m_PrefabInstance: {fileID: 7709761659009139004}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2590630615956071341 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5263959955919774353, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
-  m_PrefabInstance: {fileID: 7709761659009139004}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4139059953487484834}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &2957073883870968353 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4897436337832737565, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
@@ -284,7 +276,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf9db402997a2d242b2c0ad58f803341, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
   itemSO: {fileID: 11400000, guid: c4047f17a9430314ab9b65ede680009f, type: 2}
   rb: {fileID: 6921903450271284980}
   objectsToChangeLayer:
@@ -293,7 +284,7 @@ MonoBehaviour:
   dissolveShaderComponent: {fileID: 0}
   lifetimeTriggerItemComponent: {fileID: 2957073883870968353}
   followTransformComponent: {fileID: 2492626997076712017}
-  myNetworkObject: {fileID: 2590630615956071341}
+  myNetworkObject: {fileID: 0}
   collisionController: {fileID: 1924429888176421737}
   freezePositionX: 0
   freezePositionY: 0
