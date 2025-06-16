@@ -16,9 +16,9 @@ public class BananaItemThrowable : BaseItemThrowableActivable
     [Tooltip("Banana curve height, negative values make it curve for down")]
     [SerializeField] private float heightY = 3f;
     [SerializeField] private GameObject meshObject;
-    public override void ItemReleased(ItemLauncherData itemLauncherData)
+    public override void ItemReleased(ItemLauncherData itemLauncherData, bool isOwner)
     {
-        base.ItemReleased(itemLauncherData);
+        base.ItemReleased(itemLauncherData, isOwner);
         spinObjectComponent.EnableComponent();
         spinObjectComponent.StartComponentLogic();
 

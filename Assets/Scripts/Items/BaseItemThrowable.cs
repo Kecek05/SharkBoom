@@ -47,6 +47,9 @@ public abstract class BaseItemThrowable : MonoBehaviour
     
     protected PlayableState ownerPlayableState;
     
+    protected bool isOwner = false;
+    
+    public bool IsOwner => isOwner;
 
     //DEBUG
     public bool IsItemReleased => itemReleased;
@@ -125,8 +128,9 @@ public abstract class BaseItemThrowable : MonoBehaviour
     /// </summary>
     /// <param name="force"></param>
     /// <param name="direction"></param>
-    public virtual void ItemReleased(ItemLauncherData itemLauncherData)
+    public virtual void ItemReleased(ItemLauncherData itemLauncherData, bool isOwner)
     {
+        this.isOwner = isOwner;
         ownerPlayableState = itemLauncherData.ownerPlayableState;
         turnManager = ServiceLocator.Get<BaseTurnManager>();
         UpdateOnRelease(itemLauncherData);
@@ -200,7 +204,9 @@ public abstract class BaseItemThrowable : MonoBehaviour
         //FireItemCallbackAction();
         
         OnItemCallbackAction?.Invoke();
-        turnManager.PlayerPlayed(thisItemLaucherData.ownerPlayableState);
+        
+        if(isOwner)
+            turnManager.PlayerPlayed(thisItemLaucherData.ownerPlayableState);
     }
 
     /*protected void FireItemCallbackAction()
@@ -276,7 +282,8 @@ public abstract class BaseItemThrowable : MonoBehaviour
 
         if (itemReleased)
             ItemCallbackAction();
-
+        
+        Debug.Log($"ITEM - Destroying item {itemSO.itemID} of type {itemSO.itemName} - Have dissolve: {dissolveShaderComponent != null}");
         if (dissolveShaderComponent)
         {
             dissolveShaderComponent.DissolveFadeOut(() =>

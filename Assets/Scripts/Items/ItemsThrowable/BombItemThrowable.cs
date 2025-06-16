@@ -13,9 +13,9 @@ public class BombItemThrowable : BaseItemThrowableActivable
     private WaitForSecondsRealtime waitForSecondsRealtime = new WaitForSecondsRealtime(0.5f);
     private WaitForSecondsRealtime waitToDestroy = new WaitForSecondsRealtime(3.5f);
 
-    public override void ItemReleased(ItemLauncherData itemLauncherData)
+    public override void ItemReleased(ItemLauncherData itemLauncherData, bool isOwner)
     {
-        base.ItemReleased(itemLauncherData);
+        base.ItemReleased(itemLauncherData, isOwner);
 
         spinObjectComponent.EnableComponent();
 

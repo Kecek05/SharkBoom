@@ -10,9 +10,9 @@ public class AnchorItemThrowable : BaseItemThrowableActivable
     [SerializeField] private CanDoDamageComponent canDoDamageComponent;
     
     
-    public override void ItemReleased(ItemLauncherData itemLauncherData)
+    public override void ItemReleased(ItemLauncherData itemLauncherData, bool isOwner)
     {
-        base.ItemReleased(itemLauncherData);
+        base.ItemReleased(itemLauncherData, isOwner);
 
         rotateTowardsVelocityComponent.EnableComponent();
 

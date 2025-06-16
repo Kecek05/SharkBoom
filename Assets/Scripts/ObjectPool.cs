@@ -71,6 +71,7 @@ public class ObjectPool : MonoBehaviour
     /// </summary>
     public void ReturnObject(GameObject gameObject, int itemID)
     {
+        Debug.Log($"POOL - Returning object of type {gameObject.name} to pool with ID {itemID}");
         m_PooledObjects[itemID].Release(gameObject);
     }
 

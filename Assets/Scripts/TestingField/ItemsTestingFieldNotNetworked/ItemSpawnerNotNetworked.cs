@@ -84,7 +84,7 @@ public class ItemSpawnerNotNetworked : NetworkBehaviour
         if (lastProjectile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
         {
             itemThrowable.Initialize(null);
-            itemThrowable.ItemReleased(launcherData);
+            itemThrowable.ItemReleased(launcherData, true);
         }
     }
 }

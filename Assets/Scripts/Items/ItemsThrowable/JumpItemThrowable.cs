@@ -20,9 +20,9 @@ public class JumpItemThrowable : BaseItemThrowable
         timerManager = ServiceLocator.Get<BaseTimerManager>();
     }
 
-    public override void ItemReleased(ItemLauncherData itemLauncherData)
+    public override void ItemReleased(ItemLauncherData itemLauncherData, bool isOwner)
     {
-        base.ItemReleased(itemLauncherData);
+        base.ItemReleased(itemLauncherData, isOwner);
 
        // if (!IsOwner) return;
 

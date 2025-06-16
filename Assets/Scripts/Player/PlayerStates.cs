@@ -313,7 +313,7 @@ public class MyTurnEndedState : IState
         if (isOwner)
         {
             turnManager = ServiceLocator.Get<BaseTurnManager>();
-            turnManager.PlayerPlayed(turnManager.LocalPlayableState);
+            turnManager.PlayerPlayed(player.ThisPlayableState.Value);
         }
 
         MyTurnEndedCallback();

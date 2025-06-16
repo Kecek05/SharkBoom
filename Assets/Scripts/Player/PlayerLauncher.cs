@@ -202,7 +202,7 @@ public class PlayerLauncher : NetworkBehaviour
 
         if (lastProjectile.TryGetComponent(out BaseItemThrowable itemThrowable))
         {
-            itemThrowable.ItemReleased(launcherData);
+            itemThrowable.ItemReleased(launcherData, IsOwner);
             Debug.Log($"Player Launcher - Item released: {itemThrowable.name}");
         }
 

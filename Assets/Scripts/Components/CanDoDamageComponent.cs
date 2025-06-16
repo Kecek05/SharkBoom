@@ -6,9 +6,9 @@ public class CanDoDamageComponent : MonoBehaviour
     [Header("References")]
     [SerializeField] private DamageableSO damageableSO;
     [SerializeField] private BaseCollisionController baseCollisionController;
-
+    [SerializeField] private BaseItemThrowable baseItemThrowable;
     private bool damaged = false; //damage only once
-
+    
     private void OnEnable()
     {
         damaged = false;
@@ -25,6 +25,7 @@ public class CanDoDamageComponent : MonoBehaviour
     private void BaseCollisionController_OnItemCollided(GameObject collidedObj)
     {
         //if(!IsOwner) return;
+        if(!baseItemThrowable.IsOwner) return;
         
         if(collidedObj.TryGetComponent(out IDamageable damageable)) //Only on server
         {
