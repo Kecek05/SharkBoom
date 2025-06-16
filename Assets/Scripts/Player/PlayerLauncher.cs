@@ -32,6 +32,7 @@ public class PlayerLauncher : NetworkBehaviour
     //private BaseItemActivableManager itemActivableManager;
     private BaseItemThrowable lastProjectile;
     private BaseItemThrowableActivable lastItemThrowableActivable;
+    private AutoActivateItemComponent lastAutoActivateItemComponent;
     private BaseTimerManager timerManager;
 
     private ItemLauncherData lastItemLauncherData;
@@ -39,7 +40,6 @@ public class PlayerLauncher : NetworkBehaviour
     
 
     private bool canActivateItem = true;
-    
     public void InitializeOwner()
     {
         //itemActivableManager = ServiceLocator.Get<BaseItemActivableManager>();
@@ -51,12 +51,27 @@ public class PlayerLauncher : NetworkBehaviour
     private void InputReader_OnTouchPressEvent(InputAction.CallbackContext context)
     {
         if(!IsOwner) return; //To be shure that only the owner can activate items
-        if(context.started && lastItemThrowableActivable != null && canActivateItem)
+        if(context.started && canActivateItem)
         {
             canActivateItem = false;
+            ActivateItem();
+        }
+    }
+
+    private void ActivateItem()
+    {
+        if (lastItemThrowableActivable != null)
+        {
             lastItemThrowableActivable.TryActivate();
             TriggerUseItemOnServerRpc(lastItemThrowableActivable.GetReconcileData());
         }
+    }
+
+    private void AutoActivateItem()
+    {
+        lastAutoActivateItemComponent.OnActivate -= AutoActivateItem;
+        lastAutoActivateItemComponent = null;
+        ActivateItem();
     }
 
     [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
@@ -68,15 +83,7 @@ public class PlayerLauncher : NetworkBehaviour
     [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
     public void TriggerUseItemOnClientRpc(ItemReconcileData reconcileData)
     {
-        if (lastItemThrowableActivable != null)
-        {
-            lastItemThrowableActivable.Reconcile(reconcileData);
-        }
-        else
-        {
-            //The Item isnt spawned yet, so we need to wait for it to be spawned and wait to get in the activation position
-            StartCoroutine(WaitForCorrectPositionToActivate(reconcileData));
-        }
+        StartCoroutine(WaitForCorrectPositionToActivate(reconcileData));
     }
     
     private IEnumerator WaitForCorrectPositionToActivate(ItemReconcileData reconcileData)
@@ -209,13 +216,16 @@ public class PlayerLauncher : NetworkBehaviour
         if (lastProjectile.TryGetComponent(out BaseItemThrowableActivable activable))
         {
             lastItemThrowableActivable = activable;
-            //itemActivableManager.SetItemThrowableActivable(activable);
+            if (lastItemThrowableActivable.TryGetComponent(out AutoActivateItemComponent autoActivate))
+            {
+                lastAutoActivateItemComponent = autoActivate;
+                lastAutoActivateItemComponent.OnActivate += AutoActivateItem;
+            }
         }
         else
         {
             lastItemThrowableActivable = null;
         }
-        
     }
 
     // private void SpawnProjectile(ItemLauncherData launcherData) // on client, need to pass the prefab for the other clients instantiate it

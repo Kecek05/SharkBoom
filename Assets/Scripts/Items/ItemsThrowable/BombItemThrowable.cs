@@ -9,6 +9,7 @@ public class BombItemThrowable : BaseItemThrowableActivable
     [BetterHeader("Bomb Item Settings")]
     [SerializeField] private BaseItemComponent spinObjectComponent;
     [SerializeField] private Collider explosionCollider;
+    [SerializeField] private AutoActivateItemComponent autoActivateItemComponent;
     private Coroutine explodeBombCoroutine;
     private WaitForSecondsRealtime waitForSecondsRealtime = new WaitForSecondsRealtime(0.5f);
     private WaitForSecondsRealtime waitToDestroy = new WaitForSecondsRealtime(3.5f);
@@ -63,7 +64,7 @@ public class BombItemThrowable : BaseItemThrowableActivable
         
         //If the lifetime of the bomb gets to the end, it will explode
         if(itemCanBeActivated && !itemActivated) //Not exploded yet
-            TryActivate();
+            autoActivateItemComponent.SelfActivate();
         else
             base.DestroyItem(destroyedCallback);
     }
