@@ -12,14 +12,14 @@ public class PlayerJumpUI : NetworkBehaviour
     [BetterHeader("Settings")]
     [SerializeField] private Color selectedColor;
     [SerializeField] private Color unSelectedColor;
-    private const int JUMP_ITEM_INVENTORY_INDEX = 0; //Jump Index
+    private const int JUMP_ITEM_ID = 0; //Jump Index
 
 
     public void HandleOnPlayerInventoryItemSelected(int itemInventoryIndex)
     {
         if (!IsOwner) return;
 
-        if (JUMP_ITEM_INVENTORY_INDEX == itemInventoryIndex)
+        if (JUMP_ITEM_ID == itemInventoryIndex)
         {
             UpdateCanBeUsed(true);
             SelectedThisItem();
@@ -34,7 +34,7 @@ public class PlayerJumpUI : NetworkBehaviour
     {
         if (!IsOwner) return;
 
-        if (JUMP_ITEM_INVENTORY_INDEX == itemData.itemInventoryIndex)
+        if (JUMP_ITEM_ID == itemData.itemID)
         {
             UpdateCanBeUsed(itemData.itemCanBeUsed);
         }

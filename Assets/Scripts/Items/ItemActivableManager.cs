@@ -1,4 +1,5 @@
 using Unity.Netcode;
+using UnityEngine;
 
 public class ItemActivableManager : BaseItemActivableManager
 {
@@ -7,25 +8,44 @@ public class ItemActivableManager : BaseItemActivableManager
     {
         //always local machine will call this
 
-        if (itemThrowableActivableClient != null)
-            itemThrowableActivableClient.TryActivate();
+        if (itemThrowableActivable)
+        {
+            itemThrowableActivable.TryActivate();
+            //UseItemServerRpc();
+        }
+        else
+        {
+            Debug.LogWarning("ItemThrowableActivableClient is null, cannot use item.");
+        }
+    }
+    
+    public override void ReconcileItem(ItemReconcileData reconcileData)
+    {
+        Debug.Log("RECONCILE - ReconcileItemClientRpc called");
 
+        if (itemThrowableActivable)
+        {
+            itemThrowableActivable.Reconcile(reconcileData);
+        }
+        else
+        {
+            Debug.LogWarning("ItemThrowableActivableClient is null when trying to Reconcile it! THIS IS AN ERROR!");
+        }
+    }
+
+    protected override void UseItemServer()
+    {
         UseItemServerRpc();
     }
 
-    protected override void UseItemServer(ServerRpcParams serverRpc = default)
-    {
-        UseItemServerRpc(serverRpc);
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void UseItemServerRpc(ServerRpcParams serverRpc = default)
+    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    private void UseItemServerRpc()
     {
 
-        if (itemThrowableActivableServer != null)
+        if (itemThrowableActivableServer)
             itemThrowableActivableServer.TryActivate();
 
-        UseItemClientRpc(serverRpc.Receive.SenderClientId);
+        //UseItemClientRpc(serverRpc.Receive.SenderClientId);
 
     }
 
@@ -39,13 +59,13 @@ public class ItemActivableManager : BaseItemActivableManager
     {
         if (clientIdUsed == NetworkManager.Singleton.LocalClientId) return; //already called on client
 
-        if (itemThrowableActivableClient != null)
-            itemThrowableActivableClient.TryActivate();
+        if (itemThrowableActivable)
+            itemThrowableActivable.TryActivate();
     }
 
-    public override void SetItemThrowableActivableClient(BaseItemThrowableActivable itemThrowableActivableClient)
+    public override void SetItemThrowableActivable(BaseItemThrowableActivable itemThrowableActivable)
     {
-        this.itemThrowableActivableClient = itemThrowableActivableClient;
+        this.itemThrowableActivable = itemThrowableActivable;
     }
 
     public override void SetItemThrowableActivableServer(BaseItemThrowableActivable itemThrowableActivableServer)
@@ -55,7 +75,7 @@ public class ItemActivableManager : BaseItemActivableManager
 
     public override void ResetItemActivable()
     {
-        itemThrowableActivableClient = null;
+        itemThrowableActivable = null;
         itemThrowableActivableServer = null;
     }
 

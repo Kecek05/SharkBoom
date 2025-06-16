@@ -26,7 +26,7 @@ public class PlayerLauncherTest : MonoBehaviour
         {
             dragForce = dragForce,
             dragDirection = itemDirection.position,
-            selectedItemSOIndex = 0, // irrelevant
+            selectedItemID = 0, // irrelevant
             ownerPlayableState = PlayableState.None, // irrelevant
         };
 

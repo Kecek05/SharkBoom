@@ -3,7 +3,7 @@ using Sortify;
 using Unity.Netcode;
 using UnityEngine;
 
-public class HitTriggerComponent : NetworkBehaviour
+public class HitTriggerComponent : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private BaseCollisionController baseCollisionController;
@@ -12,15 +12,17 @@ public class HitTriggerComponent : NetworkBehaviour
     [Header("Knockback Settings")]
     [SerializeField] private float knockbackStrength;
     [SerializeField] private KnockbackSO knockback;
+    private KnockbackSO selectedKnockbackSO; // the SO that is currencly been used
 
     private void OnEnable()
     {
         baseCollisionController.OnCollided += BaseCollisionController_OnCollided;
+        selectedKnockbackSO = knockback;
     }
 
     private void BaseCollisionController_OnCollided(GameObject collidedObject)
     {
-        if(!IsOwner) return;
+        //if(!IsOwner) return;
         
         if (!collidedObject.transform.parent) return; //Check if the collided object has a parent
 
@@ -31,48 +33,13 @@ public class HitTriggerComponent : NetworkBehaviour
 
         if (collidedObject.transform.parent.TryGetComponent(out IRecieveKnockback knockbackReceiver))
         {
-            knockbackReceiver.DoOnRecieveKnockback(knockback.knockbackStrength, transform.position); //Pass the pos of the object that triggered
+            knockbackReceiver.DoOnRecieveKnockback(selectedKnockbackSO.knockbackStrength, transform.position); //Pass the pos of the object that triggered
         }
-        
-
-        /*if (collidedObject.transform.parent.TryGetComponent(out IRecieveKnockback _))
-        {
-            //Collided with a Implemented IRecieveKnockback interface, so we can apply knockback
-            if(!IsOwner) return;
-            if (collidedObject.transform.parent.TryGetComponent(out NetworkObject collidedNetworkObject))
-            {
-                //Get the NetworkObject to pass to other clients
-                DoKnockbackServerRpc(collidedNetworkObject, transform.position);
-            }
-        }*/
     }
-
-    /*[Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
-    private void DoKnockbackServerRpc(NetworkObjectReference collidedNetworkObjectReference,  Vector3 hitPosition)
-    {
-        DoKnockbackClientRpc(collidedNetworkObjectReference, hitPosition);
-    }
-    
-    [Rpc(SendTo.ClientsAndHost, Delivery = RpcDelivery.Reliable)]
-    private void DoKnockbackClientRpc(NetworkObjectReference collidedNetworkObjectReference,  Vector3 hitPosition)
-    {
-        DoKnockback(collidedNetworkObjectReference, hitPosition);
-    }
-    
-    private void DoKnockback(NetworkObjectReference collidedNetworkObjectReference,  Vector3 hitPosition)
-    {
-        if (collidedNetworkObjectReference.TryGet(out NetworkObject collidedNetworkObject))
-        {
-            if (collidedNetworkObject.TryGetComponent(out IRecieveKnockback receiver))
-            {
-                receiver.DoOnRecieveKnockback(knockbackStrength, hitPosition); //Pass the pos of the object that triggered
-            }
-        }
-    }*/
     
     public void SetKnockbackSO(KnockbackSO knockbackSoActivated)
     {
-        knockback = knockbackSoActivated;
+        selectedKnockbackSO = knockbackSoActivated;
     }
     
     private void OnDisable()

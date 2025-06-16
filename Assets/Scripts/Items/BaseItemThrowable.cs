@@ -3,7 +3,7 @@ using System;
 using Unity.Netcode;
 using UnityEngine;
 
-public abstract class BaseItemThrowable : NetworkBehaviour
+public abstract class BaseItemThrowable : MonoBehaviour
 {
     private const float ITEM_Z_POSITION = -14.5f;
     
@@ -27,8 +27,8 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     [SerializeField] protected DissolveShaderComponent dissolveShaderComponent;
     [SerializeField] protected LifetimeTriggerItemComponent lifetimeTriggerItemComponent;
     [SerializeField] protected FollowTransformComponent followTransformComponent; //Used to follow the hand when the item is in hand
-    [SerializeField] protected NetworkObject myNetworkObject;
-    [Tooltip("Can Be Null | Used to Listen to Collision Events")] [SerializeField] protected BaseCollisionController collisionController;
+    [Tooltip("Can Be Null | Used to Listen to Collision Events")] 
+    [SerializeField] protected BaseCollisionController collisionController;
     [Space(4)]
     [BetterHeader("Item Constraints Settings", 12)]
     [SerializeField] protected bool freezePositionX = false;
@@ -44,9 +44,17 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     protected BaseTurnManager turnManager;
 
     protected bool itemReleased = false;
+    
+    protected PlayableState ownerPlayableState;
+    
 
     //DEBUG
     public bool IsItemReleased => itemReleased;
+
+    protected void OnEnable()
+    {
+        ownerPlayableState = PlayableState.None;
+    }
 
     /// <summary>
     /// Called when the item spawns in hand
@@ -54,8 +62,6 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     /// <param name="itemLauncherData"></param>
     public virtual void Initialize(Transform parent)
     {
-        if(!IsOwner) return; //Only the owner can initialize the item
-
         rb.isKinematic = true; //Set the item to kinematic until the item is released
 
         if(parent)
@@ -75,7 +81,6 @@ public abstract class BaseItemThrowable : NetworkBehaviour
         }
 
         ResetConstraints();
-        InitializeUpdateRbTypeServerRpc(true);
     }
 
     protected virtual void CollisionController_OnCollidedWithoutPlayer(GameObject collidedObject)
@@ -93,20 +98,21 @@ public abstract class BaseItemThrowable : NetworkBehaviour
         
     }
 
+    /*
     [Rpc(SendTo.Server)]
     private void InitializeUpdateRbTypeServerRpc(bool isKinematic)
     {
         InitializeUpdateRbTypeClientRpc(isKinematic);
-    }
+    }*/
 
-    [Rpc(SendTo.ClientsAndHost)]
+    /*[Rpc(SendTo.ClientsAndHost)]
     private void InitializeUpdateRbTypeClientRpc(bool isKinematic)
     {
         if(IsOwner) return; //Ownler already changed
 
         rb.isKinematic = isKinematic;
         ResetConstraints();
-    }
+    }*/
 
 
     public virtual void ChangeFollowTransform(Transform follow)
@@ -121,22 +127,21 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     /// <param name="direction"></param>
     public virtual void ItemReleased(ItemLauncherData itemLauncherData)
     {
-        if(!IsOwner) return; //Only the owner can release the item
-
+        ownerPlayableState = itemLauncherData.ownerPlayableState;
+        turnManager = ServiceLocator.Get<BaseTurnManager>();
         UpdateOnRelease(itemLauncherData);
 
         followTransformComponent.DisableComponent();
-        turnManager = ServiceLocator.Get<BaseTurnManager>();
         transform.position = new Vector3(transform.position.x, transform.position.y, ITEM_Z_POSITION);
         rb.AddForce(itemLauncherData.dragDirection * itemLauncherData.dragForce, ForceMode.Impulse);
 
         if(lifetimeTriggerItemComponent)
             lifetimeTriggerItemComponent.StartLifetime();
         
-        ItemReleasedServerRpc(itemLauncherData);
+        //ItemReleasedServerRpc(itemLauncherData);
     }
 
-    [Rpc(SendTo.Server)]
+    /*[Rpc(SendTo.Server)]
     private void ItemReleasedServerRpc(ItemLauncherData itemLauncherData)
     {
         UpdateOnRelease(itemLauncherData);
@@ -149,7 +154,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
         if(IsOwner) return; //Owner already released
 
         UpdateOnRelease(itemLauncherData);
-    }
+    }*/
 
     private void UpdateOnRelease(ItemLauncherData itemLauncherData)
     {
@@ -190,13 +195,15 @@ public abstract class BaseItemThrowable : NetworkBehaviour
 
     protected virtual void ItemCallbackAction()
     {
-        if(!IsOwner) return; // Only the server should call the callback action
+        //if(!IsOwner) return; // Only the server should call the callback action
 
-        FireItemCallbackAction();
+        //FireItemCallbackAction();
+        
+        OnItemCallbackAction?.Invoke();
         turnManager.PlayerPlayed(thisItemLaucherData.ownerPlayableState);
     }
 
-    protected void FireItemCallbackAction()
+    /*protected void FireItemCallbackAction()
     {
         ItemCallbackServerRpc();
     }
@@ -211,7 +218,7 @@ public abstract class BaseItemThrowable : NetworkBehaviour
     private void ItemCallbackClientRpc()
     {
         OnItemCallbackAction?.Invoke();
-    }
+    }*/
 
     /// <summary>
     /// Called when the object is Destroyed, all clients call this. Use to reset to the initial state of the item to the pool.
@@ -263,36 +270,49 @@ public abstract class BaseItemThrowable : NetworkBehaviour
 
     public virtual void DestroyItem(Action destroyedCallback = null)
     {
-        if (!IsOwner) return; //Only the owner can destroy the item
+        //if (!IsOwner) return; //Only the owner can destroy the item
 
         OnItemFinishedAction?.Invoke();
 
         if (itemReleased)
             ItemCallbackAction();
 
-        if (dissolveShaderComponent != null)
+        if (dissolveShaderComponent)
         {
             dissolveShaderComponent.DissolveFadeOut(() =>
             {
-                DestroyOnServerRpc();
+                //DestroyOnServerRpc();
                 destroyedCallback?.Invoke();
                 dissolveShaderComponent = null;
+                ObjectPool.Instance.ReturnObject(gameObject, itemSO.itemID);
+                Destroy(gameObject);
             });
         }
         else
         {
-            DestroyOnServerRpc();
+            //DestroyOnServerRpc();
             destroyedCallback?.Invoke();
+            ObjectPool.Instance.ReturnObject(gameObject, itemSO.itemID);
         }
     }
 
-    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    /*[Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
     private void DestroyOnServerRpc()
     {
         myNetworkObject.Despawn(true); // Pass 'true' to also destroy the GameObject | Return to the pool
-    }
+    }*/
 
-    public override void OnNetworkDespawn()
+    /*public override void OnNetworkDespawn()
+    {
+        if (collisionController)
+        {
+            collisionController.OnCollided -= CollisionController_OnCollided;
+            collisionController.OnCollidedWithPlayer -= CollisionController_OnCollidedWithPlayer;
+        }
+        ResetItemThrowableState();
+    }*/
+
+    private void OnDisable()
     {
         if (collisionController)
         {

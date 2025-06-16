@@ -109,18 +109,19 @@ public class DragAndShoot : NetworkBehaviour
     //DEBUG
     public bool isLocked = false; //to release the finger and the player still holding the item
 
-    public void InitializeOwner(Rigidbody rb)
+    public void Initialize(Rigidbody selectedRb)
+    {
+        trajectory.Initialize(startTrajectoryPos);
+
+        SetDragRb(selectedRb); //get jump's rb, default value
+
+    }
+    public void InitializeOwner()
     {
         if(!IsOwner) return;
-
         //Owner initialize code
         inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
         inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
-
-        trajectory.Initialize(startTrajectoryPos);
-
-        SetDragRb(rb); //get jump's rb, default value
-
     }
 
     /// <summary>
@@ -163,6 +164,7 @@ public class DragAndShoot : NetworkBehaviour
 
                         SetIsDragging(true);
                         OnDragStart?.Invoke();
+                        TriggerOnDragStartServerRpc();
                     }
                 }
             }
@@ -178,7 +180,9 @@ public class DragAndShoot : NetworkBehaviour
                 //reset all
                 SetCanCancelDrag(false);
                 SetIsDragging(false);
-                player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleMyTurnState);
+                player.ChangePlayerState(PlayerState.IdleMyTurn);
+               // player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleMyTurnState);
+               // player.TransitionToIdleMyTurnStateServerRpc();
                 OnDragCancelable?.Invoke(false);
                 return;
             }
@@ -191,7 +195,51 @@ public class DragAndShoot : NetworkBehaviour
             }
         }
     }
+    
+    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    private void TriggerOnDragStartServerRpc()
+    {
+        TriggerOnDragStartClientRpc();
+    }
 
+    [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
+    private void TriggerOnDragStartClientRpc()
+    {
+        OnDragStart?.Invoke();
+    }
+    
+    // [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    // private void TriggerOnDragCancelableServerRpc(bool cancelable)
+    // {
+    //     TriggerOnDragCancelableClientRpc(cancelable);
+    // }
+    //
+    // [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
+    // private void TriggerOnDragCancelableClientRpc(bool cancelable)
+    // {
+    //     OnDragCancelable?.Invoke(cancelable);
+    // }
+
+    /// <summary>
+    /// On The Client, called after the aim position finished sync
+    /// </summary>
+    // [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    // public void TriggerOnDragReleaseServerRpc()
+    // {
+    //     TriggerOnDragReleaseClientRpc();
+    // }
+    //
+    // [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
+    // private void TriggerOnDragReleaseClientRpc()
+    // {
+    // }
+
+    public void InvokeOnDragRelease()
+    {
+        Debug.Log($"STEPS CLIENT 3 - ON DRAG RELEASED - {gameObject.name}");
+        OnDragRelease?.Invoke();
+    }
+    
     protected void InputReader_OnPrimaryFingerPositionEvent(InputAction.CallbackContext context)
     {
 

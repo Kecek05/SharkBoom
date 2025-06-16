@@ -1,34 +1,62 @@
-using System;
 using Sortify;
 using TMPro;
-using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerDebugCanvas : NetworkBehaviour
+public class PlayerDebugCanvas : MonoBehaviour
 {
 
     [BetterHeader("References")]
-    public PlayerRagdollEnabler playerRagdollEnabler;
-    public TextMeshProUGUI hitedDebugText;
-    public TextMeshProUGUI followingTargetTxt;
+    public PlayerThrower playerThrower;
+    public PlayerDetectFacingDirection playerDetectFacingDirection;
+    public PlayerAnimator playerAnimator;
+    public PlayerSpawnItemOnHand playerSpawnItemOnHand;
 
+    [BetterHeader("Texts")]
+    public TextMeshProUGUI text1;
+    public TextMeshProUGUI text2;
+    public TextMeshProUGUI text3;
+    public TextMeshProUGUI text4;
+    public TextMeshProUGUI text5;
+    public TextMeshProUGUI text6;
+    public TextMeshProUGUI text7;
+    public TextMeshProUGUI text8;
     private void Update()
-    {
-        /*
-        if (playerRagdollEnabler.hitedRbDebug)
+    { 
+        if(!playerThrower) return;
+
+        if (playerThrower?.PlayerStateMachine != null)
         {
-            hitedDebugText.text = $"Hited Rigidbody: {playerRagdollEnabler.hitedRbDebug.name} - " +
-                                  $"Velocity: {playerRagdollEnabler.hitedRbDebug.linearVelocity.magnitude:F2} m/s";
+            text1.text = $"Player State: {playerThrower?.PlayerStateMachine?.CurrentState} - Is Owner: {playerThrower?.IsOwner}";
         }
-        else
+
+        if (playerThrower?.PlayerInventory)
         {
-            hitedDebugText.text = "No Rigidbody hit detected.";
+            text2.text = $"Can Interact Inv: {playerThrower.PlayerInventory?.CanInteractWithInventory}";
+            text3.text = $"Inv ID: {playerThrower?.PlayerInventory?.SelectedItemID}";
         }
-        */
-        
-        /*if(cameraFollowing.FollowTargetTransformDebug)
-            followingTargetTxt.text = $"Following Target: {cameraFollowing.FollowTargetTransformDebug.name} - " +
-                                  $"Position: {cameraFollowing.FollowTargetTransformDebug.position}";*/
+
+        if (playerThrower)
+        {
+            text4.text = $"Playable State: {playerThrower?.ThisPlayableState?.Value}";
+        }
+
+        if (playerDetectFacingDirection)
+        {
+            text5.text = $"Is Direction Right: {playerDetectFacingDirection?.IsDirectionRight}";
+        }
+
+        if (playerAnimator)
+        {
+            text6.text = $"Animator State: {playerAnimator?.CurrentAnimation}";
+        }
+
+        if (playerSpawnItemOnHand != null)
+        {
+            // if(playerSpawnItemOnHand.SelectedSocketTransform != null)
+            //     text7.text = $"Item Socket Selected: {playerSpawnItemOnHand?.SelectedSocketTransform?.name}";
             
+            text8.text = $"Item On Hand: {playerSpawnItemOnHand?.SpawnedItem?.name ?? "None"}";
+        }
+
     }
 }

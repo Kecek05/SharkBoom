@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
+[RequireComponent(typeof(Renderer))]
 public class DissolveShaderComponent : MonoBehaviour
 {
     [SerializeField] private float dissolveDurationFadeIn = 1f;

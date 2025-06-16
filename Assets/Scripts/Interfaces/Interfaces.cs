@@ -113,6 +113,14 @@ public interface IDetectDragStart
     public void DoOnDragStart();
 }
 
+public interface IDetectIdleMyTurn
+{
+    /// <summary>
+    /// Called when is idle in my turn.
+    /// </summary>
+    public void DoOnIdleMyTurn();
+}
+
 public interface IRecieveKnockback
 {
     /// <summary>

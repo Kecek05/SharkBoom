@@ -17,6 +17,8 @@ public class PlayerInventoryUI : NetworkBehaviour
 
     [BetterHeader("References")]
     [SerializeField] private GameObject playerInventoryUIBackground;
+
+    [SerializeField] private Transform inventoryParent;
     [SerializeField] private Transform inventoryItemHolder;
     [SerializeField] private GameObject playerItemSingleUIPrefab;
     [SerializeField] private Image selectedItemImage;
@@ -29,17 +31,19 @@ public class PlayerInventoryUI : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        HideInventory();
+        HideInventoryBackground();
         HideInventoryButton();
+        HideInventoryParent();
         SetupInventoryWorldCamera();
+        Debug.Log($"HIDE INVENTOR - {gameObject.transform.parent.parent.name}");
     }
 
     public void SelectJumpButton()
     {
-        SelecItem(0); //Jump Index
+        SelecItem(0); //Jump ID
     }
 
-    public void OpenInventoryButton()
+    public void InventoryButton()
     {
         ToggleInventory();
     }
@@ -64,7 +68,7 @@ public class PlayerInventoryUI : NetworkBehaviour
 
         if (state == PlayerState.DraggingItem || state == PlayerState.DraggingJump)
         {
-            HideInventory();
+            HideInventoryBackground();
             HideInventoryButton();
         } else
         {
@@ -79,7 +83,7 @@ public class PlayerInventoryUI : NetworkBehaviour
         //Update item on list
         foreach (PlayerItemSingleUI playerItemSingleUI in playerItemSingleUIs)
         {
-            if (playerItemSingleUI.ItemIndex == itemInventoryIndex)
+            if (playerItemSingleUI.MyItemID == itemInventoryIndex)
             {
                 playerItemSingleUI.SelectedThisItem();
             } else
@@ -88,7 +92,7 @@ public class PlayerInventoryUI : NetworkBehaviour
             }
         }
 
-        HideInventory();
+        HideInventoryBackground();
     }
 
     public void HandleOnPlayerInventoryItemChanged(ItemInventoryData itemData)
@@ -98,7 +102,7 @@ public class PlayerInventoryUI : NetworkBehaviour
         //Update item on list
         foreach (PlayerItemSingleUI playerItemSingleUI in playerItemSingleUIs)
         {
-            if (playerItemSingleUI.ItemIndex == itemData.itemInventoryIndex)
+            if (playerItemSingleUI.MyItemID == itemData.itemID)
             {
                 playerItemSingleUI.UpdateCooldown(itemData.itemCooldownRemaining);
                 playerItemSingleUI.UpdateCanBeUsed(itemData.itemCanBeUsed);
@@ -117,14 +121,18 @@ public class PlayerInventoryUI : NetworkBehaviour
 
         //Add item on list
         PlayerItemSingleUI playerItemSingleUI = Instantiate(playerItemSingleUIPrefab, inventoryItemHolder).GetComponent<PlayerItemSingleUI>();
-        playerItemSingleUI.Setup(itemsListSO.allItemsSOList[itemData.itemSOIndex].itemName, itemsListSO.allItemsSOList[itemData.itemSOIndex].itemIcon, itemData.itemCooldownRemaining, itemData.itemCanBeUsed, itemData.itemInventoryIndex, itemsListSO.allItemsSOList[itemData.itemSOIndex].damageableSO.damage, this);
+        
+        ItemSO newItemSO = itemsListSO.allItemsSOList.Find(itemSO => itemSO.itemID == itemData.itemID);
+        
+        playerItemSingleUI.Setup(newItemSO.itemName, newItemSO.itemIcon, itemData.itemCooldownRemaining, itemData.itemCanBeUsed, newItemSO.itemID, newItemSO.damageableSO.damage, this);
         playerItemSingleUIs.Add(playerItemSingleUI);
     }
 
 
-    public void SelecItem(int itemInventoryIndex)
+    public void SelecItem(int itemID)
     {
-        OnItemSelectedByUI?.Invoke(itemInventoryIndex); //Notify the player that an item was selected by UI
+        OnItemSelectedByUI?.Invoke(itemID); //Notify the player that an item was selected by UI
+        Debug.Log($"Trying to select item with ID: {itemID}");
     }
 
     public void UpdateOpenInventoryButton(Sprite itemIcon)
@@ -138,7 +146,7 @@ public class PlayerInventoryUI : NetworkBehaviour
     {
         if (playerInventoryUIBackground.activeSelf)
         {
-            HideInventory();
+            HideInventoryBackground();
         }
         else
         {
@@ -146,7 +154,7 @@ public class PlayerInventoryUI : NetworkBehaviour
         }
     }
 
-    private void HideInventory()
+    private void HideInventoryBackground()
     {
         playerInventoryUIBackground.SetActive(false);
     }
@@ -161,6 +169,16 @@ public class PlayerInventoryUI : NetworkBehaviour
         openInventoryBackground.SetActive(false);
     }
 
+    private void HideInventoryParent()
+    {
+        inventoryParent.gameObject.SetActive(false);
+    }
+    
+    private void ShowInventoryParent()
+    {
+        inventoryParent.gameObject.SetActive(true);
+    }
+
     private void ShowInventoryButton()
     {
         openInventoryBackground.SetActive(true);
@@ -168,13 +186,17 @@ public class PlayerInventoryUI : NetworkBehaviour
 
     public void HandleOnGainOwnership()
     {
+        ShowInventoryParent();
         ShowInventory();
         ShowInventoryButton();
+        Debug.Log($"OWNERSHIP INVENTOR - {gameObject.transform.parent.parent.name}");
     }
 
     public void UnHandleInitializeOwner()
     {
-        HideInventory();
+        HideInventoryParent();
+        HideInventoryBackground();
         HideInventoryButton();
+        
     }
 }

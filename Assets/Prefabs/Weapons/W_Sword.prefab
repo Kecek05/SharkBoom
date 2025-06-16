@@ -142,6 +142,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3093239749055469654}
     m_Modifications:
+    - target: {fileID: 26238628382394155, guid: a165a5d51d00fe7429d16e5b4fb84ded, type: 3}
+      propertyPath: TrailModule.minVertexDistance
+      value: 0.001
+      objectReference: {fileID: 0}
     - target: {fileID: 1994812034332105077, guid: a165a5d51d00fe7429d16e5b4fb84ded, type: 3}
       propertyPath: m_Name
       value: SwordTrail 1
@@ -210,11 +214,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2304733544949650192, guid: e31e62e8391cf5244b627cc7f9e5663d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -0.026
       objectReference: {fileID: 0}
     - target: {fileID: 2304733544949650192, guid: e31e62e8391cf5244b627cc7f9e5663d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.952
+      value: 1.157
       objectReference: {fileID: 0}
     - target: {fileID: 2304733544949650192, guid: e31e62e8391cf5244b627cc7f9e5663d, type: 3}
       propertyPath: m_LocalPosition.z
@@ -249,8 +253,32 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5148007851512006922, guid: e31e62e8391cf5244b627cc7f9e5663d, type: 3}
+      propertyPath: ShapeModule.type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5148007851512006922, guid: e31e62e8391cf5244b627cc7f9e5663d, type: 3}
       propertyPath: ShapeModule.m_Scale.x
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5148007851512006922, guid: e31e62e8391cf5244b627cc7f9e5663d, type: 3}
+      propertyPath: ShapeModule.m_Scale.y
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5148007851512006922, guid: e31e62e8391cf5244b627cc7f9e5663d, type: 3}
+      propertyPath: ShapeModule.m_Scale.z
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5148007851512006922, guid: e31e62e8391cf5244b627cc7f9e5663d, type: 3}
+      propertyPath: ShapeModule.radius.value
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5148007851512006922, guid: e31e62e8391cf5244b627cc7f9e5663d, type: 3}
+      propertyPath: ShapeModule.radiusThickness
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5148007851512006922, guid: e31e62e8391cf5244b627cc7f9e5663d, type: 3}
+      propertyPath: EmissionModule.m_Bursts.Array.data[0].countCurve.scalar
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 6477523786718167978, guid: e31e62e8391cf5244b627cc7f9e5663d, type: 3}
       propertyPath: m_Name

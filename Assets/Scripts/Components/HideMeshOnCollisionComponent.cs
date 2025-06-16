@@ -2,7 +2,7 @@ using System;
 using Unity.Netcode;
 using UnityEngine;
 
-public class HideMeshOnCollisionComponent : NetworkBehaviour
+public class HideMeshOnCollisionComponent : MonoBehaviour
 {
     public event Action OnMeshHidden;
 
@@ -14,6 +14,10 @@ public class HideMeshOnCollisionComponent : NetworkBehaviour
     [Header("Settings")]
     [SerializeField] private bool hideOnCollisionWithPlayer = true;
     [SerializeField] private bool hideOnCollisionWithAnything = true;
+    private bool isMeshVisible = true;
+    
+    public bool IsMeshVisible => isMeshVisible;
+    
     private void OnEnable()
     {
         if (hideOnCollisionWithAnything)
@@ -30,17 +34,19 @@ public class HideMeshOnCollisionComponent : NetworkBehaviour
 
     private void BaseCollisionController_OnCollidedWithPlayer(PlayerThrower playerThrower)
     {
-        if (!IsOwner) return;
-        HideMeshServerRpc();
+        //if (!IsOwner) return;
+        //HideMeshServerRpc();
+        HideMesh();
     }
 
     private void BaseCollisionController_OnCollided(GameObject collidedObject)
     {
-        if (!IsOwner) return;
-        HideMeshServerRpc();
+        //if (!IsOwner) return;
+       // HideMeshServerRpc();
+       HideMesh();
     }
 
-    [Rpc(SendTo.Server)]
+    /*[Rpc(SendTo.Server)]
     private void HideMeshServerRpc()
     {
         HideMeshClientRpc();
@@ -50,11 +56,18 @@ public class HideMeshOnCollisionComponent : NetworkBehaviour
     private void HideMeshClientRpc()
     {
         meshToHide.SetActive(false);
+    }*/
+
+    public void HideMesh()
+    {
+        meshToHide.SetActive(false);
+        isMeshVisible = false;
     }
 
-    private void ShowMesh()
+    public void ShowMesh()
     {
         meshToHide.SetActive(true);
+        isMeshVisible = true;
     }
 
     private void OnDisable()

@@ -29,7 +29,9 @@ public class MyTurnStartedState : IState
     private async void MyTurnStartedCallback()
     {
         await Task.Delay(2000);
-        player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleMyTurnState);
+        player.ChangePlayerState(PlayerState.IdleMyTurn);
+        /*player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleMyTurnState);
+        player.TransitionToMyTurnEndedStateServerRpc();*/
     }
 
     public void Execute()
@@ -70,18 +72,22 @@ public class IdleMyTurnState : IState
         //Debug.Log("Entering Idle State");
 
         playerDragController.OnDragStart += PlayerDragController_OnDragStart;
-
+        
         //Set Can Move Camera
     }
 
     private void PlayerDragController_OnDragStart()
     {
-        if (playerInventory.SelectedItemInventoryIndex == 0)
+        if (playerInventory.SelectedItemID == 0)
         {
-            player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.draggingJump);
+            player.ChangePlayerState(PlayerState.DraggingJump);
+            /*player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.draggingJump);
+            player.TransitionToDraggingJumpServerRpc();*/
         } else
         {
-            player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.draggingItem);
+            player.ChangePlayerState(PlayerState.DraggingItem);
+            /*player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.draggingItem);
+            player.TransitionToDraggingItemServerRpc();*/
         }
     }
 
@@ -107,24 +113,38 @@ public class DraggingJump : IState
     private PlayerThrower player;
     private PlayerDragController playerDragController;
     private PlayerState state = PlayerState.DraggingJump;
-
+    private PlayerInventory playerInventory;
     public PlayerState State => state;
 
-    public DraggingJump(PlayerThrower player, PlayerDragController playerDragController) {
+    public DraggingJump(PlayerThrower player, PlayerDragController playerDragController, PlayerInventory playerInventory) {
         //our builder
         this.player = player;
         this.playerDragController = playerDragController;
+        this.playerInventory = playerInventory;
     }
     public void Enter()
     {
         //Debug.Log("Entering Dragging Jump State");
         //Set Cant move camera
+        Debug.Log($"STEPS SUBSCRIBING TO DRAG JUMP RELEASE - {player.gameObject.name} - {playerDragController.gameObject.name}");
         playerDragController.OnDragRelease += PlayerDragController_OnDragRelease;
+        playerInventory.OnItemSelected += PlayerInventory_OnItemSelected;
+    }
+
+    private void PlayerInventory_OnItemSelected(int itemID)
+    {
+        if (itemID != 0)
+        {
+            //Selected an item that isnt jump, change the state
+            player.ChangePlayerState(PlayerState.IdleMyTurn);
+        }
     }
 
     private void PlayerDragController_OnDragRelease()
     {
-        player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.dragReleaseJump);
+        player.ChangePlayerState(PlayerState.DragReleaseJump);
+        /*player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.dragReleaseJump);
+        player.TransitionToDraggingJumpServerRpc();*/
     }
 
     public void Execute()
@@ -135,7 +155,7 @@ public class DraggingJump : IState
     public void Exit()
     {
         playerDragController.OnDragRelease -= PlayerDragController_OnDragRelease;
-
+        playerInventory.OnItemSelected -= PlayerInventory_OnItemSelected;
         //Debug.Log("Exiting Dragging Jump State");
     }
 
@@ -150,27 +170,41 @@ public class DraggingItem : IState
     private PlayerThrower player;
     private PlayerDragController playerDragController;
     private PlayerState state = PlayerState.DraggingItem;
+    private PlayerInventory playerInventory;
 
     public PlayerState State => state;
 
-    public DraggingItem(PlayerThrower player, PlayerDragController playerDragController)
+    public DraggingItem(PlayerThrower player, PlayerDragController playerDragController, PlayerInventory playerInventory)
     {
         //our builder
         this.player = player;
         this.playerDragController = playerDragController;
+        this.playerInventory = playerInventory;
     }
     public void Enter()
     {
         //Debug.Log("Entering Dragging Item State");
-
+        Debug.Log($"STEPS SUBSCRIBING TO DRAG RELEASE - {player.gameObject.name} - {playerDragController.gameObject.name}");
         playerDragController.OnDragRelease += PlayerDragController_OnDragRelease;
+        playerInventory.OnItemSelected += PlayerInventory_OnItemSelected;
         //Set Cant move camera
 
     }
 
+    private void PlayerInventory_OnItemSelected(int itemID)
+    {
+        if (itemID == 0)
+        {
+            //Selected Jump
+            player.ChangePlayerState(PlayerState.IdleMyTurn);
+        }
+    }
+
     private void PlayerDragController_OnDragRelease()
     {
-        player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.dragReleaseItem);
+        Debug.Log($"STEPS CLIENT 4 - DRAGGING ITEM TO DRAG RELEASE ITEM - {player.gameObject.name}");
+        player.ChangePlayerState(PlayerState.DragReleaseItem);
+        //player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.dragReleaseItem);
     }
 
     public void Execute()
@@ -180,8 +214,9 @@ public class DraggingItem : IState
 
     public void Exit()
     {
+        Debug.Log($"STEPS UNSUBSCRIBING TO DRAG RELEASE - {player.gameObject.name} - {playerDragController.gameObject.name}");
         playerDragController.OnDragRelease -= PlayerDragController_OnDragRelease;
-
+        playerInventory.OnItemSelected -= PlayerInventory_OnItemSelected;
         //Debug.Log("Exiting Dragging Item State");
     }
 
@@ -262,30 +297,39 @@ public class MyTurnEndedState : IState
     private PlayerThrower player;
     private BaseTurnManager turnManager;
     private PlayerState state = PlayerState.MyTurnEnded;
-
+    private bool isOwner;
+    
     public PlayerState State => state;
 
-    public MyTurnEndedState(PlayerThrower player)
+    public MyTurnEndedState(PlayerThrower player, bool isOwner)
     {
         //our builder
         this.player = player;
+        this.isOwner = isOwner;
     }
     public void Enter()
     {
         //Debug.Log("Entering My Turn End State");
-
-        turnManager = ServiceLocator.Get<BaseTurnManager>();
-
-        turnManager.PlayerPlayed(turnManager.LocalPlayableState);
+        if (isOwner)
+        {
+            turnManager = ServiceLocator.Get<BaseTurnManager>();
+            turnManager.PlayerPlayed(turnManager.LocalPlayableState);
+        }
 
         MyTurnEndedCallback();
-
+    }
+    
+    public void ChangeOwnership(bool isOwner)
+    {
+        this.isOwner = isOwner;
+        Debug.Log($"MyTurnEndedState ChangeOwnership: {this.isOwner} - {player.gameObject.name}");
     }
 
     private async void MyTurnEndedCallback()
     {
         await Task.Delay(2000);
-        player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleEnemyTurnState);
+        player.ChangePlayerState(PlayerState.IdleEnemyTurn);
+       //player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleEnemyTurnState);
     }
     public void Execute()
     {

@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
+using Sortify;
 using UnityEngine;
 
 public class BombItemThrowable : BaseItemThrowableActivable
 {
 
+    [BetterHeader("Bomb Item Settings")]
     [SerializeField] private BaseItemComponent spinObjectComponent;
     [SerializeField] private Collider explosionCollider;
     private Coroutine explodeBombCoroutine;
@@ -32,7 +34,7 @@ public class BombItemThrowable : BaseItemThrowableActivable
 
     private IEnumerator ExplodeBomb()
     {
-        lifetimeTriggerItemComponent.StopLifetime(); //prevent the item to be destroyed while is exploding
+        lifetimeTriggerItemComponent.StopLifetime(); //prevent the item to be destroyed while it's exploding
 
         rb.isKinematic = true; // Stop bomb
         explosionCollider.enabled = true;
@@ -46,7 +48,24 @@ public class BombItemThrowable : BaseItemThrowableActivable
 
         yield return waitToDestroy;
 
-        DestroyItem();
+        base.DestroyItem();
+    }
+    
+    public override void DestroyItem(Action destroyedCallback = null)
+    {   
+        //if (!IsOwner) return;
+
+        if (!itemReleased)
+        {
+            base.DestroyItem(destroyedCallback);
+            return;
+        }
+        
+        //If the lifetime of the bomb gets to the end, it will explode
+        if(itemCanBeActivated && !itemActivated) //Not exploded yet
+            TryActivate();
+        else
+            base.DestroyItem(destroyedCallback);
     }
 
     protected override void ResetItemThrowableState()
