@@ -126,6 +126,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
         animator.enabled = false;
         
+
         foreach (Collider ragdollCollider in ragdollColliders)
         {
             ragdollCollider.enabled = true;
@@ -162,9 +163,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             Debug.Log($"RAGDOLL - Disabled Ragdoll: {ragdollRb}, isKinematic: {ragdollRb.isKinematic} - {gameObject.transform.parent.name}");
         }
 
-        animator.enabled = true;
-
-
         foreach (Collider ragdollCollider in ragdollColliders)
         {
             ragdollCollider.enabled = false;
@@ -174,6 +172,10 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         {
             playerCollider.enabled = true;
         }
+
+        animator.enabled = true;
+        animator.Rebind();
+        animator.Update(0f);
 
         parentRigidbody.isKinematic = false;
         
