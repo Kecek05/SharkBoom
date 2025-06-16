@@ -36,7 +36,11 @@ public class PlayerLauncher : NetworkBehaviour
     private BaseTimerManager timerManager;
 
     private ItemLauncherData lastItemLauncherData;
-    private float distanceThreshold = 2f; // Threshold to consider the item in the correct position
+    
+    /// <summary>
+    /// Threshhold, in units, to activate the reconciliation
+    /// </summary>
+    private float distanceThreshold = 2f;
     
 
     private bool canActivateItem = true;

@@ -39,7 +39,7 @@ public class PlayerInventory : NetworkBehaviour
 
     public bool CanInteractWithInventory => canInteractWithInventory; //DEBUG
     
-    public int SelectedItemID => selectedItemID; //DEBUG
+    public int SelectedItemID => selectedItemID;
 
 //     public void Initialize()
 //     {
