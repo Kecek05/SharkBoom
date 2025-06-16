@@ -411,6 +411,17 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 7641351065881178689}
   m_SourcePrefab: {fileID: 100100000, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+--- !u!114 &905667967243219671 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7381126383517430763, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+  m_PrefabInstance: {fileID: 7709761659009139004}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44cf99f5c3b370e43a2855c9c2e1c811, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1924429888176421737 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8091387058931432021, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
@@ -477,10 +488,9 @@ MonoBehaviour:
   objectsToChangeLayer:
   - {fileID: 4139059953487484834}
   - {fileID: 4767779204118326136}
-  dissolveShaderComponent: {fileID: 0}
+  dissolveShaderComponent: {fileID: 905667967243219671}
   lifetimeTriggerItemComponent: {fileID: 2957073883870968353}
   followTransformComponent: {fileID: 2492626997076712017}
-  myNetworkObject: {fileID: 0}
   collisionController: {fileID: 1924429888176421737}
   freezePositionX: 0
   freezePositionY: 0

@@ -384,6 +384,10 @@ PrefabInstance:
       propertyPath: SyncRotAngleY
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8988418885940433753, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.297
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}
     - {fileID: 0}
@@ -408,6 +412,17 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1162646921372913132}
   m_SourcePrefab: {fileID: 100100000, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+--- !u!114 &905667967243219671 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7381126383517430763, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+  m_PrefabInstance: {fileID: 7709761659009139004}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44cf99f5c3b370e43a2855c9c2e1c811, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1412654848046434456 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8747205956194011556, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
@@ -441,17 +456,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 633f60b4376dd944aacd07902762ba7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &2590630615956071341 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5263959955919774353, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
-  m_PrefabInstance: {fileID: 7709761659009139004}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4139059953487484834}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &2957073883870968353 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4897436337832737565, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
@@ -480,16 +484,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83794165b8a73a54c828d3bc41719881, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
   itemSO: {fileID: 11400000, guid: 98e0e6a560ad1c14db5b9e5ba1a50c84, type: 2}
   rb: {fileID: 6921903450271284980}
   objectsToChangeLayer:
   - {fileID: 4139059953487484834}
   - {fileID: 4767779204118326136}
-  dissolveShaderComponent: {fileID: 0}
+  dissolveShaderComponent: {fileID: 905667967243219671}
   lifetimeTriggerItemComponent: {fileID: 2957073883870968353}
   followTransformComponent: {fileID: 2492626997076712017}
-  myNetworkObject: {fileID: 2590630615956071341}
   collisionController: {fileID: 1924429888176421737}
   freezePositionX: 0
   freezePositionY: 0
@@ -499,6 +501,9 @@ MonoBehaviour:
   freezeRotationZ: 0
   knockbackSOActivated: {fileID: 11400000, guid: 65d4f0b6e1ce8b6498214cc34303767a, type: 2}
   hitTriggerComponent: {fileID: 1412654848046434456}
+  disableCollisionOnCantactComponent: {fileID: 0}
+  hideMeshOnCollisionComponent: {fileID: 0}
+  spiningObjectComponent: {fileID: 0}
   rotateTowardsVelocityComponent: {fileID: 3179435721879527791}
   downForce: 25
   anchorActivatedDamageableSO: {fileID: 11400000, guid: e7a1b36a4056b1941a011aa2f7f73565, type: 2}
