@@ -5,6 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(Renderer))]
 public class DissolveShaderComponent : MonoBehaviour
 {
+    private const string k_dissolveStrenght = "_DissolveStrenght";
+    
     [SerializeField] private float dissolveDurationFadeIn = 1f;
     [SerializeField] private float dissolveDurationFadeOut = 0.3f;
     private float dissolveStrenght;
@@ -21,7 +23,7 @@ public class DissolveShaderComponent : MonoBehaviour
 
         if(isFadeIn)
         {
-            dissolveMaterial.SetFloat("_DissolveStrenght", 1);
+            dissolveMaterial.SetFloat(k_dissolveStrenght, 1);
         }
 
         while (elapsedTime < (isFadeIn? dissolveDurationFadeIn : dissolveDurationFadeOut))
@@ -36,7 +38,7 @@ public class DissolveShaderComponent : MonoBehaviour
                 dissolveStrenght = Mathf.Lerp(0, 1, elapsedTime / dissolveDurationFadeOut);
             }
 
-            dissolveMaterial.SetFloat("_DissolveStrenght", dissolveStrenght);
+            dissolveMaterial.SetFloat(k_dissolveStrenght, dissolveStrenght);
             yield return null;
         }
 

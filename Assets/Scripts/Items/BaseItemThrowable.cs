@@ -283,9 +283,8 @@ public abstract class BaseItemThrowable : MonoBehaviour
             {
                 //DestroyOnServerRpc();
                 destroyedCallback?.Invoke();
-                dissolveShaderComponent = null;
+                //dissolveShaderComponent = null;
                 ObjectPool.Instance.ReturnObject(gameObject, itemSO.itemID);
-                Destroy(gameObject);
             });
         }
         else

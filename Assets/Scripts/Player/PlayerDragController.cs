@@ -6,6 +6,11 @@ public class PlayerDragController : DragAndShoot
     {
         if(state == PlayerState.IdleMyTurn)
         {
+            //First Reset it
+            TurnOffDrag();
+            ResetDrag();
+            
+            //Then turn it on
             TurnOnDrag();
         } 
         else if (state == PlayerState.DragReleaseJump || state == PlayerState.DragReleaseItem || state == PlayerState.IdleEnemyTurn || state == PlayerState.MyTurnEnded)
