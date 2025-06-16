@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -84,5 +85,58 @@ public struct ItemLauncherData : INetworkSerializable, IEquatable<ItemLauncherDa
     public bool Equals(ItemLauncherData other)
     {
         return dragForce == other.dragForce && dragDirection == other.dragDirection && selectedItemID == other.selectedItemID && ownerPlayableState == other.ownerPlayableState && shootPosition == other.shootPosition && shootRotation == other.shootRotation;
+    }
+}
+
+/// <summary>
+/// Used to reconcile items on the network when activating an item, contains all the data needed to reconstruct an item 
+/// </summary>
+public struct ItemReconcileData : INetworkSerializable, IEquatable<ItemReconcileData>
+{
+    public int itemID;
+    public Vector3 linearVelocity;
+    public Vector3 angularVelocity;
+    public Vector3 position;
+    public Quaternion rotation;
+    public bool haveDisableCollisionComponent;
+    public bool isCollidersEnabled;
+    public bool haveHideMeshComponent;
+    public bool isMeshVisible;
+    public bool isKinematic;
+    public bool haveSpinObjectComponent;
+    public bool isSpinning;
+    
+    
+    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+    {
+        serializer.SerializeValue(ref itemID);
+        serializer.SerializeValue(ref linearVelocity);
+        serializer.SerializeValue(ref angularVelocity);
+        serializer.SerializeValue(ref position);
+        serializer.SerializeValue(ref rotation);
+        serializer.SerializeValue(ref isCollidersEnabled);
+        serializer.SerializeValue(ref isMeshVisible);
+        serializer.SerializeValue(ref isKinematic);
+        serializer.SerializeValue(ref isSpinning);
+        serializer.SerializeValue(ref haveDisableCollisionComponent);
+        serializer.SerializeValue(ref haveHideMeshComponent);
+        serializer.SerializeValue(ref haveSpinObjectComponent);
+
+    }
+
+    public bool Equals(ItemReconcileData other)
+    {
+        return itemID == other.itemID &&
+               linearVelocity.Equals(other.linearVelocity) &&
+               angularVelocity.Equals(other.angularVelocity) &&
+               position.Equals(other.position) &&
+               rotation.Equals(other.rotation) &&
+               isCollidersEnabled == other.isCollidersEnabled &&
+               isMeshVisible == other.isMeshVisible &&
+               isKinematic == other.isKinematic &&
+               isSpinning == other.isSpinning
+               && haveDisableCollisionComponent == other.haveDisableCollisionComponent &&
+               haveHideMeshComponent == other.haveHideMeshComponent &&
+               haveSpinObjectComponent == other.haveSpinObjectComponent;
     }
 }

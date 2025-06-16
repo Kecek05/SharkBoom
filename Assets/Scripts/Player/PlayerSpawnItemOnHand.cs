@@ -28,12 +28,10 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
     
     public void HandleOnRotationChanged(bool isRight)
     {
-        //if (!IsOwner) return;
         //Used to select the right side socket
         isRightSocket = isRight;
         UpdateSelectedSocket();
-        //SpawnItem(selectedItemID);
-        TriggerSpawnItem(selectedItemID);
+        SpawnItem(selectedItemID);
     }
 
     public void HandleOnPlayerInventoryItemSelected(int selectedItemSOIndex)

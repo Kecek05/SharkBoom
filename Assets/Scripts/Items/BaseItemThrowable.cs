@@ -27,8 +27,8 @@ public abstract class BaseItemThrowable : MonoBehaviour
     [SerializeField] protected DissolveShaderComponent dissolveShaderComponent;
     [SerializeField] protected LifetimeTriggerItemComponent lifetimeTriggerItemComponent;
     [SerializeField] protected FollowTransformComponent followTransformComponent; //Used to follow the hand when the item is in hand
-    [SerializeField] protected NetworkObject myNetworkObject;
-    [Tooltip("Can Be Null | Used to Listen to Collision Events")] [SerializeField] protected BaseCollisionController collisionController;
+    [Tooltip("Can Be Null | Used to Listen to Collision Events")] 
+    [SerializeField] protected BaseCollisionController collisionController;
     [Space(4)]
     [BetterHeader("Item Constraints Settings", 12)]
     [SerializeField] protected bool freezePositionX = false;
@@ -284,6 +284,7 @@ public abstract class BaseItemThrowable : MonoBehaviour
                 //DestroyOnServerRpc();
                 destroyedCallback?.Invoke();
                 dissolveShaderComponent = null;
+                ObjectPool.Instance.ReturnObject(gameObject, itemSO.itemID);
                 Destroy(gameObject);
             });
         }
@@ -291,7 +292,7 @@ public abstract class BaseItemThrowable : MonoBehaviour
         {
             //DestroyOnServerRpc();
             destroyedCallback?.Invoke();
-            Destroy(gameObject);
+            ObjectPool.Instance.ReturnObject(gameObject, itemSO.itemID);
         }
     }
 

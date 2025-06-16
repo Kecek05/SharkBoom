@@ -11,7 +11,8 @@ public abstract class BaseItemActivableManager : NetworkBehaviour
 
 
     public abstract void UseItem();
-
+    
+    public abstract void ReconcileItem(ItemReconcileData reconcileData);
     //[ServerRpc(RequireOwnership = false)]
     protected abstract void UseItemServer();
 
@@ -23,4 +24,6 @@ public abstract class BaseItemActivableManager : NetworkBehaviour
     public abstract void SetItemThrowableActivableServer(BaseItemThrowableActivable itemThrowableActivableServer);
 
     public abstract void ResetItemActivable();
+
+    //public abstract void ReconcileItem();
 }

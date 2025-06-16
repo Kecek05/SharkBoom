@@ -6,7 +6,10 @@ public class DisableCollisionOnCantactComponent : MonoBehaviour
     [Header("References")]
     [SerializeField] private Collider[] itemColliders;
     [SerializeField] private BaseCollisionController baseCollisionController;
-
+    private bool isCollidersEnabled = true;
+    
+    public bool IsCollidersEnabled => isCollidersEnabled;
+    
     private void OnEnable()
     {
         baseCollisionController.OnCollidedWithPlayer += HandleItemCollidedWithPlayer;
@@ -19,10 +22,7 @@ public class DisableCollisionOnCantactComponent : MonoBehaviour
         
         //DisableCollisionsServerRpc();
         
-        foreach (Collider itemCol in itemColliders)
-        {
-            itemCol.enabled = false;
-        }
+        DisableCollisions();
     }
 
     /*[Rpc(SendTo.Server)]
@@ -39,13 +39,23 @@ public class DisableCollisionOnCantactComponent : MonoBehaviour
             itemCol.enabled = false;
         }
     }*/
+    
+    public void DisableCollisions()
+    {
+        foreach (Collider itemCol in itemColliders)
+        {
+            itemCol.enabled = false;
+        }
+        isCollidersEnabled = false;
+    }
 
-    private void EnableCollisions()
+    public void EnableCollisions()
     {
         foreach (Collider itemCol in itemColliders)
         {
             itemCol.enabled = true;
         }
+        isCollidersEnabled = true;
     }
 
     private void OnDisable()

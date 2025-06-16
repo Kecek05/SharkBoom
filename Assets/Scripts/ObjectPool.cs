@@ -40,14 +40,6 @@ public class ObjectPool : MonoBehaviour
             RegisterPrefabInternal(configObject.itemSO, configObject.PrewarmCount);
         }
     }
-    /*public override void OnNetworkSpawn()
-    {
-        // Registers all objects in PooledPrefabsList to the cache.
-        foreach (var configObject in pooledPrefabsList)
-        {
-            RegisterPrefabInternal(configObject.itemSO, configObject.PrewarmCount);
-        }
-    }*/
 
     private void OnDisable()
     {
@@ -60,45 +52,9 @@ public class ObjectPool : MonoBehaviour
         m_ItemsSO.Clear();
     }
 
-   /* public override void OnNetworkDespawn()
-    {
-        // Unregisters all objects in PooledPrefabsList from the cache.
-        foreach (var itemSO in m_ItemsSO)
-        {
-            // Unregister Netcode Spawn handlers
-            NetworkManager.Singleton.PrefabHandler.RemoveHandler(itemSO.itemPrefab);
-            m_PooledObjects[itemSO.itemIndex].Clear();
-        }
-        m_PooledObjects.Clear();
-        m_ItemsSO.Clear();
-    }*/
-
-   /* public void OnValidate()
-    {
-        for (var i = 0; i < pooledPrefabsList.Count; i++)
-        {
-            var prefab = pooledPrefabsList[i].itemSO.itemPrefab;
-            if (prefab != null)
-            {
-                Assert.IsNotNull(prefab.GetComponent<NetworkObject>(), $"{nameof(ObjectPool)}: Pooled prefab \"{prefab.name}\" at index {i.ToString()} has no {nameof(NetworkObject)} component.");
-            }
-        }
-    }*/
-
-
     /// <summary>
     /// Gets an instance of the given prefab from the pool. The prefab must be registered to the pool.
     /// </summary>
-    /// <remarks>
-    /// To spawn a NetworkObject from one of the pools, this must be called on the server, then the instance
-    /// returned from it must be spawned on the server. This method will then also be called on the client by the
-    /// PooledPrefabInstanceHandler when the client receives a spawn message for a prefab that has been registered
-    /// here.
-    /// </remarks>
-    /// <param name="prefab"></param>
-    /// <param name="position">The position to spawn the object at.</param>
-    /// <param name="rotation">The rotation to spawn the object with.</param>
-    /// <returns></returns>
     public GameObject GetObject(int itemID, Vector3 position, Quaternion rotation)
     {   
         var objectPooled = m_PooledObjects[itemID].Get();
@@ -159,32 +115,7 @@ public class ObjectPool : MonoBehaviour
             m_PooledObjects[itemSO.itemID].Release(networkObject);
         }
 
-        // Register Netcode Spawn handlers
-       // NetworkManager.Singleton.PrefabHandler.AddHandler(itemSO.itemPrefab, new PooledPrefabInstanceHandler(itemSO.itemIndex, this));
     }
-
-    /*class PooledPrefabInstanceHandler : INetworkPrefabInstanceHandler
-    {
-        int m_PrefabIndex;
-        ObjectPool m_Pool;
-
-        public PooledPrefabInstanceHandler(int prefabIndex, ObjectPool pool)
-        {
-            m_PrefabIndex = prefabIndex;
-            m_Pool = pool;
-        }
-
-        NetworkObject INetworkPrefabInstanceHandler.Instantiate(ulong ownerClientId, Vector3 position, Quaternion rotation)
-        {
-            return m_Pool.GetObject(m_PrefabIndex, position, rotation);
-        }
-
-        void INetworkPrefabInstanceHandler.Destroy(NetworkObject networkObject)
-        {
-            m_Pool.ReturnObject(networkObject, m_PrefabIndex);
-        }
-    }*/
-
 }
 
 

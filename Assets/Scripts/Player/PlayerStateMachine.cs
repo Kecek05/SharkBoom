@@ -33,8 +33,8 @@ public class PlayerStateMachine
         // Build all your state instances
         Register(new MyTurnStartedState(player));
         Register(new IdleMyTurnState(player, playerDragController, playerInventory));
-        Register(new DraggingJump(player, playerDragController));
-        Register(new DraggingItem(player, playerDragController));
+        Register(new DraggingJump(player, playerDragController, playerInventory));
+        Register(new DraggingItem(player, playerDragController, playerInventory));
         Register(new DragReleaseJump());
         Register(new DragReleaseItem());
         Register(myTurnEndedState = new MyTurnEndedState(player, isOwner));

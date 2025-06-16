@@ -14,8 +14,6 @@ public class PlayerLauncher : NetworkBehaviour
     /// item launched, pass itemID
     /// </summary>
     public event Action<int> OnItemLaunched;
-
-
     
     /// <summary>
     /// Called when the last item used was synced. It will trigger all the chain reaction to throw an item.
@@ -31,13 +29,20 @@ public class PlayerLauncher : NetworkBehaviour
     [SerializeField] private PlayerSpawnItemOnHand playerSpawnItemOnHand;
     [SerializeField] private PlayerRotateToAim playerRotateToAim;
     
-    private BaseItemActivableManager itemActivableManager;
+    //private BaseItemActivableManager itemActivableManager;
     private BaseItemThrowable lastProjectile;
+    private BaseItemThrowableActivable lastItemThrowableActivable;
     private BaseTimerManager timerManager;
 
+    private ItemLauncherData lastItemLauncherData;
+    private float distanceThreshold = 2f; // Threshold to consider the item in the correct position
+    
+
+    private bool canActivateItem = true;
+    
     public void InitializeOwner()
     {
-        itemActivableManager = ServiceLocator.Get<BaseItemActivableManager>();
+        //itemActivableManager = ServiceLocator.Get<BaseItemActivableManager>();
         timerManager = ServiceLocator.Get<BaseTimerManager>();
 
         inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
@@ -46,10 +51,47 @@ public class PlayerLauncher : NetworkBehaviour
     private void InputReader_OnTouchPressEvent(InputAction.CallbackContext context)
     {
         if(!IsOwner) return; //To be shure that only the owner can activate items
-        if(context.started && itemActivableManager.ItemThrowableActivable != null)
+        if(context.started && lastItemThrowableActivable != null && canActivateItem)
         {
-            itemActivableManager.UseItem();
+            canActivateItem = false;
+            lastItemThrowableActivable.TryActivate();
+            TriggerUseItemOnServerRpc(lastItemThrowableActivable.GetReconcileData());
         }
+    }
+
+    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    public void TriggerUseItemOnServerRpc(ItemReconcileData reconcileData)
+    {
+        TriggerUseItemOnClientRpc(reconcileData);
+    }
+    
+    [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
+    public void TriggerUseItemOnClientRpc(ItemReconcileData reconcileData)
+    {
+        if (lastItemThrowableActivable != null)
+        {
+            lastItemThrowableActivable.Reconcile(reconcileData);
+        }
+        else
+        {
+            //The Item isnt spawned yet, so we need to wait for it to be spawned and wait to get in the activation position
+            StartCoroutine(WaitForCorrectPositionToActivate(reconcileData));
+        }
+    }
+    
+    private IEnumerator WaitForCorrectPositionToActivate(ItemReconcileData reconcileData)
+    {
+        while (!lastItemThrowableActivable)
+        {
+            yield return null;
+        }
+        //Item spawned
+        while (Vector3.Distance(lastItemThrowableActivable.transform.position, reconcileData.position) > distanceThreshold)
+        {
+            yield return null; // Wait until the item is in the correct position
+        }
+        //Item is in the correct position, Reconcile it
+        lastItemThrowableActivable.Reconcile(reconcileData);
     }
 
     public void HandleOnPlayerStateMachineStateChanged(PlayerState state)
@@ -76,18 +118,12 @@ public class PlayerLauncher : NetworkBehaviour
         }
     }
     
-    private float lastDragForce = 0f;
-    private Vector3 lastDragDirection = Vector3.zero;
-    private int lastItemID = 0;
-    private PlayableState lastPlayableState = PlayableState.None;
-
-    private ItemLauncherData lastItemLauncherData;
-    
     public void Launch() //Called by the script on animator
     {
         if (IsOwner)
         {
-            itemActivableManager.ResetItemActivable(); //Only owner can activate the item.
+            canActivateItem = true;
+            //itemActivableManager.ResetItemActivable(); //Only owner can activate the item.
             
             ItemLauncherData itemLauncherData = new ItemLauncherData
             {
@@ -150,7 +186,6 @@ public class PlayerLauncher : NetworkBehaviour
         // Wait for lastProjectile to be assigned
         while (!lastProjectile)
         {
-            Debug.Log($"WAITING FOR LAST PROJECTILE TO BE ASSIGNED - {gameObject.name}");
             yield return null;
         }
 
@@ -173,7 +208,12 @@ public class PlayerLauncher : NetworkBehaviour
 
         if (lastProjectile.TryGetComponent(out BaseItemThrowableActivable activable))
         {
-            itemActivableManager.SetItemThrowableActivable(activable);
+            lastItemThrowableActivable = activable;
+            //itemActivableManager.SetItemThrowableActivable(activable);
+        }
+        else
+        {
+            lastItemThrowableActivable = null;
         }
         
     }

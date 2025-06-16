@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
+using Sortify;
 using UnityEngine;
 
 public class BombItemThrowable : BaseItemThrowableActivable
 {
 
+    [BetterHeader("Bomb Item Settings")]
     [SerializeField] private BaseItemComponent spinObjectComponent;
     [SerializeField] private Collider explosionCollider;
     private Coroutine explodeBombCoroutine;
