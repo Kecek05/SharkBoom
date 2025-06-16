@@ -53,7 +53,7 @@ public class PlayerThrower : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         gameObject.name = "Player " + UnityEngine.Random.Range(0, 10000);
-        Debug.Log($"Events - OnNetworkSpawn - {gameObject.name}");
+        // Debug.Log($"Events - OnNetworkSpawn - {gameObject.name}");
         
         gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
         turnManager = ServiceLocator.Get<BaseTurnManager>();
@@ -68,7 +68,7 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleOnClientOwnershipChanged(ulong newOwnerClientId)
     {
-        Debug.Log($"Events - HandleOnClientOwnershipChanged - {gameObject.name} - Owner: {IsOwner}");
+        // Debug.Log($"Events - HandleOnClientOwnershipChanged - {gameObject.name} - Owner: {IsOwner}");
         if (!IsOwner) return;
 
         if(newOwnerClientId == OwnerClientId)
@@ -91,7 +91,7 @@ public class PlayerThrower : NetworkBehaviour
         
         playerStateMachine.Initialize(PlayerState.IdleEnemyTurn);
         
-        Debug.Log($"SPAWNED PLAYER STATE MACHINE: {playerStateMachine} - CURRENT STATE: {playerStateMachine.CurrentState} - OBJ: {gameObject.name}");
+        // Debug.Log($"SPAWNED PLAYER STATE MACHINE: {playerStateMachine} - CURRENT STATE: {playerStateMachine.CurrentState} - OBJ: {gameObject.name}");
         
         playerDetectFacingDirection.InitializeOwner();
         // playerInventory.Initialize();
@@ -337,7 +337,7 @@ public class PlayerThrower : NetworkBehaviour
         playerRotateToAim.SyncAimPosition(aimPosition, () =>
         {
             //Finished Lerp Aim Position
-            Debug.Log($"STEPS CLIENT 2 - AIM POSITION SYNCED - AIM POSITION: {aimPosition} - {gameObject.name}");
+            // Debug.Log($"STEPS CLIENT 2 - AIM POSITION SYNCED - AIM POSITION: {aimPosition} - {gameObject.name}");
             playerDragController.InvokeOnDragRelease();
         });
     }
@@ -374,7 +374,7 @@ public class PlayerThrower : NetworkBehaviour
     private void HandleOnItemSelectedByUI(int itemID)
     {
         playerInventory.SelectItemDataByItemInventoryID(itemID);
-        Debug.Log($"HandleOnItemSelectedByUI - Item ID: {itemID}");
+        // Debug.Log($"HandleOnItemSelectedByUI - Item ID: {itemID}");
     }
 
     private void HandleOnDragChange(float forcePercent, float angle)
@@ -386,7 +386,7 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleOnStateChanged(PlayerState state)
     {
-        Debug.Log($"PlayerThrower - Player State Changed to: {state} - OBJ: {gameObject.name}");
+        // Debug.Log($"PlayerThrower - Player State Changed to: {state} - OBJ: {gameObject.name}");
         cameraManager.HandleOnPlayerStateMachineStateChanged(state);
         playerInventory.HandleOnPlayerStateMachineStateChanged(state);
 
@@ -532,11 +532,11 @@ public class PlayerThrower : NetworkBehaviour
     {
         if (playerStateMachine == null)
         {
-            Debug.LogWarning("Player State Machine is null, cannot change state.");
+            // Debug.LogWarning("Player State Machine is null, cannot change state.");
             return;
         }
         
-        Debug.Log($"PlayerThrower - Changing Player State to: {playerState} - Old State Was: {playerStateMachine.CurrentState} - GameObject: {gameObject.name}");
+        // Debug.Log($"PlayerThrower - Changing Player State to: {playerState} - Old State Was: {playerStateMachine.CurrentState} - GameObject: {gameObject.name}");
         playerStateMachine.ChangeStateWithPlayerState(playerState);
         
         if(playerState != PlayerState.DragReleaseItem && playerState != PlayerState.DragReleaseJump)
@@ -609,7 +609,7 @@ public class PlayerThrower : NetworkBehaviour
 
     public override void OnNetworkDespawn()
     {
-        Debug.Log($"Events - OnNetworkDespawn - {gameObject.name}");
+        // Debug.Log($"Events - OnNetworkDespawn - {gameObject.name}");
         UnInitialize();
         UnHandleEvents();
         // GameManager.OnClientOwnershipChanged -= HandleOnClientOwnershipChanged;

@@ -27,7 +27,6 @@ public class GameStateManager : BaseGameStateManager
                 break;
             case GameState.SpawningPlayers:
                 //All players connected
-                Debug.Log("Start Spawning Players");
 
                 if(IsServer)
                 {
@@ -67,14 +66,12 @@ public class GameStateManager : BaseGameStateManager
                 //Show UI for clients
                 break;
         }
-        Debug.Log($"Game State Changed to: {newValue}");
     }
 
     public override void HandleOnGameTimerEnd()
     {
         if(!IsServer) return;
-
-        Debug.Log("Game Timer Ended");
+        
         ChangeGameState(GameState.GameEnded);
     }
 
@@ -95,7 +92,6 @@ public class GameStateManager : BaseGameStateManager
         if(!IsHost) return; //DS should not change state
 
         clientsGainedOwnership++;
-        Debug.Log($"Client {clientId} Gained Ownership, Total: {clientsGainedOwnership}");
 
         if (clientsGainedOwnership >= 2)
         {

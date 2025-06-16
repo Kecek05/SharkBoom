@@ -142,7 +142,7 @@ public class DraggingJump : IState
 
     private void PlayerDragController_OnDragRelease()
     {
-        Debug.Log($"STEPS CLIENT 4 - DRAGGING JUMP TO DRAG RELEASE JUMP - {player.gameObject.name}");
+        // Debug.Log($"STEPS CLIENT 4 - DRAGGING JUMP TO DRAG RELEASE JUMP - {player.gameObject.name}");
         player.ChangePlayerState(PlayerState.DragReleaseJump);
         /*player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.dragReleaseJump);
         player.TransitionToDraggingJumpServerRpc();*/

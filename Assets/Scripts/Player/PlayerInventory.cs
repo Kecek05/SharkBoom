@@ -79,7 +79,7 @@ public class PlayerInventory : NetworkBehaviour
 
         if (!IsOwner)
         {
-            Debug.Log($"HandleOnPlayerStateMachineStateChanged in PlayerInventory called and not the owner - Owner Is: {OwnerClientId} - Im: {NetworkManager.LocalClientId} - Object is: {gameObject.transform.name}");
+            // Debug.Log($"HandleOnPlayerStateMachineStateChanged in PlayerInventory called and not the owner - Owner Is: {OwnerClientId} - Im: {NetworkManager.LocalClientId} - Object is: {gameObject.transform.name}");
             return;
         }
 

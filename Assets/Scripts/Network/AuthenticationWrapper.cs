@@ -25,7 +25,7 @@ public static class AuthenticationWrapper
 
         if (AuthState == AuthState.Authenticating)
         {
-            Debug.LogWarning("Already authenticating...");
+            //Debug.LogWarning("Already authenticating...");
             await Authenticating();
             return AuthState;
         }
@@ -43,7 +43,7 @@ public static class AuthenticationWrapper
 
         if (AuthState == AuthState.Authenticating)
         {
-            Debug.LogWarning("Already authenticating.");
+            //Debug.LogWarning("Already authenticating.");
             await Authenticating();
             return AuthState;
         }
@@ -63,7 +63,7 @@ public static class AuthenticationWrapper
 
         if (AuthState == AuthState.Authenticating)
         {
-            Debug.LogWarning("Already authenticating.");
+            // Debug.LogWarning("Already authenticating.");
             await Authenticating();
             return AuthState;
         }

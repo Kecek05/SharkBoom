@@ -238,7 +238,7 @@ public abstract class BaseItemThrowable : MonoBehaviour
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         ResetConstraints();
-        Debug.Log("Item Reseted to Pool");
+        //Debug.Log("Item Reseted to Pool");
     }
 
     private void ResetConstraints()
@@ -283,7 +283,7 @@ public abstract class BaseItemThrowable : MonoBehaviour
         if (itemReleased)
             ItemCallbackAction();
         
-        Debug.Log($"ITEM - Destroying item {itemSO.itemID} of type {itemSO.itemName} - Have dissolve: {dissolveShaderComponent != null}");
+        //Debug.Log($"ITEM - Destroying item {itemSO.itemID} of type {itemSO.itemName} - Have dissolve: {dissolveShaderComponent != null}");
         if (dissolveShaderComponent)
         {
             dissolveShaderComponent.DissolveFadeOut(() =>

@@ -102,7 +102,6 @@ public class CameraManager : NetworkBehaviour
     {
         cameraMovement.enabled = movement;
         cameraZoom.enabled = zoom;
-        Debug.Log($"Set Camera Modules - Movement: {movement}, Zoom: {zoom}");
     }
 
     private void CameraMove() => SetCameraModules(true, true);
