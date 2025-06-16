@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using Sortify;
 using System;
 using System.Collections;
@@ -68,11 +67,11 @@ public class PlayerAnimator : NetworkBehaviour
         Animator.StringToHash("Idle_R_2"),
         Animator.StringToHash("Idle_L_3"),
         Animator.StringToHash("Idle_R_3"),
-
+        Animator.StringToHash("Idle_L_4"),
+        Animator.StringToHash("Idle_R_4"),
     };
 
-    //private AnimationData idleAnimationData = new AnimationData(Animations.Idle_L, Animations.Idle_R, 0.6f); //idle crossfade
-    private AnimationData jumpAnimationData = new AnimationData(Animations.Jump_L, Animations.Jump_R);
+    private AnimationData jumpAnimationData = new AnimationData(Animations.Jump_L, Animations.Jump_R, 0f);
     private AnimationData aimJumpAnimationData = new AnimationData(Animations.AimJump_L, Animations.AimJump_R);
 
     [SerializeField] private List<AnimationData> idleAnimationList = new List<AnimationData>();
@@ -106,20 +105,19 @@ public class PlayerAnimator : NetworkBehaviour
         }
         else if (playerState == PlayerState.DraggingItem)
         {
-            TriggerSyncAnimation(selectedAimAnimation);
+            PlayAnimationData(selectedAimAnimation);
         }
         else if (playerState == PlayerState.DraggingJump)
         {
-            TriggerSyncAnimation(aimJumpAnimationData);
+            PlayAnimationData(aimJumpAnimationData);
         }
         else if (playerState == PlayerState.DragReleaseItem)
         {
-            Debug.Log($"STEPS CLIENT 5 - PLAY RELEASE ITEM ANIMATION L - {selectedShootAnimation.animationL} - {gameObject.name}");
-            TriggerSyncAnimation(selectedShootAnimation);
+            PlayAnimationData(selectedShootAnimation);
         }
         else if (playerState == PlayerState.DragReleaseJump)
         {
-            TriggerSyncAnimation(jumpAnimationData);
+            PlayAnimationData(jumpAnimationData);
         }
     }
 
@@ -133,24 +131,6 @@ public class PlayerAnimator : NetworkBehaviour
     private void RotationChanged()
     {
         PlayAnimationData(currentAnimationData);
-    }
-
-    private void TriggerSyncAnimation(AnimationData animationData)
-    {
-        PlayAnimationData(animationData);
-        //TriggerAnimationServerRpc(animationData);
-    }
-
-    [Rpc(SendTo.Server, Delivery = RpcDelivery.Unreliable)]
-    private void TriggerAnimationServerRpc(AnimationData animationData)
-    {
-        TriggerAnimationClientRpc(animationData);
-    }
-
-    [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Unreliable)]
-    private void TriggerAnimationClientRpc(AnimationData animationData)
-    {
-        PlayAnimationData(animationData);
     }
 
     private void PlayAnimationData(AnimationData animationData)
@@ -227,7 +207,6 @@ public class PlayerAnimator : NetworkBehaviour
         //if (!IsOwner) return;
         if(playerState == PlayerState.DragReleaseItem)
         {
-            Debug.Log("AnimationFinished - DragReleaseItem");
             PlayAnimationData(selectedIdleAnimation);
         }
     }
@@ -305,6 +284,8 @@ public enum Animations
     Idle_R_2,
     Idle_L_3,
     Idle_R_3,
+    Idle_L_4,
+    Idle_R_4,
     None, //at the bottom!
 }
 
@@ -318,9 +299,9 @@ public struct AnimationData : INetworkSerializable, IEquatable<AnimationData>
 
     [BetterHeader("Crossfades", 12)]
     /// <summary>
-    /// Crossfade time in seconds in Fade In
+    /// Crossfade % in Fade In
     /// </summary>
-    [Tooltip("Crossfade time in seconds in Fade In")]
+    [Tooltip("Crossfade % in Fade In")]
     public float crossFade;
 
     /// <summary>
@@ -329,7 +310,7 @@ public struct AnimationData : INetworkSerializable, IEquatable<AnimationData>
     [Tooltip("Crossfade time in seconds when changing between left and right")]
     public float crossFadeBetweenSides;
 
-    public AnimationData(Animations animationL = Animations.None, Animations animationR = Animations.None, float crossFade = 0.3f, float crossFadeBetweenSides = 0f)
+    public AnimationData(Animations animationL = Animations.None, Animations animationR = Animations.None, float crossFade = 0.05f, float crossFadeBetweenSides = 0f)
     {
         this.animationL = animationL;
         this.animationR = animationR;

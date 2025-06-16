@@ -17,6 +17,8 @@ public class FollowTransformComponent : MonoBehaviour
     [SerializeField] private bool followScale = false;
     [Space(3)]
     [SerializeField] private Vector3 positionOffset;
+    [Space(1)]
+    [SerializeField] private Vector3 eulerRotationOffset;
     [Space(3)]
 
     [BetterHeader("Interpolation Settings")]
@@ -40,30 +42,36 @@ public class FollowTransformComponent : MonoBehaviour
         if (useInterpolation)
         {
             MoveWithInterpolation();
-            return;
         }
         else
         {
             Move();
-            return;
         }
     }
 
     private void MoveWithInterpolation()
     {
-        if(followPosition) transform.position = Vector3.Lerp(transform.position, targetPositionWithOffset, interpolationSpeed * Time.deltaTime);
+        if (followPosition)
+            transform.position = Vector3.Lerp(transform.position, targetPositionWithOffset, interpolationSpeed * Time.deltaTime);
 
-        if (followRotation) transform.rotation = Quaternion.Lerp(transform.rotation, targetTransform.rotation, interpolationSpeed * Time.deltaTime);
+        if (followRotation)
+        {
+            Quaternion targetRotWithOffset = targetTransform.rotation * Quaternion.Euler(eulerRotationOffset);
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotWithOffset, interpolationSpeed * Time.deltaTime);
+        }
 
-        if (followScale) transform.localScale = Vector3.Lerp(transform.localScale, targetTransform.localScale, interpolationSpeed * Time.deltaTime);
-
+        if (followScale)
+            transform.localScale = Vector3.Lerp(transform.localScale, targetTransform.localScale, interpolationSpeed * Time.deltaTime);
     }
 
     private void Move()
     {
         if (followPosition) transform.position = targetPositionWithOffset;
 
-        if (followRotation) transform.rotation = targetTransform.rotation;
+        if (followRotation)
+        {
+            transform.rotation = targetTransform.rotation * Quaternion.Euler(eulerRotationOffset);
+        }
 
         if (followScale) transform.localScale = targetTransform.localScale;
     }

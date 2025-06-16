@@ -4942,7 +4942,7 @@ PrefabInstance:
     - target: {fileID: 1148033323730379617, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: a08608b14e4715f4ab8d13dab6b23412, type: 2}
+      objectReference: {fileID: 2100000, guid: f7615cd499d73894fbbbd8b6b9639c37, type: 2}
     - target: {fileID: 1561311604723099721, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -5034,7 +5034,7 @@ PrefabInstance:
     - target: {fileID: 2738551014143626472, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: damageableSO
       value: 
-      objectReference: {fileID: 11400000, guid: 734ab69598098964cb7a74f73fb34ade, type: 2}
+      objectReference: {fileID: 11400000, guid: 318e940ef35f70e4d9cde8fe6e4bb219, type: 2}
     - target: {fileID: 3098171700661096899, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -5086,7 +5086,7 @@ PrefabInstance:
     - target: {fileID: 4423698351422297061, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: 'itemColliders.Array.data[0]'
       value: 
-      objectReference: {fileID: 6650915568669253196}
+      objectReference: {fileID: 4625657206995983632}
     - target: {fileID: 4423698351422297061, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: 'itemColliders.Array.data[1]'
       value: 
@@ -5117,7 +5117,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_Name
-      value: BombItem
+      value: MolotovItem
       objectReference: {fileID: 0}
     - target: {fileID: 6091596160473946369, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: item
@@ -5142,7 +5142,7 @@ PrefabInstance:
     - target: {fileID: 6921408951194769166, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 3797627773113033651, guid: 53b22ae4bd66f4540800faaa8afc1e1c, type: 3}
+      objectReference: {fileID: -6961711344341299652, guid: 8e435eac93f45154db60755e99f764fa, type: 3}
     - target: {fileID: 8089614718808125593, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: baseCollisionController
       value: 
@@ -5190,7 +5190,7 @@ PrefabInstance:
     - target: {fileID: 8747205956194011556, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: knockback
       value: 
-      objectReference: {fileID: 11400000, guid: 72fe707975db31440aa134e6a08ea4e2, type: 2}
+      objectReference: {fileID: 11400000, guid: 45ede5367c823ac448d53a603497d3a8, type: 2}
     - target: {fileID: 8747205956194011556, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: knockbackStrength
       value: 350
@@ -5225,7 +5225,7 @@ PrefabInstance:
       addedObject: {fileID: 2065954917544850458}
     - targetCorrespondingSourceObject: {fileID: 2942010050083629636, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6650915568669253196}
+      addedObject: {fileID: 4625657206995983632}
     - targetCorrespondingSourceObject: {fileID: 2942010050083629636, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8614684108031565060}
@@ -5361,7 +5361,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb4f0adee75e40b488dae54b9a5dda13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemSO: {fileID: 11400000, guid: b28405bd701509c4788af38f9292bf3c, type: 2}
+  itemSO: {fileID: 11400000, guid: 7538b90c54bf3a64d80398e7640459f3, type: 2}
   rb: {fileID: 6921903450271284980}
   objectsToChangeLayer:
   - {fileID: 4139059953487484834}
@@ -5376,7 +5376,7 @@ MonoBehaviour:
   freezeRotationX: 1
   freezeRotationY: 1
   freezeRotationZ: 0
-  knockbackSOActivated: {fileID: 11400000, guid: 0c417133b77bc524abb278a7c44baa9e, type: 2}
+  knockbackSOActivated: {fileID: 0}
   hitTriggerComponent: {fileID: 1412654848046434456}
   disableCollisionOnCantactComponent: {fileID: 6312552814969836249}
   hideMeshOnCollisionComponent: {fileID: 4080070733013200899}
@@ -5388,14 +5388,14 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 2942010050083629636, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
   m_PrefabInstance: {fileID: 7709761659009139004}
   m_PrefabAsset: {fileID: 0}
---- !u!135 &6650915568669253196
-SphereCollider:
+--- !u!136 &4625657206995983632
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4767779204118326136}
-  m_Material: {fileID: 13400000, guid: b46750e97d7e7f94ab9532a5a028db48, type: 2}
+  m_Material: {fileID: 13400000, guid: c9dcb16f0df5f2749a1a0cf269f613ac, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -5406,9 +5406,11 @@ SphereCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
+  serializedVersion: 2
+  m_Radius: 0.38
+  m_Height: 1.42
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.31, z: 0}
 --- !u!135 &8614684108031565060
 SphereCollider:
   m_ObjectHideFlags: 0

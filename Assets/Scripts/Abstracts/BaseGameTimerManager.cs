@@ -19,7 +19,7 @@ public abstract class BaseGameTimerManager : NetworkBehaviour
     /// <summary>
     /// Duration of the Match in seconds
     /// </summary>
-    protected const int startGameTimer = 300;
+    protected const int startGameTimer = 300000;
 
     protected Coroutine gameTimerCoroutine;
 

@@ -1660,7 +1660,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 633f60b4376dd944aacd07902762ba7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetTransform: {fileID: 3273882436030961328}
+  targetTransform: {fileID: 7320113981318259270}
   isActive: 1
   followPosition: 1
   followRotation: 1
@@ -2022,13 +2022,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2904688562244338340}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -0.00155, y: 0.00251, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5860744080256139402}
-  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &3068447571900616403
 GameObject:
   m_ObjectHideFlags: 0
@@ -5195,7 +5195,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 633f60b4376dd944aacd07902762ba7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetTransform: {fileID: 7320113981318259270}
+  targetTransform: {fileID: 3273882436030961328}
   isActive: 1
   followPosition: 1
   followRotation: 1
@@ -5567,19 +5567,23 @@ MonoBehaviour:
   idleAnimationList:
   - animationL: 0
     animationR: 1
-    crossFade: 0.6
+    crossFade: 0.2
     crossFadeBetweenSides: 0
   - animationL: 46
     animationR: 47
-    crossFade: 0.6
+    crossFade: 0.2
     crossFadeBetweenSides: 0
   - animationL: 48
     animationR: 49
-    crossFade: 0.6
+    crossFade: 0.2
     crossFadeBetweenSides: 0
   - animationL: 50
     animationR: 51
-    crossFade: 0.6
+    crossFade: 0.2
+    crossFadeBetweenSides: 0
+  - animationL: 52
+    animationR: 53
+    crossFade: 0.2
     crossFadeBetweenSides: 0
 --- !u!114 &5182517899106838082
 MonoBehaviour:
@@ -5625,7 +5629,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   playerGfxTransform: {fileID: 2927350467601940059}
   playerDragController: {fileID: 5120579722876303172}
-  angleOffset: 0.5
+  angleOffset: 1
   playerThrower: {fileID: 2871544100916734757}
 --- !u!114 &2468292975892475623
 MonoBehaviour:
