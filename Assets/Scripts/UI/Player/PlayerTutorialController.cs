@@ -9,9 +9,10 @@ public class PlayerTutorialController : NetworkBehaviour
 {
 
     public event Action<TutorialData> OnTutorialSelected;
-    [SerializeField] private TutorialInfoSO[] tutorialInfo;
-    private TutorialData selectedTutorialData;
 
+    [SerializeField] private TutorialInfoSO[] tutorialInfo;
+    
+    private TutorialData selectedTutorialData;
 
     [Command("TriggerTutorial", MonoTargetType.All)]
     public void HandleOnItemSelectedSO(int itemId)
