@@ -14,6 +14,10 @@ public class HideMeshOnCollisionComponent : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private bool hideOnCollisionWithPlayer = true;
     [SerializeField] private bool hideOnCollisionWithAnything = true;
+    private bool isMeshVisible = true;
+    
+    public bool IsMeshVisible => isMeshVisible;
+    
     private void OnEnable()
     {
         if (hideOnCollisionWithAnything)
@@ -32,14 +36,14 @@ public class HideMeshOnCollisionComponent : MonoBehaviour
     {
         //if (!IsOwner) return;
         //HideMeshServerRpc();
-        meshToHide.SetActive(false);
+        HideMesh();
     }
 
     private void BaseCollisionController_OnCollided(GameObject collidedObject)
     {
         //if (!IsOwner) return;
        // HideMeshServerRpc();
-        meshToHide.SetActive(false);
+       HideMesh();
     }
 
     /*[Rpc(SendTo.Server)]
@@ -54,9 +58,16 @@ public class HideMeshOnCollisionComponent : MonoBehaviour
         meshToHide.SetActive(false);
     }*/
 
-    private void ShowMesh()
+    public void HideMesh()
+    {
+        meshToHide.SetActive(false);
+        isMeshVisible = false;
+    }
+
+    public void ShowMesh()
     {
         meshToHide.SetActive(true);
+        isMeshVisible = true;
     }
 
     private void OnDisable()

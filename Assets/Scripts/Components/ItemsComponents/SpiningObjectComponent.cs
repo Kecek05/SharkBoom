@@ -18,6 +18,10 @@ public class SpiningObjectComponent : BaseItemComponent
     private Coroutine spinCoroutine;
     private WaitForFixedUpdate waitForFixedUpdate = new WaitForFixedUpdate();
     private float spinDirection = 0;
+    
+    private bool isSpinning = false;
+    
+    public bool IsSpinning => isSpinning;
 
     protected override void OnEnableComponent()
     {
@@ -31,6 +35,7 @@ public class SpiningObjectComponent : BaseItemComponent
 
     private IEnumerator DoSpin()
     {
+        isSpinning = true;
         while (true)
         {
 
@@ -68,13 +73,15 @@ public class SpiningObjectComponent : BaseItemComponent
         spinCoroutine = null;
     }
 
-    private void StopSpinCoroutine()
+    public void StopSpinCoroutine()
     {
         if (spinCoroutine != null)
         {
             StopCoroutine(spinCoroutine);
             spinCoroutine = null;
         }
+        
+        isSpinning = false;
     }
 
     protected override void OnDisableComponent()

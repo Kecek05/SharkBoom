@@ -11,7 +11,7 @@ public class PlayerInventory : NetworkBehaviour
     public event Action<ItemInventoryData> OnItemChanged;
 
     /// <summary>
-    /// Send the index of the selected item in the player's inventory
+    /// Send the ID of the selected item
     /// </summary>
     public event Action<int> OnItemSelected;
 

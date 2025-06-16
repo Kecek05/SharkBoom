@@ -5072,9 +5072,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 7667fbb8415883a4bb0ea49a0ebf3d7b, type: 2}
     - target: {fileID: 4423698351422297061, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: itemColliders.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4423698351422297061, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: 'itemColliders.Array.data[0]'
       value: 
       objectReference: {fileID: 6650915568669253196}
+    - target: {fileID: 4423698351422297061, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: 'itemColliders.Array.data[1]'
+      value: 
+      objectReference: {fileID: 8614684108031565060}
     - target: {fileID: 4897436337832737565, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: itemThrowable
       value: 
@@ -5270,9 +5278,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c8af99f34df71049a4d597f7960c87d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
   ItemThrowable: {fileID: 2065954917544850458}
   meshToHide: {fileID: 7002131505479470429}
+  hideMeshOnCollisionComponent: {fileID: 4080070733013200899}
 --- !u!114 &5504341106993227596
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5285,20 +5293,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa9ee22915074bc41b3ba86e344f2548, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
   ItemThrowable: {fileID: 2065954917544850458}
   particleSystemOnActivated: {fileID: 1686596863431425947}
---- !u!114 &2590630615956071341 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5263959955919774353, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
-  m_PrefabInstance: {fileID: 7709761659009139004}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4139059953487484834}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &2957073883870968353 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4897436337832737565, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
@@ -5338,7 +5334,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb4f0adee75e40b488dae54b9a5dda13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
   itemSO: {fileID: 11400000, guid: b28405bd701509c4788af38f9292bf3c, type: 2}
   rb: {fileID: 6921903450271284980}
   objectsToChangeLayer:
@@ -5347,7 +5342,6 @@ MonoBehaviour:
   dissolveShaderComponent: {fileID: 0}
   lifetimeTriggerItemComponent: {fileID: 2957073883870968353}
   followTransformComponent: {fileID: 2492626997076712017}
-  myNetworkObject: {fileID: 2590630615956071341}
   collisionController: {fileID: 1924429888176421737}
   freezePositionX: 0
   freezePositionY: 0
@@ -5357,6 +5351,9 @@ MonoBehaviour:
   freezeRotationZ: 0
   knockbackSOActivated: {fileID: 11400000, guid: 0c417133b77bc524abb278a7c44baa9e, type: 2}
   hitTriggerComponent: {fileID: 1412654848046434456}
+  disableCollisionOnCantactComponent: {fileID: 6312552814969836249}
+  hideMeshOnCollisionComponent: {fileID: 4080070733013200899}
+  spiningObjectComponent: {fileID: 7614228182743595413}
   spinObjectComponent: {fileID: 7614228182743595413}
   explosionCollider: {fileID: 8614684108031565060}
 --- !u!1 &4767779204118326136 stripped
@@ -5404,8 +5401,19 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 0
   serializedVersion: 3
-  m_Radius: 2
+  m_Radius: 2.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6312552814969836249 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4423698351422297061, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+  m_PrefabInstance: {fileID: 7709761659009139004}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4139059953487484834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 848a46f480f88954f9a559356e484dfa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!54 &6921903450271284980 stripped
 Rigidbody:
   m_CorrespondingSourceObject: {fileID: 788439871958220744, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}

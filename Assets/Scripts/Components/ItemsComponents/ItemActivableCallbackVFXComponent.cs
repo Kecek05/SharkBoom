@@ -1,7 +1,6 @@
-using Unity.Netcode;
 using UnityEngine;
 
-public class ItemActivableCallbackVFXNetworkedComponent : NetworkBehaviour
+public class ItemActivableCallbackVFXComponent : MonoBehaviour
 {
     [SerializeField] private BaseItemThrowableActivable ItemThrowable;
     [SerializeField] private ParticleSystem particleSystemOnActivated;
@@ -14,21 +13,28 @@ public class ItemActivableCallbackVFXNetworkedComponent : NetworkBehaviour
 
     private void BaseItemThrowableActivable_OnItemActivated()
     {
-        PlayVFXServerRpc();
+        PlayVFX();
     }
 
-    [Rpc(SendTo.Server, Delivery = RpcDelivery.Unreliable)]
-    private void PlayVFXServerRpc()
-    {
-        PlayVFXClientRpc();
-    }
-
-    [Rpc(SendTo.ClientsAndHost, Delivery = RpcDelivery.Unreliable)]
-    private void PlayVFXClientRpc()
+    private void PlayVFX()
     {
         particleSystemOnActivated.Clear();
         particleSystemOnActivated.Play();
     }
+    
+    //
+    // [Rpc(SendTo.Server, Delivery = RpcDelivery.Unreliable)]
+    // private void PlayVFXServerRpc()
+    // {
+    //     PlayVFXClientRpc();
+    // }
+    //
+    // [Rpc(SendTo.ClientsAndHost, Delivery = RpcDelivery.Unreliable)]
+    // private void PlayVFXClientRpc()
+    // {
+    //     particleSystemOnActivated.Clear();
+    //     particleSystemOnActivated.Play();
+    // }
 
     private void OnDisable()
     {
