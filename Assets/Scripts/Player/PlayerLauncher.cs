@@ -73,9 +73,12 @@ public class PlayerLauncher : NetworkBehaviour
 
     private void AutoActivateItem()
     {
-        lastAutoActivateItemComponent.OnActivate -= AutoActivateItem;
-        lastAutoActivateItemComponent = null;
-        ActivateItem();
+        if (lastAutoActivateItemComponent)
+        {
+            lastAutoActivateItemComponent.OnActivate -= AutoActivateItem;
+            lastAutoActivateItemComponent = null;
+            ActivateItem();
+        }
     }
 
     [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
