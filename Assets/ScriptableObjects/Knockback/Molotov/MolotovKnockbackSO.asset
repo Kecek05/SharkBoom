@@ -9,10 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6a533053c25e8846b295723a88b8aaa, type: 3}
-  m_Name: ItemDamage3SO
+  m_Script: {fileID: 11500000, guid: a540ce7d8b96b4743bb66d5bc8765c1e, type: 3}
+  m_Name: MolotovKnockbackSO
   m_EditorClassIdentifier: 
-  damage: 35
-  headMultiplier: 1
-  bodyMultiplier: 1
-  footMultiplier: 1
+  knockbackStrength: 200

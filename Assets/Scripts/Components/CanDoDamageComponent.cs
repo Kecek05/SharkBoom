@@ -8,9 +8,11 @@ public class CanDoDamageComponent : MonoBehaviour
     [SerializeField] private BaseCollisionController baseCollisionController;
     [SerializeField] private BaseItemThrowable baseItemThrowable;
     private bool damaged = false; //damage only once
+    private DamageableSO selectedDamageableSO;
     
     private void OnEnable()
     {
+        selectedDamageableSO = damageableSO;
         damaged = false;
         baseCollisionController.OnCollided += BaseCollisionController_OnItemCollided;
     }
@@ -38,20 +40,14 @@ public class CanDoDamageComponent : MonoBehaviour
         if (!damaged)
         {
             damaged = true;
-            damageable.TakeDamage(damageableSO);
+            damageable.TakeDamage(selectedDamageableSO);
         }
     }
 
     public void SetDamageableSO(DamageableSO damageableSO)
     {
-        this.damageableSO = damageableSO;
+        selectedDamageableSO = damageableSO;
     }
-
-    /*public override void OnNetworkDespawn()
-    {
-        if (!IsServer) return; // Only the server should handle the damage
-        baseCollisionController.OnCollided -= BaseCollisionController_OnItemCollided;
-    }*/
 
     private void OnDisable()
     {

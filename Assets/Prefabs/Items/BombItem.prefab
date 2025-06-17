@@ -5384,7 +5384,9 @@ MonoBehaviour:
   freezeRotationY: 1
   freezeRotationZ: 0
   knockbackSOActivated: {fileID: 11400000, guid: 0c417133b77bc524abb278a7c44baa9e, type: 2}
+  damageableSOActivated: {fileID: 11400000, guid: 05c40a4558e14bf4493955cb33c61ba1, type: 2}
   hitTriggerComponent: {fileID: 1412654848046434456}
+  canDoDamageComponent: {fileID: 5548393793532431828}
   disableCollisionOnCantactComponent: {fileID: 6312552814969836249}
   hideMeshOnCollisionComponent: {fileID: 4080070733013200899}
   spiningObjectComponent: {fileID: 7614228182743595413}
@@ -5450,6 +5452,17 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 3
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5548393793532431828 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2738551014143626472, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+  m_PrefabInstance: {fileID: 7709761659009139004}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4139059953487484834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16755dbb757ecfa409dc1c6bb6fbcba7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &6312552814969836249 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4423698351422297061, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
@@ -5488,4 +5501,5 @@ MonoBehaviour:
   spinningSpeed: 300
   useInterpolation: 1
   interpolationSpeed: 300
+  resetRotationWhenStoped: 1
   isInverted: 0

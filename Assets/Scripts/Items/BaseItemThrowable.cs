@@ -123,6 +123,7 @@ public abstract class BaseItemThrowable : MonoBehaviour
         UpdateOnRelease(itemLauncherData);
 
         followTransformComponent.DisableComponent();
+        transform.eulerAngles = Vector3.zero;
         transform.position = new Vector3(transform.position.x, transform.position.y, ITEM_Z_POSITION);
         rb.interpolation = RigidbodyInterpolation.Interpolate; //force it
         rb.AddForce(itemLauncherData.dragDirection * itemLauncherData.dragForce, ForceMode.Impulse);

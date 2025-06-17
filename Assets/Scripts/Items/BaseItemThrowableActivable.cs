@@ -8,7 +8,9 @@ public abstract class BaseItemThrowableActivable : BaseItemThrowable
     protected bool itemActivated = false;
     protected bool itemCanBeActivated = true;
     [SerializeField] protected KnockbackSO knockbackSOActivated;
+    [SerializeField] protected DamageableSO damageableSOActivated;
     [SerializeField] protected HitTriggerComponent hitTriggerComponent;
+    [SerializeField] protected CanDoDamageComponent canDoDamageComponent;
     
     [BetterHeader("Reconcile References", FontSize = 12)]
     [SerializeField] protected DisableCollisionOnCantactComponent disableCollisionOnCantactComponent;

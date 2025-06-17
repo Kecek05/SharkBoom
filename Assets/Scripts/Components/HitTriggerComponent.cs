@@ -10,7 +10,6 @@ public class HitTriggerComponent : MonoBehaviour
     [BetterHeader("Settings")]
     [SerializeField] private bool isJump;
     [Header("Knockback Settings")]
-    [SerializeField] private float knockbackStrength;
     [SerializeField] private KnockbackSO knockback;
     private KnockbackSO selectedKnockbackSO; // the SO that is currencly been used
 

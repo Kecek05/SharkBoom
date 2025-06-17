@@ -1,16 +1,14 @@
-using System;
 using System.Collections;
 using Sortify;
 using UnityEngine;
 
-public class BombItemThrowable : BaseItemThrowableActivable
+public class MolotovItemThrowable : BaseItemThrowableActivable
 {
-
-    [BetterHeader("Bomb Item Settings")]
+    [BetterHeader("Molotov Item Settings")]
     [SerializeField] private BaseItemComponent spinObjectComponent;
     [SerializeField] private Collider explosionCollider;
     [SerializeField] private AutoActivateItemComponent autoActivateItemComponent;
-    private Coroutine explodeBombCoroutine;
+    private Coroutine explodeMolotovCoroutine;
     private WaitForSecondsRealtime waitForSecondsRealtime = new WaitForSecondsRealtime(0.5f);
     private WaitForSecondsRealtime waitToDestroy = new WaitForSecondsRealtime(3.5f);
 
@@ -27,7 +25,13 @@ public class BombItemThrowable : BaseItemThrowableActivable
     {
         canDoDamageComponent.SetDamageableSO(damageableSOActivated);
         
-        explodeBombCoroutine ??= StartCoroutine(ExplodeBomb());
+        explodeMolotovCoroutine ??= StartCoroutine(ExplodeMolotov());
+    }
+
+    protected override void CollisionController_OnCollidedWithoutPlayer(GameObject collidedObject)
+    {
+        if(!itemActivated) //Not exploded yet and didnt collided with player
+            autoActivateItemComponent.SelfActivate();
     }
 
     protected override void CollisionController_OnCollided(GameObject collidedObject)
@@ -35,7 +39,7 @@ public class BombItemThrowable : BaseItemThrowableActivable
         spinObjectComponent.DisableComponent();
     }
 
-    private IEnumerator ExplodeBomb()
+    private IEnumerator ExplodeMolotov()
     {
         lifetimeTriggerItemComponent.StopLifetime(); //prevent the item to be destroyed while it's exploding
 
@@ -47,28 +51,11 @@ public class BombItemThrowable : BaseItemThrowableActivable
 
         explosionCollider.enabled = false;
 
-        explodeBombCoroutine = null;
+        explodeMolotovCoroutine = null;
 
         yield return waitToDestroy;
 
         base.DestroyItem();
-    }
-    
-    public override void DestroyItem(Action destroyedCallback = null)
-    {   
-        //if (!IsOwner) return;
-
-        if (!itemReleased)
-        {
-            base.DestroyItem(destroyedCallback);
-            return;
-        }
-        
-        //If the lifetime of the bomb gets to the end, it will explode
-        if(itemCanBeActivated && !itemActivated) //Not exploded yet
-            autoActivateItemComponent.SelfActivate();
-        else
-            base.DestroyItem(destroyedCallback);
     }
 
     protected override void ResetItemThrowableState()
