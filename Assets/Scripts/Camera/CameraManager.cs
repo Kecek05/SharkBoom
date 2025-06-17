@@ -15,6 +15,8 @@ public class CameraManager : NetworkBehaviour
     private GameObject playerObject;
     private GameObject enemyObject;
 
+    private GameObject objectToGo;
+    
     private BaseTurnManager turnManager;
     private BasePlayersPublicInfoManager publicInfoManager;
     private CameraGlobalFollow cameraGlobalFollow;
@@ -57,11 +59,13 @@ public class CameraManager : NetworkBehaviour
         playerObject = publicInfoManager.GetPlayerObjectByPlayableState(turnManager.LocalPlayableState);
         
         if(newValue == PlayableState.Player1Played || newValue == PlayableState.Player2Played) return;
-        
+
         if (turnManager.LocalPlayableState == newValue)
-            CameraGoToPlayer(playerObject);
+            objectToGo = playerObject;
         else
-            CameraGoToPlayer(enemyObject);
+            objectToGo = enemyObject;
+        
+        if()
     }
 
     public void HandleOnPlayerStateMachineStateChanged(PlayerState playerState)
@@ -85,6 +89,11 @@ public class CameraManager : NetworkBehaviour
                 CameraTurnOff();
                 break;
         }
+    }
+
+    public void HandleOnPlayerGetUp()
+    {
+        CameraGoToPlayer(objectToGo);
     }
 
     public void HandleOnPlayerHit(bool isJump)

@@ -207,32 +207,6 @@ public class DragAndShoot : NetworkBehaviour
     {
         OnDragStart?.Invoke();
     }
-    
-    // [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
-    // private void TriggerOnDragCancelableServerRpc(bool cancelable)
-    // {
-    //     TriggerOnDragCancelableClientRpc(cancelable);
-    // }
-    //
-    // [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
-    // private void TriggerOnDragCancelableClientRpc(bool cancelable)
-    // {
-    //     OnDragCancelable?.Invoke(cancelable);
-    // }
-
-    /// <summary>
-    /// On The Client, called after the aim position finished sync
-    /// </summary>
-    // [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
-    // public void TriggerOnDragReleaseServerRpc()
-    // {
-    //     TriggerOnDragReleaseClientRpc();
-    // }
-    //
-    // [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
-    // private void TriggerOnDragReleaseClientRpc()
-    // {
-    // }
 
     public void InvokeOnDragRelease()
     {

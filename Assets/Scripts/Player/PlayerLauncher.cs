@@ -41,7 +41,6 @@ public class PlayerLauncher : NetworkBehaviour
     /// Threshhold, in units, to activate the reconciliation
     /// </summary>
     private float distanceThreshold = 2f;
-    
 
     private bool canActivateItem = true;
     public void InitializeOwner()
@@ -179,18 +178,6 @@ public class PlayerLauncher : NetworkBehaviour
          Debug.Log($"STEPS CLIENT 1 - ITEM LAUNCHER DATA SYNCED - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
         OnLastItemSynced?.Invoke(aimPos);
     }
-
-    // [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
-    // private void SpawnProjectileServerRpc(ItemLauncherData itemLauncherData)
-    // {
-    //     SpawnProjectileClientRpc(itemLauncherData);
-    // }
-    //
-    // [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
-    // private void SpawnProjectileClientRpc(ItemLauncherData itemLauncherData)
-    // {
-    //     SpawnProjectile(itemLauncherData);
-    // }
     
     private void SpawnProjectile(ItemLauncherData launcherData)
     {
@@ -205,10 +192,11 @@ public class PlayerLauncher : NetworkBehaviour
             yield return null;
         }
 
-        if (!playerInventory.GetItemSOByItemID(launcherData.selectedItemID).itemPrefab)
+        if (!lastProjectile.Initialized)
         {
-            // Debug.LogWarning($"Player Launcher - ItemSOIndex: {launcherData.selectedItemID} has no client prefab");
-            yield break;
+            //Projectile not initialized, initialize it
+            lastProjectile.Initialize(playerSpawnItemOnHand.SelectedSocketTransform);
+            yield return null; //Wait a frame
         }
 
         // Debug.Log($"SPAWNING PROJECTILE - SETTING POSITION - LAST POSITION: {lastProjectile.transform.position} - NEW POSITION: {launcherData.shootPosition} - LAST ROTATION: {lastProjectile.transform.rotation} NEW ROTATION: {launcherData.shootRotation}");
@@ -219,8 +207,7 @@ public class PlayerLauncher : NetworkBehaviour
         if (lastProjectile.TryGetComponent(out BaseItemThrowable itemThrowable))
         {
             itemThrowable.ItemReleased(launcherData, IsOwner);
-            Debug.Log($"ITEM RELEASED - {itemThrowable.gameObject.name}");
-            // Debug.Log($"Player Launcher - Item released: {itemThrowable.name}");
+            // Debug.Log($"ITEM RELEASED - {itemThrowable.gameObject.name}");
         }
 
         if (lastProjectile.TryGetComponent(out BaseItemThrowableActivable activable))

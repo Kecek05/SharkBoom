@@ -152,8 +152,6 @@ public class PlayerGetUp : NetworkBehaviour
 
     private void ApplyGetUp(Vector3 finalPos)
     {
-        //Instantiate(CubeSelectedPosDEBUG, finalPos, Quaternion.identity);
-
         rootTransform.position = finalPos;
 
         OnPlayerGetUp?.Invoke();

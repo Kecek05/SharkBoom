@@ -53,7 +53,6 @@ public class PlayerThrower : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         gameObject.name = "Player " + UnityEngine.Random.Range(0, 10000);
-        // Debug.Log($"Events - OnNetworkSpawn - {gameObject.name}");
         
         gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
         turnManager = ServiceLocator.Get<BaseTurnManager>();
@@ -68,7 +67,6 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleOnClientOwnershipChanged(ulong newOwnerClientId)
     {
-        // Debug.Log($"Events - HandleOnClientOwnershipChanged - {gameObject.name} - Owner: {IsOwner}");
         if (!IsOwner) return;
 
         if(newOwnerClientId == OwnerClientId)
@@ -122,37 +120,17 @@ public class PlayerThrower : NetworkBehaviour
         
         playerTutorialUi.InitializeOwner();
         
-        //playerDragController.OnDragRelease += HandleOnDragRelease;
-        /*
-        turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
-
-        turnManager.OnMyTurnEnded += GameFlowManager_OnMyTurnEnded;
-
-        turnManager.OnMyTurnJumped += GameFlowManager_OnMyTurnJumped;*/
-
-        /*gameStateManager.CurrentGameState.OnValueChanged += HandleOnGameStateChanged;*/
-
-        /*BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;*/
-
-        /*hitReceiveNetworked.OnHitReceive += HandleOnHitReceive;*/
-
-
-        // playerDetectFacingDirection.InitializeOwner();
-        //playerRotateToAim.InitializeOwner();
-
-        
-        //playerDragController.InitializeOwner(playerInventory.GetItemSOByItemSOIndex(0).rb);
     }
 
     private void HandleOwnerEvents()
     {
         Debug.Log($"Events - HandleOwnerEvents - {gameObject.name}");
         
-        turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
-        
-        turnManager.OnMyTurnEnded += GameFlowManager_OnMyTurnEnded;
-        
-        turnManager.OnMyTurnJumped += GameFlowManager_OnMyTurnJumped;
+        // turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
+        //
+        // turnManager.OnMyTurnEnded += GameFlowManager_OnMyTurnEnded;
+        //
+        // turnManager.OnMyTurnJumped += GameFlowManager_OnMyTurnJumped;
         
         playerLauncher.OnItemLaunched += HandleOnItemLaunched;
         playerInventoryUI.OnItemSelectedByUI += HandleOnItemSelectedByUI;
@@ -196,6 +174,15 @@ public class PlayerThrower : NetworkBehaviour
         playerStateMachine.OnStateChanged += HandleOnStateChanged;
         
         BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
+        
+        //testing
+        turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
+        
+        turnManager.OnMyTurnEnded += GameFlowManager_OnMyTurnEnded;
+        
+        turnManager.OnMyTurnJumped += GameFlowManager_OnMyTurnJumped;
+
+        turnManager.OnEnemyTurnStarted += GameFlowManager_OnEnemyTurnStarted;
     }
 
     private void UnHandleEvents()
@@ -230,17 +217,24 @@ public class PlayerThrower : NetworkBehaviour
         playerLauncher.OnLastItemSynced -= HandleOnLastItemSynced;
         
         BaseItemThrowable.OnItemCallbackAction -= HandleOnItemCallbackAction;
+        
+        //testing
+        turnManager.OnMyTurnStarted -= GameFlowManager_OnMyTurnStarted;
+        
+        turnManager.OnMyTurnEnded -= GameFlowManager_OnMyTurnEnded;
+        
+        turnManager.OnMyTurnJumped -= GameFlowManager_OnMyTurnJumped;
     }
 
     private void UnHandleOwnerEvents()
     {
         if (turnManager)
         {
-            turnManager.OnMyTurnStarted -= GameFlowManager_OnMyTurnStarted;
-        
-            turnManager.OnMyTurnEnded -= GameFlowManager_OnMyTurnEnded;
-        
-            turnManager.OnMyTurnJumped -= GameFlowManager_OnMyTurnJumped;
+            // turnManager.OnMyTurnStarted -= GameFlowManager_OnMyTurnStarted;
+            //
+            // turnManager.OnMyTurnEnded -= GameFlowManager_OnMyTurnEnded;
+            //
+            // turnManager.OnMyTurnJumped -= GameFlowManager_OnMyTurnJumped;
         }
         
         playerDragController.OnDragChange -= HandleOnDragChange;
@@ -420,6 +414,7 @@ public class PlayerThrower : NetworkBehaviour
     private void HandleOnPlayerGetUp()
     {
         playerRagdollEnabler.HandleOnPlayerGetUp();
+        cameraManager.HandleOnPlayerGetUp();
     }
 
     [Rpc(SendTo.Server)]
@@ -447,16 +442,31 @@ public class PlayerThrower : NetworkBehaviour
     private void GameFlowManager_OnMyTurnEnded()
     {
         ChangePlayerState(PlayerState.MyTurnEnded);
-        /*playerStateMachine.TransitionTo(playerStateMachine.myTurnEndedState);
-        TransitionToMyTurnEndedStateServerRpc();*/
     }
 
     private void GameFlowManager_OnMyTurnStarted()
     {
-        // My Turn Started, I can play
-        ChangePlayerState(PlayerState.MyTurnStarted);
-        /*playerStateMachine.TransitionTo(playerStateMachine.myTurnStartedState);
-        TransitionToMyTurnStartedStateServerRpc();*/
+        if (IsOwner)
+        {
+            //Im the owner of this object, the event recieved is right
+            ChangePlayerState(PlayerState.MyTurnStarted);
+        }
+        else
+        {
+            ChangePlayerState(PlayerState.IdleEnemyTurn);
+        }
+    }
+    
+    private void GameFlowManager_OnEnemyTurnStarted()
+    {
+        if (IsOwner)
+        {
+            ChangePlayerState(PlayerState.IdleEnemyTurn);
+        }
+        else
+        {
+            ChangePlayerState(PlayerState.MyTurnStarted);
+        }
     }
     
     //STATES
@@ -469,7 +479,7 @@ public class PlayerThrower : NetworkBehaviour
     {
         if (playerStateMachine == null)
         {
-            // Debug.LogWarning("Player State Machine is null, cannot change state.");
+            Debug.LogWarning("Player State Machine is null, cannot change state.");
             return;
         }
         
@@ -479,7 +489,7 @@ public class PlayerThrower : NetworkBehaviour
         if(playerState != PlayerState.DragReleaseItem && playerState != PlayerState.DragReleaseJump)
         {
             //Dont sync DragRelease states, they are only for the owner
-            TransitionToStateServerRpc(playerState);
+            //TransitionToStateServerRpc(playerState);
         }
     }
     

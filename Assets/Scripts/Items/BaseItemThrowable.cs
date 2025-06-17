@@ -48,8 +48,10 @@ public abstract class BaseItemThrowable : MonoBehaviour
     protected PlayableState ownerPlayableState;
     
     protected bool isOwner = false;
+    protected bool initialized = false;
     
     public bool IsOwner => isOwner;
+    public bool Initialized => initialized;
 
     //DEBUG
     public bool IsItemReleased => itemReleased;
@@ -84,6 +86,7 @@ public abstract class BaseItemThrowable : MonoBehaviour
         }
 
         ResetConstraints();
+        initialized = true;
     }
 
     protected virtual void CollisionController_OnCollidedWithoutPlayer(GameObject collidedObject)
@@ -190,6 +193,7 @@ public abstract class BaseItemThrowable : MonoBehaviour
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         ResetConstraints();
+        initialized = false;
         //Debug.Log("Item Reseted to Pool");
     }
 
@@ -228,8 +232,6 @@ public abstract class BaseItemThrowable : MonoBehaviour
 
     public virtual void DestroyItem(Action destroyedCallback = null)
     {
-        //if (!IsOwner) return; //Only the owner can destroy the item
-
         OnItemFinishedAction?.Invoke();
 
         if (itemReleased)
@@ -240,15 +242,12 @@ public abstract class BaseItemThrowable : MonoBehaviour
         {
             dissolveShaderComponent.DissolveFadeOut(() =>
             {
-                //DestroyOnServerRpc();
                 destroyedCallback?.Invoke();
-                //dissolveShaderComponent = null;
                 ObjectPool.Instance.ReturnObject(gameObject, itemSO.itemID);
             });
         }
         else
         {
-            //DestroyOnServerRpc();
             destroyedCallback?.Invoke();
             ObjectPool.Instance.ReturnObject(gameObject, itemSO.itemID);
         }
