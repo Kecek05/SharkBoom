@@ -8,9 +8,9 @@ public class HarpoonItemThrowable : BaseItemThrowable
     {
         base.ItemReleased(itemLauncherData, isOwner);
 
-        rotateTowardsVelocityComponent.EnableComponent();
+        //rotateTowardsVelocityComponent.EnableComponent();
 
-        rotateTowardsVelocityComponent.StartComponentLogic();
+        //rotateTowardsVelocityComponent.StartComponentLogic();
     }
 
     protected override void CollisionController_OnCollided(GameObject collidedObj)

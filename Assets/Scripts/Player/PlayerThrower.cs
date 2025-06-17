@@ -154,6 +154,8 @@ public class PlayerThrower : NetworkBehaviour
         
         turnManager.OnMyTurnJumped += GameFlowManager_OnMyTurnJumped;
         
+        playerLauncher.OnItemLaunched += HandleOnItemLaunched;
+        playerInventoryUI.OnItemSelectedByUI += HandleOnItemSelectedByUI;
         
         playerDragController.OnDragChange += HandleOnDragChange;
         playerDragController.OnDragCancelable += HandleOnDragCancelable;
@@ -175,12 +177,8 @@ public class PlayerThrower : NetworkBehaviour
         playerInventory.OnItemChanged += HandleOnItemChanged;
         playerInventory.OnItemSelected += HandleOnItemSelected;
         playerInventory.OnItemSelectedSO += HandleOnItemSelectedSO;
-        
-        playerLauncher.OnItemLaunched += HandleOnItemLaunched;
                 
         playerDragController.OnDragStart += HandleOnDragStart;
-        
-        playerInventoryUI.OnItemSelectedByUI += HandleOnItemSelectedByUI;
         
         playerDetectFacingDirection.OnRotationChanged += HandleOnPlayerDetectFacingDirectionRotationChanged;
         
@@ -198,35 +196,6 @@ public class PlayerThrower : NetworkBehaviour
         playerStateMachine.OnStateChanged += HandleOnStateChanged;
         
         BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
-        
-        /*playerInventory.OnItemAdded += HandleOnItemAdded;
-        playerInventory.OnItemChanged += HandleOnItemChanged;*/
-        /*playerInventory.OnItemSelected += HandleOnItemSelected;
-        playerInventory.OnItemSelectedSO += HandleOnItemSelectedSO;*/
-
-        /*playerLauncher.OnItemLaunched += HandleOnItemLaunched;*/
-
-        /*if(playerStateMachine != null)
-            playerStateMachine.OnStateChanged += HandleOnStateChanged;*/
-
-        /*
-        playerDragController.OnDragStart += HandleOnDragStart;
-        playerDragController.OnDragChange += HandleOnDragChange;
-        playerDragController.OnDragCancelable += HandleOnDragCancelable;
-        */
-
-        /*playerInventoryUI.OnItemSelectedByUI += HandleOnItemSelectedByUI;*/
-
-        /*playerDetectFacingDirection.OnRotationChanged += HandleOnPlayerDetectFacingDirectionRotationChanged;
-
-        playerAnimator.OnCrossfadeFinished += HandleOnPlayerAnimatorCrossfadeFinished;*/
-
-        /*playerSpawnItemOnHand.OnItemOnHandSpawned += HandleOnPlayerSpawnItemOnHandItemOnHandSpawned;
-        playerSpawnItemOnHand.OnItemOnHandDespawned += HandleOnPlayerSpawnItemOnHandItemOnHandDespawned;
-        playerSpawnItemOnHand.OnItemSocketSelected += OnPlayerSpawnItemOnHandItemSocketSelected;*/
-
-        /*playerGetUp.OnPlayerGetUp += HandleOnPlayerGetUp;
-        playerRagdollEnabler.OnRagdollDisabled += HandleOnRagdollDisabled;*/
     }
 
     private void UnHandleEvents()
@@ -242,14 +211,10 @@ public class PlayerThrower : NetworkBehaviour
         playerInventory.OnItemChanged -= HandleOnItemChanged;
         playerInventory.OnItemSelected -= HandleOnItemSelected;
         playerInventory.OnItemSelectedSO -= HandleOnItemSelectedSO;
-        
-        playerLauncher.OnItemLaunched -= HandleOnItemLaunched;
 
         playerStateMachine.OnStateChanged -= HandleOnStateChanged;
                 
         playerDragController.OnDragStart -= HandleOnDragStart;
-        
-        playerInventoryUI.OnItemSelectedByUI -= HandleOnItemSelectedByUI;
         
         playerDetectFacingDirection.OnRotationChanged -= HandleOnPlayerDetectFacingDirectionRotationChanged;
         
@@ -265,37 +230,6 @@ public class PlayerThrower : NetworkBehaviour
         playerLauncher.OnLastItemSynced -= HandleOnLastItemSynced;
         
         BaseItemThrowable.OnItemCallbackAction -= HandleOnItemCallbackAction;
-        
-        // playerInventory.OnItemAdded -= HandleOnItemAdded;
-        // playerInventory.OnItemChanged -= HandleOnItemChanged;
-        // /*playerInventory.OnItemSelected -= HandleOnItemSelected;
-        // playerInventory.OnItemSelectedSO -= HandleOnItemSelectedSO;*/
-        //
-        // playerLauncher.OnItemLaunched -= HandleOnItemLaunched;
-        //
-        // /*if (playerStateMachine != null)
-        //     playerStateMachine.OnStateChanged -= HandleOnStateChanged;*/
-        //
-        // playerDragController.OnDragStart -= HandleOnDragStart;
-        // playerDragController.OnDragChange -= HandleOnDragChange;
-        // playerDragController.OnDragCancelable -= HandleOnDragCancelable;
-        //
-        // playerInventoryUI.OnItemSelectedByUI -= HandleOnItemSelectedByUI;
-        //
-        // playerDetectFacingDirection.OnRotationChanged -= HandleOnPlayerDetectFacingDirectionRotationChanged;
-        //
-        // playerAnimator.OnCrossfadeFinished -= HandleOnPlayerAnimatorCrossfadeFinished;
-        //
-        // /*playerSpawnItemOnHand.OnItemOnHandSpawned -= HandleOnPlayerSpawnItemOnHandItemOnHandSpawned;
-        // playerSpawnItemOnHand.OnItemOnHandDespawned -= HandleOnPlayerSpawnItemOnHandItemOnHandDespawned;
-        // playerSpawnItemOnHand.OnItemSocketSelected -= OnPlayerSpawnItemOnHandItemSocketSelected;*/
-        //
-        // playerGetUp.OnPlayerGetUp -= HandleOnPlayerGetUp;
-        // playerRagdollEnabler.OnRagdollDisabled -= HandleOnRagdollDisabled;
-        //
-        // cameraManager.UnInitializeOwner();
-        // playerLauncher.UnInitializeOwner();
-        // playerInventoryUI.UnHandleInitializeOwner();
     }
 
     private void UnHandleOwnerEvents()
@@ -311,6 +245,9 @@ public class PlayerThrower : NetworkBehaviour
         
         playerDragController.OnDragChange -= HandleOnDragChange;
         playerDragController.OnDragCancelable -= HandleOnDragCancelable;
+        playerLauncher.OnItemLaunched -= HandleOnItemLaunched;
+        playerInventoryUI.OnItemSelectedByUI -= HandleOnItemSelectedByUI;
+        
         
         playerInventory.OnItemAdded -= HandleOnItemAdded;
     }
@@ -337,7 +274,7 @@ public class PlayerThrower : NetworkBehaviour
         playerRotateToAim.SyncAimPosition(aimPosition, () =>
         {
             //Finished Lerp Aim Position
-            // Debug.Log($"STEPS CLIENT 2 - AIM POSITION SYNCED - AIM POSITION: {aimPosition} - {gameObject.name}");
+            Debug.Log($"STEPS CLIENT 2 - AIM POSITION SYNCED - AIM POSITION: {aimPosition} - {gameObject.name}");
             playerDragController.InvokeOnDragRelease();
         });
     }

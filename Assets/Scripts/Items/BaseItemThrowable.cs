@@ -101,23 +101,6 @@ public abstract class BaseItemThrowable : MonoBehaviour
         
     }
 
-    /*
-    [Rpc(SendTo.Server)]
-    private void InitializeUpdateRbTypeServerRpc(bool isKinematic)
-    {
-        InitializeUpdateRbTypeClientRpc(isKinematic);
-    }*/
-
-    /*[Rpc(SendTo.ClientsAndHost)]
-    private void InitializeUpdateRbTypeClientRpc(bool isKinematic)
-    {
-        if(IsOwner) return; //Ownler already changed
-
-        rb.isKinematic = isKinematic;
-        ResetConstraints();
-    }*/
-
-
     public virtual void ChangeFollowTransform(Transform follow)
     {
         followTransformComponent.SetTarget(follow);
@@ -130,6 +113,7 @@ public abstract class BaseItemThrowable : MonoBehaviour
     /// <param name="direction"></param>
     public virtual void ItemReleased(ItemLauncherData itemLauncherData, bool isOwner)
     {
+        Debug.Log($"STEPS - ITEM RELEASED - IS OWNER: {isOwner} - Owner State: {itemLauncherData.ownerPlayableState}");
         this.isOwner = isOwner;
         ownerPlayableState = itemLauncherData.ownerPlayableState;
         turnManager = ServiceLocator.Get<BaseTurnManager>();
@@ -137,28 +121,13 @@ public abstract class BaseItemThrowable : MonoBehaviour
 
         followTransformComponent.DisableComponent();
         transform.position = new Vector3(transform.position.x, transform.position.y, ITEM_Z_POSITION);
+        rb.interpolation = RigidbodyInterpolation.Interpolate; //force it
         rb.AddForce(itemLauncherData.dragDirection * itemLauncherData.dragForce, ForceMode.Impulse);
 
         if(lifetimeTriggerItemComponent)
             lifetimeTriggerItemComponent.StartLifetime();
         
-        //ItemReleasedServerRpc(itemLauncherData);
     }
-
-    /*[Rpc(SendTo.Server)]
-    private void ItemReleasedServerRpc(ItemLauncherData itemLauncherData)
-    {
-        UpdateOnRelease(itemLauncherData);
-        ItemReleasedClientRpc(itemLauncherData);
-    }
-
-    [Rpc(SendTo.ClientsAndHost)]
-    private void ItemReleasedClientRpc(ItemLauncherData itemLauncherData)
-    {
-        if(IsOwner) return; //Owner already released
-
-        UpdateOnRelease(itemLauncherData);
-    }*/
 
     private void UpdateOnRelease(ItemLauncherData itemLauncherData)
     {
@@ -208,23 +177,6 @@ public abstract class BaseItemThrowable : MonoBehaviour
         if(isOwner)
             turnManager.PlayerPlayed(thisItemLaucherData.ownerPlayableState);
     }
-
-    /*protected void FireItemCallbackAction()
-    {
-        ItemCallbackServerRpc();
-    }
-
-    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
-    private void ItemCallbackServerRpc()
-    {
-        ItemCallbackClientRpc();
-    }
-
-    [Rpc(SendTo.ClientsAndHost, Delivery = RpcDelivery.Reliable)]
-    private void ItemCallbackClientRpc()
-    {
-        OnItemCallbackAction?.Invoke();
-    }*/
 
     /// <summary>
     /// Called when the object is Destroyed, all clients call this. Use to reset to the initial state of the item to the pool.
@@ -301,22 +253,6 @@ public abstract class BaseItemThrowable : MonoBehaviour
             ObjectPool.Instance.ReturnObject(gameObject, itemSO.itemID);
         }
     }
-
-    /*[Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
-    private void DestroyOnServerRpc()
-    {
-        myNetworkObject.Despawn(true); // Pass 'true' to also destroy the GameObject | Return to the pool
-    }*/
-
-    /*public override void OnNetworkDespawn()
-    {
-        if (collisionController)
-        {
-            collisionController.OnCollided -= CollisionController_OnCollided;
-            collisionController.OnCollidedWithPlayer -= CollisionController_OnCollidedWithPlayer;
-        }
-        ResetItemThrowableState();
-    }*/
 
     private void OnDisable()
     {

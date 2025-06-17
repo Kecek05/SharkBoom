@@ -7,7 +7,14 @@ public class PlayerInventory : NetworkBehaviour
 {
     private const int JUMP_ITEM_ID = 0;
     
+    /// <summary>
+    /// Called when an item is added to inventory.
+    /// </summary>
     public event Action<ItemInventoryData> OnItemAdded;
+    
+    /// <summary>
+    /// Called when any value of an item was changed, like cooldown or can be used.
+    /// </summary>
     public event Action<ItemInventoryData> OnItemChanged;
 
     /// <summary>
@@ -15,6 +22,9 @@ public class PlayerInventory : NetworkBehaviour
     /// </summary>
     public event Action<int> OnItemSelected;
 
+    /// <summary>
+    /// Send the ItemSO of the selected item
+    /// </summary>
     public event Action<ItemSO> OnItemSelectedSO;
 
     [SerializeField] private ItemsListSO itemsListSO;
@@ -66,11 +76,11 @@ public class PlayerInventory : NetworkBehaviour
 
     public void HandleOnPlayerLauncherItemLaunched(int itemInventoryIndex)
     {
-        //if(!IsOwner) return;
-        //item Launched
+        if(!IsOwner) return;
+        //item Launched, only owner check this
         if (itemInventoryIndex == JUMP_ITEM_ID) //Jumped
         {
-            SetSelectedItemInventoryID(SelectFirstItemInventoryIndexAvailable(1)); // direct on Set to ignore canInteractWithInventory
+            SetSelectedItemInventoryID(GetFirstItemInventoryAvailable(0));
         }
     }
 
@@ -87,8 +97,8 @@ public class PlayerInventory : NetworkBehaviour
         {
             case PlayerState.MyTurnStarted:
                 SetCanInteractWithInventory(true);
-                if (!ItemCanBeUsed(selectedItemID)) // If selected item can't be used, select another one
-                    SelectItemDataByItemInventoryID(SelectFirstItemInventoryIndexAvailable());
+                if (!ItemCanBeUsed(selectedItemID)) // If selected item can't be used, select jump
+                    SelectItemDataByItemInventoryID(JUMP_ITEM_ID);
                 break;
             case PlayerState.IdleMyTurn:
             case PlayerState.IdleEnemyTurn:
@@ -106,7 +116,7 @@ public class PlayerInventory : NetworkBehaviour
             case PlayerState.DragReleaseItem:
             case PlayerState.DragReleaseJump:
                 SetCanInteractWithInventory(false);
-                UseAnyItemByIDServerRpc(selectedItemID); //item released, use item
+                UseItemByIDServerRpc(selectedItemID); //item released, use item
                 if (state == PlayerState.DragReleaseJump)
                 {
                     // Jumped, can shoot
@@ -179,15 +189,27 @@ public class PlayerInventory : NetworkBehaviour
         }
     }
 
-    public int SelectFirstItemInventoryIndexAvailable(int startingIndex = 0) //can pass a index to ignore previously itens
+    /// <summary>
+    /// Select the first item available
+    /// </summary>
+    /// <param name="ignoreID"> Can pass an id to not select the item</param>
+    /// <returns></returns>
+    public int GetFirstItemInventoryAvailable(int ignoreID = -1) //can pass a ID to ignore
     {
-        for (int i = startingIndex; i < playerItemsInventory.Count; i++)
+        foreach (ItemInventoryData itemInventoryData in playerItemsInventory)
         {
-            if (playerItemsInventory[i].itemCanBeUsed)
+            if (itemInventoryData.itemCanBeUsed && itemInventoryData.itemID != ignoreID)
             {
-                return i;
+                return itemInventoryData.itemID;
             }
         }
+        // for (int i = startingIndex; i < playerItemsInventory.Count; i++)
+        // {
+        //     if (playerItemsInventory[i].itemCanBeUsed)
+        //     {
+        //         return i;
+        //     }
+        // }
         Debug.LogWarning("No item available to use");
         return -1;
     }
@@ -256,6 +278,7 @@ public class PlayerInventory : NetworkBehaviour
 
     public void SelectItemDataByItemInventoryID(int itemInventoryID = 0) // Select a item to use, UI will call this, default (0) its Jump
     {
+        if(!IsOwner) return; //Only Owner can chose items
         Debug.Log($"SelectItemDataByItemInventoryID - {itemInventoryID} - CanInteractWithInventory: {canInteractWithInventory}");
         if (!canInteractWithInventory) return;
 
@@ -291,7 +314,7 @@ public class PlayerInventory : NetworkBehaviour
     }*/
 
     [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
-    private void UseAnyItemByIDServerRpc(int itemIdToUse)
+    private void UseItemByIDServerRpc(int itemIdToUse)
     {
         for (int i = 0; i < playerItemsInventory.Count; i++)
         {
@@ -308,23 +331,6 @@ public class PlayerInventory : NetworkBehaviour
             }
         }
         Debug.LogWarning($"Not Found Any Item with ID: {itemIdToUse} in the Inventory to use it!");
-        return;
-        
-        /*
-        int index = playerItemsInventory.FindIndex(item => item.itemID == itemInventoryID);
-        if (index == -1)
-        {
-            Debug.LogWarning("Not Found Any Item with this ID in the Inventory to use it!");
-            return;
-        }
-            
-        playerItemsInventory[index] = new ItemInventoryData
-        {
-            itemID = itemInventoryID, //do not lose the index
-            itemCooldownRemaining = GetItemSOByItemID(itemInventoryID).cooldown,
-            itemCanBeUsed = false,
-        };
-        OnItemChanged?.Invoke(playerItemsInventory[index]);*/
     }
 
     public bool ItemCanBeUsed(int itemID) // Returns if the item can be used
@@ -353,8 +359,6 @@ public class PlayerInventory : NetworkBehaviour
         //return GetItemSOByItemID(playerItemsInventory[selectedItemInventoryIndex].itemSOIndex);
         return GetItemSOByItemID(selectedItemID);
     }
-    
-
 
     public ItemSO GetItemSOByItemID(int itemID)
     {
@@ -362,7 +366,6 @@ public class PlayerInventory : NetworkBehaviour
         {
             if (checkItemInventoryData.itemID == itemID)
             {
-                selectedItemID = itemID;
                 return itemsListSO.allItemsSOList.FirstOrDefault(itemSO => itemSO.itemID == itemID);
             }
         }
@@ -390,6 +393,8 @@ public class PlayerInventory : NetworkBehaviour
 
     private void SetSelectedItemInventoryID(int newItemInventoryID)
     {
+        if(!IsOwner) return; //Only owner can pass to the clients
+        
         SetItem(newItemInventoryID);
         
         PassItemIndexToServerRpc(newItemInventoryID);
@@ -416,7 +421,7 @@ public class PlayerInventory : NetworkBehaviour
 
         OnItemSelectedSO?.Invoke(GetItemSOByItemID(selectedItemID));
         
-        Debug.Log($"SetItem - Selected Item ID: {selectedItemID} - CanInteractWithInventory: {canInteractWithInventory}");
+        Debug.Log($"SetItem - Selected Item ID: {selectedItemID} - CanInteractWithInventory: {canInteractWithInventory} - {gameObject.name}");
     }
     
     public void HandleOnGainOwnership()
@@ -427,7 +432,7 @@ public class PlayerInventory : NetworkBehaviour
             OnItemAdded?.Invoke(playerItemsInventory[i]);
         }
         Debug.Log($"HandleOnGainOwnership - Items: {playerItemsInventory.Count}");
-        SelectItemDataByItemInventoryID(SelectFirstItemInventoryIndexAvailable());
+        SelectItemDataByItemInventoryID(GetFirstItemInventoryAvailable());
     }
 
     public override void OnNetworkDespawn()

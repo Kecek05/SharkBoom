@@ -11,7 +11,8 @@ public class CameraGlobalFollow : NetworkBehaviour
     private Transform cameraObjectToFollow;
 
     private float cameraZPosOnFollowing = -30f;
-    [SerializeField] private float cameraFollowSpeed = 12f;
+    private Vector3 cameraVelocity;
+    private float smoothTime = 0.2f;
     
     public override void OnNetworkSpawn()
     {
@@ -31,7 +32,7 @@ public class CameraGlobalFollow : NetworkBehaviour
 
     private void HandleOnItemReleasedAction(Transform itemObject)
     {
-        FollowObject(itemObject); //TO DO: FIX THIS
+        FollowObject(itemObject);
     }
 
     /// <summary>
@@ -85,14 +86,25 @@ public class CameraGlobalFollow : NetworkBehaviour
 
     private void ChangeCameraObjectToFollowPosition(bool isInterpolate)
     {
+        Vector3 targetPos = new Vector3(
+            followTargetTransform.position.x,
+            followTargetTransform.position.y,
+            cameraZPosOnFollowing
+        );
+
         if (isInterpolate)
         {
-            Vector3 targetPos = new Vector3(followTargetTransform.position.x, followTargetTransform.position.y, cameraZPosOnFollowing);
-            cameraObjectToFollow.position = Vector3.Lerp(cameraObjectToFollow.position, targetPos, cameraFollowSpeed * Time.deltaTime);
+            // SmoothDamp for natural interpolation
+            cameraObjectToFollow.position = Vector3.SmoothDamp(
+                cameraObjectToFollow.position,
+                targetPos,
+                ref cameraVelocity,
+                smoothTime
+            );
         }
         else
         {
-            cameraObjectToFollow.position = new Vector3(followTargetTransform.position.x, followTargetTransform.position.y, cameraZPosOnFollowing);
+            cameraObjectToFollow.position = targetPos;
         }
     }
 
