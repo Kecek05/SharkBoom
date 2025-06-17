@@ -18,7 +18,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [SerializeField] private Rigidbody[] ragdollRbs; //SERIALIZEFIELD ONLY FOR DEBUG
     [SerializeField] private Collider[] ragdollColliders;//SERIALIZEFIELD ONLY FOR DEBUG
     [SerializeField] private Rigidbody[] ragdollRbsToKnockback;
-    [SerializeField] private CharacterJoint[] ragdollJoints;
     private Vector3 defaultHipsRotation = new Vector3(-90f, 180f, 0f);
     
     
@@ -34,7 +33,6 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     {
         ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
         ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>();
-        ragdollJoints = ragdollRoot.GetComponentsInChildren<CharacterJoint>();
     }
 
     // JUST FOR DEBUG ON RAGDOLL SCENE
@@ -141,7 +139,8 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
         animator.enabled = false;
         parentRigidbody.isKinematic = true;
-        //Debug.Log($"RAGDOLL - Animator Enable: {animator.enabled} (false), {gameObject.transform.parent.name}");
+
+        Debug.Log($"RAGDOLL - Animator Enable: {animator.enabled} (false), {gameObject.transform.parent.name}");
     }
 
 
@@ -160,25 +159,14 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     private void DisableRagdoll()
     {
 
-        foreach (CharacterJoint ragdollJoints in ragdollJoints)
-        {
-            ragdollJoints.gameObject.SetActive(false);
-            ragdollJoints.gameObject.SetActive(true);
-        }
-
         foreach (Rigidbody ragdollRb in ragdollRbs)
         {
-            //ragdollRb.isKinematic = true;
-            //ragdollRb.isKinematic = false;
             ragdollRb.isKinematic = true;
         }
 
-        //Debug.Log($"RAGDOLL - Test debug stop outside foreach");
         foreach (Collider ragdollCollider in ragdollColliders)
         {
             ragdollCollider.enabled = false;
-
-          //  Debug.Log($"RAGDOLL - Test debug stop");
         }
 
         foreach (Collider playerCollider in playerColliders)
@@ -187,13 +175,14 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         }
 
         animator.enabled = true;
-        //Debug.Log($"RAGDOLL - Animator Enable: {animator.enabled} (true), {gameObject.transform.parent.name}");
+        animator.enabled = false;
+        animator.enabled = true;
 
         parentRigidbody.isKinematic = false;
 
         hips.localRotation = Quaternion.Euler(defaultHipsRotation);
         hips.localPosition = Vector3.zero;
-
+        Debug.Log($"RAGDOLL - Animator Enable: {animator.enabled} (true), {gameObject.transform.parent.name}");
         OnRagdollDisabled?.Invoke();
     }
 }
