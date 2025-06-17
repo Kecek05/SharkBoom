@@ -5403,7 +5403,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a08eb04cf13bddd4697e7fb41fd6488d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  activateOnDestroy: 1
 --- !u!1 &4767779204118326136 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2942010050083629636, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
@@ -5449,7 +5448,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 0
   serializedVersion: 3
-  m_Radius: 2.5
+  m_Radius: 3
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &6312552814969836249 stripped
 MonoBehaviour:

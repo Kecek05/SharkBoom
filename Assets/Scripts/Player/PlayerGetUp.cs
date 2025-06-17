@@ -56,6 +56,7 @@ public class PlayerGetUp : NetworkBehaviour
         //Instantiate(CubeStartCalcPosDEBUG, playerRagdollPosition, Quaternion.identity);
         Vector3 foundFinalPosition = GetFreePosition(playerRagdollPosition);
         
+        ApplyGetUp(foundFinalPosition);
         PassPlayerFreePosServerRpc(foundFinalPosition);
     }
 
@@ -144,7 +145,7 @@ public class PlayerGetUp : NetworkBehaviour
         PassPlayerFreePosClientRpc(finalPos);
     }
 
-    [Rpc(SendTo.ClientsAndHost, Delivery = RpcDelivery.Reliable)]
+    [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
     private void PassPlayerFreePosClientRpc(Vector3 finalPos)
     {
         ApplyGetUp(finalPos);

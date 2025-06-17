@@ -1279,7 +1279,8 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   cameraMovement: {fileID: 8450544055641021374}
   cameraZoom: {fileID: 2903552973942911587}
-  playerReference: {fileID: 2871544100916734757}
+  playerThrower: {fileID: 2871544100916734757}
+  playerRagdollEnabler: {fileID: 8406327557363343199}
 --- !u!114 &8450544055641021374
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5607,6 +5608,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   animator: {fileID: 4481404921201979298}
+  playerSpawnItemOnHand: {fileID: 5846641034301650373}
   idleAnimationList:
   - animationL: 0
     animationR: 1
@@ -5722,6 +5724,7 @@ MonoBehaviour:
   - {fileID: 3524661316817440152}
   - {fileID: 8513195657333973693}
   - {fileID: 7708774325629273798}
+  ragdollJoints: []
   debugRagdollEnabler: 0
   debugRagdollDisabler: 0
   hitedRbDebug: {fileID: 0}

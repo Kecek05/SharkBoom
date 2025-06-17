@@ -12,7 +12,7 @@ public class CameraGlobalFollow : NetworkBehaviour
 
     private float cameraZPosOnFollowing = -30f;
     private Vector3 cameraVelocity;
-    private float smoothTime = 0.2f;
+    private float smoothTime = 0.1f;
     
     public override void OnNetworkSpawn()
     {
@@ -54,6 +54,7 @@ public class CameraGlobalFollow : NetworkBehaviour
     }
     private IEnumerator FollowPositionCoroutine(float duration, bool followByDuration, Action onComplete, bool isInterpolate)    
     {
+        Debug.Log($"CAMERA GO TO - Follow: {followTargetTransform.name} - Follow By Duration: {followByDuration}");
         float timer = 0f;
         if (!followByDuration)
         {

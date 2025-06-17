@@ -20,7 +20,8 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [SerializeField] private Rigidbody[] ragdollRbsToKnockback;
     [SerializeField] private CharacterJoint[] ragdollJoints;
     private Vector3 defaultHipsRotation = new Vector3(-90f, 180f, 0f);
-
+    
+    
     [BetterHeader("DEBUG")]
     [SerializeField] private bool debugRagdollEnabler;
     [SerializeField] private bool debugRagdollDisabler;
@@ -28,6 +29,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     //Debug
     [HideInInspector] public Rigidbody hitedRbDebug;
 
+    
     public override void OnNetworkSpawn()
     {
         ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
@@ -92,7 +94,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             Debug.LogError("No ragdoll rb found");
             return;
         }
-        Debug.Log($"RAGDOLL - Trigger");
+        //Debug.Log($"RAGDOLL - Trigger");
 
         TriggerRagdoll(hitRigidbodyIndex, force, hitPoint, hitRigidbody.position, hitRigidbody.rotation);
     }
@@ -108,16 +110,16 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     private void TriggerRagdoll(int hitRigidbodyIndex, Vector3 force, Vector3 hitPoint, Vector3 hitRigidbodyPosition, Quaternion hitRigidbodyRotation)
     {
         EnableRagdoll();
-        Debug.Log($"RAGDOLL - ParentRb Kinematic: {parentRigidbody.isKinematic}, Animator Enabled: {animator.enabled}");
+        //Debug.Log($"RAGDOLL - ParentRb Kinematic: {parentRigidbody.isKinematic}, Animator Enabled: {animator.enabled}");
         Rigidbody hitRigidbody = ragdollRbsToKnockback[hitRigidbodyIndex]; // get the rb we hit
         hitedRbDebug = hitRigidbody;
 
         force = new Vector3(force.x, force.y, 0f); //Ensure to not knockback in Z
         hitRigidbody.position = hitRigidbodyPosition;
         hitRigidbody.rotation = hitRigidbodyRotation;
-        Debug.Log($"RAGDOLL - Before Force - Velocity: {hitRigidbody.linearVelocity}, Position: {hitRigidbody.position}, Rotation: {hitRigidbody.rotation}, Scale: {hitRigidbody.transform.localScale}");
+        //Debug.Log($"RAGDOLL - Before Force - Velocity: {hitRigidbody.linearVelocity}, Position: {hitRigidbody.position}, Rotation: {hitRigidbody.rotation}, Scale: {hitRigidbody.transform.localScale}");
         hitRigidbody.AddForceAtPosition(force, hitPoint, ForceMode.Impulse);
-        Debug.Log($"RAGDOLL - Ragdoll enabled, hit rb: {hitRigidbody.name}, force: {force}, hitPoint: {hitPoint} - Rb Velocity: {hitRigidbody.linearVelocity}");
+        //Debug.Log($"RAGDOLL - Ragdoll enabled, hit rb: {hitRigidbody.name}, force: {force}, hitPoint: {hitPoint} - Rb Velocity: {hitRigidbody.linearVelocity}");
     }
 
     private void EnableRagdoll()
@@ -139,8 +141,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
         animator.enabled = false;
         parentRigidbody.isKinematic = true;
-
-        Debug.Log($"RAGDOLL - Animator Enable: {animator.enabled} (false), {gameObject.transform.parent.name}");
+        //Debug.Log($"RAGDOLL - Animator Enable: {animator.enabled} (false), {gameObject.transform.parent.name}");
     }
 
 
@@ -172,12 +173,12 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             ragdollRb.isKinematic = true;
         }
 
-        Debug.Log($"RAGDOLL - Test debug stop outside foreach");
+        //Debug.Log($"RAGDOLL - Test debug stop outside foreach");
         foreach (Collider ragdollCollider in ragdollColliders)
         {
             ragdollCollider.enabled = false;
 
-            Debug.Log($"RAGDOLL - Test debug stop");
+          //  Debug.Log($"RAGDOLL - Test debug stop");
         }
 
         foreach (Collider playerCollider in playerColliders)
@@ -186,7 +187,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         }
 
         animator.enabled = true;
-        Debug.Log($"RAGDOLL - Animator Enable: {animator.enabled} (true), {gameObject.transform.parent.name}");
+        //Debug.Log($"RAGDOLL - Animator Enable: {animator.enabled} (true), {gameObject.transform.parent.name}");
 
         parentRigidbody.isKinematic = false;
 

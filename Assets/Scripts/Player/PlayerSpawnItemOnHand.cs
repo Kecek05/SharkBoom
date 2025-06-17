@@ -22,8 +22,6 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
 
     //Publics
     public Transform SelectedSocketTransform => selectedSocket.transform;
-    
-    //DEBUG
     public BaseItemThrowable SpawnedItem => spawnedItem;
     
     public void HandleOnRotationChanged(bool isRight)
@@ -50,7 +48,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
     public void HandleOnPlayerStateChanged(PlayerState newState)
     {
         //if (!IsOwner) return;
-        canSpawnItem = false;
+        // canSpawnItem = false;
         switch (newState)
         {
             case PlayerState.IdleMyTurn:
@@ -63,12 +61,15 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
                 canSpawnItem = true;
                 break;
             case PlayerState.DragReleaseItem:
-                HandleOnShoot();
+                //HandleOnShoot();
                 break;
             case PlayerState.DragReleaseJump:
-                HandleOnShoot();
+                //HandleOnShoot();
                 break;
             case PlayerState.MyTurnEnded:
+                DespawnItem();
+                break;
+            case PlayerState.IdleEnemyTurn:
                 DespawnItem();
                 break;
         }
@@ -81,8 +82,8 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         
         TriggerSpawnItem(_selectedItemID);
         
-        if(IsOwner)
-            SpawnItemServerRpc(_selectedItemID);
+        // if(IsOwner)
+        //     SpawnItemServerRpc(_selectedItemID);
     }
     
     private void TriggerSpawnItem(int _selectedItemID)
@@ -176,6 +177,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
 
     private void DespawnItem()
     {
+        canSpawnItem = false;
         //Despawn item
         if (spawnedItem)
         {

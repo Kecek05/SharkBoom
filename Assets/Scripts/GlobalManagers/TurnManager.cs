@@ -24,6 +24,8 @@ public class TurnManager : BaseTurnManager
     public override void HandleOnPlayableStateValueChanged(PlayableState previousValue, PlayableState newValue)
     {
         if(!IsClient) return;
+        
+        if(previousValue == newValue) return;
 
         if (gameStateManager.CurrentGameState.Value == GameState.GameEnded) return;
 
@@ -124,6 +126,8 @@ public class TurnManager : BaseTurnManager
     {
         if (gameStateManager.CurrentGameState.Value == GameState.GameEnded) return;
 
+        if(playableState == currentPlayableState.Value) return;
+        
         await Task.Delay(delayBetweenTurns);
         SetPlayableStateServer(playableState);
     }

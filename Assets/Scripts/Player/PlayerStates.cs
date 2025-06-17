@@ -315,7 +315,9 @@ public class MyTurnEndedState : IState
         //Debug.Log("Entering My Turn End State");
         if (isOwner)
         {
-            turnManager = ServiceLocator.Get<BaseTurnManager>();
+            if(!turnManager)
+                turnManager = ServiceLocator.Get<BaseTurnManager>();
+            
             turnManager.PlayerPlayed(player.ThisPlayableState.Value);
         }
 

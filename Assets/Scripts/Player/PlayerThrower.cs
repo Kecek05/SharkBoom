@@ -175,7 +175,6 @@ public class PlayerThrower : NetworkBehaviour
         
         BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
         
-        //testing
         turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
         
         turnManager.OnMyTurnEnded += GameFlowManager_OnMyTurnEnded;
@@ -218,7 +217,7 @@ public class PlayerThrower : NetworkBehaviour
         
         BaseItemThrowable.OnItemCallbackAction -= HandleOnItemCallbackAction;
         
-        //testing
+
         turnManager.OnMyTurnStarted -= GameFlowManager_OnMyTurnStarted;
         
         turnManager.OnMyTurnEnded -= GameFlowManager_OnMyTurnEnded;
@@ -414,7 +413,6 @@ public class PlayerThrower : NetworkBehaviour
     private void HandleOnPlayerGetUp()
     {
         playerRagdollEnabler.HandleOnPlayerGetUp();
-        cameraManager.HandleOnPlayerGetUp();
     }
 
     [Rpc(SendTo.Server)]

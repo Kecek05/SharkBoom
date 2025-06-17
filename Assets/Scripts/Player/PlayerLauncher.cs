@@ -135,8 +135,25 @@ public class PlayerLauncher : NetworkBehaviour
     
     public void Launch() //Called by the script on animator
     {
+        StartCoroutine(WaitToSpawnItem());
+    }
+
+    private IEnumerator WaitToSpawnItem()
+    {
         if (IsOwner)
         {
+            while (!lastProjectile)
+            {
+                yield return null;
+            }
+
+            if (!lastProjectile.Initialized)
+            {
+                //Projectile not initialized, initialize it
+                lastProjectile.Initialize(playerSpawnItemOnHand.SelectedSocketTransform);
+                yield return null; //Wait a frame
+            }
+            
             canActivateItem = true;
             //itemActivableManager.ResetItemActivable(); //Only owner can activate the item.
             
@@ -159,11 +176,11 @@ public class PlayerLauncher : NetworkBehaviour
         
         SpawnProjectile(lastItemLauncherData); 
          Debug.Log($"STEPS LAST - ITEM LAUNCHED - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Position: {lastItemLauncherData.shootPosition} - Rotation: {lastItemLauncherData.shootRotation} - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
-        //SpawnProjectileServerRpc(itemLauncherData);
-        //Debug.Log($"Item Launcher - Launching item with ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Owner: {lastItemLauncherData.ownerPlayableState}");
         
         OnItemLaunched?.Invoke(playerInventory.SelectedItemID); //pass itemInventoryIndex
     }
+    
+    
 
     [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
     private void SyncItemLauncherDataServerRpc(ItemLauncherData itemLauncherData, Vector3 aimPos)

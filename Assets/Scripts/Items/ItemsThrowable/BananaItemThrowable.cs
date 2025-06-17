@@ -40,7 +40,10 @@ public class BananaItemThrowable : BaseItemThrowableActivable
     {
         float timer = 0f;
         Vector3 endPosition = targetPosition;
-
+        
+        spinObjectComponent.EnableComponent();
+        spinObjectComponent.StartComponentLogic();
+        
         while (timer < returnDuration)
         {
             timer += Time.deltaTime;
