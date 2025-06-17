@@ -73,7 +73,9 @@ public class TurnManager : BaseTurnManager
 
     public override void PlayerJumped(PlayableState playableState)
     {
-        PlayerJumpedServerRpc(playableState);
+        //PlayerJumpedServerRpc(playableState);
+        
+        TriggerOnMyTurnJumped();
     }
 
 
