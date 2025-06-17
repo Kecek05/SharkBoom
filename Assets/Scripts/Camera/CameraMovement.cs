@@ -20,7 +20,6 @@ public class CameraMovement : NetworkBehaviour
     public void InitializeOwner()
     {
         if (!IsOwner) return;
-
         inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
         inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
     }
@@ -78,7 +77,6 @@ public class CameraMovement : NetworkBehaviour
 
     public void UnInitializeOwner()
     {
-        if (!IsOwner) return;
         inputReader.OnTouchPressEvent -= InputReader_OnTouchPressEvent;
         inputReader.OnPrimaryFingerPositionEvent -= InputReader_OnPrimaryFingerPositionEvent;
     }

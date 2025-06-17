@@ -16,7 +16,7 @@ public class PlayersPublicInfoManager : BasePlayersPublicInfoManager
 
         playerStateToGameObject.TryAdd(playerPlayableState, playerGameObject);
 
-        Debug.Log($"Added player to playersDictionary, PlayableState: {playerPlayableState} - GameObject: {playerGameObject.name}");
+        //Debug.Log($"Added player to playersDictionary, PlayableState: {playerPlayableState} - GameObject: {playerGameObject.name}");
 
     }
 

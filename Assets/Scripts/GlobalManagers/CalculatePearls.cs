@@ -36,7 +36,7 @@ public static class CalculatePearls
             PearlsToLose = player1Win.PearlsToLose,
         };
 
-        Debug.Log($"Possible Results calculated. Player 1: {player1AuthId} - Pearls to Win: {player1Win.PearlsToWin} - Pearls to Lose: {player2Win.PearlsToLose} Player 2: {player2AuthId} - Pearls to Win: {player2Win.PearlsToWin} - Pearls to Lose: {player1Win.PearlsToLose}");
+        // Debug.Log($"Possible Results calculated. Player 1: {player1AuthId} - Pearls to Win: {player1Win.PearlsToWin} - Pearls to Lose: {player2Win.PearlsToLose} Player 2: {player2AuthId} - Pearls to Win: {player2Win.PearlsToWin} - Pearls to Lose: {player1Win.PearlsToLose}");
     }
 
 

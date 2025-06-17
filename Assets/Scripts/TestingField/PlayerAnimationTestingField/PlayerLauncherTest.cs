@@ -32,7 +32,7 @@ public class PlayerLauncherTest : MonoBehaviour
 
         if (lastProjectile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
         {
-            itemThrowable.ItemReleased(itemLauncherData);
+            itemThrowable.ItemReleased(itemLauncherData, true);
         }
 
         //if (projetctile.transform.TryGetComponent(out BaseItemThrowableActivable activable))

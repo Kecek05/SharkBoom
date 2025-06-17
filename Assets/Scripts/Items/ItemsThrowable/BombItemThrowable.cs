@@ -9,13 +9,14 @@ public class BombItemThrowable : BaseItemThrowableActivable
     [BetterHeader("Bomb Item Settings")]
     [SerializeField] private BaseItemComponent spinObjectComponent;
     [SerializeField] private Collider explosionCollider;
+    [SerializeField] private AutoActivateItemComponent autoActivateItemComponent;
     private Coroutine explodeBombCoroutine;
     private WaitForSecondsRealtime waitForSecondsRealtime = new WaitForSecondsRealtime(0.5f);
     private WaitForSecondsRealtime waitToDestroy = new WaitForSecondsRealtime(3.5f);
 
-    public override void ItemReleased(ItemLauncherData itemLauncherData)
+    public override void ItemReleased(ItemLauncherData itemLauncherData, bool isOwner)
     {
-        base.ItemReleased(itemLauncherData);
+        base.ItemReleased(itemLauncherData, isOwner);
 
         spinObjectComponent.EnableComponent();
 
@@ -24,6 +25,8 @@ public class BombItemThrowable : BaseItemThrowableActivable
 
     protected override void ActivateItem()
     {
+        canDoDamageComponent.SetDamageableSO(damageableSOActivated);
+        
         explodeBombCoroutine ??= StartCoroutine(ExplodeBomb());
     }
 
@@ -63,7 +66,7 @@ public class BombItemThrowable : BaseItemThrowableActivable
         
         //If the lifetime of the bomb gets to the end, it will explode
         if(itemCanBeActivated && !itemActivated) //Not exploded yet
-            TryActivate();
+            autoActivateItemComponent.SelfActivate();
         else
             base.DestroyItem(destroyedCallback);
     }

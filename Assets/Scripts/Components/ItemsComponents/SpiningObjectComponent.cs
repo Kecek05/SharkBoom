@@ -12,6 +12,7 @@ public class SpiningObjectComponent : BaseItemComponent
     [SerializeField] private float spinningSpeed = 300f;
     [SerializeField] private bool useInterpolation = true;
     [SerializeField] private float interpolationSpeed = 300f;
+    [SerializeField] private bool resetRotationWhenStoped = true;
 
     [Tooltip("Used to invert the direction of rotation")]
     [SerializeField] private bool isInverted = false;
@@ -82,6 +83,11 @@ public class SpiningObjectComponent : BaseItemComponent
         }
         
         isSpinning = false;
+
+        if (resetRotationWhenStoped)
+        {
+            transform.eulerAngles = Vector3.zero;
+        }
     }
 
     protected override void OnDisableComponent()

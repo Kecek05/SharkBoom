@@ -14,18 +14,6 @@ public class HitReceiveNetworkedComponent : NetworkBehaviour, IRecieveHit
 
     public void Hit(bool isJump)
     {
-        HitServerRpc(isJump);
-    }
-
-    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
-    private void HitServerRpc(bool isJump)
-    {
-        HitClientRpc(isJump);
-    }
-
-    [Rpc(SendTo.ClientsAndHost, Delivery = RpcDelivery.Reliable)]
-    private void HitClientRpc(bool isJump)
-    {
         OnHitReceive?.Invoke(isJump);
     }
 }

@@ -7,7 +7,7 @@ public class CameraManager : NetworkBehaviour
 {
     [SerializeField] private CameraMovement cameraMovement;
     [SerializeField] private CameraZoom cameraZoom;
-    [SerializeField] private PlayerThrower playerReference;
+    [SerializeField] private PlayerThrower playerThrower;
     private CinemachineCamera cinemachineCamera;
     private Camera cameraMain; // Cache camera main for all scripts that need it
     private Transform cameraObjectToFollow;
@@ -15,10 +15,12 @@ public class CameraManager : NetworkBehaviour
     private GameObject playerObject;
     private GameObject enemyObject;
 
+    private GameObject objectToGo;
+    
     private BaseTurnManager turnManager;
     private BasePlayersPublicInfoManager publicInfoManager;
     private CameraGlobalFollow cameraGlobalFollow;
-
+    
     public Transform CameraObjectToFollow => cameraObjectToFollow;
     public CameraZoom CameraZoom => cameraZoom;
     public Camera CameraMain => cameraMain;
@@ -53,15 +55,23 @@ public class CameraManager : NetworkBehaviour
 
     private void HandleOnPlayableStateChanged(PlayableState previousValue, PlayableState newValue)
     {
-        enemyObject = publicInfoManager.GetOtherPlayerByMyPlayableState(turnManager.LocalPlayableState);
-        playerObject = publicInfoManager.GetPlayerObjectByPlayableState(turnManager.LocalPlayableState);
+        if(previousValue == newValue) return;
         
         if(newValue == PlayableState.Player1Played || newValue == PlayableState.Player2Played) return;
         
+        enemyObject = publicInfoManager.GetOtherPlayerByMyPlayableState(turnManager.LocalPlayableState);
+        playerObject = publicInfoManager.GetPlayerObjectByPlayableState(turnManager.LocalPlayableState);
+
         if (turnManager.LocalPlayableState == newValue)
+        {
             CameraGoToPlayer(playerObject);
+        }
         else
+        {
             CameraGoToPlayer(enemyObject);
+        }
+
+        // Debug.Log($"CAMERA GO TO - HandleOnPlayableStateChanged - New Playable State: {newValue} - Enemy: {enemyObject.name} - My: {playerObject.name}");
     }
 
     public void HandleOnPlayerStateMachineStateChanged(PlayerState playerState)
@@ -89,7 +99,7 @@ public class CameraManager : NetworkBehaviour
 
     public void HandleOnPlayerHit(bool isJump)
     {
-        cameraGlobalFollow.FollowObject(playerReference.HipsTransform, isJump: isJump);
+        cameraGlobalFollow.FollowObject(playerThrower.HipsTransform, isJump: isJump);
     }
 
     /// <summary>
@@ -102,7 +112,6 @@ public class CameraManager : NetworkBehaviour
     {
         cameraMovement.enabled = movement;
         cameraZoom.enabled = zoom;
-        Debug.Log($"Set Camera Modules - Movement: {movement}, Zoom: {zoom}");
     }
 
     private void CameraMove() => SetCameraModules(true, true);
@@ -113,10 +122,11 @@ public class CameraManager : NetworkBehaviour
     
     private void CameraGoToPlayer(GameObject player)
     {
+        
         SetCameraModules(false, false);
         cameraGlobalFollow.FollowObject(player.transform, 3f, true, onComplete: () =>
         {
-            PlayerState currentState = playerReference.PlayerStateMachine.CurrentState.State;
+            PlayerState currentState = playerThrower.PlayerStateMachine.CurrentState.State;
             if (currentState == PlayerState.IdleMyTurn || currentState == PlayerState.IdleEnemyTurn)
             {
                 CameraMove();
@@ -131,8 +141,6 @@ public class CameraManager : NetworkBehaviour
 
     public void UnInitializeOwner()
     {
-        if (!IsOwner) return;
-
         cameraMovement.UnInitializeOwner();
         cameraZoom.UnInitializeOwner();
         

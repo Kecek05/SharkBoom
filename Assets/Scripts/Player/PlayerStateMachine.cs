@@ -86,7 +86,7 @@ public class PlayerStateMachine
     private void DoChangeState(IState nextState)
     {
         currentState.Exit();
-        Debug.Log($"Old State: {currentState} | Changing to: {nextState}");
+        // Debug.Log($"Old State: {currentState} | Changing to: {nextState}");
 
         currentState = nextState;
         currentState.Enter();
@@ -114,7 +114,7 @@ public class PlayerStateMachine
         }
         else
         {
-            Debug.LogWarning($"No state found for PlayerState: {playerState}");
+            // Debug.LogWarning($"No state found for PlayerState: {playerState}");
             return null;
         }
     }

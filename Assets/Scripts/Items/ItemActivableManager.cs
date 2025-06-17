@@ -15,13 +15,13 @@ public class ItemActivableManager : BaseItemActivableManager
         }
         else
         {
-            Debug.LogWarning("ItemThrowableActivableClient is null, cannot use item.");
+            //Debug.LogWarning("ItemThrowableActivableClient is null, cannot use item.");
         }
     }
     
     public override void ReconcileItem(ItemReconcileData reconcileData)
     {
-        Debug.Log("RECONCILE - ReconcileItemClientRpc called");
+        //Debug.Log("RECONCILE - ReconcileItemClientRpc called");
 
         if (itemThrowableActivable)
         {

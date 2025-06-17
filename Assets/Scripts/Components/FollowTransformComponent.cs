@@ -90,6 +90,13 @@ public class FollowTransformComponent : MonoBehaviour
     public void DisableComponent()
     {
         isActive = false;
+        
+        //Stops the lerp immediately
+        if (followRotation)
+        {
+            Quaternion targetRotWithOffset = targetTransform.rotation * Quaternion.Euler(eulerRotationOffset);
+            transform.rotation = targetRotWithOffset;
+        }
     }
 
     public void SetFollowPosition(bool value)

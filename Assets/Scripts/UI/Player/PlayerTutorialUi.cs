@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -9,6 +10,9 @@ public class PlayerTutorialUi : NetworkBehaviour
     [SerializeField] private VideoPlayer tutorialVideoPlayer;
     [SerializeField] private TextMeshProUGUI tutorialTitle;
     [SerializeField] private GameObject tutorialPanel;
+    [SerializeField] private TutorialInfoSO defaultTutorial;
+
+    private TutorialData defaultTutorialData;
 
     public override void OnNetworkSpawn()
     {
@@ -17,6 +21,14 @@ public class PlayerTutorialUi : NetworkBehaviour
     public void InitializeOwner()
     {
         playerTutorialController.OnTutorialSelected += HandleOnTutorialSelected;
+
+        defaultTutorialData = new TutorialData
+        {
+            tutorialVideo = defaultTutorial.tutorialVideo,
+            tutorialTitle = defaultTutorial.tutorialTitle
+        };
+
+        HandleOnTutorialSelected(defaultTutorialData);
     }
 
     private void HandleOnTutorialSelected(TutorialData tutorialData)

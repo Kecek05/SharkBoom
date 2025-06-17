@@ -140,6 +140,10 @@ PrefabInstance:
       propertyPath: damageableSO
       value: 
       objectReference: {fileID: 11400000, guid: 2424407f7d4fe8c44aa2dda2c8687a3a, type: 2}
+    - target: {fileID: 2738551014143626472, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: baseItemThrowable
+      value: 
+      objectReference: {fileID: 5504366123576952347}
     - target: {fileID: 3098171700661096899, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -563,7 +567,9 @@ MonoBehaviour:
   freezeRotationY: 1
   freezeRotationZ: 0
   knockbackSOActivated: {fileID: 11400000, guid: 52ec777de6dd72b45a80415ad97ee6d5, type: 2}
+  damageableSOActivated: {fileID: 0}
   hitTriggerComponent: {fileID: 1412654848046434456}
+  canDoDamageComponent: {fileID: 5548393793532431828}
   disableCollisionOnCantactComponent: {fileID: 0}
   hideMeshOnCollisionComponent: {fileID: 0}
   spiningObjectComponent: {fileID: 3534771564858783483}
@@ -603,7 +609,6 @@ MonoBehaviour:
     m_RotationOrder: 4
   returnDuration: 1
   heightY: -3
-  meshObject: {fileID: 7002131505479470429}
 --- !u!1 &4767779204118326136 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2942010050083629636, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
@@ -632,6 +637,17 @@ CapsuleCollider:
   m_Height: 1.4001662
   m_Direction: 1
   m_Center: {x: 0.4620594, y: 0.392546, z: 0}
+--- !u!114 &5548393793532431828 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2738551014143626472, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+  m_PrefabInstance: {fileID: 7709761659009139004}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4139059953487484834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16755dbb757ecfa409dc1c6bb6fbcba7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!54 &6921903450271284980 stripped
 Rigidbody:
   m_CorrespondingSourceObject: {fileID: 788439871958220744, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
@@ -659,4 +675,5 @@ MonoBehaviour:
   spinningSpeed: 900
   useInterpolation: 1
   interpolationSpeed: 300
+  resetRotationWhenStoped: 1
   isInverted: 0

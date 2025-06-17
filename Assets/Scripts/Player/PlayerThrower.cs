@@ -53,7 +53,6 @@ public class PlayerThrower : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         gameObject.name = "Player " + UnityEngine.Random.Range(0, 10000);
-        Debug.Log($"Events - OnNetworkSpawn - {gameObject.name}");
         
         gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
         turnManager = ServiceLocator.Get<BaseTurnManager>();
@@ -68,7 +67,6 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleOnClientOwnershipChanged(ulong newOwnerClientId)
     {
-        Debug.Log($"Events - HandleOnClientOwnershipChanged - {gameObject.name} - Owner: {IsOwner}");
         if (!IsOwner) return;
 
         if(newOwnerClientId == OwnerClientId)
@@ -91,7 +89,7 @@ public class PlayerThrower : NetworkBehaviour
         
         playerStateMachine.Initialize(PlayerState.IdleEnemyTurn);
         
-        Debug.Log($"SPAWNED PLAYER STATE MACHINE: {playerStateMachine} - CURRENT STATE: {playerStateMachine.CurrentState} - OBJ: {gameObject.name}");
+        // Debug.Log($"SPAWNED PLAYER STATE MACHINE: {playerStateMachine} - CURRENT STATE: {playerStateMachine.CurrentState} - OBJ: {gameObject.name}");
         
         playerDetectFacingDirection.InitializeOwner();
         // playerInventory.Initialize();
@@ -122,38 +120,20 @@ public class PlayerThrower : NetworkBehaviour
         
         playerTutorialUi.InitializeOwner();
         
-        //playerDragController.OnDragRelease += HandleOnDragRelease;
-        /*
-        turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
-
-        turnManager.OnMyTurnEnded += GameFlowManager_OnMyTurnEnded;
-
-        turnManager.OnMyTurnJumped += GameFlowManager_OnMyTurnJumped;*/
-
-        /*gameStateManager.CurrentGameState.OnValueChanged += HandleOnGameStateChanged;*/
-
-        /*BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;*/
-
-        /*hitReceiveNetworked.OnHitReceive += HandleOnHitReceive;*/
-
-
-        // playerDetectFacingDirection.InitializeOwner();
-        //playerRotateToAim.InitializeOwner();
-
-        
-        //playerDragController.InitializeOwner(playerInventory.GetItemSOByItemSOIndex(0).rb);
     }
 
     private void HandleOwnerEvents()
     {
         Debug.Log($"Events - HandleOwnerEvents - {gameObject.name}");
         
-        turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
+        // turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
+        //
+        // turnManager.OnMyTurnEnded += GameFlowManager_OnMyTurnEnded;
+        //
+        // turnManager.OnMyTurnJumped += GameFlowManager_OnMyTurnJumped;
         
-        turnManager.OnMyTurnEnded += GameFlowManager_OnMyTurnEnded;
-        
-        turnManager.OnMyTurnJumped += GameFlowManager_OnMyTurnJumped;
-        
+        playerLauncher.OnItemLaunched += HandleOnItemLaunched;
+        playerInventoryUI.OnItemSelectedByUI += HandleOnItemSelectedByUI;
         
         playerDragController.OnDragChange += HandleOnDragChange;
         playerDragController.OnDragCancelable += HandleOnDragCancelable;
@@ -175,12 +155,8 @@ public class PlayerThrower : NetworkBehaviour
         playerInventory.OnItemChanged += HandleOnItemChanged;
         playerInventory.OnItemSelected += HandleOnItemSelected;
         playerInventory.OnItemSelectedSO += HandleOnItemSelectedSO;
-        
-        playerLauncher.OnItemLaunched += HandleOnItemLaunched;
                 
         playerDragController.OnDragStart += HandleOnDragStart;
-        
-        playerInventoryUI.OnItemSelectedByUI += HandleOnItemSelectedByUI;
         
         playerDetectFacingDirection.OnRotationChanged += HandleOnPlayerDetectFacingDirectionRotationChanged;
         
@@ -199,34 +175,13 @@ public class PlayerThrower : NetworkBehaviour
         
         BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
         
-        /*playerInventory.OnItemAdded += HandleOnItemAdded;
-        playerInventory.OnItemChanged += HandleOnItemChanged;*/
-        /*playerInventory.OnItemSelected += HandleOnItemSelected;
-        playerInventory.OnItemSelectedSO += HandleOnItemSelectedSO;*/
+        turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
+        
+        turnManager.OnMyTurnEnded += GameFlowManager_OnMyTurnEnded;
+        
+        turnManager.OnMyTurnJumped += GameFlowManager_OnMyTurnJumped;
 
-        /*playerLauncher.OnItemLaunched += HandleOnItemLaunched;*/
-
-        /*if(playerStateMachine != null)
-            playerStateMachine.OnStateChanged += HandleOnStateChanged;*/
-
-        /*
-        playerDragController.OnDragStart += HandleOnDragStart;
-        playerDragController.OnDragChange += HandleOnDragChange;
-        playerDragController.OnDragCancelable += HandleOnDragCancelable;
-        */
-
-        /*playerInventoryUI.OnItemSelectedByUI += HandleOnItemSelectedByUI;*/
-
-        /*playerDetectFacingDirection.OnRotationChanged += HandleOnPlayerDetectFacingDirectionRotationChanged;
-
-        playerAnimator.OnCrossfadeFinished += HandleOnPlayerAnimatorCrossfadeFinished;*/
-
-        /*playerSpawnItemOnHand.OnItemOnHandSpawned += HandleOnPlayerSpawnItemOnHandItemOnHandSpawned;
-        playerSpawnItemOnHand.OnItemOnHandDespawned += HandleOnPlayerSpawnItemOnHandItemOnHandDespawned;
-        playerSpawnItemOnHand.OnItemSocketSelected += OnPlayerSpawnItemOnHandItemSocketSelected;*/
-
-        /*playerGetUp.OnPlayerGetUp += HandleOnPlayerGetUp;
-        playerRagdollEnabler.OnRagdollDisabled += HandleOnRagdollDisabled;*/
+        turnManager.OnEnemyTurnStarted += GameFlowManager_OnEnemyTurnStarted;
     }
 
     private void UnHandleEvents()
@@ -242,14 +197,10 @@ public class PlayerThrower : NetworkBehaviour
         playerInventory.OnItemChanged -= HandleOnItemChanged;
         playerInventory.OnItemSelected -= HandleOnItemSelected;
         playerInventory.OnItemSelectedSO -= HandleOnItemSelectedSO;
-        
-        playerLauncher.OnItemLaunched -= HandleOnItemLaunched;
 
         playerStateMachine.OnStateChanged -= HandleOnStateChanged;
                 
         playerDragController.OnDragStart -= HandleOnDragStart;
-        
-        playerInventoryUI.OnItemSelectedByUI -= HandleOnItemSelectedByUI;
         
         playerDetectFacingDirection.OnRotationChanged -= HandleOnPlayerDetectFacingDirectionRotationChanged;
         
@@ -266,51 +217,30 @@ public class PlayerThrower : NetworkBehaviour
         
         BaseItemThrowable.OnItemCallbackAction -= HandleOnItemCallbackAction;
         
-        // playerInventory.OnItemAdded -= HandleOnItemAdded;
-        // playerInventory.OnItemChanged -= HandleOnItemChanged;
-        // /*playerInventory.OnItemSelected -= HandleOnItemSelected;
-        // playerInventory.OnItemSelectedSO -= HandleOnItemSelectedSO;*/
-        //
-        // playerLauncher.OnItemLaunched -= HandleOnItemLaunched;
-        //
-        // /*if (playerStateMachine != null)
-        //     playerStateMachine.OnStateChanged -= HandleOnStateChanged;*/
-        //
-        // playerDragController.OnDragStart -= HandleOnDragStart;
-        // playerDragController.OnDragChange -= HandleOnDragChange;
-        // playerDragController.OnDragCancelable -= HandleOnDragCancelable;
-        //
-        // playerInventoryUI.OnItemSelectedByUI -= HandleOnItemSelectedByUI;
-        //
-        // playerDetectFacingDirection.OnRotationChanged -= HandleOnPlayerDetectFacingDirectionRotationChanged;
-        //
-        // playerAnimator.OnCrossfadeFinished -= HandleOnPlayerAnimatorCrossfadeFinished;
-        //
-        // /*playerSpawnItemOnHand.OnItemOnHandSpawned -= HandleOnPlayerSpawnItemOnHandItemOnHandSpawned;
-        // playerSpawnItemOnHand.OnItemOnHandDespawned -= HandleOnPlayerSpawnItemOnHandItemOnHandDespawned;
-        // playerSpawnItemOnHand.OnItemSocketSelected -= OnPlayerSpawnItemOnHandItemSocketSelected;*/
-        //
-        // playerGetUp.OnPlayerGetUp -= HandleOnPlayerGetUp;
-        // playerRagdollEnabler.OnRagdollDisabled -= HandleOnRagdollDisabled;
-        //
-        // cameraManager.UnInitializeOwner();
-        // playerLauncher.UnInitializeOwner();
-        // playerInventoryUI.UnHandleInitializeOwner();
+
+        turnManager.OnMyTurnStarted -= GameFlowManager_OnMyTurnStarted;
+        
+        turnManager.OnMyTurnEnded -= GameFlowManager_OnMyTurnEnded;
+        
+        turnManager.OnMyTurnJumped -= GameFlowManager_OnMyTurnJumped;
     }
 
     private void UnHandleOwnerEvents()
     {
         if (turnManager)
         {
-            turnManager.OnMyTurnStarted -= GameFlowManager_OnMyTurnStarted;
-        
-            turnManager.OnMyTurnEnded -= GameFlowManager_OnMyTurnEnded;
-        
-            turnManager.OnMyTurnJumped -= GameFlowManager_OnMyTurnJumped;
+            // turnManager.OnMyTurnStarted -= GameFlowManager_OnMyTurnStarted;
+            //
+            // turnManager.OnMyTurnEnded -= GameFlowManager_OnMyTurnEnded;
+            //
+            // turnManager.OnMyTurnJumped -= GameFlowManager_OnMyTurnJumped;
         }
         
         playerDragController.OnDragChange -= HandleOnDragChange;
         playerDragController.OnDragCancelable -= HandleOnDragCancelable;
+        playerLauncher.OnItemLaunched -= HandleOnItemLaunched;
+        playerInventoryUI.OnItemSelectedByUI -= HandleOnItemSelectedByUI;
+        
         
         playerInventory.OnItemAdded -= HandleOnItemAdded;
     }
@@ -374,7 +304,7 @@ public class PlayerThrower : NetworkBehaviour
     private void HandleOnItemSelectedByUI(int itemID)
     {
         playerInventory.SelectItemDataByItemInventoryID(itemID);
-        Debug.Log($"HandleOnItemSelectedByUI - Item ID: {itemID}");
+        // Debug.Log($"HandleOnItemSelectedByUI - Item ID: {itemID}");
     }
 
     private void HandleOnDragChange(float forcePercent, float angle)
@@ -386,7 +316,7 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleOnStateChanged(PlayerState state)
     {
-        Debug.Log($"PlayerThrower - Player State Changed to: {state} - OBJ: {gameObject.name}");
+        // Debug.Log($"PlayerThrower - Player State Changed to: {state} - OBJ: {gameObject.name}");
         cameraManager.HandleOnPlayerStateMachineStateChanged(state);
         playerInventory.HandleOnPlayerStateMachineStateChanged(state);
 
@@ -510,16 +440,31 @@ public class PlayerThrower : NetworkBehaviour
     private void GameFlowManager_OnMyTurnEnded()
     {
         ChangePlayerState(PlayerState.MyTurnEnded);
-        /*playerStateMachine.TransitionTo(playerStateMachine.myTurnEndedState);
-        TransitionToMyTurnEndedStateServerRpc();*/
     }
 
     private void GameFlowManager_OnMyTurnStarted()
     {
-        // My Turn Started, I can play
-        ChangePlayerState(PlayerState.MyTurnStarted);
-        /*playerStateMachine.TransitionTo(playerStateMachine.myTurnStartedState);
-        TransitionToMyTurnStartedStateServerRpc();*/
+        if (IsOwner)
+        {
+            //Im the owner of this object, the event recieved is right
+            ChangePlayerState(PlayerState.MyTurnStarted);
+        }
+        else
+        {
+            ChangePlayerState(PlayerState.IdleEnemyTurn);
+        }
+    }
+    
+    private void GameFlowManager_OnEnemyTurnStarted()
+    {
+        if (IsOwner)
+        {
+            ChangePlayerState(PlayerState.IdleEnemyTurn);
+        }
+        else
+        {
+            ChangePlayerState(PlayerState.MyTurnStarted);
+        }
     }
     
     //STATES
@@ -536,13 +481,13 @@ public class PlayerThrower : NetworkBehaviour
             return;
         }
         
-        Debug.Log($"PlayerThrower - Changing Player State to: {playerState} - Old State Was: {playerStateMachine.CurrentState} - GameObject: {gameObject.name}");
+        // Debug.Log($"PlayerThrower - Changing Player State to: {playerState} - Old State Was: {playerStateMachine.CurrentState} - GameObject: {gameObject.name}");
         playerStateMachine.ChangeStateWithPlayerState(playerState);
         
         if(playerState != PlayerState.DragReleaseItem && playerState != PlayerState.DragReleaseJump)
         {
             //Dont sync DragRelease states, they are only for the owner
-            TransitionToStateServerRpc(playerState);
+            //TransitionToStateServerRpc(playerState);
         }
     }
     
@@ -609,7 +554,7 @@ public class PlayerThrower : NetworkBehaviour
 
     public override void OnNetworkDespawn()
     {
-        Debug.Log($"Events - OnNetworkDespawn - {gameObject.name}");
+        // Debug.Log($"Events - OnNetworkDespawn - {gameObject.name}");
         UnInitialize();
         UnHandleEvents();
         // GameManager.OnClientOwnershipChanged -= HandleOnClientOwnershipChanged;

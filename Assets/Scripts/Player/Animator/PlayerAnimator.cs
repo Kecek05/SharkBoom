@@ -11,6 +11,7 @@ public class PlayerAnimator : NetworkBehaviour
 
     [BetterHeader("References")]
     [SerializeField] private Animator animator;
+    [SerializeField] private PlayerSpawnItemOnHand playerSpawnItemOnHand;
     private bool isRight; //Rotation that the player is looking
 
     private readonly static int[] animations =
@@ -113,11 +114,11 @@ public class PlayerAnimator : NetworkBehaviour
         }
         else if (playerState == PlayerState.DragReleaseItem)
         {
-            PlayAnimationData(selectedShootAnimation);
+            TriggerWaitItemBeSpawned(selectedShootAnimation);
         }
         else if (playerState == PlayerState.DragReleaseJump)
         {
-            PlayAnimationData(jumpAnimationData);
+            TriggerWaitItemBeSpawned(jumpAnimationData);
         }
     }
 
@@ -131,6 +132,19 @@ public class PlayerAnimator : NetworkBehaviour
     private void RotationChanged()
     {
         PlayAnimationData(currentAnimationData);
+    }
+    
+    private void TriggerWaitItemBeSpawned(AnimationData animationData) => StartCoroutine(WaitItemBeSpawned(animationData));
+    
+    private IEnumerator WaitItemBeSpawned(AnimationData animationData)
+    {
+        while (playerSpawnItemOnHand.SpawnedItem == null)
+        {
+            //Wait the item to be spawned to change anim
+            yield return null;
+        }
+        
+        PlayAnimationData(animationData);
     }
 
     private void PlayAnimationData(AnimationData animationData)

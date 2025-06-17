@@ -63,7 +63,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         //await AuthenticationService.Instance.SignInWithUsernamePasswordAsync("kecekTest", "Passw0rd!");
         //AuthState authState = AuthState.Authenticated;
         //
-        Debug.Log($"PlayerId: {AuthenticationService.Instance.PlayerId}");
+        // Debug.Log($"PlayerId: {AuthenticationService.Instance.PlayerId}");
 
         if (authState == AuthState.Authenticated)
         {
@@ -71,7 +71,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
 
             string playerName = await Save.LoadPlayerName(AuthenticationService.Instance.PlayerId);
 
-            Debug.Log($"Player Name: {playerName} - {authState}");
+            // Debug.Log($"Player Name: {playerName} - {authState}");
 
 
             userData = new UserData

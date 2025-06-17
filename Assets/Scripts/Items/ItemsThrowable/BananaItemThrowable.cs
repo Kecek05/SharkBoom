@@ -15,10 +15,9 @@ public class BananaItemThrowable : BaseItemThrowableActivable
     [SerializeField] private float returnDuration = 1f;
     [Tooltip("Banana curve height, negative values make it curve for down")]
     [SerializeField] private float heightY = 3f;
-    [SerializeField] private GameObject meshObject;
-    public override void ItemReleased(ItemLauncherData itemLauncherData)
+    public override void ItemReleased(ItemLauncherData itemLauncherData, bool isOwner)
     {
-        base.ItemReleased(itemLauncherData);
+        base.ItemReleased(itemLauncherData, isOwner);
         spinObjectComponent.EnableComponent();
         spinObjectComponent.StartComponentLogic();
 
@@ -41,7 +40,10 @@ public class BananaItemThrowable : BaseItemThrowableActivable
     {
         float timer = 0f;
         Vector3 endPosition = targetPosition;
-
+        
+        spinObjectComponent.EnableComponent();
+        spinObjectComponent.StartComponentLogic();
+        
         while (timer < returnDuration)
         {
             timer += Time.deltaTime;
@@ -57,7 +59,7 @@ public class BananaItemThrowable : BaseItemThrowableActivable
         }
 
         transform.position = endPosition;
-        meshObject.SetActive(false); // Hide the banana mesh when it returns
+        DestroyItem();
     }
 
     protected override void CollisionController_OnCollided(GameObject collidedObject)
@@ -71,7 +73,6 @@ public class BananaItemThrowable : BaseItemThrowableActivable
         base.ResetItemThrowableState();
 
         spinObjectComponent.DisableComponent();
-        meshObject.SetActive(true);
         if (bananaReturnCoroutine != null)
         {
             StopCoroutine(bananaReturnCoroutine);

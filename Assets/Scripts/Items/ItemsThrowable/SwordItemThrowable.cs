@@ -4,9 +4,9 @@ public class SwordItemThrowable : BaseItemThrowable
 {
     [SerializeField] private BaseItemComponent spinObjectComponent;
 
-    public override void ItemReleased(ItemLauncherData itemLauncherData)
+    public override void ItemReleased(ItemLauncherData itemLauncherData, bool isOwner)
     {
-        base.ItemReleased(itemLauncherData);
+        base.ItemReleased(itemLauncherData, isOwner);
 
         spinObjectComponent.EnableComponent();
 

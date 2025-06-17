@@ -29,19 +29,20 @@ public class RotateTowardsVelocityComponent : BaseItemComponent
 
     private IEnumerator RotateObject()
     {
-        while(true)
-        {
-            Vector3 vel = rb.linearVelocity;
-            if (vel.sqrMagnitude > velocityThreshold)
-            {
-                float angle = Mathf.Atan2(vel.y, vel.x) * Mathf.Rad2Deg;
-                //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.AngleAxis(angle, Vector3.forward), rotationSpeed * Time.fixedDeltaTime);
-
-                transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-            }
-            yield return waitForFixedUpdate;
-        }
-        rotateCoroutine = null;
+        // while(true)
+        // {
+        //     Vector3 vel = rb.linearVelocity;
+        //     if (vel.sqrMagnitude > velocityThreshold)
+        //     {
+        //         float angle = Mathf.Atan2(vel.y, vel.x) * Mathf.Rad2Deg;
+        //         //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.AngleAxis(angle, Vector3.forward), rotationSpeed * Time.fixedDeltaTime);
+        //
+        //         transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        //     }
+        //     yield return waitForFixedUpdate;
+        // }
+        // rotateCoroutine = null;
+        yield return null;
     }
 
     protected override void OnDisableComponent()

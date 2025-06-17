@@ -49,7 +49,14 @@ public class DissolveShaderComponent : MonoBehaviour
 
     public void DissolveFadeOut(Action dissolverCallback = null)
     {
-        if(gameObject.activeInHierarchy)
+        if (gameObject.activeInHierarchy)
+        {
             StartCoroutine(Dissolver(false, dissolverCallback));
+        }
+        else
+        {
+            //GFX not active, just invoke the callback
+            dissolverCallback?.Invoke();
+        }
     }
 }

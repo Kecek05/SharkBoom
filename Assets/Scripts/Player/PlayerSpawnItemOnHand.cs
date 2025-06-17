@@ -14,7 +14,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
     [SerializeField] private ItemSocket[] rightSideSockets;
 
     private ItemSocket selectedSocket;
-    private int selectedItemID = 0;
+    private int selectedItemID => playerInventory.SelectedItemID;
     private bool isRightSocket = false; //Rotation that the player is looking
     private BaseItemThrowable spawnedItem;
 
@@ -22,8 +22,6 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
 
     //Publics
     public Transform SelectedSocketTransform => selectedSocket.transform;
-    
-    //DEBUG
     public BaseItemThrowable SpawnedItem => spawnedItem;
     
     public void HandleOnRotationChanged(bool isRight)
@@ -38,7 +36,6 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
     {
         //if (!IsOwner) return;
         //Based on the item select, save the item to spawn when drag start and select the corresponding socket based on item and on rotation
-        selectedItemID = selectedItemSOIndex;
         UpdateSelectedSocket();
     }
 
@@ -51,7 +48,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
     public void HandleOnPlayerStateChanged(PlayerState newState)
     {
         //if (!IsOwner) return;
-        canSpawnItem = false;
+        // canSpawnItem = false;
         switch (newState)
         {
             case PlayerState.IdleMyTurn:
@@ -64,12 +61,15 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
                 canSpawnItem = true;
                 break;
             case PlayerState.DragReleaseItem:
-                HandleOnShoot();
+                //HandleOnShoot();
                 break;
             case PlayerState.DragReleaseJump:
-                HandleOnShoot();
+                //HandleOnShoot();
                 break;
             case PlayerState.MyTurnEnded:
+                DespawnItem();
+                break;
+            case PlayerState.IdleEnemyTurn:
                 DespawnItem();
                 break;
         }
@@ -82,8 +82,8 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         
         TriggerSpawnItem(_selectedItemID);
         
-        if(IsOwner)
-            SpawnItemServerRpc(_selectedItemID);
+        // if(IsOwner)
+        //     SpawnItemServerRpc(_selectedItemID);
     }
     
     private void TriggerSpawnItem(int _selectedItemID)
@@ -177,6 +177,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
 
     private void DespawnItem()
     {
+        canSpawnItem = false;
         //Despawn item
         if (spawnedItem)
         {

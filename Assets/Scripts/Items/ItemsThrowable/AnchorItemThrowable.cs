@@ -6,13 +6,11 @@ public class AnchorItemThrowable : BaseItemThrowableActivable
     [BetterHeader("Anchor")]
     [SerializeField] private BaseItemComponent rotateTowardsVelocityComponent;
     [SerializeField] private float downForce;
-    [SerializeField] private DamageableSO anchorActivatedDamageableSO;
-    [SerializeField] private CanDoDamageComponent canDoDamageComponent;
     
     
-    public override void ItemReleased(ItemLauncherData itemLauncherData)
+    public override void ItemReleased(ItemLauncherData itemLauncherData, bool isOwner)
     {
-        base.ItemReleased(itemLauncherData);
+        base.ItemReleased(itemLauncherData, isOwner);
 
         rotateTowardsVelocityComponent.EnableComponent();
 
@@ -20,7 +18,7 @@ public class AnchorItemThrowable : BaseItemThrowableActivable
     }
     protected override void ActivateItem()
     {
-        canDoDamageComponent.SetDamageableSO(anchorActivatedDamageableSO);
+        canDoDamageComponent.SetDamageableSO(damageableSOActivated);
 
         rb.linearVelocity = Vector3.zero;
         rb.constraints = RigidbodyConstraints.FreezePositionX;

@@ -126,13 +126,14 @@ public class DraggingJump : IState
     {
         //Debug.Log("Entering Dragging Jump State");
         //Set Cant move camera
-        Debug.Log($"STEPS SUBSCRIBING TO DRAG JUMP RELEASE - {player.gameObject.name} - {playerDragController.gameObject.name}");
+        // Debug.Log($"STEPS SUBSCRIBING TO DRAG JUMP RELEASE - {player.gameObject.name} - {playerDragController.gameObject.name}");
         playerDragController.OnDragRelease += PlayerDragController_OnDragRelease;
-        playerInventory.OnItemSelected += PlayerInventory_OnItemSelected;
+        //playerInventory.OnItemSelected += PlayerInventory_OnItemSelected;
     }
 
     private void PlayerInventory_OnItemSelected(int itemID)
     {
+        Debug.Log($"STEPS INTERRUPTION JUMP - SELECTED ITEM WILHE IN DRAGGING - ITEM ID: {itemID} - Inv: {playerInventory.gameObject.name} - Player: {player.gameObject.name}");
         if (itemID != 0)
         {
             //Selected an item that isnt jump, change the state
@@ -142,6 +143,7 @@ public class DraggingJump : IState
 
     private void PlayerDragController_OnDragRelease()
     {
+         Debug.Log($"STEPS CLIENT 4 - DRAGGING JUMP TO DRAG RELEASE JUMP - {player.gameObject.name}");
         player.ChangePlayerState(PlayerState.DragReleaseJump);
         /*player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.dragReleaseJump);
         player.TransitionToDraggingJumpServerRpc();*/
@@ -155,7 +157,7 @@ public class DraggingJump : IState
     public void Exit()
     {
         playerDragController.OnDragRelease -= PlayerDragController_OnDragRelease;
-        playerInventory.OnItemSelected -= PlayerInventory_OnItemSelected;
+        //playerInventory.OnItemSelected -= PlayerInventory_OnItemSelected;
         //Debug.Log("Exiting Dragging Jump State");
     }
 
@@ -184,9 +186,9 @@ public class DraggingItem : IState
     public void Enter()
     {
         //Debug.Log("Entering Dragging Item State");
-        Debug.Log($"STEPS SUBSCRIBING TO DRAG RELEASE - {player.gameObject.name} - {playerDragController.gameObject.name}");
+        // Debug.Log($"STEPS SUBSCRIBING TO DRAG RELEASE - {player.gameObject.name} - {playerDragController.gameObject.name}");
         playerDragController.OnDragRelease += PlayerDragController_OnDragRelease;
-        playerInventory.OnItemSelected += PlayerInventory_OnItemSelected;
+        //playerInventory.OnItemSelected += PlayerInventory_OnItemSelected;
         //Set Cant move camera
 
     }
@@ -195,6 +197,7 @@ public class DraggingItem : IState
     {
         if (itemID == 0)
         {
+            Debug.Log($"STEPS INTERRUPTION ITEM - SELECTED ITEM WILHE IN DRAGGING - ITEM ID: {itemID} - Inv: {playerInventory.gameObject.name} - Player: {player.gameObject.name}");
             //Selected Jump
             player.ChangePlayerState(PlayerState.IdleMyTurn);
         }
@@ -202,7 +205,7 @@ public class DraggingItem : IState
 
     private void PlayerDragController_OnDragRelease()
     {
-        Debug.Log($"STEPS CLIENT 4 - DRAGGING ITEM TO DRAG RELEASE ITEM - {player.gameObject.name}");
+         Debug.Log($"STEPS CLIENT 4 - DRAGGING ITEM TO DRAG RELEASE ITEM - {player.gameObject.name}");
         player.ChangePlayerState(PlayerState.DragReleaseItem);
         //player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.dragReleaseItem);
     }
@@ -214,9 +217,9 @@ public class DraggingItem : IState
 
     public void Exit()
     {
-        Debug.Log($"STEPS UNSUBSCRIBING TO DRAG RELEASE - {player.gameObject.name} - {playerDragController.gameObject.name}");
+        // Debug.Log($"STEPS UNSUBSCRIBING TO DRAG RELEASE - {player.gameObject.name} - {playerDragController.gameObject.name}");
         playerDragController.OnDragRelease -= PlayerDragController_OnDragRelease;
-        playerInventory.OnItemSelected -= PlayerInventory_OnItemSelected;
+        //playerInventory.OnItemSelected -= PlayerInventory_OnItemSelected;
         //Debug.Log("Exiting Dragging Item State");
     }
 
@@ -312,8 +315,10 @@ public class MyTurnEndedState : IState
         //Debug.Log("Entering My Turn End State");
         if (isOwner)
         {
-            turnManager = ServiceLocator.Get<BaseTurnManager>();
-            turnManager.PlayerPlayed(turnManager.LocalPlayableState);
+            if(!turnManager)
+                turnManager = ServiceLocator.Get<BaseTurnManager>();
+            
+            turnManager.PlayerPlayed(player.ThisPlayableState.Value);
         }
 
         MyTurnEndedCallback();
