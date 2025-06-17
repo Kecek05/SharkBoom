@@ -1,7 +1,8 @@
 using Sortify;
 using System;
+using System.Collections;
 using Unity.Netcode;
-using UnityEngine; 
+using UnityEngine;
 
 public class PlayerRagdollEnabler : NetworkBehaviour
 {
@@ -13,10 +14,11 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [SerializeField] private Collider[] playerColliders;
     [SerializeField] private Rigidbody parentRigidbody;
     [SerializeField] private Transform hips;
-    
+
     [SerializeField] private Rigidbody[] ragdollRbs; //SERIALIZEFIELD ONLY FOR DEBUG
     [SerializeField] private Collider[] ragdollColliders;//SERIALIZEFIELD ONLY FOR DEBUG
     [SerializeField] private Rigidbody[] ragdollRbsToKnockback;
+    [SerializeField] private CharacterJoint[] ragdollJoints;
     private Vector3 defaultHipsRotation = new Vector3(-90f, 180f, 0f);
 
     [BetterHeader("DEBUG")]
@@ -25,11 +27,12 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     //Debug
     [HideInInspector] public Rigidbody hitedRbDebug;
-    
+
     public override void OnNetworkSpawn()
-    { 
+    {
         ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
         ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>();
+        ragdollJoints = ragdollRoot.GetComponentsInChildren<CharacterJoint>();
     }
 
     // JUST FOR DEBUG ON RAGDOLL SCENE
@@ -89,8 +92,8 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             Debug.LogError("No ragdoll rb found");
             return;
         }
-        Debug.Log($"Ragdoll - Trigger");
-        
+        Debug.Log($"RAGDOLL - Trigger");
+
         TriggerRagdoll(hitRigidbodyIndex, force, hitPoint, hitRigidbody.position, hitRigidbody.rotation);
     }
 
@@ -105,16 +108,16 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     private void TriggerRagdoll(int hitRigidbodyIndex, Vector3 force, Vector3 hitPoint, Vector3 hitRigidbodyPosition, Quaternion hitRigidbodyRotation)
     {
         EnableRagdoll();
-        Debug.Log($"Ragdoll - ParentRb Kinematic: {parentRigidbody.isKinematic}, Animator Enabled: {animator.enabled}");
+        Debug.Log($"RAGDOLL - ParentRb Kinematic: {parentRigidbody.isKinematic}, Animator Enabled: {animator.enabled}");
         Rigidbody hitRigidbody = ragdollRbsToKnockback[hitRigidbodyIndex]; // get the rb we hit
         hitedRbDebug = hitRigidbody;
-        
+
         force = new Vector3(force.x, force.y, 0f); //Ensure to not knockback in Z
         hitRigidbody.position = hitRigidbodyPosition;
         hitRigidbody.rotation = hitRigidbodyRotation;
-        Debug.Log($"Ragdoll - Before Force - Velocity: {hitRigidbody.linearVelocity}, Position: {hitRigidbody.position}, Rotation: {hitRigidbody.rotation}, Scale: {hitRigidbody.transform.localScale}");
+        Debug.Log($"RAGDOLL - Before Force - Velocity: {hitRigidbody.linearVelocity}, Position: {hitRigidbody.position}, Rotation: {hitRigidbody.rotation}, Scale: {hitRigidbody.transform.localScale}");
         hitRigidbody.AddForceAtPosition(force, hitPoint, ForceMode.Impulse);
-        Debug.Log($"Ragdoll enabled, hit rb: {hitRigidbody.name}, force: {force}, hitPoint: {hitPoint} - Rb Velocity: {hitRigidbody.linearVelocity}");
+        Debug.Log($"RAGDOLL - Ragdoll enabled, hit rb: {hitRigidbody.name}, force: {force}, hitPoint: {hitPoint} - Rb Velocity: {hitRigidbody.linearVelocity}");
     }
 
     private void EnableRagdoll()
@@ -124,20 +127,20 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             ragdollRb.isKinematic = false;
         }
 
-        animator.enabled = false;
-        
         foreach (Collider ragdollCollider in ragdollColliders)
         {
             ragdollCollider.enabled = true;
         }
-
 
         foreach (Collider playerCollider in playerColliders)
         {
             playerCollider.enabled = false;
         }
 
+        animator.enabled = false;
         parentRigidbody.isKinematic = true;
+
+        Debug.Log($"RAGDOLL - Animator Enable: {animator.enabled} (false), {gameObject.transform.parent.name}");
     }
 
 
@@ -156,18 +159,25 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     private void DisableRagdoll()
     {
 
-        foreach (Rigidbody ragdollRb in ragdollRbs)
+        foreach (CharacterJoint ragdollJoints in ragdollJoints)
         {
-            ragdollRb.isKinematic = true;
-            Debug.Log($"RAGDOLL - Disabled Ragdoll: {ragdollRb}, isKinematic: {ragdollRb.isKinematic} - {gameObject.transform.parent.name}");
+            ragdollJoints.gameObject.SetActive(false);
+            ragdollJoints.gameObject.SetActive(true);
         }
 
-        animator.enabled = true;
+        foreach (Rigidbody ragdollRb in ragdollRbs)
+        {
+            //ragdollRb.isKinematic = true;
+            //ragdollRb.isKinematic = false;
+            ragdollRb.isKinematic = true;
+        }
 
-
+        Debug.Log($"RAGDOLL - Test debug stop outside foreach");
         foreach (Collider ragdollCollider in ragdollColliders)
         {
             ragdollCollider.enabled = false;
+
+            Debug.Log($"RAGDOLL - Test debug stop");
         }
 
         foreach (Collider playerCollider in playerColliders)
@@ -175,11 +185,14 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             playerCollider.enabled = true;
         }
 
+        animator.enabled = true;
+        Debug.Log($"RAGDOLL - Animator Enable: {animator.enabled} (true), {gameObject.transform.parent.name}");
+
         parentRigidbody.isKinematic = false;
-        
+
         hips.localRotation = Quaternion.Euler(defaultHipsRotation);
         hips.localPosition = Vector3.zero;
-        
+
         OnRagdollDisabled?.Invoke();
     }
 }
