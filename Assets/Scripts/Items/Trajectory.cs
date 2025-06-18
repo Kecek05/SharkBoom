@@ -19,12 +19,12 @@ public class Trajectory : MonoBehaviour
     private Transform[] dotsList;
     private GameObject dotsParent;
 
-    private List<Vector2> trajectoryPoints = new List<Vector2>();
+    private List<Vector3> trajectoryPoints = new List<Vector3>();
     private bool isSimulating;
 
     
     
-    private Vector2 lastForceApplied = Vector2.zero;
+    private Vector3 lastForceApplied = Vector3.zero;
     private float currentForce;
     private float previousForce;
     private float diff;
@@ -48,7 +48,7 @@ public class Trajectory : MonoBehaviour
         }
     }
 
-    public void UpdateDots(Vector2 objectPos, Vector2 forceApplied, float maxForce, Rigidbody rb) 
+    public void UpdateDots(Vector3 objectPos, Vector3 forceApplied, float maxForce, Rigidbody rb) 
     {
         trajectoryPoints.Add(objectPos);
         SimulateTrajectory(objectPos, forceApplied, rb);
@@ -72,10 +72,11 @@ public class Trajectory : MonoBehaviour
         for (int i = 0; i < dotsNumber && i < trajectoryPoints.Count; i++)
         {
             dotsList[i].position = trajectoryPoints[i];
+            dotsList[i].localPosition = new Vector3(0f, dotsList[i].localPosition.y, dotsList[i].localPosition.z);
         }
     }
 
-    private void SimulateTrajectory(Vector2 objectPos, Vector2 forceApplied, Rigidbody rb)
+    private void SimulateTrajectory(Vector3 objectPos, Vector3 forceApplied, Rigidbody rb)
     {
         if (!isSimulating) return;
 

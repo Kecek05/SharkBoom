@@ -156,6 +156,10 @@ PrefabInstance:
       propertyPath: itemThrowable
       value: 
       objectReference: {fileID: 3553632099735663097}
+    - target: {fileID: 5217706511134153581, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      propertyPath: followRotation
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5263959955919774353, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 2160726644
@@ -406,4 +410,5 @@ MonoBehaviour:
   spinningSpeed: 300
   useInterpolation: 1
   interpolationSpeed: 300
+  resetRotationWhenStoped: 1
   isInverted: 0
