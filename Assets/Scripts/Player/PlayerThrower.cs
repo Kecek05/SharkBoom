@@ -265,7 +265,15 @@ public class PlayerThrower : NetworkBehaviour
         playerRotateToAim.SyncAimPosition(aimPosition, () =>
         {
             //Finished Lerp Aim Position
-            Debug.Log($"STEPS CLIENT 2 - AIM POSITION SYNCED - AIM POSITION: {aimPosition} - {gameObject.name}");
+            Debug.Log($"STEPS CLIENT 2 - AIM POSITION SYNCED - AIM POSITION: {aimPosition} - {gameObject.name} - Current SM Player: {playerStateMachine.CurrentPlayerState}");
+
+            if (playerStateMachine.CurrentPlayerState != PlayerState.DraggingItem &&
+                playerStateMachine.CurrentPlayerState != PlayerState.DraggingJump)
+            {
+
+                ChangePlayerState(PlayerState.DraggingItem);
+                Debug.Log($"STEPS CLIENT 2.1 - AIM POSITION SYNCED - SETTING PLAYER SM TO DRAGGING ITEM AIM POSITION: {aimPosition} - {gameObject.name} - Current SM Player: {playerStateMachine.CurrentPlayerState}");
+            }
             playerDragController.InvokeOnDragRelease();
         });
     }
@@ -470,7 +478,7 @@ public class PlayerThrower : NetworkBehaviour
     //STATES
     
     /// <summary>
-    /// Call this to change the player state. Will sync automatically
+    /// Call this to change the player state.
     /// </summary>
     /// <param name="playerState"> The Next State</param>
     public void ChangePlayerState(PlayerState playerState)
