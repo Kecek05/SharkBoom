@@ -3,7 +3,7 @@ using System;
 using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerTurnUI : MonoBehaviour
+public class PlayerTurnUI : NetworkBehaviour
 {
     [BetterHeader("References")]
     [SerializeField] private GameObject player1Turn;
@@ -22,7 +22,7 @@ public class PlayerTurnUI : MonoBehaviour
         turnManager.OnLocalPlayableStateChanged += GameFlowManager_OnLocalPlayableStateChanged;
 
         turnManager.CurrentPlayableState.OnValueChanged += CurrentPlayableState_OnValueChanged;
-
+        
         GameFlowManager_OnLocalPlayableStateChanged(); //check at start
         CurrentPlayableState_OnValueChanged(PlayableState.None, turnManager.CurrentPlayableState.Value); //check at start
 
@@ -69,7 +69,6 @@ public class PlayerTurnUI : MonoBehaviour
         player2Turn.SetActive(true);
         player1Turn.SetActive(false);
     }
-
 
     private void OnDestroy()
     {

@@ -71,6 +71,14 @@ public class PlayerInventory : NetworkBehaviour
         
         playerItemsInventory.OnListChanged += PlayerInventory_OnListChanged; //Local event
 
+        for (int i = 1; i < playerItemsInventory.Count; i++)
+        {
+            //Need to be a for to start from index 1, index 0 is Jump
+            OnItemAdded?.Invoke(playerItemsInventory[i]);
+        }
+        Debug.Log($"HandleOnGainOwnership - Items: {playerItemsInventory.Count}");
+        SelectItemDataByItemInventoryID(GetFirstItemInventoryAvailable());
+
         /*SetCanInteractWithInventory(true);*/
     }
 
@@ -422,17 +430,6 @@ public class PlayerInventory : NetworkBehaviour
         OnItemSelectedSO?.Invoke(GetItemSOByItemID(selectedItemID));
         
         Debug.Log($"SetItem - Selected Item ID: {selectedItemID} - CanInteractWithInventory: {canInteractWithInventory} - {gameObject.name}");
-    }
-    
-    public void HandleOnGainOwnership()
-    {
-        for (int i = 1; i < playerItemsInventory.Count; i++)
-        {
-            //Need to be a for to start from index 1, index 0 is Jump
-            OnItemAdded?.Invoke(playerItemsInventory[i]);
-        }
-        Debug.Log($"HandleOnGainOwnership - Items: {playerItemsInventory.Count}");
-        SelectItemDataByItemInventoryID(GetFirstItemInventoryAvailable());
     }
 
     public override void OnNetworkDespawn()

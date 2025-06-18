@@ -30,7 +30,8 @@ public class PlayerThrower : NetworkBehaviour
     [SerializeField] private Transform hipsTransform;
     [SerializeField] private ItemSO itemJumpSO;
     [SerializeField] private PlayerTutorialController playerTutorialController;
-    [SerializeField] private PlayerTutorialUi playerTutorialUi;
+    [SerializeField] private PlayerTutorialUi playerTutorialUI;
+    [SerializeField] private PlayerIndicatorUI playerIndicatorUI;
 
     private PlayerStateMachine playerStateMachine;
 
@@ -115,11 +116,9 @@ public class PlayerThrower : NetworkBehaviour
         
         playerTouchColl.enabled = true;
 
-        playerInventoryUI.HandleOnGainOwnership();
-        playerInventory.HandleOnGainOwnership();
-        
-        playerTutorialUi.InitializeOwner();
-        
+        playerInventoryUI.InitializeOwner();
+        playerIndicatorUI.InitializeOwner();
+        playerTutorialUI.InitializeOwner();
     }
 
     private void HandleOwnerEvents()
@@ -253,7 +252,8 @@ public class PlayerThrower : NetworkBehaviour
         cameraManager.UnInitializeOwner();
         playerLauncher.UnInitializeOwner();
         playerInventoryUI.UnHandleInitializeOwner();
-        playerTutorialUi.UnInitializeOwner();
+        playerIndicatorUI.UnitializeOwner();
+        playerTutorialUI.UnInitializeOwner();
     }
 
     private void UnInitialize()
