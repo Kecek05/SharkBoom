@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using QFSW.QC;
 using Unity.Services.Authentication;
 using Unity.Services.Authentication.PlayerAccounts;
 using Unity.Services.Core;
@@ -144,6 +145,12 @@ public static class AuthenticationWrapper
         OnSignInFail?.Invoke();
     }
 
+    [Command("PlayerID")]
+    public static string GetPlayerID()
+    {
+        return AuthenticationService.Instance?.PlayerId;
+    }
+    
 #endif
 
     private static async Task SignInUnityAsync()
