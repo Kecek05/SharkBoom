@@ -192,7 +192,18 @@ public class PlayerLauncher : NetworkBehaviour
     private void SyncItemLauncherDataClientRpc(ItemLauncherData itemLauncherData, Vector3 aimPos)
     {
         lastItemLauncherData = itemLauncherData;
-         Debug.Log($"STEPS CLIENT 1 - ITEM LAUNCHER DATA SYNCED - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
+        Debug.Log($"STEPS CLIENT 1 - ITEM LAUNCHER DATA RECIEVED - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
+        StartCoroutine(WaitRightItemId(itemLauncherData, aimPos));
+    }
+
+    private IEnumerator WaitRightItemId(ItemLauncherData itemLauncherData, Vector3 aimPos)
+    {
+        while (itemLauncherData.selectedItemID != playerInventory.SelectedItemID)
+        {
+            //Wait for the item data is the same as the inventory, waiting for the select item RPC
+            yield return null;
+        }
+        Debug.Log($"STEPS CLIENT 1.5 - ITEM LAUNCHER ID IS SAME AS INVENTORY - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
         OnLastItemSynced?.Invoke(aimPos);
     }
     
