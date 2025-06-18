@@ -6,35 +6,36 @@ using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Assertions.Must;
+using UnityEngine.Video;
 
 public class LoadingPlayersUI : NetworkBehaviour
 {
     [BetterHeader("References")]
     [SerializeField] private GameObject backgroundPlayersInfo;
     [SerializeField] private GameObject backgroundWaitingForPlayers;
-    [SerializeField] private GameObject sharkPrefab;
-    [SerializeField] private GameObject orcaPrefab;
+    [SerializeField] private VideoClip sharkRenderR;
+    [SerializeField] private VideoClip sharkRenderL;
+    [SerializeField] private VideoClip orcaRenderR;
+    [SerializeField] private VideoClip orcaRenderL;
 
     [BetterHeader("References Player 1")]
     [SerializeField] private TextMeshProUGUI player1NameText;
     [SerializeField] private TextMeshProUGUI player1PearlsText;
     [SerializeField] private Transform player1VisualSpawnpoint;
+    [SerializeField] private VideoPlayer player1VideoPlayer;
 
     [BetterHeader("References Player 2")]
     [SerializeField] private TextMeshProUGUI player2NameText;
     [SerializeField] private TextMeshProUGUI player2PearlsText;
     [SerializeField] private Transform player2VisualSpawnpoint;
+    [SerializeField] private VideoPlayer player2VideoPlayer;
 
     private const string TEXTANIMATOR_NAMETAG = "<name>";
-
 
     private BaseGameStateManager gameStateManager;
     private BasePlayersPublicInfoManager basePlayerPublicInfoManager;
 
     private int updatedPlayersInfoOnClient = 0;
-
-    private GameObject player1GameObject;
-    private GameObject player2GameObject;
 
     public override void OnNetworkSpawn()
     {
@@ -105,12 +106,12 @@ public class LoadingPlayersUI : NetworkBehaviour
             case PlayableState.Player1Playing:
                 player1NameText.text = $"{TEXTANIMATOR_NAMETAG}{playerName.ToString()}{TEXTANIMATOR_NAMETAG}";
                 player1PearlsText.text = playerPearls.ToString();
-                player1GameObject = SpawnPlayerVisual(basePlayerPublicInfoManager.GetPlayerVisualTypes()[playableState], player1VisualSpawnpoint);
+                player1VideoPlayer.clip = SelectRenderVisual(basePlayerPublicInfoManager.GetPlayerVisualTypes()[playableState], PlayableState.Player1Playing);
                 break;
             case PlayableState.Player2Playing:
                 player2NameText.text = $"{TEXTANIMATOR_NAMETAG}{playerName.ToString()}{TEXTANIMATOR_NAMETAG}";
                 player2PearlsText.text = playerPearls.ToString();
-                player2GameObject = SpawnPlayerVisual(basePlayerPublicInfoManager.GetPlayerVisualTypes()[playableState], player2VisualSpawnpoint);
+                player2VideoPlayer.clip = SelectRenderVisual(basePlayerPublicInfoManager.GetPlayerVisualTypes()[playableState], PlayableState.Player2Playing);
                 break;
         }
 
@@ -121,40 +122,50 @@ public class LoadingPlayersUI : NetworkBehaviour
         }
     }
 
-    private GameObject SpawnPlayerVisual(PlayerVisualType visualType, Transform spawnPoint)
+    private VideoClip SelectRenderVisual(PlayerVisualType visualType, PlayableState playableState)
     {
-        GameObject prefabToSpawn = null;
+        VideoClip videoClipSelected = null;
 
-        switch (visualType)
+        switch (playableState)
         {
-            case PlayerVisualType.Shark:
-                prefabToSpawn = sharkPrefab;
+            case PlayableState.Player1Playing:
+                switch (visualType)
+                {
+                    case PlayerVisualType.Shark:
+                        return sharkRenderR;
+                    case PlayerVisualType.Orca:
+                        return orcaRenderR;
+                }
                 break;
-            case PlayerVisualType.Orca:
-                prefabToSpawn = orcaPrefab;
+
+            case PlayableState.Player2Playing:
+                switch (visualType)
+                {
+                    case PlayerVisualType.Shark:
+                        return sharkRenderL;
+                    case PlayerVisualType.Orca:
+                        return orcaRenderL;
+                }
                 break;
         }
 
-        if (prefabToSpawn != null)
-        {
-            return Instantiate(prefabToSpawn, spawnPoint.position, spawnPoint.rotation);
-        }
-
-        return null;
+        return videoClipSelected;
     }
 
     [Command("hidePlayersInfo")]
     private void HidePlayersInfo()
     {
         backgroundPlayersInfo.SetActive(false);
-        Destroy(player1GameObject);
-        Destroy(player2GameObject);
+        player1VideoPlayer.Stop();
+        player2VideoPlayer.Stop();
     }
 
     [Command("showPlayersInfo")]
     private void ShowPlayersInfo()
     {
         backgroundPlayersInfo.SetActive(true);
+        player1VideoPlayer.Play();
+        player2VideoPlayer.Play();
     }
 
     private void HideWaitingForPlayers()

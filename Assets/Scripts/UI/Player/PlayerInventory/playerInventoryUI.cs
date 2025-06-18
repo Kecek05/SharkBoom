@@ -184,7 +184,7 @@ public class PlayerInventoryUI : NetworkBehaviour
         openInventoryBackground.SetActive(true);
     }
 
-    public void HandleOnGainOwnership()
+    public void InitializeOwner()
     {
         ShowInventoryParent();
         ShowInventory();
@@ -197,6 +197,5 @@ public class PlayerInventoryUI : NetworkBehaviour
         HideInventoryParent();
         HideInventoryBackground();
         HideInventoryButton();
-        
     }
 }

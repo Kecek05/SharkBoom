@@ -30,7 +30,8 @@ public class PlayerThrower : NetworkBehaviour
     [SerializeField] private Transform hipsTransform;
     [SerializeField] private ItemSO itemJumpSO;
     [SerializeField] private PlayerTutorialController playerTutorialController;
-    [SerializeField] private PlayerTutorialUi playerTutorialUi;
+    [SerializeField] private PlayerTutorialUi playerTutorialUI;
+    [SerializeField] private PlayerIndicatorUI playerIndicatorUI;
 
     private PlayerStateMachine playerStateMachine;
 
@@ -115,11 +116,8 @@ public class PlayerThrower : NetworkBehaviour
         
         playerTouchColl.enabled = true;
 
-        playerInventoryUI.HandleOnGainOwnership();
-        playerInventory.HandleOnGainOwnership();
-        
-        playerTutorialUi.InitializeOwner();
-        
+        playerInventoryUI.InitializeOwner();
+        playerTutorialUI.InitializeOwner();
     }
 
     private void HandleOwnerEvents()
@@ -253,7 +251,7 @@ public class PlayerThrower : NetworkBehaviour
         cameraManager.UnInitializeOwner();
         playerLauncher.UnInitializeOwner();
         playerInventoryUI.UnHandleInitializeOwner();
-        playerTutorialUi.UnInitializeOwner();
+        playerTutorialUI.UnInitializeOwner();
     }
 
     private void UnInitialize()
@@ -440,6 +438,7 @@ public class PlayerThrower : NetworkBehaviour
     private void GameFlowManager_OnMyTurnEnded()
     {
         ChangePlayerState(PlayerState.MyTurnEnded);
+        playerIndicatorUI.HidePlayerIndicator();
     }
 
     private void GameFlowManager_OnMyTurnStarted()
@@ -448,6 +447,7 @@ public class PlayerThrower : NetworkBehaviour
         {
             //Im the owner of this object, the event recieved is right
             ChangePlayerState(PlayerState.MyTurnStarted);
+            playerIndicatorUI.ShowPlayerIndicator();
         }
         else
         {
