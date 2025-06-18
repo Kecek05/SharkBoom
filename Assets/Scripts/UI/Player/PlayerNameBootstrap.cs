@@ -9,13 +9,13 @@ public class PlayerNameBootstrap : MonoBehaviour
     [SerializeField] private Button confirmButton;
     [SerializeField] private TMP_InputField playerNameInputField;
     [SerializeField] private TextMeshProUGUI loadingText;
+    [SerializeField] private GameObject errorPanelName;
 
     private async void Awake()
     {
+        errorPanelName.SetActive(false);
         renameScreen.SetActive(false);
-        confirmButton.interactable = false;
         loadingText.enabled = false;
-        playerNameInputField.onValueChanged.AddListener(HandlePlayerName);
     }
 
     private void Start()
@@ -23,7 +23,7 @@ public class PlayerNameBootstrap : MonoBehaviour
         if (ClientSingleton.Instance.GameManager.UserData.userName == "")
         {
             renameScreen.SetActive(true);
-        } 
+        }
         else
         {
             loadingText.enabled = true;
@@ -33,6 +33,13 @@ public class PlayerNameBootstrap : MonoBehaviour
 
     public async void ConfirmName()
     {
+        string playerName = playerNameInputField.text;
+
+        if (string.IsNullOrEmpty(playerName) || playerName.Length > 15 || playerName.Length < 5)
+        {
+            errorPanelName.SetActive(true); 
+            return;
+        }
         playerNameInputField.interactable = false;
         confirmButton.interactable = false;
 
@@ -44,15 +51,8 @@ public class PlayerNameBootstrap : MonoBehaviour
         Loader.LoadNoLoadingScreen(Loader.Scene.MainMenu);
     }
 
-    private void HandlePlayerName(string playerName)
+    public void CloseErrorPanel()
     {
-        if(string.IsNullOrEmpty(playerName) || playerName.Length > 15 || playerName.Length < 5)
-        {
-            confirmButton.interactable = false;
-        }
-        else
-        {
-            confirmButton.interactable = true;
-        }
+        errorPanelName.SetActive(false);
     }
 }
