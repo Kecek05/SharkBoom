@@ -117,7 +117,6 @@ public class PlayerThrower : NetworkBehaviour
         playerTouchColl.enabled = true;
 
         playerInventoryUI.InitializeOwner();
-        playerIndicatorUI.InitializeOwner();
         playerTutorialUI.InitializeOwner();
     }
 
@@ -252,7 +251,6 @@ public class PlayerThrower : NetworkBehaviour
         cameraManager.UnInitializeOwner();
         playerLauncher.UnInitializeOwner();
         playerInventoryUI.UnHandleInitializeOwner();
-        playerIndicatorUI.UnitializeOwner();
         playerTutorialUI.UnInitializeOwner();
     }
 
@@ -440,6 +438,7 @@ public class PlayerThrower : NetworkBehaviour
     private void GameFlowManager_OnMyTurnEnded()
     {
         ChangePlayerState(PlayerState.MyTurnEnded);
+        playerIndicatorUI.HidePlayerIndicator();
     }
 
     private void GameFlowManager_OnMyTurnStarted()
@@ -448,6 +447,7 @@ public class PlayerThrower : NetworkBehaviour
         {
             //Im the owner of this object, the event recieved is right
             ChangePlayerState(PlayerState.MyTurnStarted);
+            playerIndicatorUI.ShowPlayerIndicator();
         }
         else
         {

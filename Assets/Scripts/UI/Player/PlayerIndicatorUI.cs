@@ -11,23 +11,13 @@ public class PlayerIndicatorUI : NetworkBehaviour
         HidePlayerIndicator();
     }
 
-    public void InitializeOwner()
-    {
-        ShowPlayerIndicator();
-    }
-
-    private void HidePlayerIndicator()
+    public void HidePlayerIndicator()
     {
         playerIndicator.SetActive(false);
     }
 
-    private void ShowPlayerIndicator()
+    public void ShowPlayerIndicator()
     {
         playerIndicator.SetActive(true);
-    }
-
-    public void UnitializeOwner()
-    {
-        HidePlayerIndicator();
     }
 }
