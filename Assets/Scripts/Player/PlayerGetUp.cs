@@ -39,7 +39,7 @@ public class PlayerGetUp : NetworkBehaviour
 
     public void HandleOnItemCallbackAction()
     {
-        //if (!IsOwner) return;
+        if (!IsOwner) return;
 
         CalculatePlayerFreePos();
     }

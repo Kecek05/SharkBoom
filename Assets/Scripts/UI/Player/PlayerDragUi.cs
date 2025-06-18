@@ -7,6 +7,7 @@ public class PlayerDragUi : DragListener, IDetectDragStart, IDetectDragChange, I
     [BetterHeader("References")]
     [SerializeField] private TextMeshProUGUI forceText;
     [SerializeField] private TextMeshProUGUI directionText;
+    [SerializeField] private GameObject background;
     [SerializeField] private LookAtCameraComponent lookAtCamera;
 
     public override void OnNetworkSpawn()
@@ -36,7 +37,7 @@ public class PlayerDragUi : DragListener, IDetectDragStart, IDetectDragChange, I
     public void DoOnDragChange(float forcePercent, float andlePercent)
     {
         forceText.text = $"Force: {Mathf.RoundToInt(forcePercent)}";
-        directionText.text = $"Direction: {Mathf.RoundToInt(andlePercent)}°";
+        directionText.text = $"Direction: {Mathf.RoundToInt(andlePercent)}ï¿½";
     }
 
     private void ShowText()
@@ -44,6 +45,7 @@ public class PlayerDragUi : DragListener, IDetectDragStart, IDetectDragChange, I
         forceText.enabled = true;
         directionText.enabled = true;
         lookAtCamera.enabled = true; // we enable and disable because this script work on LateUpdate
+        background.SetActive(true);
     }
 
     private void HideText()
@@ -51,6 +53,7 @@ public class PlayerDragUi : DragListener, IDetectDragStart, IDetectDragChange, I
         forceText.enabled = false;
         directionText.enabled = false;
         lookAtCamera.enabled = false;
+        background.SetActive(false);
     }
 
     public void DoOnDragRelease()
