@@ -33,9 +33,9 @@ public class FollowTransformComponent : MonoBehaviour
     private void LateUpdate()
     {
         if(!isActive) return;
-
+        
         if (targetTransform == null) return;
-
+        
         // Apply positionOffset in the target's local space
         targetPositionWithOffset = targetTransform.position + targetTransform.TransformDirection(positionOffset);
 

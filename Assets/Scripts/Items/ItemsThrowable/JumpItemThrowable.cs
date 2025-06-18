@@ -31,6 +31,8 @@ public class JumpItemThrowable : BaseItemThrowable
         lockedZ = objectToFollowTransform.position.z;
         
         followCoroutine ??= StartCoroutine(PlayerFollowJump());
+        
+        
     }
 
     protected override void ItemCallbackAction()

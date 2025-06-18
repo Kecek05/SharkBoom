@@ -39,7 +39,7 @@ public class PlayerGetUp : NetworkBehaviour
 
     public void HandleOnItemCallbackAction()
     {
-        if (!IsOwner) return;
+        //if (!IsOwner) return;
 
         CalculatePlayerFreePos();
     }
@@ -57,7 +57,7 @@ public class PlayerGetUp : NetworkBehaviour
         Vector3 foundFinalPosition = GetFreePosition(playerRagdollPosition);
         
         ApplyGetUp(foundFinalPosition);
-        PassPlayerFreePosServerRpc(foundFinalPosition);
+        //PassPlayerFreePosServerRpc(foundFinalPosition);
     }
 
     private Vector3 GetFreePosition(Vector3 startPos)

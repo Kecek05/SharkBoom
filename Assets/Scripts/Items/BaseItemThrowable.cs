@@ -54,6 +54,8 @@ public abstract class BaseItemThrowable : MonoBehaviour
     
     public bool IsOwner => isOwner;
     public bool Initialized => initialized;
+    
+    public Rigidbody Rigidbody => rb;
 
     //DEBUG
     public bool IsItemReleased => itemReleased;
@@ -122,21 +124,24 @@ public abstract class BaseItemThrowable : MonoBehaviour
         this.isOwner = isOwner;
         ownerPlayableState = itemLauncherData.ownerPlayableState;
         turnManager = ServiceLocator.Get<BaseTurnManager>();
-        UpdateOnRelease(itemLauncherData);
 
         followTransformComponent.DisableComponent();
         transform.localRotation = Quaternion.identity;
         transform.position = new Vector3(transform.position.x, transform.position.y, ITEM_Z_POSITION);
         
+        UpdateOnRelease(itemLauncherData);
         rb.AddForce(itemLauncherData.dragDirection * itemLauncherData.dragForce, ForceMode.Impulse);
 
         if(lifetimeTriggerItemComponent)
             lifetimeTriggerItemComponent.StartLifetime();
-        
     }
+
+    public bool isFixedUpdate = true;
 
     protected void FixedUpdate()
     {
+        if(!isFixedUpdate) return;
+        
         if (itemReleased)
         {
             //Force the item to not rotate in X and Y and force the Z pos
