@@ -6077,7 +6077,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 527e9cd02b026ab4fa757c186efc5028, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -8634,7 +8634,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 25ee9f8e9ed99d041b2fceb20ac17349, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -10514,7 +10514,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4845276930943762971, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.0000076293945
+      value: 0.000022888184
       objectReference: {fileID: 0}
     - target: {fileID: 4845637959249703711, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchorMax.y
@@ -11075,6 +11075,14 @@ MonoBehaviour:
   player2Turn: {fileID: 1754091031}
   player1You: {fileID: 1988717368}
   player2You: {fileID: 692907288}
+  player1ImageBar: {fileID: 2037687927}
+  player1BackgroundBar: {fileID: 1105263989}
+  player2ImageBar: {fileID: 2146166681}
+  player2BackgroundBar: {fileID: 717820053}
+  redBar: {fileID: 21300000, guid: 8d53f7fd530468d48824f4fad617356a, type: 3}
+  redBackgroundBar: {fileID: 21300000, guid: 527e9cd02b026ab4fa757c186efc5028, type: 3}
+  greenBar: {fileID: 21300000, guid: 699ac64986426fe4db0a2500a034dccb, type: 3}
+  greenBackgroundBar: {fileID: 21300000, guid: 25ee9f8e9ed99d041b2fceb20ac17349, type: 3}
 --- !u!114 &1455302048
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13892,7 +13900,7 @@ GameObject:
   - component: {fileID: 2037687928}
   - component: {fileID: 2037687927}
   m_Layer: 5
-  m_Name: Fill
+  m_Name: Player1ImageBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13937,7 +13945,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 699ac64986426fe4db0a2500a034dccb, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -14263,7 +14271,7 @@ GameObject:
   - component: {fileID: 2146166682}
   - component: {fileID: 2146166681}
   m_Layer: 5
-  m_Name: Fill
+  m_Name: Player2ImageBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14308,7 +14316,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 8d53f7fd530468d48824f4fad617356a, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
