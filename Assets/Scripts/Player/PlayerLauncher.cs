@@ -192,20 +192,20 @@ public class PlayerLauncher : NetworkBehaviour
     private void SyncItemLauncherDataClientRpc(ItemLauncherData itemLauncherData, Vector3 aimPos)
     {
         lastItemLauncherData = itemLauncherData;
-        Debug.Log($"STEPS CLIENT 1 - ITEM LAUNCHER DATA RECIEVED - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
+        Debug.Log($"STEPS CLIENT 1 - ITEM LAUNCHER DATA RECIEVED - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Shoot Pos: {lastItemLauncherData.shootPosition} - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
         StartCoroutine(WaitRightItemId(lastItemLauncherData, aimPos));
     }
 
     private IEnumerator WaitRightItemId(ItemLauncherData itemLauncherData, Vector3 aimPos)
     {
-        Debug.Log($"STEPS CLIENT 1.1 - ITEM LAUNCHER START WAITING - Inv ID: {playerInventory.SelectedItemID} - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
+        Debug.Log($"STEPS CLIENT 1.1 - ITEM LAUNCHER START WAITING - Inv ID: {playerInventory.SelectedItemID} - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Shoot Pos: {lastItemLauncherData.shootPosition}  - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
         while (itemLauncherData.selectedItemID != playerInventory.SelectedItemID)
         {
             //Wait for the item data is the same as the inventory, waiting for the select item RPC
             yield return null;
         }
         
-        Debug.Log($"STEPS CLIENT 1.2 - ITEM LAUNCHER ID IS SAME AS INVENTORY - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
+        Debug.Log($"STEPS CLIENT 1.2 - ITEM LAUNCHER ID IS SAME AS INVENTORY - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Shoot Pos: {lastItemLauncherData.shootPosition}  - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
         OnLastItemSynced?.Invoke(aimPos);
     }
     
@@ -230,14 +230,14 @@ public class PlayerLauncher : NetworkBehaviour
         }
 
         // Debug.Log($"SPAWNING PROJECTILE - SETTING POSITION - LAST POSITION: {lastProjectile.transform.position} - NEW POSITION: {launcherData.shootPosition} - LAST ROTATION: {lastProjectile.transform.rotation} NEW ROTATION: {launcherData.shootRotation}");
-
-        lastProjectile.transform.position = lastItemLauncherData.shootPosition;
-        lastProjectile.transform.rotation = lastItemLauncherData.shootRotation;
-
+        
         if (lastProjectile.TryGetComponent(out BaseItemThrowable itemThrowable))
         {
             itemThrowable.ItemReleased(launcherData, IsOwner);
-            // Debug.Log($"ITEM RELEASED - {itemThrowable.gameObject.name}");
+            
+            // force the object to be in the right position and rotation | Need to be in the RB because isnt Kinematic anymore
+            lastProjectile.Rigidbody.position = lastItemLauncherData.shootPosition; 
+            lastProjectile.Rigidbody.rotation = lastItemLauncherData.shootRotation;
         }
 
         if (lastProjectile.TryGetComponent(out BaseItemThrowableActivable activable))
@@ -254,31 +254,6 @@ public class PlayerLauncher : NetworkBehaviour
             lastItemThrowableActivable = null;
         }
     }
-
-    // private void SpawnProjectile(ItemLauncherData launcherData) // on client, need to pass the prefab for the other clients instantiate it
-    // {
-    //     if (!playerInventory.GetItemSOByItemID(launcherData.selectedItemID).itemPrefab)
-    //     {
-    //         Debug.LogWarning($"Player Launcher - ItemSOIndex: {launcherData.selectedItemID} has no client prefab");
-    //         return;
-    //     }
-    //     
-    //     Debug.Log($"SPAWNING PROJECTILE - SETTING POSITION - LAST POSITION: {lastProjectile.transform.position} - NEW POSITION: {launcherData.shootPosition} - LAST ROTATION: {lastProjectile.transform.rotation} NEW ROTATION: {launcherData.shootRotation}");
-    //     lastProjectile.transform.position = lastItemLauncherData.shootPosition;
-    //     lastProjectile.transform.rotation = lastItemLauncherData.shootRotation;
-    //
-    //     if (lastProjectile.transform.TryGetComponent(out BaseItemThrowable itemThrowable))
-    //     {
-    //         itemThrowable.ItemReleased(launcherData);
-    //         Debug.Log($"Player Launcher - Item released: {itemThrowable.name}");
-    //     }
-    //
-    //     if (lastProjectile.transform.TryGetComponent(out BaseItemThrowableActivable activable))
-    //     {
-    //         //Get the ref to active the item
-    //         itemActivableManager.SetItemThrowableActivableClient(activable);
-    //     }
-    // }
 
     public void UnInitializeOwner()
     {
