@@ -186,7 +186,7 @@ public class DraggingItem : IState
     public void Enter()
     {
         //Debug.Log("Entering Dragging Item State");
-        // Debug.Log($"STEPS SUBSCRIBING TO DRAG RELEASE - {player.gameObject.name} - {playerDragController.gameObject.name}");
+         Debug.Log($"STEPS SUBSCRIBING TO DRAGGING ITEM - {player.gameObject.name} - {playerDragController.gameObject.name}");
         playerDragController.OnDragRelease += PlayerDragController_OnDragRelease;
         //playerInventory.OnItemSelected += PlayerInventory_OnItemSelected;
         //Set Cant move camera
@@ -217,7 +217,7 @@ public class DraggingItem : IState
 
     public void Exit()
     {
-        // Debug.Log($"STEPS UNSUBSCRIBING TO DRAG RELEASE - {player.gameObject.name} - {playerDragController.gameObject.name}");
+         Debug.Log($"STEPS UNSUBSCRIBING TO DRAGGING ITEM - {player.gameObject.name} - {playerDragController.gameObject.name}");
         playerDragController.OnDragRelease -= PlayerDragController_OnDragRelease;
         //playerInventory.OnItemSelected -= PlayerInventory_OnItemSelected;
         //Debug.Log("Exiting Dragging Item State");

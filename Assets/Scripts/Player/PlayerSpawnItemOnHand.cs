@@ -19,6 +19,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
     private BaseItemThrowable spawnedItem;
 
     private bool canSpawnItem = false;
+    private bool itemAlreadySpawned = false;
 
     //Publics
     public Transform SelectedSocketTransform => selectedSocket.transform;
@@ -48,10 +49,12 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
     public void HandleOnPlayerStateChanged(PlayerState newState)
     {
         //if (!IsOwner) return;
-        // canSpawnItem = false;
+        //canSpawnItem = false;
         switch (newState)
         {
             case PlayerState.IdleMyTurn:
+                itemAlreadySpawned = false;
+                canSpawnItem = false;
                 DespawnItem();
                 break;
             case PlayerState.DraggingItem:
@@ -61,15 +64,19 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
                 canSpawnItem = true;
                 break;
             case PlayerState.DragReleaseItem:
+                canSpawnItem = true;
                 //HandleOnShoot();
                 break;
             case PlayerState.DragReleaseJump:
+                canSpawnItem = true;
                 //HandleOnShoot();
                 break;
             case PlayerState.MyTurnEnded:
+                canSpawnItem = false;
                 DespawnItem();
                 break;
             case PlayerState.IdleEnemyTurn:
+                canSpawnItem = false;
                 DespawnItem();
                 break;
         }
@@ -80,13 +87,13 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         //Spawn selected Item on the selected socket
         if (!canSpawnItem) return; //Do nothing if the player is not in the right state
         
-        TriggerSpawnItem(_selectedItemID);
+        UpdateSpawnedItem(_selectedItemID);
         
         // if(IsOwner)
         //     SpawnItemServerRpc(_selectedItemID);
     }
     
-    private void TriggerSpawnItem(int _selectedItemID)
+    private void UpdateSpawnedItem(int _selectedItemID)
     {
         UpdateSelectedSocket();
         
@@ -97,8 +104,17 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         else
         {
             //it's null
-            InstantiateLocalObj(_selectedItemID);
+            TrySpawnItem(_selectedItemID);
         }
+    }
+
+    private void TrySpawnItem(int _selectedItemID)
+    {
+        if(itemAlreadySpawned) return; //item already spawned this turn
+        
+        itemAlreadySpawned = true;
+        
+        InstantiateLocalObj(_selectedItemID);
     }
     
     [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
@@ -110,7 +126,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
     [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
     private void SpawnItemClientRpc(int _selectedItemSOIndex)
     {
-        TriggerSpawnItem(_selectedItemSOIndex);
+        UpdateSpawnedItem(_selectedItemSOIndex);
     }
 
    /* private void InstantiateObj()
@@ -177,7 +193,6 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
 
     private void DespawnItem()
     {
-        canSpawnItem = false;
         //Despawn item
         if (spawnedItem)
         {

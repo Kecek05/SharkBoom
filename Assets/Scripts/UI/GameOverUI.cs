@@ -3,6 +3,7 @@ using Sortify;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 public class GameOverUI : MonoBehaviour
 {
@@ -15,6 +16,12 @@ public class GameOverUI : MonoBehaviour
     [SerializeField] private Image gameOverImage;
     [SerializeField] private Image returnBtnImage;
     [SerializeField] private Image animateBackground;
+    [SerializeField] private VideoPlayer gameOverVideoPlayer;
+    [BetterHeader("Renders")]
+    [SerializeField] private VideoClip orcaWin;
+    [SerializeField] private VideoClip orcaLose;
+    [SerializeField] private VideoClip sharkWin;
+    [SerializeField] private VideoClip sharkLose;
     [Space(5)]
     [BetterHeader("Win")]
     [SerializeField] private Material winBackgroundMaterial;
@@ -32,10 +39,14 @@ public class GameOverUI : MonoBehaviour
     [SerializeField] private Sprite tiePearlsBackground;
     [SerializeField] private Sprite tieReturnButton;
 
+    
+
     private bool alreadyChanged = false; //Prevent double change when losting connection
 
     private BaseGameOverManager gameOverManager;
     private BasePearlsManager pearlsManager;
+    private BasePlayersPublicInfoManager playersPublicInfoManager;
+    private BaseTurnManager turnManager;
 
     private const string TEXTANIMATOR_WIN = "<win>";
     private const string TEXTANIMATOR_LOSE = "<lose>";
@@ -50,6 +61,7 @@ public class GameOverUI : MonoBehaviour
     {
         gameOverManager = ServiceLocator.Get<BaseGameOverManager>();
         pearlsManager = ServiceLocator.Get<BasePearlsManager>();
+        turnManager = ServiceLocator.Get<BaseTurnManager>();
 
         gameOverManager.OnWin += GameStateManager_OnWin;
         gameOverManager.OnLose += GameStateManager_OnLose;
@@ -60,12 +72,15 @@ public class GameOverUI : MonoBehaviour
     public void ReturnToMenu()
     {
         if (ClientSingleton.Instance != null)
+            gameOverVideoPlayer.Stop();
             ClientSingleton.Instance.GameManager.Disconnect();
     }
     private void PearlsManager_OnPearlsChanged(int pearlsToShow)
     {
         SetupPearlsResult(pearlsToShow);
         Show();
+
+        playersPublicInfoManager = ServiceLocator.Get<BasePlayersPublicInfoManager>();
     }
 
     private void SetupPearlsResult(int pearlsDelta)
@@ -132,16 +147,25 @@ public class GameOverUI : MonoBehaviour
 
     private void Win()
     {
+        gameOverVideoPlayer.clip = GetGameOverRender(playersPublicInfoManager.GetPlayerVisualTypes()[turnManager.LocalPlayableState], GameResult.Win);
+        gameOverVideoPlayer.Play();
+
         ChangeUI($"{TEXTANIMATOR_WIN}You Win!{TEXTANIMATOR_WIN}", "VICTORY!", winBackground, winPearlsBackground, winReturnButton, winBackgroundMaterial);
     }
 
     private void Lose()
     {
+        gameOverVideoPlayer.clip = GetGameOverRender(playersPublicInfoManager.GetPlayerVisualTypes()[turnManager.LocalPlayableState], GameResult.Lose);
+        gameOverVideoPlayer.Play();
+
         ChangeUI($"{TEXTANIMATOR_LOSE}You Lose!{TEXTANIMATOR_LOSE}", "DEFEAT!", loseBackground, losePearlsBackground, loseReturnButton, loseBackgroundMaterial);
     }
 
     private void Tie()
     {
+        gameOverVideoPlayer.clip = GetGameOverRender(playersPublicInfoManager.GetPlayerVisualTypes()[turnManager.LocalPlayableState], GameResult.Tie);
+        gameOverVideoPlayer.Play();
+
         ChangeUI("Time's Up!", "TIE!", tieBackground, tiePearlsBackground, tieReturnButton, tieBackgroundMaterial);
     }
 
@@ -155,10 +179,45 @@ public class GameOverUI : MonoBehaviour
         animateBackground.material = animateMaterial;
     }
 
+    private VideoClip GetGameOverRender(PlayerVisualType visualType, GameResult result)
+    {
+        switch (result)
+        {
+            case GameResult.Win:
+                switch(visualType)
+                {
+                    case PlayerVisualType.Shark:
+                        return sharkWin;
+                    case PlayerVisualType.Orca:
+                        return orcaWin;
+                }
+                break;
+            case GameResult.Lose:
+            case GameResult.Tie:
+                switch(visualType)
+                {
+                    case PlayerVisualType.Shark:
+                        return sharkLose;
+                    case PlayerVisualType.Orca:
+                        return orcaLose;
+                }
+                break;
+        }
+
+        return null;
+    }
+
     private void OnDestroy()
     {
         gameOverManager.OnWin -= GameStateManager_OnWin;
         gameOverManager.OnLose -= GameStateManager_OnLose;
         pearlsManager.OnPearlsChanged -= PearlsManager_OnPearlsChanged;
     }
+}
+
+public enum GameResult
+{
+    Win,
+    Lose,
+    Tie
 }

@@ -30,7 +30,8 @@ public class PlayerThrower : NetworkBehaviour
     [SerializeField] private Transform hipsTransform;
     [SerializeField] private ItemSO itemJumpSO;
     [SerializeField] private PlayerTutorialController playerTutorialController;
-    [SerializeField] private PlayerTutorialUi playerTutorialUi;
+    [SerializeField] private PlayerTutorialUi playerTutorialUI;
+    [SerializeField] private PlayerIndicatorUI playerIndicatorUI;
 
     private PlayerStateMachine playerStateMachine;
 
@@ -115,11 +116,8 @@ public class PlayerThrower : NetworkBehaviour
         
         playerTouchColl.enabled = true;
 
-        playerInventoryUI.HandleOnGainOwnership();
-        playerInventory.HandleOnGainOwnership();
-        
-        playerTutorialUi.InitializeOwner();
-        
+        playerInventoryUI.InitializeOwner();
+        playerTutorialUI.InitializeOwner();
     }
 
     private void HandleOwnerEvents()
@@ -253,7 +251,7 @@ public class PlayerThrower : NetworkBehaviour
         cameraManager.UnInitializeOwner();
         playerLauncher.UnInitializeOwner();
         playerInventoryUI.UnHandleInitializeOwner();
-        playerTutorialUi.UnInitializeOwner();
+        playerTutorialUI.UnInitializeOwner();
     }
 
     private void UnInitialize()
@@ -267,7 +265,15 @@ public class PlayerThrower : NetworkBehaviour
         playerRotateToAim.SyncAimPosition(aimPosition, () =>
         {
             //Finished Lerp Aim Position
-            Debug.Log($"STEPS CLIENT 2 - AIM POSITION SYNCED - AIM POSITION: {aimPosition} - {gameObject.name}");
+            Debug.Log($"STEPS CLIENT 2 - AIM POSITION SYNCED - AIM POSITION: {aimPosition} - {gameObject.name} - Current SM Player: {playerStateMachine.CurrentPlayerState}");
+
+            if (playerStateMachine.CurrentPlayerState != PlayerState.DraggingItem &&
+                playerStateMachine.CurrentPlayerState != PlayerState.DraggingJump)
+            {
+
+                ChangePlayerState(PlayerState.DraggingItem);
+                Debug.Log($"STEPS CLIENT 2.1 - AIM POSITION SYNCED - SETTING PLAYER SM TO DRAGGING ITEM AIM POSITION: {aimPosition} - {gameObject.name} - Current SM Player: {playerStateMachine.CurrentPlayerState}");
+            }
             playerDragController.InvokeOnDragRelease();
         });
     }
@@ -440,6 +446,7 @@ public class PlayerThrower : NetworkBehaviour
     private void GameFlowManager_OnMyTurnEnded()
     {
         ChangePlayerState(PlayerState.MyTurnEnded);
+        playerIndicatorUI.HidePlayerIndicator();
     }
 
     private void GameFlowManager_OnMyTurnStarted()
@@ -448,6 +455,7 @@ public class PlayerThrower : NetworkBehaviour
         {
             //Im the owner of this object, the event recieved is right
             ChangePlayerState(PlayerState.MyTurnStarted);
+            playerIndicatorUI.ShowPlayerIndicator();
         }
         else
         {
@@ -470,7 +478,7 @@ public class PlayerThrower : NetworkBehaviour
     //STATES
     
     /// <summary>
-    /// Call this to change the player state. Will sync automatically
+    /// Call this to change the player state.
     /// </summary>
     /// <param name="playerState"> The Next State</param>
     public void ChangePlayerState(PlayerState playerState)

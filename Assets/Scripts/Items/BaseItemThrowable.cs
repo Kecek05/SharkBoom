@@ -1,5 +1,6 @@
 using Sortify;
 using System;
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -49,6 +50,7 @@ public abstract class BaseItemThrowable : MonoBehaviour
     
     protected bool isOwner = false;
     protected bool initialized = false;
+    private Vector3 localEuler;
     
     public bool IsOwner => isOwner;
     public bool Initialized => initialized;
@@ -123,14 +125,27 @@ public abstract class BaseItemThrowable : MonoBehaviour
         UpdateOnRelease(itemLauncherData);
 
         followTransformComponent.DisableComponent();
-        transform.eulerAngles = Vector3.zero;
+        transform.localRotation = Quaternion.identity;
         transform.position = new Vector3(transform.position.x, transform.position.y, ITEM_Z_POSITION);
-        rb.interpolation = RigidbodyInterpolation.Interpolate; //force it
+        
         rb.AddForce(itemLauncherData.dragDirection * itemLauncherData.dragForce, ForceMode.Impulse);
 
         if(lifetimeTriggerItemComponent)
             lifetimeTriggerItemComponent.StartLifetime();
         
+    }
+
+    protected void FixedUpdate()
+    {
+        if (itemReleased)
+        {
+            //Force the item to not rotate in X and Y and force the Z pos
+            localEuler = transform.localEulerAngles;
+            localEuler.x = 0f;
+            localEuler.y = 0f;
+            transform.localEulerAngles = localEuler;
+            transform.position = new Vector3(transform.position.x, transform.position.y, ITEM_Z_POSITION);
+        }
     }
 
     private void UpdateOnRelease(ItemLauncherData itemLauncherData)
@@ -142,7 +157,6 @@ public abstract class BaseItemThrowable : MonoBehaviour
 
         OnItemReleasedAction?.Invoke(this.transform);
         rb.isKinematic = false;
-        transform.localEulerAngles = new Vector3(0f, 0f, 0f); // reset rotation
     }
 
     private void SetCollision(PlayableState playableState)
@@ -172,10 +186,6 @@ public abstract class BaseItemThrowable : MonoBehaviour
 
     protected virtual void ItemCallbackAction()
     {
-        //if(!IsOwner) return; // Only the server should call the callback action
-
-        //FireItemCallbackAction();
-        
         OnItemCallbackAction?.Invoke();
         
         if(isOwner)
@@ -195,6 +205,7 @@ public abstract class BaseItemThrowable : MonoBehaviour
         rb.angularVelocity = Vector3.zero;
         ResetConstraints();
         initialized = false;
+        transform.rotation = Quaternion.identity;
         //Debug.Log("Item Reseted to Pool");
     }
 

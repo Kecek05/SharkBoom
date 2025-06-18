@@ -8,7 +8,10 @@ public class PlayerStateMachine
 {
     private bool isOwner = false;
     private IState currentState;
+    private PlayerState currentPlayerState;
     public IState CurrentState => currentState;
+    
+    public PlayerState CurrentPlayerState => currentPlayerState;
     
     private readonly Dictionary<PlayerState, IState> stateMap = new();
 
@@ -77,6 +80,7 @@ public class PlayerStateMachine
     public void ChangeStateWithPlayerState(PlayerState nextState)
     {
         DoChangeState(GetIStateFromPlayerState(nextState));
+        currentPlayerState = nextState;
     }
 
     /// <summary>
