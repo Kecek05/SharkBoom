@@ -5608,6 +5608,7 @@ GameObject:
   - component: {fileID: 8219345119279371754}
   - component: {fileID: 2468292975892475623}
   - component: {fileID: 8406327557363343199}
+  - component: {fileID: 749939959071509755}
   m_Layer: 0
   m_Name: GFX
   m_TagString: Untagged
@@ -5771,6 +5772,21 @@ MonoBehaviour:
   debugRagdollEnabler: 0
   debugRagdollDisabler: 0
   hitedRbDebug: {fileID: 0}
+--- !u!114 &749939959071509755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8363574200510345622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d886ffbc61964ed4e8f1aea65c5a417e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerGfx: {fileID: 6622240498593950364}
+  damageable: {fileID: 2160364015049000593}
+  damageableSO: {fileID: 11400000, guid: 8edfa528503614f4ebbf85d324d33f4c, type: 2}
 --- !u!1 &8577898299129031035
 GameObject:
   m_ObjectHideFlags: 0
