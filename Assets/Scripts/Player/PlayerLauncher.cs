@@ -39,6 +39,10 @@ public class PlayerLauncher : NetworkBehaviour
     private bool itemSpawnedCallback = false;
     
     private ItemLauncherData lastItemLauncherData;
+
+    private Coroutine waitCoroutine;
+    private Coroutine waitCorrectPositionToActivate;
+    private Coroutine waitSpawnItem;
     
     /// <summary>
     /// Threshhold, in units, to activate the reconciliation
@@ -92,7 +96,10 @@ public class PlayerLauncher : NetworkBehaviour
     [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
     public void TriggerUseItemOnClientRpc(ItemReconcileData reconcileData)
     {
-        StartCoroutine(WaitForCorrectPositionToActivate(reconcileData));
+        if(waitCorrectPositionToActivate != null)
+            StopCoroutine(waitCorrectPositionToActivate);
+        
+        waitCorrectPositionToActivate = StartCoroutine(WaitForCorrectPositionToActivate(reconcileData));
     }
     
     private IEnumerator WaitForCorrectPositionToActivate(ItemReconcileData reconcileData)
@@ -108,6 +115,7 @@ public class PlayerLauncher : NetworkBehaviour
         }
         //Item is in the correct position, Reconcile it
         lastItemThrowableActivable.Reconcile(reconcileData);
+        waitCorrectPositionToActivate = null;
     }
 
     public void HandleOnPlayerStateMachineStateChanged(PlayerState state)
@@ -138,7 +146,10 @@ public class PlayerLauncher : NetworkBehaviour
     
     public void Launch() //Called by the script on animator
     {
-        StartCoroutine(WaitToSpawnItem());
+        if(waitSpawnItem != null)
+            StopCoroutine(waitSpawnItem);
+        
+        waitSpawnItem = StartCoroutine(WaitToSpawnItem());
     }
 
     private IEnumerator WaitToSpawnItem()
@@ -182,6 +193,7 @@ public class PlayerLauncher : NetworkBehaviour
          Debug.Log($"STEPS LAST - ITEM LAUNCHED - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Position: {lastProjectile.transform} - Rotation: {lastProjectile.transform.rotation} - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
         
         OnItemLaunched?.Invoke(playerInventory.SelectedItemID); //pass itemInventoryIndex
+        waitSpawnItem = null;
     }
     
     
@@ -197,8 +209,11 @@ public class PlayerLauncher : NetworkBehaviour
     {
         lastItemLauncherData = itemLauncherData;
         Debug.Log($"STEPS CLIENT 1 - ITEM LAUNCHER DATA RECIEVED - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Shoot Pos: {lastItemLauncherData.shootPosition} - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
+
+        if (waitCoroutine != null)
+            StopCoroutine(waitCoroutine);
         
-        StartCoroutine(WaitItemSpawn(lastItemLauncherData, aimPos));
+        waitCoroutine = StartCoroutine(WaitItemSpawn(lastItemLauncherData, aimPos));
     }
 
     private IEnumerator WaitItemSpawn(ItemLauncherData itemLauncherData, Vector3 aimPos)
@@ -234,6 +249,7 @@ public class PlayerLauncher : NetworkBehaviour
         
         Debug.Log($"STEPS CLIENT 1.2 - ITEM SPAWNED- Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Shoot Pos: {lastItemLauncherData.shootPosition}  - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
         OnLastItemSynced?.Invoke(aimPos);
+        waitCoroutine = null;
     }
 
     private void ItemSpawned(BaseItemThrowable itemThrowable)

@@ -41,10 +41,15 @@ public class PlayerGetUp : NetworkBehaviour
     {
         //if (!IsOwner) return;
 
-        CalculatePlayerFreePos();
+        //CalculatePlayerFreePos();
     }
 
-    private void CalculatePlayerFreePos()
+    public void SyncPosWithServer()
+    {
+        CalculatePlayerFreePos(true);
+    }
+
+    private void CalculatePlayerFreePos(bool isSyncServer = false)
     {
         Vector3 playerRagdollPosition = hipsTransform.position;
         playerRagdollPosition.y -= verticalOffset;
@@ -55,9 +60,18 @@ public class PlayerGetUp : NetworkBehaviour
 
         //Instantiate(CubeStartCalcPosDEBUG, playerRagdollPosition, Quaternion.identity);
         Vector3 foundFinalPosition = GetFreePosition(playerRagdollPosition);
-        
-        ApplyGetUp(foundFinalPosition);
-        //PassPlayerFreePosServerRpc(foundFinalPosition);
+
+        Debug.Log($"CALCULATED POS: {foundFinalPosition} - {gameObject.name} - Owner: {IsOwner} - From Server: {isSyncServer}");
+        if (isSyncServer)
+        {
+            //If is Server, will sync based on the server position
+            PassPlayerFreePosServerRpc(foundFinalPosition);
+        }
+        else
+        {
+            //Not server, sync apply now
+            ApplyGetUp(foundFinalPosition);
+        }
     }
 
     private Vector3 GetFreePosition(Vector3 startPos)
@@ -145,7 +159,7 @@ public class PlayerGetUp : NetworkBehaviour
         PassPlayerFreePosClientRpc(finalPos);
     }
 
-    [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
+    [Rpc(SendTo.ClientsAndHost, Delivery = RpcDelivery.Reliable)]
     private void PassPlayerFreePosClientRpc(Vector3 finalPos)
     {
         ApplyGetUp(finalPos);

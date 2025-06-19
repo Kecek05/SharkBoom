@@ -38,6 +38,9 @@ public class ServiceLocatorBootstrap : MonoBehaviour
         cameraGlobalFollow.Initialize(cameraObjectToFollow.transform);
         
         cameraObjectToFollow.gameObject.transform.position = new Vector3(12, 0, -20);
+        
+        BasePlayerSyncPosition playerSyncPosition = gameObject.AddComponent<PlayerSyncPosition>();
+        playerSyncPosition.Initialize(playersPublicInfoManager);
 
         ServiceLocator.Register(turnManager);
         ServiceLocator.Register(timerManager);
@@ -51,6 +54,7 @@ public class ServiceLocatorBootstrap : MonoBehaviour
         ServiceLocator.Register(cinemachineCamera);
         ServiceLocator.Register(cameraMain);
         ServiceLocator.Register(cameraGlobalFollow);
+        ServiceLocator.Register(playerSyncPosition);
 
 
         OnServiceLocatorInitialized?.Invoke();

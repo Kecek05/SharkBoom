@@ -130,25 +130,6 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         
         InstantiateLocalObj(_selectedItemID);
     }
-    //
-    // [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
-    // private void SpawnItemServerRpc(int _selectedItemSOIndex)
-    // {
-    //     SpawnItemClientRpc(_selectedItemSOIndex);
-    // }
-    //
-    // [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
-    // private void SpawnItemClientRpc(int _selectedItemSOIndex)
-    // {
-    //     UpdateSpawnedItem(_selectedItemSOIndex);
-    // }
-
-   /* private void InstantiateObj()
-    {
-        UpdateSelectedSocket();
-        InstantiateObjServerRpc(NetworkManager.Singleton.LocalClientId, selectedSocket.transform.position, selectedItemSOIndex);
-
-    }*/
 
     private void InstantiateLocalObj(int _selectedItemID)
     {
@@ -160,44 +141,6 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         
         OnItemOnHandSpawned?.Invoke(spawnedItem);
     }
-    /*
-    [Rpc(SendTo.Server)]
-    private void InstantiateObjServerRpc(ulong ownerClientId, Vector3 selectedSocketPos, int itemSOIndex)
-    {
-        NetworkObject spawnedItemNetworkObject = ObjectPool.Instance.GetObject(playerInventory.GetItemSOByItemSOIndex(itemSOIndex).itemIndex, selectedSocketPos, Quaternion.identity);
-        spawnedItemNetworkObject.Spawn();
-        spawnedItemNetworkObject.ChangeOwnership(ownerClientId);
-
-        if(IsServer && !IsHost) //Only DS, cuz host will get the ref in the CallOnItemOnHandClientRpc
-            spawnedItem = spawnedItemNetworkObject.GetComponent<BaseItemThrowable>();
-
-        CallOnItemOnHandClientRpc(spawnedItemNetworkObject);
-    }*/
-
-    /*[Rpc(SendTo.ClientsAndHost)]
-    private void CallOnItemOnHandClientRpc(NetworkObjectReference itemNetworkObject)
-    {
-        if(itemNetworkObject.TryGet(out NetworkObject itemNetworkObjectRef))
-        {
-            if (spawnedItem)
-                spawnedItem.DestroyItem();
-
-            spawnedItem = itemNetworkObjectRef.GetComponent<BaseItemThrowable>();
-
-            if(IsOwner)
-            {
-                spawnedItem.Initialize(selectedSocket.transform);
-                spawnedItem.transform.localRotation = Quaternion.identity;
-            }
-
-        } else
-        {
-            Debug.LogWarning("Item not found");
-            return;
-        }
-
-        OnItemOnHandSpawned?.Invoke(spawnedItem);
-    }*/
 
     public void HandleOnShoot()
     {
