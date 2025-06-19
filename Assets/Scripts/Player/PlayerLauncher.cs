@@ -167,7 +167,8 @@ public class PlayerLauncher : NetworkBehaviour
                 selectedItemID = playerInventory.SelectedItemID, 
                 ownerPlayableState = playerThrower.ThisPlayableState.Value,
                 shootPosition = lastProjectile.transform.position,
-                shootRotation = lastProjectile.transform.rotation
+                shootRotation = lastProjectile.transform.rotation,
+                isRightSocket = playerDetectFacingDirection.IsDirectionRight
             };
             
             lastItemLauncherData = itemLauncherData;
@@ -202,9 +203,14 @@ public class PlayerLauncher : NetworkBehaviour
 
     private IEnumerator WaitItemSpawn(ItemLauncherData itemLauncherData, Vector3 aimPos)
     {
-        Debug.Log($"STEPS CLIENT 1.1 - ITEM LAUNCHER START WAITING - Inv ID: {playerInventory.SelectedItemID} - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Shoot Pos: {lastItemLauncherData.shootPosition}  - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
+        Debug.Log($"STEPS CLIENT 1.1 - ITEM LAUNCHER START WAITING - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Shoot Pos: {lastItemLauncherData.shootPosition}  - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
             
         playerSpawnItemOnHand.OnItemOnHandSpawned += ItemSpawned;
+        
+        playerDetectFacingDirection.SetRotation(itemLauncherData.isRightSocket);
+        
+        //Set the item to the animator to play the right animation
+        playerAnimator.HandleOnItemSelectedSO(playerInventory.GetItemSOByItemID(itemLauncherData.selectedItemID));
         
         if (itemLauncherData.selectedItemID == 0)
         {
@@ -213,12 +219,6 @@ public class PlayerLauncher : NetworkBehaviour
         {
             playerThrower.ChangePlayerState(PlayerState.DraggingItem);
         }
-        
-        //Set the item to the animator to play the right animation
-        playerAnimator.HandleOnItemSelectedSO(playerInventory.GetItemSOByItemID(itemLauncherData.selectedItemID));
-        
-        //Make it play the right anim
-        playerDetectFacingDirection.SetRotation(itemLauncherData.isRightSocket);
         
         //Spawn the item after selected the right anim and direction
         playerSpawnItemOnHand.SpawnItemClient(itemLauncherData.selectedItemID, itemLauncherData.isRightSocket);

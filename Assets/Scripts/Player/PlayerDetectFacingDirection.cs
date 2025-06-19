@@ -23,8 +23,6 @@ public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDete
     private bool isDirectionRight = false;
 
     private Coroutine delayStartFaceOtherPlayerCoroutine;
-    
-    //DEBUG
     public bool IsDirectionRight => isDirectionRight;
 
     public void DoOnInitializeOnwer()
