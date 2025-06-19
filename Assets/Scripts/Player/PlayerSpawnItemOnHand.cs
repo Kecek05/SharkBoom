@@ -27,6 +27,8 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
     
     public void HandleOnRotationChanged(bool isRight)
     {
+        if(!IsOwner) return;
+        
         //Used to select the right side socket
         isRightSocket = isRight;
         UpdateSelectedSocket(isRightSocket);
