@@ -31,7 +31,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         
         //Used to select the right side socket
         isRightSocket = isRight;
-        UpdateSelectedSocket(isRightSocket);
+        UpdateSelectedSocket(isRightSocket, playerInventory.SelectedItemID);
         SpawnItem(selectedItemID);
     }
 
@@ -39,7 +39,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
     {
         //if (!IsOwner) return;
         //Based on the item select, save the item to spawn when drag start and select the corresponding socket based on item and on rotation
-        UpdateSelectedSocket(isRightSocket);
+        UpdateSelectedSocket(isRightSocket, playerInventory.SelectedItemID);
     }
 
     public void HandleOnCrossfadeFinished()
@@ -103,13 +103,13 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
     /// <param name="isRightSocket"></param>
     public void SpawnItemClient(int itemID, bool isRightSocket)
     {
-        UpdateSelectedSocket(isRightSocket);
+        UpdateSelectedSocket(isRightSocket, itemID);
         InstantiateLocalObj(itemID);
     }
     
     private void UpdateSpawnedItem(int _selectedItemID)
     {
-        UpdateSelectedSocket(isRightSocket);
+        UpdateSelectedSocket(isRightSocket, playerInventory.SelectedItemID);
         
         if (spawnedItem)
         {
@@ -218,13 +218,13 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         }
     }
 
-    private void UpdateSelectedSocket(bool isRight)
+    private void UpdateSelectedSocket(bool isRight, int selectedItemID)
     {
         if (isRight)
         {
             foreach (ItemSocket socket in rightSideSockets)
             {
-                if (socket.ItemSO.itemID == playerInventory.SelectedItemID)
+                if (socket.ItemSO.itemID == selectedItemID)
                 {
                     //Found the corresponding socket
                     selectedSocket = socket;
@@ -235,7 +235,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         {
             foreach (ItemSocket socket in leftSideSockets)
             {
-                if (socket.ItemSO.itemID == playerInventory.SelectedItemID)
+                if (socket.ItemSO.itemID == selectedItemID)
                 {
                     //Found the corresponding socket
                     selectedSocket = socket;
