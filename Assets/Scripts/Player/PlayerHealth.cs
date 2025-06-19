@@ -63,7 +63,7 @@ public class PlayerHealth : HealthComponent
         base.Die(); // call the function on base class "Health"
 
         if (!IsServer) return;
-
+        Debug.Log($"DIE - PLAYER DIE");
         OnPlayerDie?.Invoke();
     }
 

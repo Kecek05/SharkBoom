@@ -1,5 +1,7 @@
 using System.Threading.Tasks;
+using QFSW.QC;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SaveBootstrap : MonoBehaviour
 {
@@ -32,5 +34,15 @@ public class SaveBootstrap : MonoBehaviour
             //Not in match, go to Name Bootstrap
             Loader.LoadNoLoadingScreen(Loader.Scene.NameBootstrap);
         }
+    }
+}
+
+public static class DebugSave
+{
+    
+    [Command("Scene")]
+    public static void PrintScene()
+    {
+        Debug.Log(SceneManager.GetActiveScene().name);
     }
 }

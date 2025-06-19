@@ -44,12 +44,10 @@ public class HealthComponent : NetworkBehaviour
         }
     }
     
-    [Rpc(SendTo.Server)]
+    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
     protected void ModifyHealthServerRpc(float value) //only server
     {
-        if (!IsServer) return;
-
-        if (isDead.Value) return;
+        if (isDead.Value == true) return;
 
         float newHealth = currentHealth.Value + value;
 
