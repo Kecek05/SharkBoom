@@ -179,7 +179,7 @@ public class PlayerLauncher : NetworkBehaviour
         }
         
         SpawnProjectile(lastItemLauncherData); 
-         Debug.Log($"STEPS LAST - ITEM LAUNCHED - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Position: {lastItemLauncherData.shootPosition} - Rotation: {lastItemLauncherData.shootRotation} - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
+         Debug.Log($"STEPS LAST - ITEM LAUNCHED - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Position: {lastProjectile.transform} - Rotation: {lastProjectile.transform.rotation} - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
         
         OnItemLaunched?.Invoke(playerInventory.SelectedItemID); //pass itemInventoryIndex
     }
@@ -268,8 +268,8 @@ public class PlayerLauncher : NetworkBehaviour
             itemThrowable.ItemReleased(launcherData, IsOwner);
             
             // force the object to be in the right position and rotation | Need to be in the RB because isnt Kinematic anymore
-            lastProjectile.Rigidbody.position = lastItemLauncherData.shootPosition; 
-            lastProjectile.Rigidbody.rotation = lastItemLauncherData.shootRotation;
+            lastProjectile.Rigidbody.position = launcherData.shootPosition; 
+            lastProjectile.Rigidbody.rotation = launcherData.shootRotation;
         }
 
         if (lastProjectile.TryGetComponent(out BaseItemThrowableActivable activable))
@@ -285,6 +285,8 @@ public class PlayerLauncher : NetworkBehaviour
         {
             lastItemThrowableActivable = null;
         }
+        
+        
     }
 
     public void UnInitializeOwner()
