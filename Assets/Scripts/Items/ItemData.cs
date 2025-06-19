@@ -71,6 +71,8 @@ public struct ItemLauncherData : INetworkSerializable, IEquatable<ItemLauncherDa
     
     public Quaternion shootRotation;
     
+    public bool isRightSocket;
+    
     
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
@@ -80,11 +82,12 @@ public struct ItemLauncherData : INetworkSerializable, IEquatable<ItemLauncherDa
         serializer.SerializeValue(ref ownerPlayableState);
         serializer.SerializeValue(ref shootPosition);
         serializer.SerializeValue(ref shootRotation);
+        serializer.SerializeValue(ref isRightSocket);
     }
 
     public bool Equals(ItemLauncherData other)
     {
-        return dragForce == other.dragForce && dragDirection == other.dragDirection && selectedItemID == other.selectedItemID && ownerPlayableState == other.ownerPlayableState && shootPosition == other.shootPosition && shootRotation == other.shootRotation;
+        return dragForce == other.dragForce && dragDirection == other.dragDirection && selectedItemID == other.selectedItemID && ownerPlayableState == other.ownerPlayableState && shootPosition == other.shootPosition && shootRotation == other.shootRotation && isRightSocket == other.isRightSocket;
     }
 }
 

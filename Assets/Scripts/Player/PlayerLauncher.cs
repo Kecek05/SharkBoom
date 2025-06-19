@@ -28,13 +28,16 @@ public class PlayerLauncher : NetworkBehaviour
     [SerializeField] private PlayerThrower playerThrower;
     [SerializeField] private PlayerSpawnItemOnHand playerSpawnItemOnHand;
     [SerializeField] private PlayerRotateToAim playerRotateToAim;
+    [SerializeField] private PlayerAnimator playerAnimator;
+    [SerializeField] private PlayerDetectFacingDirection playerDetectFacingDirection;
     
     //private BaseItemActivableManager itemActivableManager;
     private BaseItemThrowable lastProjectile;
     private BaseItemThrowableActivable lastItemThrowableActivable;
     private AutoActivateItemComponent lastAutoActivateItemComponent;
     private BaseTimerManager timerManager;
-
+    private bool itemSpawnedCallback = false;
+    
     private ItemLauncherData lastItemLauncherData;
     
     /// <summary>
@@ -193,20 +196,49 @@ public class PlayerLauncher : NetworkBehaviour
     {
         lastItemLauncherData = itemLauncherData;
         Debug.Log($"STEPS CLIENT 1 - ITEM LAUNCHER DATA RECIEVED - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Shoot Pos: {lastItemLauncherData.shootPosition} - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
-        StartCoroutine(WaitRightItemId(lastItemLauncherData, aimPos));
+        
+        StartCoroutine(WaitItemSpawn(lastItemLauncherData, aimPos));
     }
 
-    private IEnumerator WaitRightItemId(ItemLauncherData itemLauncherData, Vector3 aimPos)
+    private IEnumerator WaitItemSpawn(ItemLauncherData itemLauncherData, Vector3 aimPos)
     {
         Debug.Log($"STEPS CLIENT 1.1 - ITEM LAUNCHER START WAITING - Inv ID: {playerInventory.SelectedItemID} - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Shoot Pos: {lastItemLauncherData.shootPosition}  - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
-        while (itemLauncherData.selectedItemID != playerInventory.SelectedItemID)
+            
+        playerSpawnItemOnHand.OnItemOnHandSpawned += ItemSpawned;
+        
+        if (itemLauncherData.selectedItemID == 0)
         {
-            //Wait for the item data is the same as the inventory, waiting for the select item RPC
+            playerThrower.ChangePlayerState(PlayerState.DraggingJump);
+        } else
+        {
+            playerThrower.ChangePlayerState(PlayerState.DraggingItem);
+        }
+        
+        //Set the item to the animator to play the right animation
+        playerAnimator.HandleOnItemSelectedSO(playerInventory.GetItemSOByItemID(itemLauncherData.selectedItemID));
+        
+        //Make it play the right anim
+        playerDetectFacingDirection.SetRotation(itemLauncherData.isRightSocket);
+        
+        //Spawn the item after selected the right anim and direction
+        playerSpawnItemOnHand.SpawnItemClient(itemLauncherData.selectedItemID, itemLauncherData.isRightSocket);
+        
+        while (!itemSpawnedCallback)
+        {
+            //Wait for the item to be spawned
             yield return null;
         }
         
-        Debug.Log($"STEPS CLIENT 1.2 - ITEM LAUNCHER ID IS SAME AS INVENTORY - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Shoot Pos: {lastItemLauncherData.shootPosition}  - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
+        playerSpawnItemOnHand.OnItemOnHandSpawned -= ItemSpawned;
+        itemSpawnedCallback = false;
+        
+        Debug.Log($"STEPS CLIENT 1.2 - ITEM SPAWNED- Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Shoot Pos: {lastItemLauncherData.shootPosition}  - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
         OnLastItemSynced?.Invoke(aimPos);
+    }
+
+    private void ItemSpawned(BaseItemThrowable itemThrowable)
+    {
+        itemSpawnedCallback = true;
     }
     
     private void SpawnProjectile(ItemLauncherData launcherData)

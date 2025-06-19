@@ -198,6 +198,14 @@ public abstract class BaseItemThrowable : MonoBehaviour
     }
 
     /// <summary>
+    /// Used to override items call OnItemCallbackAction
+    /// </summary>
+    protected void InvokeOnItemCallbackAction()
+    {
+        OnItemCallbackAction?.Invoke();
+    }
+
+    /// <summary>
     /// Called when the object is Destroyed, all clients call this. Use to reset to the initial state of the item to the pool.
     /// </summary>
     protected virtual void ResetItemThrowableState()

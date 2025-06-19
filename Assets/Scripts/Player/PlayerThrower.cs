@@ -272,7 +272,7 @@ public class PlayerThrower : NetworkBehaviour
             {
 
                 ChangePlayerState(PlayerState.DraggingItem);
-                Debug.Log($"STEPS CLIENT 2.1 - AIM POSITION SYNCED - SETTING PLAYER SM TO DRAGGING ITEM AIM POSITION: {aimPosition} - {gameObject.name} - Current SM Player: {playerStateMachine.CurrentPlayerState}");
+                Debug.LogWarning($"STEPS CLIENT 2.1 - AIM POSITION SYNCED - SETTING PLAYER SM TO DRAGGING ITEM AIM POSITION: {aimPosition} - {gameObject.name} - Current SM Player: {playerStateMachine.CurrentPlayerState}");
             }
             playerDragController.InvokeOnDragRelease();
         });

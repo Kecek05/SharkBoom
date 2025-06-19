@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class BasePlayersPublicInfoManager : MonoBehaviour
 {
-    //REFACTOR THIS BASED ON PLAYERDATA
+
     public static int PLAYER_1_LAYER = 8;
     public static int PLAYER_2_LAYER = 9;
     public static int NO_DEFINED_PLAYER_LAYER = 10;

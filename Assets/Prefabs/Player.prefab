@@ -756,7 +756,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1244250245066138330}
   serializedVersion: 4
-  m_Mass: 0.001
+  m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -876,6 +876,8 @@ MonoBehaviour:
   playerThrower: {fileID: 2871544100916734757}
   playerSpawnItemOnHand: {fileID: 5846641034301650373}
   playerRotateToAim: {fileID: 5182517899106838082}
+  playerAnimator: {fileID: 6932457704017656328}
+  playerDetectFacingDirection: {fileID: 8219345119279371754}
 --- !u!114 &5120579722876303172
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5771,7 +5773,6 @@ MonoBehaviour:
   - {fileID: 7708774325629273798}
   debugRagdollEnabler: 0
   debugRagdollDisabler: 0
-  hitedRbDebug: {fileID: 0}
 --- !u!114 &749939959071509755
 MonoBehaviour:
   m_ObjectHideFlags: 0

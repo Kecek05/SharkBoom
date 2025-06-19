@@ -17,24 +17,23 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [SerializeField] private Rigidbody parentRigidbody;
     [SerializeField] private Transform hips;
 
-    private Transform[] allBonesTransform;
+
     [SerializeField] private Rigidbody[] ragdollRbs; //SERIALIZEFIELD ONLY FOR DEBUG
     [SerializeField] private Collider[] ragdollColliders; //SERIALIZEFIELD ONLY FOR DEBUG
     [SerializeField] private Rigidbody[] ragdollRbsToKnockback;
     private Vector3 defaultHipsRotation = new Vector3(-90f, 180f, 0f);
+    
     private bool recievedKnockbackData = false;
     private KnockbackData lastKnockbackData;
-    private BoneTransformData[] lastBoneTransformData;
+    private bool alreadyKnockbacked = false;
 
-    [BetterHeader("DEBUG")] [SerializeField]
-    private bool debugRagdollEnabler;
-
+    [BetterHeader("DEBUG")]
+    [SerializeField]private bool debugRagdollEnabler;
     [SerializeField] private bool debugRagdollDisabler;
 
 
     public override void OnNetworkSpawn()
     {
-        allBonesTransform = ragdollRoot.GetComponentsInChildren<Transform>();
         ragdollRbs = ragdollRoot.GetComponentsInChildren<Rigidbody>();
         ragdollColliders = ragdollRoot.GetComponentsInChildren<Collider>();
     }
@@ -68,8 +67,10 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     private IEnumerator WaitKnockbackData(float knockbackStrength, Vector3 hitPoint)
     {
+        Debug.Log($"KNOCKBACK - WaitKnockbackData - Owner: {IsOwner}");
         if (IsOwner)
         {
+            // RpcDebugServerRpc();
             //Owner of the hit Ragdoll. Means that the Enemy threw the Item
             while (!recievedKnockbackData)
             {
@@ -80,16 +81,11 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             }
 
             Debug.Log(
-                $"KNOCKBACK - Knockback data received  - Index: {lastKnockbackData.hitRigidbodyIndex} - Hit Pos: {lastKnockbackData.hitPosition} - Hit Force: {lastKnockbackData.hitForce} - {gameObject.transform.parent.name}");
-
-            foreach (BoneTransformData boneTransformData in lastBoneTransformData)
-            {
-                Debug.Log($"KNOCKBACK - BONE TRANSFORM DATA RECIEVED - POSITION: {boneTransformData.LocalPosition} - ROTATION: {boneTransformData.LocalRotation}");
-            }
+                $"KNOCKBACK - Knockback data received  - Index: {lastKnockbackData.hitRigidbodyIndex} - Hit Force: {lastKnockbackData.hitForce} - Rb Pos: {lastKnockbackData.hitRagdollPosition} - Rb Rot: {lastKnockbackData.hitRagdollRotation} - {gameObject.transform.parent.name}");
             
             EnableRagdoll();
             //Do knockback based on data
-            DoKnockbackOnRagdoll(lastKnockbackData, lastBoneTransformData);
+            DoKnockbackOnRagdoll(lastKnockbackData);
 
             //Reset Knockback data and BonesTransform Data
             UsedLastKnockbackData();
@@ -101,39 +97,46 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             EnableRagdoll();
             //Calculate the right Knockback Data
             KnockbackData knockbackData = CalculateKnockbackData(knockbackStrength, hitPoint);
-
-            BoneTransformData[] bonesTransformData = GetAllBonesTransformData();
             
             // RPC the Knockback Data and BonesTransform Data
-            PassKnockbackDataToServerRpc(knockbackData, bonesTransformData);
+            // RpcDebugServerRpc();
+            PassKnockbackDataToServerRpc(knockbackData);
             //Do Knockback based on data
-            DoKnockbackOnRagdoll(knockbackData, bonesTransformData);
+            DoKnockbackOnRagdoll(knockbackData);
         }
     }
 
     private void UsedLastKnockbackData()
     {
         lastKnockbackData = default;
-        Array.Clear(lastBoneTransformData, 0, lastBoneTransformData.Length); //clear it from the index 0 to the end
-        
         recievedKnockbackData = false;
     }
+    
+    // [Rpc(SendTo.Server, RequireOwnership = false, Delivery = RpcDelivery.Reliable)]
+    // private void RpcDebugServerRpc()
+    // {
+    //     Debug.Log($"KNOCKBACK - RpcDebugServerRpc - {gameObject.transform.parent.name} - Owner: {IsOwner}");
+    //     RpcDebugClientRpc();
+    // }
+    //
+    // [Rpc(SendTo.Owner, RequireOwnership = false, Delivery = RpcDelivery.Reliable)]
+    // private void RpcDebugClientRpc()
+    // {
+    //     Debug.Log($"KNOCKBACK - RpcDebugClientRpc - {gameObject.transform.parent.name} - Owner: {IsOwner}");
+    // }
 
-    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
-    private void PassKnockbackDataToServerRpc(KnockbackData knockbackData, BoneTransformData[] bonesTrasfrom)
+    [Rpc(SendTo.Server, RequireOwnership = false, Delivery = RpcDelivery.Reliable)]
+    private void PassKnockbackDataToServerRpc(KnockbackData knockbackData)
     {
         Debug.Log($"KNOCKBACK - Passing Knockback through Server");
-        PassKnockbackDataToClientRpc(knockbackData, bonesTrasfrom);
+        PassKnockbackDataToClientRpc(knockbackData);
     }
 
-    [Rpc(SendTo.Owner, Delivery = RpcDelivery.Reliable)]
-    private void PassKnockbackDataToClientRpc(KnockbackData knockbackData, BoneTransformData[] bonesTrasfrom)
+    [Rpc(SendTo.Owner, RequireOwnership = false, Delivery = RpcDelivery.Reliable)]
+    private void PassKnockbackDataToClientRpc(KnockbackData knockbackData)
     {
-        Debug.Log($"KNOCKBACK - Knockback Recieved RPC");
+        Debug.Log($"KNOCKBACK - Knockback Recieved RPC - Owner: {IsOwner} - {gameObject.transform.parent.name}");
         lastKnockbackData = knockbackData;
-        lastBoneTransformData = new BoneTransformData[bonesTrasfrom.Length];
-        Array.Copy(bonesTrasfrom, lastBoneTransformData, bonesTrasfrom.Length);
-        
         recievedKnockbackData = true;
     }
 
@@ -171,41 +174,15 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         }
         
         Debug.Log(
-            $"KNOCKBACK - Knockback data calculated  - Index: {hitRigidbodyIndex} - Hit Pos: {hitPoint} - Hit Force: {force} - {gameObject.transform.parent.name}");
+            $"KNOCKBACK - Knockback data calculated  - Index: {hitRigidbodyIndex} - Hit Pos: {hitPoint} - Rb Pos: {hitRigidbody.position} - Rb Rot: {hitRigidbody.rotation} - Hit Force: {force} - {gameObject.transform.parent.name}");
 
         return new KnockbackData
         {
             hitForce = force,
-            hitPosition = hitPoint,
             hitRigidbodyIndex = hitRigidbodyIndex,
+            hitRagdollPosition = hitRigidbody.position,
+            hitRagdollRotation = hitRigidbody.rotation,
         };
-    }
-
-    private BoneTransformData[] GetAllBonesTransformData()
-    {
-        var boneDataList = new List<BoneTransformData>(allBonesTransform.Length);
-        foreach (Transform bone in allBonesTransform)
-        {
-            boneDataList.Add(new BoneTransformData {
-                LocalPosition = bone.localPosition,
-                LocalRotation = bone.localRotation
-            });
-            Debug.Log($"KNOCKBACK - GETTING BONES POS: {bone.localPosition} - {bone.localRotation} - {bone.name}");
-        }
-        BoneTransformData[] boneArray = boneDataList.ToArray();
-
-        return boneArray;
-    }
-    
-    private void SetBoneLocalTransform(BoneTransformData[] bonesTransform)
-    {
-        for (int i = 0; i < bonesTransform.Length; i++)
-        {
-            Debug.Log(
-                $"KNOCKBACK - SETTING BONE LOCAL POS - CURRENT POS: {allBonesTransform[i].localPosition} - RIGHT POS: {bonesTransform[i].LocalPosition} - CURRENT ROTATION: {allBonesTransform[i].localRotation} - RIGHT ROTATION: {bonesTransform[i].LocalRotation}");
-            allBonesTransform[i].localPosition = bonesTransform[i].LocalPosition;
-            allBonesTransform[i].localRotation = bonesTransform[i].LocalRotation;
-        }
     }
 
     /// <summary>
@@ -213,9 +190,14 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     /// </summary>
     /// <param name="knockbackStrength"> Strength of the Knockback</param>
     /// <param name="hitPoint"> Position of the hit</param>
-    public void TriggerRagdoll(float knockbackStrength, Vector3 hitPoint)
+    public void TriggerKnockback(float knockbackStrength, Vector3 hitPoint)
     {
-        Debug.Log($"KNOCKBACK - TRIGGER RAGDOLL - {gameObject.transform.parent.name}");
+        Debug.Log($"KNOCKBACK - TRIGGER RAGDOLL - {gameObject.transform.parent.name} - Already Knocked: {alreadyKnockbacked}");
+        
+        if(alreadyKnockbacked) return;
+        
+        alreadyKnockbacked = true;
+        
         StartCoroutine(WaitKnockbackData(knockbackStrength, hitPoint));
     }
     
@@ -224,14 +206,21 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     /// </summary>
     /// <param name="knockbackData"> Data do Knockback</param>
     /// <param name="boneTransformDatas"> Data to sync the bones pos</param>
-    private void DoKnockbackOnRagdoll(KnockbackData knockbackData, BoneTransformData[] boneTransformDatas)
+    private void DoKnockbackOnRagdoll(KnockbackData knockbackData)
     {
         Rigidbody hitRigidbody = ragdollRbsToKnockback[knockbackData.hitRigidbodyIndex];
         knockbackData.hitForce = new Vector3(knockbackData.hitForce.x, knockbackData.hitForce.y, 0f); //Ensure to not knockback in Z
 
-        SetBoneLocalTransform(boneTransformDatas);
+        //Set Ragdoll position
+        hitRigidbody.position = knockbackData.hitRagdollPosition;
+        hitRigidbody.rotation = knockbackData.hitRagdollRotation;
+        Debug.Log($"KNOCKBACK - Do Knockback - Index: {knockbackData.hitRigidbodyIndex} - Rb Pos: {hitRigidbody.position} - Rb Rot: {hitRigidbody.rotation} - Hit Force: {knockbackData.hitForce} - {gameObject.transform.parent.name}");
         
-        hitRigidbody.AddForceAtPosition(knockbackData.hitForce, knockbackData.hitPosition, ForceMode.Impulse);
+        hitRigidbody.AddForce(knockbackData.hitForce, ForceMode.Impulse);
+        
+        // SetBoneLocalTransform(boneTransformDatas);
+        // hitRigidbody.AddForceAtPosition(knockbackData.hitForce, knockbackData.hitPosition, ForceMode.Impulse);
+        
     }
 
     /// <summary>
@@ -257,21 +246,8 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         animator.enabled = false;
         parentRigidbody.isKinematic = true;
 
-        Debug.Log($"RAGDOLL - Animator Enable: {animator.enabled} (false), {gameObject.transform.parent.name}");
+        // Debug.Log($"RAGDOLL - Animator Enable: {animator.enabled} (false), {gameObject.transform.parent.name}");
     }
-
-
-    //[Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
-    //private void RequestRagdollDisableServerRpc()
-    //{
-    //    DisableRagdollClientRpc();
-    //}
-
-    //[Rpc(SendTo.ClientsAndHost, Delivery = RpcDelivery.Reliable)]
-    //private void DisableRagdollClientRpc()
-    //{
-    //    DisableRagdoll();
-    //}
 
     private void DisableRagdoll()
     {
@@ -299,44 +275,28 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
         hips.localRotation = Quaternion.Euler(defaultHipsRotation);
         hips.localPosition = Vector3.zero;
-        Debug.Log($"RAGDOLL - Animator Enable: {animator.enabled} (true), {gameObject.transform.parent.name}");
+        // Debug.Log($"RAGDOLL - Animator Enable: {animator.enabled} (true), {gameObject.transform.parent.name}");
         OnRagdollDisabled?.Invoke();
-    }
-}
 
-/// <summary>
-/// Data of the Bone Position and Rotation in Local Space
-/// </summary>
-public struct BoneTransformData : INetworkSerializable
-{
-    public Vector3 LocalPosition;
-    public Quaternion LocalRotation;
-    
-    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
-    {
-        serializer.SerializeValue(ref LocalPosition);
-        serializer.SerializeValue(ref LocalRotation);
+        alreadyKnockbacked = false;
     }
 }
 
 /// <summary>
 /// Data of the Knockback - Hit Rb - Hit Force - Hit Position
 /// </summary>
-public struct KnockbackData : INetworkSerializable, IEquatable<KnockbackData> 
+public struct KnockbackData : INetworkSerializable
 {
     public int hitRigidbodyIndex;
     public Vector3 hitForce;
-    public Vector3 hitPosition;
+    public Vector3 hitRagdollPosition;
+    public Quaternion hitRagdollRotation;
     
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
         serializer.SerializeValue(ref hitRigidbodyIndex);
-        serializer.SerializeValue(ref hitPosition);
         serializer.SerializeValue(ref hitForce);
-    }
-
-    public bool Equals(KnockbackData other)
-    {
-        return hitRigidbodyIndex == other.hitRigidbodyIndex && hitPosition == other.hitPosition && hitForce == other.hitForce;
+        serializer.SerializeValue(ref hitRagdollPosition);
+        serializer.SerializeValue(ref hitRagdollRotation);
     }
 } 

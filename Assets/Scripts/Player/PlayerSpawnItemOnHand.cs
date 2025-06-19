@@ -29,7 +29,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
     {
         //Used to select the right side socket
         isRightSocket = isRight;
-        UpdateSelectedSocket();
+        UpdateSelectedSocket(isRightSocket);
         SpawnItem(selectedItemID);
     }
 
@@ -37,7 +37,7 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
     {
         //if (!IsOwner) return;
         //Based on the item select, save the item to spawn when drag start and select the corresponding socket based on item and on rotation
-        UpdateSelectedSocket();
+        UpdateSelectedSocket(isRightSocket);
     }
 
     public void HandleOnCrossfadeFinished()
@@ -48,7 +48,8 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
 
     public void HandleOnPlayerStateChanged(PlayerState newState)
     {
-        //if (!IsOwner) return;
+        if (!IsOwner) return;
+        
         //canSpawnItem = false;
         switch (newState)
         {
@@ -92,10 +93,21 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         // if(IsOwner)
         //     SpawnItemServerRpc(_selectedItemID);
     }
+
+    /// <summary>
+    /// Called from the Client, to spawn the item recieved from the itemLauncherData
+    /// </summary>
+    /// <param name="itemID"></param>
+    /// <param name="isRightSocket"></param>
+    public void SpawnItemClient(int itemID, bool isRightSocket)
+    {
+        UpdateSelectedSocket(isRightSocket);
+        InstantiateLocalObj(itemID);
+    }
     
     private void UpdateSpawnedItem(int _selectedItemID)
     {
-        UpdateSelectedSocket();
+        UpdateSelectedSocket(isRightSocket);
         
         if (spawnedItem)
         {
@@ -116,18 +128,18 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         
         InstantiateLocalObj(_selectedItemID);
     }
-    
-    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
-    private void SpawnItemServerRpc(int _selectedItemSOIndex)
-    {
-        SpawnItemClientRpc(_selectedItemSOIndex);
-    }
-    
-    [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
-    private void SpawnItemClientRpc(int _selectedItemSOIndex)
-    {
-        UpdateSpawnedItem(_selectedItemSOIndex);
-    }
+    //
+    // [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    // private void SpawnItemServerRpc(int _selectedItemSOIndex)
+    // {
+    //     SpawnItemClientRpc(_selectedItemSOIndex);
+    // }
+    //
+    // [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
+    // private void SpawnItemClientRpc(int _selectedItemSOIndex)
+    // {
+    //     UpdateSpawnedItem(_selectedItemSOIndex);
+    // }
 
    /* private void InstantiateObj()
     {
@@ -204,9 +216,9 @@ public class PlayerSpawnItemOnHand : NetworkBehaviour
         }
     }
 
-    private void UpdateSelectedSocket()
+    private void UpdateSelectedSocket(bool isRight)
     {
-        if (isRightSocket)
+        if (isRight)
         {
             foreach (ItemSocket socket in rightSideSockets)
             {

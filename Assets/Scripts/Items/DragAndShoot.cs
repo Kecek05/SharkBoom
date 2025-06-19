@@ -164,7 +164,7 @@ public class DragAndShoot : NetworkBehaviour
 
                         SetIsDragging(true);
                         OnDragStart?.Invoke();
-                        TriggerOnDragStartServerRpc();
+                        // TriggerOnDragStartServerRpc();
                     }
                 }
             }
@@ -196,17 +196,17 @@ public class DragAndShoot : NetworkBehaviour
         }
     }
     
-    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
-    private void TriggerOnDragStartServerRpc()
-    {
-        TriggerOnDragStartClientRpc();
-    }
-
-    [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
-    private void TriggerOnDragStartClientRpc()
-    {
-        OnDragStart?.Invoke();
-    }
+    // [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    // private void TriggerOnDragStartServerRpc()
+    // {
+    //     TriggerOnDragStartClientRpc();
+    // }
+    //
+    // [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
+    // private void TriggerOnDragStartClientRpc()
+    // {
+    //     OnDragStart?.Invoke();
+    // }
 
     public void InvokeOnDragRelease()
     {
