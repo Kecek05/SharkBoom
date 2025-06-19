@@ -78,6 +78,18 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4043183287295087177, guid: 18586ff857b323d46ac33f732d9aa527, type: 3}
+      propertyPath: VelocityModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4043183287295087177, guid: 18586ff857b323d46ac33f732d9aa527, type: 3}
+      propertyPath: VelocityModule.x.scalar
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4043183287295087177, guid: 18586ff857b323d46ac33f732d9aa527, type: 3}
+      propertyPath: VelocityModule.z.scalar
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4043183287295087177, guid: 18586ff857b323d46ac33f732d9aa527, type: 3}
       propertyPath: InitialModule.startSpeed.scalar
       value: 1.2
       objectReference: {fileID: 0}
@@ -135,6 +147,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8068523065131977514, guid: 18586ff857b323d46ac33f732d9aa527, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9053107604261270089, guid: 18586ff857b323d46ac33f732d9aa527, type: 3}
+      propertyPath: VelocityModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9053107604261270089, guid: 18586ff857b323d46ac33f732d9aa527, type: 3}
+      propertyPath: VelocityModule.x.scalar
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9053107604261270089, guid: 18586ff857b323d46ac33f732d9aa527, type: 3}
+      propertyPath: VelocityModule.z.scalar
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9053107604261270089, guid: 18586ff857b323d46ac33f732d9aa527, type: 3}
