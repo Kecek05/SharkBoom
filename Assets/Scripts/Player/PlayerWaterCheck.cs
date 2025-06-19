@@ -9,7 +9,7 @@ public class PlayerWaterCheck : MonoBehaviour
 
     private const float waterLevel = -5f;
     private bool hasTakenDamage = false;
-    private WaitForSeconds checkTime = new WaitForSeconds(0.5f);
+    private WaitForSeconds checkTime = new WaitForSeconds(1f);
 
     private void Start()
     {
@@ -27,8 +27,6 @@ public class PlayerWaterCheck : MonoBehaviour
                 damageable.TakeDamage(damageableSO);
                 hasTakenDamage = true;
             }
-
-            Debug.Log($"Player position: {playerGfx.transform.position.y}, Water level: {waterLevel}");
             yield return checkTime;
         }
     }
