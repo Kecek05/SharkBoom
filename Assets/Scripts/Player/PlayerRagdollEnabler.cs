@@ -19,7 +19,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [SerializeField] private Collider[] ragdollColliders;//SERIALIZEFIELD ONLY FOR DEBUG
     [SerializeField] private Rigidbody[] ragdollRbsToKnockback;
     private Vector3 defaultHipsRotation = new Vector3(-90f, 180f, 0f);
-    
+    private bool recievedKnockbackData = false;
     
     [BetterHeader("DEBUG")]
     [SerializeField] private bool debugRagdollEnabler;
@@ -92,8 +92,17 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             Debug.LogError("No ragdoll rb found");
             return;
         }
+        
         //Debug.Log($"RAGDOLL - Trigger");
-
+        var knockbackData = new KnockbackData
+        {
+            hitForce = force,
+            hitRigidbodyIndex = hitRigidbodyIndex,
+            hitRigidbodyPosition = hitRigidbody.position,
+            hitRigidbodyRotation = hitRigidbody.rotation,
+            hitPosition = hitPoint
+        };
+        
         TriggerRagdoll(hitRigidbodyIndex, force, hitPoint, hitRigidbody.position, hitRigidbody.rotation);
     }
 
@@ -186,3 +195,27 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         OnRagdollDisabled?.Invoke();
     }
 }
+
+public struct KnockbackData : INetworkSerializable, IEquatable<KnockbackData> 
+{
+    public int hitRigidbodyIndex;
+    public Vector3 hitForce;
+    public Vector3 hitPosition;
+    public Vector3 hitRigidbodyPosition;
+    public Quaternion hitRigidbodyRotation;
+    
+    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+    {
+        serializer.SerializeValue(ref hitRigidbodyIndex);
+        serializer.SerializeValue(ref hitPosition);
+        serializer.SerializeValue(ref hitRigidbodyPosition);
+        serializer.SerializeValue(ref hitRigidbodyRotation);
+        serializer.SerializeValue(ref hitForce);
+    }
+
+    public bool Equals(KnockbackData other)
+    {
+        return hitRigidbodyIndex == other.hitRigidbodyIndex && hitPosition == other.hitPosition &&
+               hitRigidbodyPosition == other.hitRigidbodyPosition && hitRigidbodyRotation == other.hitRigidbodyRotation && hitForce == other.hitForce;
+    }
+} 

@@ -27,8 +27,8 @@ public class SaveBootstrap : MonoBehaviour
             string ipMatch = await Reconnect.GetIpMatch(ClientSingleton.Instance.GameManager.UserData.userAuthId);
             int portMatch = await Reconnect.GetPortMatch(ClientSingleton.Instance.GameManager.UserData.userAuthId);
 
+            Debug.Log($"Reconnecting: {ipMatch}:{portMatch}");
             ClientSingleton.Instance.GameManager.StartMatchmakingClient(ipMatch, portMatch);
-
         } else
         {
             //Not in match, go to Name Bootstrap
