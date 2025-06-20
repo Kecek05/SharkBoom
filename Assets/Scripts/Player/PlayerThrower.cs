@@ -171,7 +171,6 @@ public class PlayerThrower : NetworkBehaviour
         
         playerStateMachine.OnStateChanged += HandleOnStateChanged;
         
-        BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
         BaseItemThrowable.OnItemCallbackActionWithOwner += BaseItemThrowableOnOnItemCallbackActionWithOwner;
         
         turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
@@ -214,7 +213,6 @@ public class PlayerThrower : NetworkBehaviour
 
         playerLauncher.OnLastItemSynced -= HandleOnLastItemSynced;
         
-        BaseItemThrowable.OnItemCallbackAction -= HandleOnItemCallbackAction;
         BaseItemThrowable.OnItemCallbackActionWithOwner -= BaseItemThrowableOnOnItemCallbackActionWithOwner;
 
         turnManager.OnMyTurnStarted -= GameFlowManager_OnMyTurnStarted;
@@ -404,11 +402,6 @@ public class PlayerThrower : NetworkBehaviour
     private void OnPlayerSpawnItemOnHandItemSocketSelected(ItemSocket selectedSocket)
     {
         followSelectedSocketComponent.HandleOnPlayerSpawnItemOnHandOnItemSocketSelected(selectedSocket);
-    }
-
-    private void HandleOnItemCallbackAction()
-    {
-        playerGetUp.HandleOnItemCallbackAction();
     }
     
     private void BaseItemThrowableOnOnItemCallbackActionWithOwner(bool isOwnerOfTheItem)
