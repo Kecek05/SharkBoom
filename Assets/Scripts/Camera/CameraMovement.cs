@@ -17,11 +17,14 @@ public class CameraMovement : NetworkBehaviour
     private bool dragMoveActive = false; // hold if the drag move is active
     private Vector2 lastTouchPosition;
 
+    private bool isSubscribedToTouch = false;
+
     public void InitializeOwner()
     {
         if (!IsOwner) return;
         inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
         inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
+        isSubscribedToTouch = true;
     }
 
     private void InputReader_OnTouchPressEvent(InputAction.CallbackContext context)
@@ -77,8 +80,18 @@ public class CameraMovement : NetworkBehaviour
 
     public void UnInitializeOwner()
     {
+        isSubscribedToTouch = false;
         inputReader.OnTouchPressEvent -= InputReader_OnTouchPressEvent;
         inputReader.OnPrimaryFingerPositionEvent -= InputReader_OnPrimaryFingerPositionEvent;
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        if (isSubscribedToTouch)
+        {
+            inputReader.OnTouchPressEvent -= InputReader_OnTouchPressEvent;
+            inputReader.OnPrimaryFingerPositionEvent -= InputReader_OnPrimaryFingerPositionEvent;
+        }
     }
 }
 

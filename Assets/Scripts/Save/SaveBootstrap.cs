@@ -1,5 +1,7 @@
 using System.Threading.Tasks;
+using QFSW.QC;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SaveBootstrap : MonoBehaviour
 {
@@ -25,12 +27,22 @@ public class SaveBootstrap : MonoBehaviour
             string ipMatch = await Reconnect.GetIpMatch(ClientSingleton.Instance.GameManager.UserData.userAuthId);
             int portMatch = await Reconnect.GetPortMatch(ClientSingleton.Instance.GameManager.UserData.userAuthId);
 
+            Debug.Log($"Reconnecting: {ipMatch}:{portMatch}");
             ClientSingleton.Instance.GameManager.StartMatchmakingClient(ipMatch, portMatch);
-
         } else
         {
             //Not in match, go to Name Bootstrap
             Loader.LoadNoLoadingScreen(Loader.Scene.NameBootstrap);
         }
+    }
+}
+
+public static class DebugSave
+{
+    
+    [Command("Scene")]
+    public static void PrintScene()
+    {
+        Debug.Log(SceneManager.GetActiveScene().name);
     }
 }

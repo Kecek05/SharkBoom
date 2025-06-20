@@ -405,21 +405,21 @@ public class PlayerInventory : NetworkBehaviour
         
         SetItem(newItemInventoryID);
         
-        PassItemIndexToServerRpc(newItemInventoryID);
+        // PassItemIndexToServerRpc(newItemInventoryID);
     }
 
 
-    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
-    private void PassItemIndexToServerRpc(int newItemInventoryID)
-    {
-        PassItemIndexToClientRpc(newItemInventoryID);
-    }
-
-    [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
-    private void PassItemIndexToClientRpc(int newItemInventoryID)
-    {
-        SetItem(newItemInventoryID);
-    }
+    // [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    // private void PassItemIndexToServerRpc(int newItemInventoryID)
+    // {
+    //     PassItemIndexToClientRpc(newItemInventoryID);
+    // }
+    //
+    // [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
+    // private void PassItemIndexToClientRpc(int newItemInventoryID)
+    // {
+    //     SetItem(newItemInventoryID);
+    // }
 
     private void SetItem(int newItemInventoryID)
     {

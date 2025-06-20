@@ -19,6 +19,8 @@ public class CameraZoom : NetworkBehaviour
     private Vector2 secondaryFingerPosition;
 
     private Vector3 cameraObjectFollowPos;
+    
+    private bool isSubscribedToTouch = false;
 
     [BetterHeader("Variables")]
 
@@ -38,6 +40,7 @@ public class CameraZoom : NetworkBehaviour
         inputReader.OnSecondaryTouchContactEvent += InputReader_OnSecondaryTouchContactEvent;
         inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
         inputReader.OnSecondaryFingerPositionEvent += InputReader_OnSecondaryFingerPositionEvent;
+        isSubscribedToTouch = true;
     }
 
     private void InputReader_OnSecondaryTouchContactEvent(InputAction.CallbackContext context)

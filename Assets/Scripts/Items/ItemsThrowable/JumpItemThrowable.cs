@@ -37,9 +37,10 @@ public class JumpItemThrowable : BaseItemThrowable
 
     protected override void ItemCallbackAction()
     {
+        InvokeOnItemCallbackAction();
+        
         if(isOwner) 
             timerManager.TogglePauseTimer(false); //unpause
-        // FireItemCallbackAction();
         
         turnManager.PlayerJumped(thisItemLaucherData.ownerPlayableState);
     }

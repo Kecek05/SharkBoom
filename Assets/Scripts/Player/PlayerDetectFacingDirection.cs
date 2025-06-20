@@ -23,8 +23,6 @@ public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDete
     private bool isDirectionRight = false;
 
     private Coroutine delayStartFaceOtherPlayerCoroutine;
-    
-    //DEBUG
     public bool IsDirectionRight => isDirectionRight;
 
     public void DoOnInitializeOnwer()
@@ -56,7 +54,7 @@ public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDete
 
             OnRotationChanged?.Invoke(true);
             
-            RotationChangedServerRpc(true);
+            // RotationChangedServerRpc(true);
         }
         else if (playerDragController.GetOpositeFingerPos().x < playerGfxTransform.position.x - angleOffset)
         {
@@ -67,7 +65,7 @@ public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDete
 
             OnRotationChanged?.Invoke(false);
             
-            RotationChangedServerRpc(false);
+            // RotationChangedServerRpc(false);
         }
     }
 
@@ -86,14 +84,13 @@ public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDete
         OnRotationChanged?.Invoke(isDirectionRight);
     }
 
-    [Rpc(SendTo.Server)]
-    private void RotationChangedServerRpc(bool isRight)
-    {
-        RotationChangedClientRpc(isRight);
-    }
+    // [Rpc(SendTo.Server)]
+    // private void RotationChangedServerRpc(bool isRight)
+    // {
+    //     RotationChangedClientRpc(isRight);
+    // }
     
-    [Rpc(SendTo.NotOwner)]
-    private void RotationChangedClientRpc(bool isRight)
+    public void SetRotation(bool isRight)
     {
         isDirectionRight = isRight;
         

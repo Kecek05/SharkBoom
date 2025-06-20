@@ -36,26 +36,14 @@ public class PlayerStateMachine
         // Build all your state instances
         Register(new MyTurnStartedState(player));
         Register(new IdleMyTurnState(player, playerDragController, playerInventory));
-        Register(new DraggingJump(player, playerDragController, playerInventory));
-        Register(new DraggingItem(player, playerDragController, playerInventory));
+        Register(new DraggingJump(player, playerDragController));
+        Register(new DraggingItem(player, playerDragController));
         Register(new DragReleaseJump());
         Register(new DragReleaseItem());
         Register(myTurnEndedState = new MyTurnEndedState(player, isOwner));
         Register(new IdleEnemyTurnState());
         Register(new PlayerWatchingState());
         Register(new PlayerGameOverState());
-        //playerThrower = player;
-        //our builder
-        /*this.myTurnStartedState = new MyTurnStartedState(player);
-        this.idleMyTurnState = new IdleMyTurnState(player, playerDragController, playerInventory);
-        this.draggingJump = new DraggingJump(player, playerDragController);
-        this.draggingItem = new DraggingItem(player, playerDragController);
-        this.dragReleaseJump = new DragReleaseJump();
-        this.dragReleaseItem = new DragReleaseItem();
-        this.myTurnEndedState = new MyTurnEndedState(player);
-        this.idleEnemyTurnState = new IdleEnemyTurnState();
-        this.playerWatchingState = new PlayerWatchingState();
-        this.playerGameOverState = new PlayerGameOverState();*/
     }
     
     private void Register(IState state)

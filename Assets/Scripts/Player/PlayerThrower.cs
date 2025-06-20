@@ -171,7 +171,7 @@ public class PlayerThrower : NetworkBehaviour
         
         playerStateMachine.OnStateChanged += HandleOnStateChanged;
         
-        BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
+        BaseItemThrowable.OnItemCallbackActionWithOwner += BaseItemThrowableOnOnItemCallbackActionWithOwner;
         
         turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
         
@@ -213,8 +213,7 @@ public class PlayerThrower : NetworkBehaviour
 
         playerLauncher.OnLastItemSynced -= HandleOnLastItemSynced;
         
-        BaseItemThrowable.OnItemCallbackAction -= HandleOnItemCallbackAction;
-        
+        BaseItemThrowable.OnItemCallbackActionWithOwner -= BaseItemThrowableOnOnItemCallbackActionWithOwner;
 
         turnManager.OnMyTurnStarted -= GameFlowManager_OnMyTurnStarted;
         
@@ -272,7 +271,7 @@ public class PlayerThrower : NetworkBehaviour
             {
 
                 ChangePlayerState(PlayerState.DraggingItem);
-                Debug.Log($"STEPS CLIENT 2.1 - AIM POSITION SYNCED - SETTING PLAYER SM TO DRAGGING ITEM AIM POSITION: {aimPosition} - {gameObject.name} - Current SM Player: {playerStateMachine.CurrentPlayerState}");
+                Debug.LogWarning($"STEPS CLIENT 2.1 - AIM POSITION SYNCED - SETTING PLAYER SM TO DRAGGING ITEM AIM POSITION: {aimPosition} - {gameObject.name} - Current SM Player: {playerStateMachine.CurrentPlayerState}");
             }
             playerDragController.InvokeOnDragRelease();
         });
@@ -404,10 +403,10 @@ public class PlayerThrower : NetworkBehaviour
     {
         followSelectedSocketComponent.HandleOnPlayerSpawnItemOnHandOnItemSocketSelected(selectedSocket);
     }
-
-    private void HandleOnItemCallbackAction()
+    
+    private void BaseItemThrowableOnOnItemCallbackActionWithOwner(bool isOwnerOfTheItem)
     {
-        playerGetUp.HandleOnItemCallbackAction();
+        playerGetUp.HandleOnItemCallbackActionWithOwner(isOwnerOfTheItem);
     }
 
     private void HandleOnRagdollDisabled()
@@ -420,6 +419,8 @@ public class PlayerThrower : NetworkBehaviour
     {
         playerRagdollEnabler.HandleOnPlayerGetUp();
     }
+    
+    
 
     [Rpc(SendTo.Server)]
     public void InitializePlayerRpc(PlayableState playableState, Quaternion GFXRotation)

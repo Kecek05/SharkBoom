@@ -96,6 +96,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         SetIsDedicatedServerGame(true);
         UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
         transport.SetConnectionData(ip, (ushort)port);
+        Debug.Log("StartMatchmakingClient");
         Loader.LoadClient();
     }
 
@@ -133,8 +134,13 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         Debug.Log($"ConnectClient, UserData: {userData.userName}, Pearls: {userData.userPearls}, AuthId: {userData.userAuthId} ");
 
         NetworkManager.Singleton.NetworkConfig.ConnectionData = payloadBytes;
-
-        NetworkManager.Singleton.StartClient();
+        Debug.Log($"Setted Payload - Start Connection");
+        
+        bool result = NetworkManager.Singleton.StartClient();
+        if (!result)
+        {
+            Debug.LogError("Failed to start client: StartClient returned false.");
+        }
     }
 
     public async Task QuickJoinLobbyAsync()

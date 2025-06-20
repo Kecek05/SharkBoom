@@ -71,9 +71,7 @@ public abstract class DragListener : NetworkBehaviour
     public void HandleOnPlayerDragControllerDragChange(float forcePercent, float angle)
     {
         //if(!IsOwner) return; //only owner
-
         detectDragChange?.DoOnDragChange(forcePercent, angle);
-
     }
 
     public void HandleOnPlayerStateMachineStateChanged(PlayerState newState)

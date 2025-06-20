@@ -83,6 +83,7 @@ public class GameManager : NetworkBehaviour
     // Player Die
     private void HandeOnPlayerDie()
     {
+        Debug.Log($"DIE - HandeOnPlayerDie");
         gameStateManager.HandeOnPlayerDie();
 
         PlayerHealth.OnPlayerDie -= HandeOnPlayerDie;
@@ -115,6 +116,7 @@ public class GameManager : NetworkBehaviour
     // Losed Player
     private void HandleOnLosedPlayerChanged(PlayableState previousValue, PlayableState newValue)
     {
+        Debug.Log($"DIE - HandleOnLosedPlayerChanged - {newValue}");
         pearlsManager.HandleOnLosedPlayerChanged(newValue);
 
         gameOverManager.HandleOnLosedPlayerChanged(newValue);

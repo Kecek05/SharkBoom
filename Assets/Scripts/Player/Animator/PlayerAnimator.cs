@@ -85,6 +85,7 @@ public class PlayerAnimator : NetworkBehaviour
     private AnimationData selectedIdleAnimation;
 
     private Coroutine crossFadeCoroutine;
+    private Coroutine waitItemBeSpawned;
     private PlayerState playerState;
     
     //DEBUG
@@ -134,8 +135,14 @@ public class PlayerAnimator : NetworkBehaviour
         PlayAnimationData(currentAnimationData);
     }
     
-    private void TriggerWaitItemBeSpawned(AnimationData animationData) => StartCoroutine(WaitItemBeSpawned(animationData));
-    
+    private void TriggerWaitItemBeSpawned(AnimationData animationData)
+    {
+        if(waitItemBeSpawned != null)
+            StopCoroutine(waitItemBeSpawned);
+        
+        waitItemBeSpawned = StartCoroutine(WaitItemBeSpawned(animationData));
+    }
+
     private IEnumerator WaitItemBeSpawned(AnimationData animationData)
     {
         while (playerSpawnItemOnHand.SpawnedItem == null)
@@ -145,6 +152,7 @@ public class PlayerAnimator : NetworkBehaviour
         }
         
         PlayAnimationData(animationData);
+        waitItemBeSpawned = null;
     }
 
     private void PlayAnimationData(AnimationData animationData)
@@ -188,10 +196,8 @@ public class PlayerAnimator : NetworkBehaviour
     private void DoCrossFade(int stateHashName, float fadeTime)
     {
         if(crossFadeCoroutine != null)
-        {
             StopCoroutine(crossFadeCoroutine);
-            crossFadeCoroutine = null;
-        }
+        
         animator.CrossFade(stateHashName, fadeTime);
         crossFadeCoroutine = StartCoroutine(CrossFadeCallback());
     }
@@ -210,6 +216,7 @@ public class PlayerAnimator : NetworkBehaviour
         }
         // Transition has ended
         OnCrossfadeFinished?.Invoke();
+        crossFadeCoroutine = null;
     }
 
     /// <summary>

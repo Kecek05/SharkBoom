@@ -91,6 +91,7 @@ public static class Loader
                 SceneManager.LoadScene(targetScene.ToString());
                 break;
             case LoadType.Client:
+                Debug.Log($"Load Callback Client Connect");
                 ClientSingleton.Instance.GameManager.ConnectClient(); //Connect client in Loading Scene
                 break;
             case LoadType.Host:

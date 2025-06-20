@@ -113,40 +113,23 @@ public class DraggingJump : IState
     private PlayerThrower player;
     private PlayerDragController playerDragController;
     private PlayerState state = PlayerState.DraggingJump;
-    private PlayerInventory playerInventory;
     public PlayerState State => state;
 
-    public DraggingJump(PlayerThrower player, PlayerDragController playerDragController, PlayerInventory playerInventory) {
+    public DraggingJump(PlayerThrower player, PlayerDragController playerDragController) {
         //our builder
         this.player = player;
         this.playerDragController = playerDragController;
-        this.playerInventory = playerInventory;
     }
     public void Enter()
     {
-        //Debug.Log("Entering Dragging Jump State");
-        //Set Cant move camera
         // Debug.Log($"STEPS SUBSCRIBING TO DRAG JUMP RELEASE - {player.gameObject.name} - {playerDragController.gameObject.name}");
         playerDragController.OnDragRelease += PlayerDragController_OnDragRelease;
-        //playerInventory.OnItemSelected += PlayerInventory_OnItemSelected;
-    }
-
-    private void PlayerInventory_OnItemSelected(int itemID)
-    {
-        Debug.Log($"STEPS INTERRUPTION JUMP - SELECTED ITEM WILHE IN DRAGGING - ITEM ID: {itemID} - Inv: {playerInventory.gameObject.name} - Player: {player.gameObject.name}");
-        if (itemID != 0)
-        {
-            //Selected an item that isnt jump, change the state
-            player.ChangePlayerState(PlayerState.IdleMyTurn);
-        }
     }
 
     private void PlayerDragController_OnDragRelease()
-    {
-         Debug.Log($"STEPS CLIENT 4 - DRAGGING JUMP TO DRAG RELEASE JUMP - {player.gameObject.name}");
+    { 
+        Debug.Log($"STEPS CLIENT 4 - DRAGGING JUMP TO DRAG RELEASE JUMP - {player.gameObject.name}");
         player.ChangePlayerState(PlayerState.DragReleaseJump);
-        /*player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.dragReleaseJump);
-        player.TransitionToDraggingJumpServerRpc();*/
     }
 
     public void Execute()
@@ -157,8 +140,6 @@ public class DraggingJump : IState
     public void Exit()
     {
         playerDragController.OnDragRelease -= PlayerDragController_OnDragRelease;
-        //playerInventory.OnItemSelected -= PlayerInventory_OnItemSelected;
-        //Debug.Log("Exiting Dragging Jump State");
     }
 
 }
@@ -172,42 +153,25 @@ public class DraggingItem : IState
     private PlayerThrower player;
     private PlayerDragController playerDragController;
     private PlayerState state = PlayerState.DraggingItem;
-    private PlayerInventory playerInventory;
 
     public PlayerState State => state;
 
-    public DraggingItem(PlayerThrower player, PlayerDragController playerDragController, PlayerInventory playerInventory)
+    public DraggingItem(PlayerThrower player, PlayerDragController playerDragController)
     {
         //our builder
         this.player = player;
         this.playerDragController = playerDragController;
-        this.playerInventory = playerInventory;
     }
     public void Enter()
     {
-        //Debug.Log("Entering Dragging Item State");
-         Debug.Log($"STEPS SUBSCRIBING TO DRAGGING ITEM - {player.gameObject.name} - {playerDragController.gameObject.name}");
+        Debug.Log($"STEPS SUBSCRIBING TO DRAGGING ITEM - {player.gameObject.name} - {playerDragController.gameObject.name}");
         playerDragController.OnDragRelease += PlayerDragController_OnDragRelease;
-        //playerInventory.OnItemSelected += PlayerInventory_OnItemSelected;
-        //Set Cant move camera
-
-    }
-
-    private void PlayerInventory_OnItemSelected(int itemID)
-    {
-        if (itemID == 0)
-        {
-            Debug.Log($"STEPS INTERRUPTION ITEM - SELECTED ITEM WILHE IN DRAGGING - ITEM ID: {itemID} - Inv: {playerInventory.gameObject.name} - Player: {player.gameObject.name}");
-            //Selected Jump
-            player.ChangePlayerState(PlayerState.IdleMyTurn);
-        }
     }
 
     private void PlayerDragController_OnDragRelease()
     {
-         Debug.Log($"STEPS CLIENT 4 - DRAGGING ITEM TO DRAG RELEASE ITEM - {player.gameObject.name}");
+        Debug.Log($"STEPS CLIENT 4 - DRAGGING ITEM TO DRAG RELEASE ITEM - {player.gameObject.name}");
         player.ChangePlayerState(PlayerState.DragReleaseItem);
-        //player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.dragReleaseItem);
     }
 
     public void Execute()
@@ -217,10 +181,8 @@ public class DraggingItem : IState
 
     public void Exit()
     {
-         Debug.Log($"STEPS UNSUBSCRIBING TO DRAGGING ITEM - {player.gameObject.name} - {playerDragController.gameObject.name}");
+        Debug.Log($"STEPS UNSUBSCRIBING TO DRAGGING ITEM - {player.gameObject.name} - {playerDragController.gameObject.name}");
         playerDragController.OnDragRelease -= PlayerDragController_OnDragRelease;
-        //playerInventory.OnItemSelected -= PlayerInventory_OnItemSelected;
-        //Debug.Log("Exiting Dragging Item State");
     }
 
 }
@@ -230,7 +192,6 @@ public class DragReleaseJump : IState
     //Released the jump
     //Cant Move Camera, Cant Choose items, Cant Drag, Camera following the action
     //Change to the IdleMyTurn after the item Callback
-
 
     private PlayerState state = PlayerState.DragReleaseJump;
 

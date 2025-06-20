@@ -102,7 +102,7 @@ public class GameStateManager : BaseGameStateManager
     public override void HandeOnPlayerDie()
     {
         //Player died, Game Over.
-
+        Debug.Log($"DIE - HandeOnPlayerDie - CHANGING TO GAME ENDED");
         ChangeGameState(GameState.GameEnded);
     }
 

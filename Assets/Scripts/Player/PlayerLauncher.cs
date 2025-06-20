@@ -28,14 +28,21 @@ public class PlayerLauncher : NetworkBehaviour
     [SerializeField] private PlayerThrower playerThrower;
     [SerializeField] private PlayerSpawnItemOnHand playerSpawnItemOnHand;
     [SerializeField] private PlayerRotateToAim playerRotateToAim;
+    [SerializeField] private PlayerAnimator playerAnimator;
+    [SerializeField] private PlayerDetectFacingDirection playerDetectFacingDirection;
     
     //private BaseItemActivableManager itemActivableManager;
     private BaseItemThrowable lastProjectile;
     private BaseItemThrowableActivable lastItemThrowableActivable;
     private AutoActivateItemComponent lastAutoActivateItemComponent;
     private BaseTimerManager timerManager;
-
+    private bool itemSpawnedCallback = false;
+    
     private ItemLauncherData lastItemLauncherData;
+
+    private Coroutine waitCoroutine;
+    private Coroutine waitCorrectPositionToActivate;
+    private Coroutine waitSpawnItem;
     
     /// <summary>
     /// Threshhold, in units, to activate the reconciliation
@@ -89,7 +96,10 @@ public class PlayerLauncher : NetworkBehaviour
     [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
     public void TriggerUseItemOnClientRpc(ItemReconcileData reconcileData)
     {
-        StartCoroutine(WaitForCorrectPositionToActivate(reconcileData));
+        if(waitCorrectPositionToActivate != null)
+            StopCoroutine(waitCorrectPositionToActivate);
+        
+        waitCorrectPositionToActivate = StartCoroutine(WaitForCorrectPositionToActivate(reconcileData));
     }
     
     private IEnumerator WaitForCorrectPositionToActivate(ItemReconcileData reconcileData)
@@ -105,6 +115,7 @@ public class PlayerLauncher : NetworkBehaviour
         }
         //Item is in the correct position, Reconcile it
         lastItemThrowableActivable.Reconcile(reconcileData);
+        waitCorrectPositionToActivate = null;
     }
 
     public void HandleOnPlayerStateMachineStateChanged(PlayerState state)
@@ -135,7 +146,10 @@ public class PlayerLauncher : NetworkBehaviour
     
     public void Launch() //Called by the script on animator
     {
-        StartCoroutine(WaitToSpawnItem());
+        if(waitSpawnItem != null)
+            StopCoroutine(waitSpawnItem);
+        
+        waitSpawnItem = StartCoroutine(WaitToSpawnItem());
     }
 
     private IEnumerator WaitToSpawnItem()
@@ -164,7 +178,8 @@ public class PlayerLauncher : NetworkBehaviour
                 selectedItemID = playerInventory.SelectedItemID, 
                 ownerPlayableState = playerThrower.ThisPlayableState.Value,
                 shootPosition = lastProjectile.transform.position,
-                shootRotation = lastProjectile.transform.rotation
+                shootRotation = lastProjectile.transform.rotation,
+                isRightSocket = playerDetectFacingDirection.IsDirectionRight
             };
             
             lastItemLauncherData = itemLauncherData;
@@ -175,9 +190,10 @@ public class PlayerLauncher : NetworkBehaviour
         }
         
         SpawnProjectile(lastItemLauncherData); 
-         Debug.Log($"STEPS LAST - ITEM LAUNCHED - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Position: {lastItemLauncherData.shootPosition} - Rotation: {lastItemLauncherData.shootRotation} - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
+         Debug.Log($"STEPS LAST - ITEM LAUNCHED - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Position: {lastProjectile.transform} - Rotation: {lastProjectile.transform.rotation} - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
         
         OnItemLaunched?.Invoke(playerInventory.SelectedItemID); //pass itemInventoryIndex
+        waitSpawnItem = null;
     }
     
     
@@ -193,20 +209,52 @@ public class PlayerLauncher : NetworkBehaviour
     {
         lastItemLauncherData = itemLauncherData;
         Debug.Log($"STEPS CLIENT 1 - ITEM LAUNCHER DATA RECIEVED - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Shoot Pos: {lastItemLauncherData.shootPosition} - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
-        StartCoroutine(WaitRightItemId(lastItemLauncherData, aimPos));
+
+        if (waitCoroutine != null)
+            StopCoroutine(waitCoroutine);
+        
+        waitCoroutine = StartCoroutine(WaitItemSpawn(lastItemLauncherData, aimPos));
     }
 
-    private IEnumerator WaitRightItemId(ItemLauncherData itemLauncherData, Vector3 aimPos)
+    private IEnumerator WaitItemSpawn(ItemLauncherData itemLauncherData, Vector3 aimPos)
     {
-        Debug.Log($"STEPS CLIENT 1.1 - ITEM LAUNCHER START WAITING - Inv ID: {playerInventory.SelectedItemID} - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Shoot Pos: {lastItemLauncherData.shootPosition}  - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
-        while (itemLauncherData.selectedItemID != playerInventory.SelectedItemID)
+        Debug.Log($"STEPS CLIENT 1.1 - ITEM LAUNCHER START WAITING - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Shoot Pos: {lastItemLauncherData.shootPosition}  - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
+            
+        playerSpawnItemOnHand.OnItemOnHandSpawned += ItemSpawned;
+        
+        playerDetectFacingDirection.SetRotation(itemLauncherData.isRightSocket);
+        
+        //Set the item to the animator to play the right animation
+        playerAnimator.HandleOnItemSelectedSO(playerInventory.GetItemSOByItemID(itemLauncherData.selectedItemID));
+        
+        if (itemLauncherData.selectedItemID == 0)
         {
-            //Wait for the item data is the same as the inventory, waiting for the select item RPC
+            playerThrower.ChangePlayerState(PlayerState.DraggingJump);
+        } else
+        {
+            playerThrower.ChangePlayerState(PlayerState.DraggingItem);
+        }
+        
+        //Spawn the item after selected the right anim and direction
+        playerSpawnItemOnHand.SpawnItemClient(itemLauncherData.selectedItemID, itemLauncherData.isRightSocket);
+        
+        while (!itemSpawnedCallback)
+        {
+            //Wait for the item to be spawned
             yield return null;
         }
         
-        Debug.Log($"STEPS CLIENT 1.2 - ITEM LAUNCHER ID IS SAME AS INVENTORY - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Shoot Pos: {lastItemLauncherData.shootPosition}  - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
+        playerSpawnItemOnHand.OnItemOnHandSpawned -= ItemSpawned;
+        itemSpawnedCallback = false;
+        
+        Debug.Log($"STEPS CLIENT 1.2 - ITEM SPAWNED- Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Shoot Pos: {lastItemLauncherData.shootPosition}  - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
         OnLastItemSynced?.Invoke(aimPos);
+        waitCoroutine = null;
+    }
+
+    private void ItemSpawned(BaseItemThrowable itemThrowable)
+    {
+        itemSpawnedCallback = true;
     }
     
     private void SpawnProjectile(ItemLauncherData launcherData)
@@ -236,8 +284,8 @@ public class PlayerLauncher : NetworkBehaviour
             itemThrowable.ItemReleased(launcherData, IsOwner);
             
             // force the object to be in the right position and rotation | Need to be in the RB because isnt Kinematic anymore
-            lastProjectile.Rigidbody.position = lastItemLauncherData.shootPosition; 
-            lastProjectile.Rigidbody.rotation = lastItemLauncherData.shootRotation;
+            lastProjectile.Rigidbody.position = launcherData.shootPosition; 
+            lastProjectile.Rigidbody.rotation = launcherData.shootRotation;
         }
 
         if (lastProjectile.TryGetComponent(out BaseItemThrowableActivable activable))
@@ -253,6 +301,8 @@ public class PlayerLauncher : NetworkBehaviour
         {
             lastItemThrowableActivable = null;
         }
+        
+        
     }
 
     public void UnInitializeOwner()
