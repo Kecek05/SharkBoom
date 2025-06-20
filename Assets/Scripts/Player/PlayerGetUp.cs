@@ -25,6 +25,8 @@ public class PlayerGetUp : NetworkBehaviour
     private Quaternion originalRootRotation;
     private Quaternion originalHipsRotation;
 
+    private Vector3 lastCalculatedPosition;
+
     private List<Vector3> directions = new List<Vector3>();
 
     private List<Vector3> foundDirections = new List<Vector3>();
@@ -37,19 +39,96 @@ public class PlayerGetUp : NetworkBehaviour
     public GameObject CubeTestedPosDEBUG;
     public GameObject CubeSelectedPosDEBUG;
 
+    public void HandleOnItemCallbackActionWithOwner(bool isOwner)
+    {
+        if (isOwner)
+        {
+            //The item that did the callback was threw by this game
+            
+            //Both players calculate their positions
+            Vector3 foundPos = GetPlayerFreePos();
+            Debug.Log($"GETUP - Is Owner Of the Item - Found Free Pos: {foundPos} - {gameObject.name} - Owner of the Script: {IsOwner}");
+            ApplyGetUp(foundPos);
+            
+            if (!IsOwner)
+            {
+                //Im not owner of THIS script, pass the position to the owner 
+                //Who could get Hit
+                Debug.Log($"GETUP - Is Owner Of the Item - NOT owner of the SCRIPT - Will pass to the Owner the lastPosition - Found Free Pos: {foundPos} - {gameObject.name}");
+                PassOwnerPositionToServerRpc(foundPos);
+            }
+        }
+        else
+        {
+            //The Item that did the callback wasnt threw by me
+            Debug.Log($"GETUP - NOT Is Owner Of the Item - {gameObject.name} - Owner of the Script: {IsOwner}");
+            if (IsOwner)
+            {
+                //Im owner of this SCRIPT and I didnt threw this ITEM
+                //Who could get hit
+                
+                //Use the lastCalculatedPosition Recieved from the other game
+                Debug.Log($"GETUP - NOT Is Owner Of the Item - Owner of the Script - Using Last Calculated Pos: {lastCalculatedPosition} - {gameObject.name}");
+                ApplyGetUp(lastCalculatedPosition);
+            }
+            else
+            {
+                //Im NOT the owner of this SCRIPT and I didnt threw this ITEM
+                //The owner of the throw
+                Debug.Log($"GETUP - NOT Is Owner Of the Item - NOT Owner of the SCRIPT - DOing nothing - {gameObject.name}");
+            }
+            
+            // ApplyGetUp(lastCalculatedPosition);
+        }
+    }
+
+    [Rpc(SendTo.Server, RequireOwnership = false, Delivery = RpcDelivery.Reliable)]
+    private void PassOwnerPositionToServerRpc(Vector3 position)
+    {
+        PassOwnerPositionToClientRpc(position);
+    }
+    
+    [Rpc(SendTo.Owner, RequireOwnership = false, Delivery = RpcDelivery.Reliable)]
+    private void PassOwnerPositionToClientRpc(Vector3 position)
+    {
+        Debug.Log($"GETUP - Owner Recieved Last Pos: {position} - {gameObject.name}");
+        lastCalculatedPosition = position;
+    }
+    
     public void HandleOnItemCallbackAction()
     {
         //if (!IsOwner) return;
-
-        //CalculatePlayerFreePos();
+        // Debug.Log($"GETUP - HandleOnItemCallbackAction Last Pos: {lastCalculatedPosition} - {gameObject.name} - Owner: {IsOwner}");
+        // ApplyGetUp(lastCalculatedPosition);
+        
+        // ApplyGetUp(GetPlayerFreePos());
     }
 
-    public void SyncPosWithServer()
+    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    public void SyncPosWithServerRpc()
     {
-        CalculatePlayerFreePos(true);
+        //Server Call This
+        // SyncOwnerRpc();
+        // GetPlayerFreePos(true);
+    }
+    
+    [Rpc(SendTo.Owner, Delivery = RpcDelivery.Reliable)]
+    private void SyncOwnerRpc()
+    {
+        //Owner Will get own position and pass to others
+        PassOwnerPositionToClientsRpc(GetPlayerFreePos());
     }
 
-    private void CalculatePlayerFreePos(bool isSyncServer = false)
+    [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
+    private void PassOwnerPositionToClientsRpc(Vector3 ownerPos)
+    {
+        //Not Owner save the position to set it later
+        Debug.Log($"GETUP - Recieved Pos {ownerPos} - {gameObject.name} - Owner: {IsOwner}");
+        // lastCalculatedPosition = ownerPos;
+        // ApplyGetUp(ownerPos);
+    }
+
+    private Vector3 GetPlayerFreePos(bool isSyncServer = false)
     {
         Vector3 playerRagdollPosition = hipsTransform.position;
         playerRagdollPosition.y -= verticalOffset;
@@ -59,22 +138,24 @@ public class PlayerGetUp : NetworkBehaviour
             playerRagdollPosition.y = Mathf.Max(playerRagdollPosition.y, hit.point.y);
 
         //Instantiate(CubeStartCalcPosDEBUG, playerRagdollPosition, Quaternion.identity);
-        Vector3 foundFinalPosition = GetFreePosition(playerRagdollPosition);
+        Vector3 foundFinalPosition = CalculatedFreePosition(playerRagdollPosition);
 
-        Debug.Log($"CALCULATED POS: {foundFinalPosition} - {gameObject.name} - Owner: {IsOwner} - From Server: {isSyncServer}");
-        if (isSyncServer)
-        {
-            //If is Server, will sync based on the server position
-            PassPlayerFreePosServerRpc(foundFinalPosition);
-        }
-        else
-        {
-            //Not server, sync apply now
-            ApplyGetUp(foundFinalPosition);
-        }
+        Debug.Log($"GETUP POS: {foundFinalPosition} - {gameObject.name} - Owner: {IsOwner} - From Server: {isSyncServer}");
+        
+        return foundFinalPosition;
+        // if (isSyncServer)
+        // {
+        //     //If is Server, will sync based on the server position
+        //     PassPlayerFreePosServerRpc(foundFinalPosition);
+        // }
+        // else
+        // {
+        //     //Not server, sync apply now
+        //     ApplyGetUp(foundFinalPosition);
+        // }
     }
 
-    private Vector3 GetFreePosition(Vector3 startPos)
+    private Vector3 CalculatedFreePosition(Vector3 startPos)
     {
         CalculateXYDirections();
         foundDirections.Clear();
@@ -167,6 +248,7 @@ public class PlayerGetUp : NetworkBehaviour
 
     private void ApplyGetUp(Vector3 finalPos)
     {
+        Debug.Log($"GETUP - APPLY Pos {finalPos} - {gameObject.name} - Owner: {IsOwner}");
         rootTransform.position = finalPos;
 
         OnPlayerGetUp?.Invoke();

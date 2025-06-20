@@ -172,6 +172,7 @@ public class PlayerThrower : NetworkBehaviour
         playerStateMachine.OnStateChanged += HandleOnStateChanged;
         
         BaseItemThrowable.OnItemCallbackAction += HandleOnItemCallbackAction;
+        BaseItemThrowable.OnItemCallbackActionWithOwner += BaseItemThrowableOnOnItemCallbackActionWithOwner;
         
         turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
         
@@ -214,7 +215,7 @@ public class PlayerThrower : NetworkBehaviour
         playerLauncher.OnLastItemSynced -= HandleOnLastItemSynced;
         
         BaseItemThrowable.OnItemCallbackAction -= HandleOnItemCallbackAction;
-        
+        BaseItemThrowable.OnItemCallbackActionWithOwner -= BaseItemThrowableOnOnItemCallbackActionWithOwner;
 
         turnManager.OnMyTurnStarted -= GameFlowManager_OnMyTurnStarted;
         
@@ -409,6 +410,11 @@ public class PlayerThrower : NetworkBehaviour
     {
         playerGetUp.HandleOnItemCallbackAction();
     }
+    
+    private void BaseItemThrowableOnOnItemCallbackActionWithOwner(bool isOwnerOfTheItem)
+    {
+        playerGetUp.HandleOnItemCallbackActionWithOwner(isOwnerOfTheItem);
+    }
 
     private void HandleOnRagdollDisabled()
     {
@@ -420,6 +426,8 @@ public class PlayerThrower : NetworkBehaviour
     {
         playerRagdollEnabler.HandleOnPlayerGetUp();
     }
+    
+    
 
     [Rpc(SendTo.Server)]
     public void InitializePlayerRpc(PlayableState playableState, Quaternion GFXRotation)

@@ -25,7 +25,7 @@ public class PlayerSyncPosition : BasePlayerSyncPosition
         foreach (GameObject player in players.Values)
         {
             PlayerGetUp playerGetUp = player.GetComponent<PlayerGetUp>();
-            playerGetUp.SyncPosWithServer();
+            playerGetUp.SyncPosWithServerRpc();
         }
         
         InvokeOnPositionSyncedWithServer();
