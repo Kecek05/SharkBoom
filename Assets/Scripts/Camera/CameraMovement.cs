@@ -21,7 +21,6 @@ public class CameraMovement : NetworkBehaviour
 
     public void InitializeOwner()
     {
-        if (!IsOwner) return;
         inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
         inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;
         isSubscribedToTouch = true;

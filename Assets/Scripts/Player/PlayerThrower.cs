@@ -68,8 +68,6 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleOnClientOwnershipChanged(ulong newOwnerClientId)
     {
-        if (!IsOwner) return;
-
         if(newOwnerClientId == OwnerClientId)
         {
             HandleOwnerEvents();
@@ -224,20 +222,10 @@ public class PlayerThrower : NetworkBehaviour
 
     private void UnHandleOwnerEvents()
     {
-        if (turnManager)
-        {
-            // turnManager.OnMyTurnStarted -= GameFlowManager_OnMyTurnStarted;
-            //
-            // turnManager.OnMyTurnEnded -= GameFlowManager_OnMyTurnEnded;
-            //
-            // turnManager.OnMyTurnJumped -= GameFlowManager_OnMyTurnJumped;
-        }
-        
         playerDragController.OnDragChange -= HandleOnDragChange;
         playerDragController.OnDragCancelable -= HandleOnDragCancelable;
         playerLauncher.OnItemLaunched -= HandleOnItemLaunched;
         playerInventoryUI.OnItemSelectedByUI -= HandleOnItemSelectedByUI;
-        
         
         playerInventory.OnItemAdded -= HandleOnItemAdded;
     }
@@ -567,36 +555,6 @@ public class PlayerThrower : NetworkBehaviour
         // Debug.Log($"Events - OnNetworkDespawn - {gameObject.name}");
         UnInitialize();
         UnHandleEvents();
-        // GameManager.OnClientOwnershipChanged -= HandleOnClientOwnershipChanged;
-        // thisPlayableState.OnValueChanged -= PlayableStateInitialize;
-        //
-        //
-        // if (IsOwner)
-        // {
-        //     turnManager.OnMyTurnStarted -= GameFlowManager_OnMyTurnStarted;
-        //
-        //     turnManager.OnMyTurnEnded -= GameFlowManager_OnMyTurnEnded;
-        //
-        //     turnManager.OnMyTurnJumped -= GameFlowManager_OnMyTurnJumped;
-        //
-        //     gameStateManager.CurrentGameState.OnValueChanged -= HandleOnGameStateChanged;
-        //
-        //     BaseItemThrowable.OnItemCallbackAction -= HandleOnItemCallbackAction;
-        //
-        //     hitReceiveNetworked.OnHitReceive -= HandleOnHitReceive;
-        //
-        //     UnHandleEvents();
-        // }
-        //
-        // playerSpawnItemOnHand.OnItemOnHandSpawned -= HandleOnPlayerSpawnItemOnHandItemOnHandSpawned;
-        // playerSpawnItemOnHand.OnItemOnHandDespawned -= HandleOnPlayerSpawnItemOnHandItemOnHandDespawned;
-        // playerSpawnItemOnHand.OnItemSocketSelected -= OnPlayerSpawnItemOnHandItemSocketSelected;
-        //
-        // playerInventory.OnItemSelected -= HandleOnItemSelected;
-        // playerInventory.OnItemSelectedSO -= HandleOnItemSelectedSO;
-        //
-        // if (playerStateMachine != null)
-        //     playerStateMachine.OnStateChanged -= HandleOnStateChanged;
     }
 
     public override void OnLostOwnership()
@@ -604,9 +562,6 @@ public class PlayerThrower : NetworkBehaviour
         Debug.Log($"Events - OnLostOwnership - {gameObject.name} - Owner: {IsOwner}");
         UnInitializeOwner();
         UnHandleOwnerEvents();
-        // playerTouchColl.enabled = false;
-        // playerStateMachine.ChangeOwnership(false);
-        // UnHandleEvents();
     }
     
 }

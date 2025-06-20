@@ -62,7 +62,6 @@ public class PlayerInventory : NetworkBehaviour
     
     public void InitializeOwner()
     {
-        if(!IsOwner) return;
         
         SetCanInteractWithInventory(true);
 

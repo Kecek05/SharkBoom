@@ -32,7 +32,6 @@ public class CameraManager : NetworkBehaviour
 
     public void InitializeOwner()
     {
-        if (!IsOwner) return;
 
         if (!cameraObjectToFollow)
             cameraObjectToFollow = ServiceLocator.Get<CameraObjectToFollow>().transform;
