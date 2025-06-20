@@ -94,6 +94,9 @@ public class PlayerGetUp : NetworkBehaviour
     [Rpc(SendTo.Server, RequireOwnership = false, Delivery = RpcDelivery.Reliable)]
     private void PassOwnerPositionToNotOwnerServerRpc(Vector3 position)
     {
+        if(!IsHost)
+            ApplyGetUp(position); //Set the position on the server to reconcile if rejoins the match
+        
         PassOwnerPositionToNotOwnerRpc(position);
     }
     
@@ -107,6 +110,9 @@ public class PlayerGetUp : NetworkBehaviour
     [Rpc(SendTo.Server, RequireOwnership = false, Delivery = RpcDelivery.Reliable)]
     private void PassOwnerPositionToOwnerServerRpc(Vector3 position)
     {
+        if(!IsHost)
+            ApplyGetUp(position); //Set the position on the server to reconcile if rejoins the match
+        
         PassOwnerPositionToOwnerRpc(position);
     }
     

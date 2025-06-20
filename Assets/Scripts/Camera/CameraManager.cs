@@ -55,7 +55,7 @@ public class CameraManager : NetworkBehaviour
     public void HandleOnDisabledRagdoll()
     {
         if(!IsOwner) return;
-        Debug.Log($"HandleOnDisabledRagdoll Called");
+        Debug.Log($"HandleOnDisabledRagdoll Called - Turn: {turnManager.LocalPlayableState} - This PlayableState: {playerThrower.ThisPlayableState.Value}");
         enemyObject = publicInfoManager.GetOtherPlayerByMyPlayableState(turnManager.LocalPlayableState);
         playerObject = publicInfoManager.GetPlayerObjectByPlayableState(turnManager.LocalPlayableState);
 
