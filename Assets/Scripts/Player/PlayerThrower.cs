@@ -68,6 +68,8 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleOnClientOwnershipChanged(ulong newOwnerClientId)
     {
+        if(!IsOwner) return;
+        
         if(newOwnerClientId == OwnerClientId)
         {
             HandleOwnerEvents();
@@ -569,6 +571,7 @@ public class PlayerThrower : NetworkBehaviour
 
     public override void OnLostOwnership()
     {
+        if(!IsOwner) return;
         Debug.Log($"Events - OnLostOwnership - {gameObject.name} - Owner: {IsOwner}");
         UnInitializeOwner();
         UnHandleOwnerEvents();

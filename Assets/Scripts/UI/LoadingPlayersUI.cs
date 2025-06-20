@@ -49,10 +49,18 @@ public class LoadingPlayersUI : NetworkBehaviour
 
         if(gameStateManager.CurrentGameState.Value != GameState.CalculatingResults && gameStateManager.CurrentGameState.Value != GameState.WaitingForPlayers && gameStateManager.CurrentGameState.Value != GameState.SpawningPlayers)
         {
-            //Game already started, reconnected, hide all
-            HidePlayersInfo();
-            HideWaitingForPlayers();
+            //Game already started, reconnected
+            if(IsClient)
+                RequestDataToTheServerRpc();
+            // HidePlayersInfo();
+            // HideWaitingForPlayers();
         }
+    }
+
+    [Rpc(SendTo.Server)]
+    private void RequestDataToTheServerRpc()
+    {
+        PassPlayersDataToClients();
     }
 
     private void GameState_OnValueChanged(GameState previousValue, GameState newValue)
@@ -65,17 +73,7 @@ public class LoadingPlayersUI : NetworkBehaviour
         else if(newValue == GameState.ShowingPlayersInfo)
         {
             //Show UI
-            if (IsServer)
-            {
-                //Send to clients
-                foreach (PlayerData playerData in NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas)
-                {
-                    Debug.Log($"GameState_OnValueChanged on Loading Players UI - Player Data: {playerData.userData.userAuthId} - Client Id: {playerData.clientId}");
-                    BasePlayersPublicInfoManager playersPublicInfoManager = ServiceLocator.Get<BasePlayersPublicInfoManager>();
-                    UpdatePlayerVisualTypeClientRpc(playerData.playableState, playersPublicInfoManager.GetPlayerVisualTypes()[playerData.playableState]);
-                    UpdatePlayersInfoClientRpc(playerData.userData.userName, playerData.userData.userPearls, playerData.playableState);
-                }
-            }
+            PassPlayersDataToClients();
 
             //ShowPlayersInfo();
             //HideWaitingForPlayers();
@@ -84,6 +82,21 @@ public class LoadingPlayersUI : NetworkBehaviour
             //Game Started
             HidePlayersInfo();
             HideWaitingForPlayers();
+        }
+    }
+
+    private void PassPlayersDataToClients()
+    {
+        if (IsServer)
+        {
+            //Send to clients
+            foreach (PlayerData playerData in NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas)
+            {
+                Debug.Log($"GameState_OnValueChanged on Loading Players UI - Player Data: {playerData.userData.userAuthId} - Client Id: {playerData.clientId}");
+                BasePlayersPublicInfoManager playersPublicInfoManager = ServiceLocator.Get<BasePlayersPublicInfoManager>();
+                UpdatePlayerVisualTypeClientRpc(playerData.playableState, playersPublicInfoManager.GetPlayerVisualTypes()[playerData.playableState]);
+                UpdatePlayersInfoClientRpc(playerData.userData.userName, playerData.userData.userPearls, playerData.playableState);
+            }
         }
     }
 
