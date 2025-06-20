@@ -5,13 +5,16 @@ using UnityEngine.UI;
 
 public class PlayerNameBootstrap : MonoBehaviour
 {
+    private const int MAX_CHARACTERS = 12;
+    private const int MIN_CHARACTERS = 5;
+
     [SerializeField] private GameObject renameScreen;
     [SerializeField] private Button confirmButton;
     [SerializeField] private TMP_InputField playerNameInputField;
     [SerializeField] private TextMeshProUGUI loadingText;
     [SerializeField] private GameObject errorPanelName;
 
-    private async void Awake()
+    private void Awake()
     {
         errorPanelName.SetActive(false);
         renameScreen.SetActive(false);
@@ -35,7 +38,7 @@ public class PlayerNameBootstrap : MonoBehaviour
     {
         string playerName = playerNameInputField.text;
 
-        if (string.IsNullOrEmpty(playerName) || playerName.Length > 15 || playerName.Length < 5)
+        if (string.IsNullOrEmpty(playerName) || playerName.Length > MAX_CHARACTERS || playerName.Length < MIN_CHARACTERS)
         {
             errorPanelName.SetActive(true); 
             return;
