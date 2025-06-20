@@ -52,7 +52,7 @@ public class PlayerGetUp : NetworkBehaviour
             if (IsOwner)
             {
                 Debug.Log($"GETUP - Is Owner Of the Item - Owner of the SCRIPT- Will pass to the Not Owner the lastPosition - Found Free Pos: {foundPos} - {gameObject.name}");
-                PassOwnerPositionToNotOwnerRpc(foundPos);
+                PassOwnerPositionToNotOwnerServerRpc(foundPos);
             }
             else if (!IsOwner)
             {
