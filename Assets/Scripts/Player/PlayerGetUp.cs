@@ -42,7 +42,7 @@ public class PlayerGetUp : NetworkBehaviour
     public GameObject CubeTestedPosDEBUG;
     public GameObject CubeSelectedPosDEBUG;
 
-    public void HandleOnItemCallbackActionWithOwner(bool isItemOwner)
+    public void HandleOnItemCallbackAction(bool isItemOwner)
     {
         if (isItemOwner)
         {

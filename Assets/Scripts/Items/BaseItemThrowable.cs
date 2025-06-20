@@ -17,14 +17,9 @@ public abstract class BaseItemThrowable : MonoBehaviour
     /// </summary>
     public static event Action<Transform> OnItemReleasedAction;
     /// <summary>
-    /// Called when the item is destroyed and was released.
+    /// Called when the item is destroyed and was released. Pass the owner value.
     /// </summary>
-    public static event Action OnItemCallbackAction;
-
-    /// <summary>
-    /// Called when the item is destroyed and was released. Pass the owner value
-    /// </summary>
-    public static event Action<bool> OnItemCallbackActionWithOwner;
+    public static event Action<bool> OnItemCallbackAction;
 
     [BetterHeader("Base Item References")]
     [SerializeField] protected ItemSO itemSO;
@@ -196,8 +191,7 @@ public abstract class BaseItemThrowable : MonoBehaviour
 
     protected virtual void ItemCallbackAction()
     {
-        OnItemCallbackAction?.Invoke();
-        OnItemCallbackActionWithOwner?.Invoke(isOwner);
+        OnItemCallbackAction?.Invoke(isOwner);
         
         if(isOwner)
             turnManager.PlayerPlayed(thisItemLaucherData.ownerPlayableState);
@@ -208,8 +202,7 @@ public abstract class BaseItemThrowable : MonoBehaviour
     /// </summary>
     protected void InvokeOnItemCallbackAction()
     {
-        OnItemCallbackAction?.Invoke();
-        OnItemCallbackActionWithOwner?.Invoke(isOwner);
+        OnItemCallbackAction?.Invoke(isOwner);
     }
 
     /// <summary>

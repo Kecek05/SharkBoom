@@ -25,7 +25,7 @@ public class CameraGlobalFollow : NetworkBehaviour
         cameraObjectToFollow = _cameraObjectToFollow;
     }
 
-    private void HandleOnItemCallbackAction()
+    private void HandleOnItemCallbackAction(bool isItemOwner)
     {
         StopFollowingCoroutine();
     }

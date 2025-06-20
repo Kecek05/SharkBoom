@@ -171,7 +171,7 @@ public class PlayerThrower : NetworkBehaviour
         
         playerStateMachine.OnStateChanged += HandleOnStateChanged;
         
-        BaseItemThrowable.OnItemCallbackActionWithOwner += BaseItemThrowableOnOnItemCallbackActionWithOwner;
+        BaseItemThrowable.OnItemCallbackAction += BaseItemThrowableOnOnItemCallbackAction;
         
         turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
         
@@ -213,7 +213,7 @@ public class PlayerThrower : NetworkBehaviour
 
         playerLauncher.OnLastItemSynced -= HandleOnLastItemSynced;
         
-        BaseItemThrowable.OnItemCallbackActionWithOwner -= BaseItemThrowableOnOnItemCallbackActionWithOwner;
+        BaseItemThrowable.OnItemCallbackAction -= BaseItemThrowableOnOnItemCallbackAction;
 
         turnManager.OnMyTurnStarted -= GameFlowManager_OnMyTurnStarted;
         
@@ -404,15 +404,16 @@ public class PlayerThrower : NetworkBehaviour
         followSelectedSocketComponent.HandleOnPlayerSpawnItemOnHandOnItemSocketSelected(selectedSocket);
     }
     
-    private void BaseItemThrowableOnOnItemCallbackActionWithOwner(bool isOwnerOfTheItem)
+    private void BaseItemThrowableOnOnItemCallbackAction(bool isOwnerOfTheItem)
     {
-        playerGetUp.HandleOnItemCallbackActionWithOwner(isOwnerOfTheItem);
+        playerGetUp.HandleOnItemCallbackAction(isOwnerOfTheItem);
     }
 
     private void HandleOnRagdollDisabled()
     {
         playerDetectFacingDirection.FaceOtherPlayer();
         playerRotateToAim.OnRagdollDisabled();
+        cameraManager.HandleOnDisabledRagdoll();
     }
 
     private void HandleOnPlayerGetUp()

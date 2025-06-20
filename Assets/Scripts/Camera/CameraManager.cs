@@ -50,19 +50,16 @@ public class CameraManager : NetworkBehaviour
         cameraMovement.InitializeOwner();
         cameraZoom.InitializeOwner();
 
-        turnManager.CurrentPlayableState.OnValueChanged += HandleOnPlayableStateChanged;
+        // turnManager.CurrentPlayableState.OnValueChanged += HandleOnPlayableStateChanged;
     }
 
-    private void HandleOnPlayableStateChanged(PlayableState previousValue, PlayableState newValue)
+    public void HandleOnDisabledRagdoll()
     {
-        if(previousValue == newValue) return;
-        
-        if(newValue == PlayableState.Player1Played || newValue == PlayableState.Player2Played) return;
-        
+
         enemyObject = publicInfoManager.GetOtherPlayerByMyPlayableState(turnManager.LocalPlayableState);
         playerObject = publicInfoManager.GetPlayerObjectByPlayableState(turnManager.LocalPlayableState);
 
-        if (turnManager.LocalPlayableState == newValue)
+        if (turnManager.LocalPlayableState == playerThrower.ThisPlayableState.Value)
         {
             CameraGoToPlayer(playerObject);
         }
@@ -70,12 +67,18 @@ public class CameraManager : NetworkBehaviour
         {
             CameraGoToPlayer(enemyObject);
         }
+    }
+
+    private void HandleOnPlayableStateChanged(PlayableState previousValue, PlayableState newValue)
+    {
+        
 
         // Debug.Log($"CAMERA GO TO - HandleOnPlayableStateChanged - New Playable State: {newValue} - Enemy: {enemyObject.name} - My: {playerObject.name}");
     }
 
     public void HandleOnPlayerStateMachineStateChanged(PlayerState playerState)
     {
+        if(!IsOwner) return;
         switch (playerState)
         {
             case PlayerState.IdleEnemyTurn:
@@ -144,6 +147,6 @@ public class CameraManager : NetworkBehaviour
         cameraMovement.UnInitializeOwner();
         cameraZoom.UnInitializeOwner();
         
-        turnManager.CurrentPlayableState.OnValueChanged -= HandleOnPlayableStateChanged;
+        // turnManager.CurrentPlayableState.OnValueChanged -= HandleOnPlayableStateChanged;
     }
 }
