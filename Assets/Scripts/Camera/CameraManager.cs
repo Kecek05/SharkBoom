@@ -54,7 +54,8 @@ public class CameraManager : NetworkBehaviour
 
     public void HandleOnDisabledRagdoll()
     {
-
+        if(!IsOwner) return;
+        Debug.Log($"HandleOnDisabledRagdoll Called");
         enemyObject = publicInfoManager.GetOtherPlayerByMyPlayableState(turnManager.LocalPlayableState);
         playerObject = publicInfoManager.GetPlayerObjectByPlayableState(turnManager.LocalPlayableState);
 
@@ -66,13 +67,6 @@ public class CameraManager : NetworkBehaviour
         {
             CameraGoToPlayer(enemyObject);
         }
-    }
-
-    private void HandleOnPlayableStateChanged(PlayableState previousValue, PlayableState newValue)
-    {
-        
-
-        // Debug.Log($"CAMERA GO TO - HandleOnPlayableStateChanged - New Playable State: {newValue} - Enemy: {enemyObject.name} - My: {playerObject.name}");
     }
 
     public void HandleOnPlayerStateMachineStateChanged(PlayerState playerState)
@@ -146,6 +140,5 @@ public class CameraManager : NetworkBehaviour
         cameraMovement.UnInitializeOwner();
         cameraZoom.UnInitializeOwner();
         
-        // turnManager.CurrentPlayableState.OnValueChanged -= HandleOnPlayableStateChanged;
     }
 }

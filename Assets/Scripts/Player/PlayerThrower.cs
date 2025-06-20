@@ -72,6 +72,7 @@ public class PlayerThrower : NetworkBehaviour
         {
             HandleOwnerEvents();
             InitializeOwner();
+            ResyncOwner();
         }
     }
 
@@ -94,6 +95,15 @@ public class PlayerThrower : NetworkBehaviour
         // playerInventory.Initialize();
         
         
+    }
+
+    /// <summary>
+    /// Called when the player joins in the game, to resync data if needed 
+    /// </summary>
+    private void ResyncOwner()
+    {
+        // turnManager.HandleOnPlayableStateValueChanged(PlayableState.None, turnManager.CurrentPlayableState.Value);
+        cameraManager.HandleOnDisabledRagdoll();
     }
 
     private void InitializeOwner()
@@ -139,7 +149,7 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleEvents()
     {
-        Debug.Log($"Events - HandleEvents - {gameObject.name}");
+        // Debug.Log($"Events - HandleEvents - {gameObject.name}");
         GameManager.OnClientOwnershipChanged += HandleOnClientOwnershipChanged;
 
         thisPlayableState.OnValueChanged += PlayableStateInitialize;
