@@ -47,15 +47,19 @@ public class PlayerGetUp : NetworkBehaviour
             
             //Both players calculate their positions
             Vector3 foundPos = GetPlayerFreePos();
-            Debug.Log($"GETUP - Is Owner Of the Item - Found Free Pos: {foundPos} - {gameObject.name} - Owner of the Script: {IsOwner}");
             ApplyGetUp(foundPos);
-            
-            if (!IsOwner)
+
+            if (IsOwner)
+            {
+                Debug.Log($"GETUP - Is Owner Of the Item - Owner of the SCRIPT- Will pass to the Not Owner the lastPosition - Found Free Pos: {foundPos} - {gameObject.name}");
+                PassOwnerPositionToNotOwnerRpc(foundPos);
+            }
+            else if (!IsOwner)
             {
                 //Im not owner of THIS script, pass the position to the owner 
                 //Who could get Hit
                 Debug.Log($"GETUP - Is Owner Of the Item - NOT owner of the SCRIPT - Will pass to the Owner the lastPosition - Found Free Pos: {foundPos} - {gameObject.name}");
-                PassOwnerPositionToServerRpc(foundPos);
+                PassOwnerPositionToOwnerServerRpc(foundPos);
             }
         }
         else
@@ -75,21 +79,35 @@ public class PlayerGetUp : NetworkBehaviour
             {
                 //Im NOT the owner of this SCRIPT and I didnt threw this ITEM
                 //The owner of the throw
-                Debug.Log($"GETUP - NOT Is Owner Of the Item - NOT Owner of the SCRIPT - DOing nothing - {gameObject.name}");
+                Debug.Log($"GETUP - NOT Is Owner Of the Item - NOT Owner of the SCRIPT - Using Last Calculated Pos: {lastCalculatedPosition} - {gameObject.name}");
+                ApplyGetUp(lastCalculatedPosition);
             }
             
             // ApplyGetUp(lastCalculatedPosition);
         }
     }
+    
+    [Rpc(SendTo.Server, RequireOwnership = false, Delivery = RpcDelivery.Reliable)]
+    private void PassOwnerPositionToNotOwnerServerRpc(Vector3 position)
+    {
+        PassOwnerPositionToNotOwnerRpc(position);
+    }
+    
+    [Rpc(SendTo.NotOwner, RequireOwnership = false, Delivery = RpcDelivery.Reliable)]
+    private void PassOwnerPositionToNotOwnerRpc(Vector3 position)
+    {
+        Debug.Log($"GETUP - NOT Owner Recieved Last Pos: {position} - {gameObject.name}");
+        lastCalculatedPosition = position;
+    }
 
     [Rpc(SendTo.Server, RequireOwnership = false, Delivery = RpcDelivery.Reliable)]
-    private void PassOwnerPositionToServerRpc(Vector3 position)
+    private void PassOwnerPositionToOwnerServerRpc(Vector3 position)
     {
-        PassOwnerPositionToClientRpc(position);
+        PassOwnerPositionToOwnerRpc(position);
     }
     
     [Rpc(SendTo.Owner, RequireOwnership = false, Delivery = RpcDelivery.Reliable)]
-    private void PassOwnerPositionToClientRpc(Vector3 position)
+    private void PassOwnerPositionToOwnerRpc(Vector3 position)
     {
         Debug.Log($"GETUP - Owner Recieved Last Pos: {position} - {gameObject.name}");
         lastCalculatedPosition = position;
