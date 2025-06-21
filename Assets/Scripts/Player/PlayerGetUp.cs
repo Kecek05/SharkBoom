@@ -257,7 +257,7 @@ public class PlayerGetUp : NetworkBehaviour
             Debug.Log($"GETUP - WAITING RPC WITH POS - {gameObject.name} - Owner: {IsOwner}");
             yield return null;
         }
-        
+        Debug.Log($"GETUP - FINISHED WAITING FOR RPC - {gameObject.name} - Pos: {lastCalculatedPosition} - Owner: {IsOwner}");
         ApplyGetUp(lastCalculatedPosition);
         lastCalculatedPosition = Vector3.zero;
         
