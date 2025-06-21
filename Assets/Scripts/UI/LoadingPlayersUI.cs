@@ -24,13 +24,11 @@ public class LoadingPlayersUI : NetworkBehaviour
     [BetterHeader("References Player 1")]
     [SerializeField] private TextMeshProUGUI player1NameText;
     [SerializeField] private TextMeshProUGUI player1PearlsText;
-    [SerializeField] private Transform player1VisualSpawnpoint;
     [SerializeField] private VideoPlayer player1VideoPlayer;
 
     [BetterHeader("References Player 2")]
     [SerializeField] private TextMeshProUGUI player2NameText;
     [SerializeField] private TextMeshProUGUI player2PearlsText;
-    [SerializeField] private Transform player2VisualSpawnpoint;
     [SerializeField] private VideoPlayer player2VideoPlayer;
 
     private bool alreadyShowedPlayersInfo = false;
