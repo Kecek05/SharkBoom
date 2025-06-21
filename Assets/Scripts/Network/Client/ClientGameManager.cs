@@ -140,6 +140,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         if (!result)
         {
             Debug.LogError("Failed to start client: StartClient returned false.");
+            Application.Quit();
         }
     }
 

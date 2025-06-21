@@ -97,8 +97,6 @@ public class PlayerThrower : NetworkBehaviour
         if(playerStateMachine == null)
             CreatePlayerStateMachine();
         
-        playerStateMachine.Initialize(PlayerState.IdleEnemyTurn);
-        
         // Debug.Log($"SPAWNED PLAYER STATE MACHINE: {playerStateMachine} - CURRENT STATE: {playerStateMachine.CurrentState} - OBJ: {gameObject.name}");
         
         playerDetectFacingDirection.InitializeOwner();
@@ -320,6 +318,7 @@ public class PlayerThrower : NetworkBehaviour
     {
         Debug.Log($"PLAYER STATE MACHINE CREATED - {gameObject.name} - Owner: {IsOwner}");
         playerStateMachine = new PlayerStateMachine(this, playerDragController, playerInventory, IsOwner);
+        playerStateMachine.Initialize(PlayerState.IdleEnemyTurn);
     }
 
     private void HandleOnPlayerDetectFacingDirectionRotationChanged(bool isRight)

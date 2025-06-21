@@ -29,27 +29,33 @@ public class SaveBootstrap : MonoBehaviour
             string ipMatch = await Reconnect.GetIpMatch(ClientSingleton.Instance.GameManager.UserData.userAuthId);
             int portMatch = await Reconnect.GetPortMatch(ClientSingleton.Instance.GameManager.UserData.userAuthId);
 
-            if (await ServerConnectionTester.CheckIsOnline())
-            {
-                if (await Reconnect.CanRejoinInMatch(ClientSingleton.Instance.GameManager.UserData.userAuthId))
-                {
-                    //Match in progress, join it
-                    Debug.Log($"Match in progress, rejoin it...");
-                    ClientSingleton.Instance.GameManager.StartMatchmakingClient(ipMatch, portMatch);
-                }
-                else
-                {
-                    //Match is over
-                    Debug.Log($"Match is over, going to menu.");
-                    Reconnect.SetIsInMatch(ClientSingleton.Instance.GameManager.UserData.userAuthId, false); //Not in match anymore
-                    Loader.LoadNoLoadingScreen(Loader.Scene.NameBootstrap);
-                }
-            }
-            else
-            {
-                Debug.Log($"Client is Offline!");
-                ClientSingleton.Instance.GameManager.StartMatchmakingClient(ipMatch, portMatch);
-            }
+            Debug.Log($"Match in progress, rejoin it...");
+            ClientSingleton.Instance.GameManager.StartMatchmakingClient(ipMatch, portMatch);
+            
+            // if (await ServerConnectionTester.CheckIsOnline())
+            // {
+            //     Debug.Log($"Match in progress, rejoin it...");
+            //     ClientSingleton.Instance.GameManager.StartMatchmakingClient(ipMatch, portMatch);
+            //     
+            //     if (await Reconnect.CanRejoinInMatch(ClientSingleton.Instance.GameManager.UserData.userAuthId))
+            //     {
+            //         //Match in progress, join it
+            //         Debug.Log($"Match in progress, rejoin it...");
+            //         ClientSingleton.Instance.GameManager.StartMatchmakingClient(ipMatch, portMatch);
+            //     }
+            //     else
+            //     {
+            //         //Match is over
+            //         Debug.Log($"Match is over, going to menu.");
+            //         Reconnect.SetIsInMatch(ClientSingleton.Instance.GameManager.UserData.userAuthId, false); //Not in match anymore
+            //         Loader.LoadNoLoadingScreen(Loader.Scene.NameBootstrap);
+            //     }
+            // }
+            // else
+            // {
+            //     Debug.Log($"Client is Offline!");
+            //     ClientSingleton.Instance.GameManager.StartMatchmakingClient(ipMatch, portMatch);
+            // }
         } else
         {
             //Not in match, go to Name Bootstrap
