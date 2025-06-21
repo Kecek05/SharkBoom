@@ -22,7 +22,7 @@ public class ServerConnectionTester
     /// </summary>
     private const ushort REFERENCE_PORT = 53;
 
-    private const int TIME_OUT = 30000; // Max wait per network call (ms)
+    private const int TIME_OUT = 6000; // Max wait per network call (ms)
 
 
     /// <summary>
@@ -67,18 +67,6 @@ public class ServerConnectionTester
                 Debug.Log($"Server not Reachable");
                 return false;
             }
-            
-            
-            // if (await IsPortReachableAsync(serverIP, serverPort, TIME_OUT))
-            // {
-            //     
-            //     return true;
-            // }
-            // else
-            // {
-            //     
-            //     return false;
-            // }
         }
         else
         {
