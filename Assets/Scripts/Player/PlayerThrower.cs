@@ -405,7 +405,6 @@ public class PlayerThrower : NetworkBehaviour
     {
         playerDetectFacingDirection.FaceOtherPlayer();
         playerRotateToAim.OnRagdollDisabled();
-        cameraManager.CameraGoToActivePlayer();
     }
 
     private void HandleOnPlayerGetUp()

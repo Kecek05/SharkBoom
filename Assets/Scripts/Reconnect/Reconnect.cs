@@ -49,7 +49,7 @@ public static class Reconnect
             }
             catch (CloudCodeException e)
             {
-                Debug.LogError($"Error saving pearls: {e.Message}, trying again");
+                Debug.LogError($"Error setting is in match: {e.Message}, trying again");
                 await Task.Delay(100);
             }
         }
@@ -79,7 +79,7 @@ public static class Reconnect
             }
             catch (CloudCodeException e)
             {
-                Debug.LogError($"Error saving pearls: {e.Message}, trying again");
+                Debug.LogError($"Error setting is in match: {e.Message}, trying again");
                 await Task.Delay(100);
             }
         }
