@@ -1728,7 +1728,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 3}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 200, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1699560198725061625
@@ -1911,9 +1911,9 @@ RectTransform:
   - {fileID: 1373242762889542741}
   m_Father: {fileID: 4847221939909755363}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -1495, y: 100}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -1175, y: 180}
   m_SizeDelta: {x: 150, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8633167684048234326
@@ -2124,8 +2124,8 @@ MonoBehaviour:
   fadeTime: 0.3
   startPanelScale: 0
   endPanelScale: 0
-  moveStart: {x: -1495, y: -500}
-  moveEnd: {x: -1495, y: 100}
+  moveStart: {x: -1175, y: -500}
+  moveEnd: {x: -1175, y: 180}
   fadeInAnimation: 1
   OnUiAnimation:
     m_PersistentCalls:
@@ -2295,7 +2295,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -350, y: 35}
+  m_AnchoredPosition: {x: -398, y: 115}
   m_SizeDelta: {x: 320, y: 190}
   m_Pivot: {x: 1, y: 0}
 --- !u!222 &660363955737617622
