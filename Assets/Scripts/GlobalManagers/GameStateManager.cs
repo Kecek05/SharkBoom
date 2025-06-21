@@ -21,6 +21,7 @@ public class GameStateManager : BaseGameStateManager
 
     public override void HandleOnGameStateValueChanged(GameState newValue)
     {
+        Debug.Log($"GameStateManager - HandleOnGameStateValueChanged - {newValue}");
         switch (newValue)
         {
             case GameState.WaitingForPlayers:
