@@ -70,10 +70,21 @@ public class LoadingPlayersUI : NetworkBehaviour
     private void RequestDataToTheServerRpc(ulong senderClientID)
     {
         Debug.Log($"REQUESTING DATA TO THE SERVER LOADING PLAYERS UI - Sender ID: {senderClientID} - Players in Data: {NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas.Count}");
+        StartCoroutine(WaitAllPlayersData(senderClientID));
+    }
+
+    private IEnumerator WaitAllPlayersData(ulong senderClientID)
+    {
+        while (NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas.Count < 2)
+        {
+            Debug.Log($"WAITING FOR PLAYERS DATA - CURRENT: {NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas.Count}");
+            yield return null;
+        }
+        Debug.Log($"Server Recieved both players Data sending it to: {senderClientID}");
         //Send to clients
         foreach (PlayerData playerData in NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas)
         {
-            Debug.Log($"RequestDataToTheServerRpc on Loading Players UI - Player Data: {playerData.userData.userAuthId} - Client Id: {playerData.clientId}");
+            Debug.Log($"RequestDataToTheServerRpc on Loading Players UI - Player Data: {playerData.userData.userAuthId} - Client Id: {playerData.clientId} - Sender: {senderClientID}");
             UpdatePlayerVisualTypeClientRpc(playerData.playableState, basePlayerPublicInfoManager.GetPlayerVisualTypes()[playerData.playableState], senderClientID);
             UpdatePlayersInfoClientRpc(playerData.userData.userName, playerData.userData.userPearls, playerData.playableState, senderClientID);
         }
@@ -85,14 +96,14 @@ public class LoadingPlayersUI : NetworkBehaviour
          if(newValue == GameState.ShowingPlayersInfo) 
          {
             //Show UI
-            if (IsServer)
-            {
-                foreach (ulong connectedClientsId in NetworkManager.ConnectedClientsIds)
-                {
-                    if(IsServer && !IsHost && connectedClientsId == 0) continue; //Not send the id 0 if is DS
-                    RequestDataToTheServerRpc(connectedClientsId);
-                }
-            }
+            // if (IsServer)
+            // {
+            //     foreach (ulong connectedClientsId in NetworkManager.ConnectedClientsIds)
+            //     {
+            //         if(IsServer && !IsHost && connectedClientsId == 0) continue; //Not send the id 0 if is DS
+            //         RequestDataToTheServerRpc(connectedClientsId);
+            //     }
+            // }
             
             Debug.Log($"CLIENT REQUESTING DATA LOADING PLAYERS UI - {gameObject.name} - Is Owner: {IsOwner} - Client ID: {NetworkManager.LocalClientId} - Game State: {newValue}");
             RequestDataToTheServerRpc(NetworkManager.LocalClientId);
