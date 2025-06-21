@@ -62,7 +62,10 @@ public class PlayerThrower : NetworkBehaviour
         
         HandleEvents();
         Initialize();
-        //DEBUG
+        
+        
+        if(gameStateManager.CurrentGameState.Value == GameState.GameStarted)
+            Resync();
         
     }
 
@@ -109,6 +112,23 @@ public class PlayerThrower : NetworkBehaviour
         // turnManager.HandleOnPlayableStateValueChanged(PlayableState.None, turnManager.CurrentPlayableState.Value);
         cameraManager.CameraGoToActivePlayer();
     }
+
+    private void Resync()
+    {
+        // RequestPlayerStateMachineStateFromServerRpc();
+    }
+
+    // private void RequestPlayerStateMachineStateFromServerRpc()
+    // {
+    //     //Request Player State machine to the server   
+    //     ResponsePlayerStateMachineStateFromServerRpc();
+    // }
+    //
+    // private void ResponsePlayerStateMachineStateFromServerRpc(PlayerState playerState)
+    // {
+    //     // Recieve the player state machine from the server
+    //     playerStateMachine.ChangeStateWithPlayerState(playerState);
+    // }
 
     private void InitializeOwner()
     {
