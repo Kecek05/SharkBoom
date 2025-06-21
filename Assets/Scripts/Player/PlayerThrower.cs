@@ -432,7 +432,6 @@ public class PlayerThrower : NetworkBehaviour
     private void GameFlowManager_OnMyTurnJumped()
     {
         ChangePlayerState(PlayerState.IdleMyTurn);
-        cameraManager.CameraGoToActivePlayer();
     }
 
     private void GameFlowManager_OnMyTurnEnded()
