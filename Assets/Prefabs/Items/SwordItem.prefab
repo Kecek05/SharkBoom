@@ -1,12 +1,12 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &1862359445754101887
+--- !u!1001 &2843011976868238205
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 8464876032891664105}
+    m_TransformParent: {fileID: 448049564057102955}
     m_Modifications:
     - target: {fileID: 26238628382394155, guid: a165a5d51d00fe7429d16e5b4fb84ded, type: 3}
       propertyPath: TrailModule.minVertexDistance
@@ -65,10 +65,10 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a165a5d51d00fe7429d16e5b4fb84ded, type: 3}
---- !u!4 &4833055885262325193 stripped
+--- !u!4 &9060803610132207307 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6542068574056891830, guid: a165a5d51d00fe7429d16e5b4fb84ded, type: 3}
-  m_PrefabInstance: {fileID: 1862359445754101887}
+  m_PrefabInstance: {fileID: 2843011976868238205}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7709761659009139004
 PrefabInstance:
@@ -296,9 +296,9 @@ PrefabInstance:
     - {fileID: 5936238915556127039, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 2272018210298738645, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+    - targetCorrespondingSourceObject: {fileID: 7838895398303230807, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4833055885262325193}
+      addedObject: {fileID: 9060803610132207307}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       insertIndex: -1
@@ -313,6 +313,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 2412124615482136233}
   m_SourcePrefab: {fileID: 100100000, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+--- !u!4 &448049564057102955 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7838895398303230807, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+  m_PrefabInstance: {fileID: 7709761659009139004}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &905667967243219671 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7381126383517430763, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
@@ -462,10 +467,5 @@ Rigidbody:
 --- !u!1 &7002131505479470429 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 851746441201601633, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
-  m_PrefabInstance: {fileID: 7709761659009139004}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &8464876032891664105 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2272018210298738645, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
   m_PrefabInstance: {fileID: 7709761659009139004}
   m_PrefabAsset: {fileID: 0}
