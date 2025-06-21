@@ -45,7 +45,7 @@ public abstract class BaseItemThrowable : MonoBehaviour
     protected BaseTurnManager turnManager;
 
     protected bool itemReleased = false;
-    private WaitForSeconds waitToChangeCollision = new(0.15f);
+    private WaitForSeconds waitToChangeCollision = new(0.05f);
     protected PlayableState ownerPlayableState;
     
     protected bool isOwner = false;

@@ -49,7 +49,7 @@ public class PlayerHealth : HealthComponent
             return;
         }
 
-        Debug.Log($"Damage LOCAL: {damageableSO.damage} in: {bodyPart} with multiplier: {localSelectedMultiplier} total: {damageableSO.damage * localSelectedMultiplier} damageableSO: {damageableSO}");
+        Debug.Log($"HEALTH - Damage LOCAL: {damageableSO.damage} in: {bodyPart} with multiplier: {localSelectedMultiplier} total: {damageableSO.damage * localSelectedMultiplier} damageableSO: {damageableSO} - {gameObject.name}");
 
         ModifyLocalHealth(-(damageableSO.damage * localSelectedMultiplier));
 
@@ -73,7 +73,7 @@ public class PlayerHealth : HealthComponent
                 return;
             }
 
-            Debug.Log($"Damage: {damageableSO.damage} in: {bodyPart} with multiplier: {selectedMultiplier} total: {damageableSO.damage * selectedMultiplier} damageableSO: {damageableSO}");
+            Debug.Log($"HEALTH - Damage: {damageableSO.damage} in: {bodyPart} with multiplier: {selectedMultiplier} total: {damageableSO.damage * selectedMultiplier} damageableSO: {damageableSO} - {gameObject.name}");
 
             ModifyHealthServerRpc(-(damageableSO.damage * selectedMultiplier));
 

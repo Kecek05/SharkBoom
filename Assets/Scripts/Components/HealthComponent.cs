@@ -31,18 +31,13 @@ public class HealthComponent : NetworkBehaviour
             currentHealth.Value = maxHealth;
         }
         
-        currentHealth.OnValueChanged += OnValueChanged;
-        OnValueChanged(0f, currentHealth.Value);
+        UpdateLocalHealth(currentHealth.Value);
     }
 
-    public override void OnNetworkDespawn()
-    {
-        currentHealth.OnValueChanged -= OnValueChanged;
-    }
-
-    private void OnValueChanged(float previousValue, float newValue)
+    private void UpdateLocalHealth(float newValue)
     {
         localCurrentHealth = newValue;
+        Debug.Log($"HEALTH - Changing Local Current Health: {localCurrentHealth} - {gameObject.name}");
     }
 
 
@@ -55,7 +50,7 @@ public class HealthComponent : NetworkBehaviour
 
         currentHealth.Value = Mathf.Clamp(newHealth, 0, maxHealth);
 
-        Debug.Log($"Health: {currentHealth.Value}");
+        Debug.Log($"HEALTH - Health: {currentHealth.Value} - {gameObject.name}");
 
         if (currentHealth.Value <= 0)
         {
@@ -71,7 +66,7 @@ public class HealthComponent : NetworkBehaviour
         localCurrentHealth = Mathf.Clamp(newHealth, 0, maxHealth);
 
         InvokeOnTakeLocalDamage();
-        Debug.Log($"Health: {localCurrentHealth}");
+        Debug.Log($"HEALTH - Local Health: {localCurrentHealth} - Recieved Value: {value} - {gameObject.name}");
 
         if (localCurrentHealth <= 0)
         {

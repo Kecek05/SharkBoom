@@ -12,6 +12,8 @@ public class JumpItemThrowable : BaseItemThrowable
     private float lockedZ;
     private Coroutine followCoroutine;
     private float followSpeed = 10f;
+    private int frameAt0Velocity = 0; //Frames at 0 velocity
+    private int frameAt0VElocityLimit = 20; //Cap of frames to stop jumping
 
     private BaseTimerManager timerManager;
 
@@ -60,6 +62,23 @@ public class JumpItemThrowable : BaseItemThrowable
             objectToFollowTransform.position = Vector3.Lerp(objectToFollowTransform.position, targetPos, Time.deltaTime * followSpeed);
 
             currentFollowingTime += Time.deltaTime;
+
+            if (rb.linearVelocity.magnitude < 0.1f)
+            {
+                Debug.Log($"JUMP Linear Velocity less than 0.1f");
+                frameAt0Velocity++;
+            }
+
+            if (frameAt0Velocity >= frameAt0VElocityLimit)
+            {
+                Debug.Log($"JUMP Reach the cap of 0 velocity, stoping jump");
+                frameAt0Velocity = 0;
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+                lifetimeTriggerItemComponent.StopLifetime();
+                followCoroutine = null;
+                DestroyItem();
+            }
             yield return null;
         }
     }

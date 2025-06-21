@@ -15,6 +15,7 @@ public class CanDoDamageComponent : MonoBehaviour
     {
         selectedDamageableSO = damageableSO;
         damaged = false;
+        localDamaged = false;
         baseCollisionController.OnCollided += BaseCollisionController_OnItemCollided;
     }
 
@@ -27,16 +28,19 @@ public class CanDoDamageComponent : MonoBehaviour
 
     private void BaseCollisionController_OnItemCollided(GameObject collidedObj)
     {
+        Debug.Log($"BaseCollisionController_OnItemCollided: {collidedObj.name}");
         //if(!IsOwner) return;
         if (baseItemThrowable.IsOwner)
         {
             if(collidedObj.TryGetComponent(out IDamageable damageable)) //Only on server
             {
-                TakeDamage(damageable);
+                if(baseItemThrowable.IsOwner)
+                    TakeDamage(damageable);
+                
             }  
         }
         
-        if(collidedObj.TryGetComponent(out ILocalDamageable localDamageable)) //Only on server
+        if(collidedObj.TryGetComponent(out ILocalDamageable localDamageable))
         {
             LocalTakeDamage(localDamageable);
         }
