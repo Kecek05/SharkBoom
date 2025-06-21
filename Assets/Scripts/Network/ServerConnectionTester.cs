@@ -32,7 +32,7 @@ public class ServerConnectionTester
     /// <param name="serverPort"></param>
     /// <returns></returns>
 
-    private static async Task<bool> CheckIsOnline()
+    public static async Task<bool> CheckIsOnline()
     {
         if (!Application.internetReachability.Equals(NetworkReachability.NotReachable) &&
             await IsPortReachableAsync(REFERENCE_HOST, REFERENCE_PORT, TIME_OUT))
@@ -46,64 +46,6 @@ public class ServerConnectionTester
             return false;
         }
     }
-    
-    /// <summary>
-    /// Call this to check if till need to reconnect with DS
-    /// </summary>
-    /// <param name="serverIP"></param>
-    /// <param name="queryPort"></param>
-    /// <returns> if true, client is offline or the server is online, false, server is offline dont reconnect anymore</returns>
-    public static async Task<bool> CheckServerAsync(string serverIP, int queryPort)
-    {
-        if(await CheckIsOnline())
-        {
-            if (await IsServerOnline(serverIP, queryPort))
-            {
-                Debug.Log($"Server is Reachable");
-                return true;
-            }
-            else
-            {
-                Debug.Log($"Server not Reachable");
-                return false;
-            }
-        }
-        else
-        {
-            return true;
-        }
-    }
-    
-    public static async Task<bool> IsServerOnline(string ip, int queryPort, int timeoutMs = 1000)
-    {
-        using var udp = new UdpClient();
-        udp.Client.ReceiveTimeout = timeoutMs;
-        var end = new IPEndPoint(IPAddress.Parse(ip), queryPort);
-
-        // Send ChallengeRequest packet (type = 0 + 4 dummy bytes)
-        byte[] chal = new byte[5];
-        chal[0] = 0;
-        await udp.SendAsync(chal, chal.Length, end);
-
-        var resp = await udp.ReceiveAsync();
-        if (resp.Buffer.Length < 5) return false;
-
-        // parse ChallengeToken (big‑endian)
-        uint token = (uint)IPAddress.NetworkToHostOrder(BitConverter.ToInt32(resp.Buffer, 1));
-
-        // Send QueryRequest packet (type = 1, with token + version + chunk mask)
-        using var ms = new MemoryStream();
-        using var bw = new BinaryWriter(ms);
-        bw.Write((byte)1);
-        bw.Write(IPAddress.HostToNetworkOrder((int)token));
-        bw.Write(IPAddress.HostToNetworkOrder((short)1)); // protocol version
-        bw.Write((byte)1); // Request ServerInfo chunk
-        await udp.SendAsync(ms.ToArray(), (int)ms.Length, end);
-
-        var qr = await udp.ReceiveAsync();
-        return qr.Buffer.Length >= 1 && qr.Buffer[0] == 1;
-    }
-    
     
     /// <summary>
     /// Lightweight TCP probe – true if <paramref name="host"/>:<paramref name="port"/> accepts a socket within <paramref name="timeout"/> ms.

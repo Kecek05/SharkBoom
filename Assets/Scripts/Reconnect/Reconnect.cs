@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.Services.CloudCode;
@@ -5,6 +6,8 @@ using UnityEngine;
 
 public static class Reconnect
 {
+    private const int MATCH_DURATION = 420; //in ms
+    
     public static async Task<bool> GetIsInMatch(string userAuthId)
     {
         var arguments = new Dictionary<string, object>
@@ -55,7 +58,7 @@ public static class Reconnect
         }
     }
 
-    public static async Task SetPlayerMatchConnection(string userAuthId, string ip, int port, int qPort)
+    public static async Task SetPlayerMatchConnection(string userAuthId, string ip, int port)
     {
         //Save to cloud
 
@@ -64,8 +67,7 @@ public static class Reconnect
             { CloudCodeRefs.ARGUMENT_PROJECT_ID, CloudCodeRefs.PROJECT_ID },
             { CloudCodeRefs.ARGUMENT_IP, ip },
             { CloudCodeRefs.ARGUMENT_PLAYERID, userAuthId },
-            { CloudCodeRefs.ARGUMENT_PORT, port },
-            { CloudCodeRefs.ARGUMENT_QPORT, qPort }
+            { CloudCodeRefs.ARGUMENT_PORT, port }
         };
 
         bool setted = false;
@@ -76,7 +78,7 @@ public static class Reconnect
             {
                 await CloudCodeService.Instance.CallEndpointAsync(CloudCodeRefs.SET_PLAYER_MATCH_CONNECTION_ENDPOINT, arguments);
                 setted = true;
-                Debug.Log($"Setted Match Connection: IP: {ip} - PORT: {port} - QPORT: {qPort}");
+                Debug.Log($"Setted Match Connection: IP: {ip} - PORT: {port}");
             }
             catch (CloudCodeException e)
             {
@@ -127,8 +129,38 @@ public static class Reconnect
             return 0;
         }
     }
-    
-    public static async Task<int> GetQueryPortMatch(string userAuthId)
+
+    public static async Task SetMatchEndTime(string userAuthId)
+    {
+        //Save to cloud
+        double endMatchTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + MATCH_DURATION;
+        
+        var arguments = new Dictionary<string, object>
+        {
+            { CloudCodeRefs.ARGUMENT_PROJECT_ID, CloudCodeRefs.PROJECT_ID },
+            { CloudCodeRefs.SET_PLAYER_END_MATCH_TIME_ARGUMENT_MATCH_TIME, endMatchTime },
+            { CloudCodeRefs.ARGUMENT_PLAYERID, userAuthId },
+        };
+
+        bool setted = false;
+
+        while (!setted)
+        {
+            try
+            {
+                await CloudCodeService.Instance.CallEndpointAsync(CloudCodeRefs.SET_PLAYER_END_MATCH_TIME_ENDPOINT, arguments);
+                setted = true;
+                Debug.Log($"Setted Match End time to: {endMatchTime}");
+            }
+            catch (CloudCodeException e)
+            {
+                Debug.LogError($"Error setting end match time: {e.Message}, trying again");
+                await Task.Delay(100);
+            }
+        }
+    }
+
+    public static async Task<bool> CanRejoinInMatch(string userAuthId)
     {
         var arguments = new Dictionary<string, object>
         {
@@ -137,15 +169,27 @@ public static class Reconnect
         };
         try
         {
-            int qPortMatch = await CloudCodeService.Instance.CallEndpointAsync<int>(CloudCodeRefs.GET_PLAYER_QPORT_SERVER_ENDPOINT, arguments);
-            Debug.Log($"QPort Match: {qPortMatch}");
-            return qPortMatch;
+            double endMatchTime = await CloudCodeService.Instance.CallEndpointAsync<int>(CloudCodeRefs.GET_PLAYER_END_MATCH_TIME_ENDPOINT, arguments);
+            Debug.Log($"endMatchTime: {endMatchTime}");
+            
+            double now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
+            if (now > endMatchTime)
+            {
+                Debug.Log("Match already over, cant rejoin");
+                return false;
+            }
+            else
+            {
+                Debug.Log("Match in progress, rejoin!");
+                return true;
+            }
         }
         catch (CloudCodeException e)
         {
-            Debug.LogError($"Error getting IsInMatch: {e.Message}, Closing Game");
+            Debug.LogError($"Error getting endMatchTime: {e.Message}, Closing Game");
             Application.Quit();
-            return 0;
+            return true;
         }
     }
 

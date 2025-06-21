@@ -17,12 +17,10 @@ public static class CloudCodeRefs
     public const string SET_PLAYER_MATCH_CONNECTION_ENDPOINT = "SetPlayerMatchConnection";
     public const string ARGUMENT_IP = "ipServer";
     public const string ARGUMENT_PORT = "portServer";
-    public const string ARGUMENT_QPORT = "qPortServer";
 
     //Get Match Connection
     public const string GET_PLAYER_PORT_SERVER_ENDPOINT = "GetPlayerPortServer";
     public const string GET_PLAYER_IP_SERVER_ENDPOINT = "GetPlayerIpServer";
-    public const string GET_PLAYER_QPORT_SERVER_ENDPOINT = "GetPlayerQueryPortServer";
 
     //Pearls
     public const string ADD_PEARLS_ENDPOINT = "AddSavePlayerPearls";
@@ -33,4 +31,9 @@ public static class CloudCodeRefs
     public const string SET_PLAYER_NAME_ENDPOINT = "SetPlayerName";
     public const string GET_PLAYER_NAME_ENDPOINT = "GetPlayerName";
     public const string SET_PLAYER_NAME_ARGUMENT_NAME = "playerName";
+    
+    //End Match Time
+    public const string SET_PLAYER_END_MATCH_TIME_ENDPOINT = "SetPlayerEndMatchTime";
+    public const string GET_PLAYER_END_MATCH_TIME_ENDPOINT = "GetPlayerEndMatchTime";
+    public const string SET_PLAYER_END_MATCH_TIME_ARGUMENT_MATCH_TIME = "matchEndTime";
 }
