@@ -1,5 +1,99 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &6439127532468343625
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 8464876032891664105}
+    m_Modifications:
+    - target: {fileID: 26238628382394155, guid: a165a5d51d00fe7429d16e5b4fb84ded, type: 3}
+      propertyPath: prewarm
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 26238628382394155, guid: a165a5d51d00fe7429d16e5b4fb84ded, type: 3}
+      propertyPath: ShapeModule.radius.value
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 26238628382394155, guid: a165a5d51d00fe7429d16e5b4fb84ded, type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.key0.b
+      value: 0.8769823
+      objectReference: {fileID: 0}
+    - target: {fileID: 26238628382394155, guid: a165a5d51d00fe7429d16e5b4fb84ded, type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.key0.g
+      value: 0.8773585
+      objectReference: {fileID: 0}
+    - target: {fileID: 26238628382394155, guid: a165a5d51d00fe7429d16e5b4fb84ded, type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.key0.r
+      value: 0.8566661
+      objectReference: {fileID: 0}
+    - target: {fileID: 26238628382394155, guid: a165a5d51d00fe7429d16e5b4fb84ded, type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.key1.b
+      value: 0.9708353
+      objectReference: {fileID: 0}
+    - target: {fileID: 26238628382394155, guid: a165a5d51d00fe7429d16e5b4fb84ded, type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.key1.g
+      value: 0.9716981
+      objectReference: {fileID: 0}
+    - target: {fileID: 26238628382394155, guid: a165a5d51d00fe7429d16e5b4fb84ded, type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.key1.r
+      value: 0.9579477
+      objectReference: {fileID: 0}
+    - target: {fileID: 1994812034332105077, guid: a165a5d51d00fe7429d16e5b4fb84ded, type: 3}
+      propertyPath: m_Name
+      value: SwordTrail 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6542068574056891830, guid: a165a5d51d00fe7429d16e5b4fb84ded, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6542068574056891830, guid: a165a5d51d00fe7429d16e5b4fb84ded, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6542068574056891830, guid: a165a5d51d00fe7429d16e5b4fb84ded, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6542068574056891830, guid: a165a5d51d00fe7429d16e5b4fb84ded, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 6542068574056891830, guid: a165a5d51d00fe7429d16e5b4fb84ded, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6542068574056891830, guid: a165a5d51d00fe7429d16e5b4fb84ded, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6542068574056891830, guid: a165a5d51d00fe7429d16e5b4fb84ded, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 6542068574056891830, guid: a165a5d51d00fe7429d16e5b4fb84ded, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6542068574056891830, guid: a165a5d51d00fe7429d16e5b4fb84ded, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6542068574056891830, guid: a165a5d51d00fe7429d16e5b4fb84ded, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 90
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: a165a5d51d00fe7429d16e5b4fb84ded, type: 3}
+--- !u!4 &258526979750287103 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6542068574056891830, guid: a165a5d51d00fe7429d16e5b4fb84ded, type: 3}
+  m_PrefabInstance: {fileID: 6439127532468343625}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7709761659009139004
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -268,7 +362,10 @@ PrefabInstance:
     - {fileID: 1388381339307784563, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
     - {fileID: 4196873844735081561, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 2272018210298738645, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 258526979750287103}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 6020880011412641438, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
       insertIndex: -1
@@ -356,6 +453,7 @@ MonoBehaviour:
   freezeRotationX: 1
   freezeRotationY: 1
   freezeRotationZ: 0
+  isFixedUpdate: 1
   spinObjectComponent: {fileID: 705276871807049748}
 --- !u!1 &4767779204118326136 stripped
 GameObject:
@@ -412,3 +510,8 @@ MonoBehaviour:
   interpolationSpeed: 300
   resetRotationWhenStoped: 1
   isInverted: 0
+--- !u!4 &8464876032891664105 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2272018210298738645, guid: ab4b4942f9a2cf944b27628de1414dcc, type: 3}
+  m_PrefabInstance: {fileID: 7709761659009139004}
+  m_PrefabAsset: {fileID: 0}
