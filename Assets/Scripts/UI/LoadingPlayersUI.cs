@@ -25,7 +25,7 @@ public class LoadingPlayersUI : NetworkBehaviour
     [SerializeField] private TextMeshProUGUI player1NameText;
     [SerializeField] private TextMeshProUGUI player1PearlsText;
     [SerializeField] private VideoPlayer player1VideoPlayer;
-
+    
     [BetterHeader("References Player 2")]
     [SerializeField] private TextMeshProUGUI player2NameText;
     [SerializeField] private TextMeshProUGUI player2PearlsText;
