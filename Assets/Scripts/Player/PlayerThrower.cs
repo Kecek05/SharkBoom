@@ -375,7 +375,6 @@ public class PlayerThrower : NetworkBehaviour
             ChangePlayerState(PlayerState.PlayerGameOver);
         } else if (newValue == GameState.GameStarted)
         {
-            playerDetectFacingDirection.SetupDetectFacingDirection();
             playerDetectFacingDirection.FaceOtherPlayer();
         }
     }
