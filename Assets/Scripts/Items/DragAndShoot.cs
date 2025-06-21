@@ -232,8 +232,9 @@ public class DragAndShoot : NetworkBehaviour
 
             trajectory.UpdateDots(startTrajectoryPos.position, directionOfDrag * dragForce, maxForce, selectedRb);
 
+            
             OnDragChange?.Invoke(GetForcePercentage(), GetAngle());
-
+            Debug.Log($"dragDistance = {dragDistance:F2}, maxDragDistance = {maxForce:F2}");
             CheckCancelDrag();
 
             // Convert the drag distances to an absolute, rounded integer.
@@ -333,14 +334,16 @@ public class DragAndShoot : NetworkBehaviour
 
     public float GetAngle()
     {
-        float angleRadians = Mathf.Atan2(directionOfDrag.y, directionOfDrag.x);
-        float angleDegrees = angleRadians * Mathf.Rad2Deg;
-        return Math.Abs(angleDegrees);
+        float normalAngle = Mathf.Abs(Mathf.Atan2(directionOfDrag.y, directionOfDrag.x) * Mathf.Rad2Deg);
+        float correctionAngle = 90f - Mathf.Abs(normalAngle - 90f) * 0.5f;
+
+        return correctionAngle;
     }
 
     public float GetForcePercentage()
     {
-        return (dragForce / maxForce) * 100f;
+        float forceValue = Mathf.InverseLerp(minForce, maxForce, dragDistance);
+        return forceValue * 100f;
     }
 
     public Vector3 GetOpositeFingerPos()
