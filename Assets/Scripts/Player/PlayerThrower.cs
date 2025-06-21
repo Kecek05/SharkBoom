@@ -115,20 +115,27 @@ public class PlayerThrower : NetworkBehaviour
 
     private void Resync()
     {
-        // RequestPlayerStateMachineStateFromServerRpc();
+        RequestPlayerStateMachineStateFromServerRpc(NetworkManager.LocalClientId);
     }
 
-    // private void RequestPlayerStateMachineStateFromServerRpc()
-    // {
-    //     //Request Player State machine to the server   
-    //     ResponsePlayerStateMachineStateFromServerRpc();
-    // }
-    //
-    // private void ResponsePlayerStateMachineStateFromServerRpc(PlayerState playerState)
-    // {
-    //     // Recieve the player state machine from the server
-    //     playerStateMachine.ChangeStateWithPlayerState(playerState);
-    // }
+    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    private void RequestPlayerStateMachineStateFromServerRpc(ulong clientID)
+    {
+        //Request Player State machine to the server   
+        Debug.Log($"REQUEST RESYNC PLAYER STATE MACHINE - {gameObject.name} - State In Server: {playerStateMachine.CurrentPlayerState} - Caller: {clientID}");
+        ResponsePlayerStateMachineStateFromServerRpc(playerStateMachine.CurrentPlayerState, clientID);
+    }
+    
+    
+    [Rpc(SendTo.ClientsAndHost, Delivery = RpcDelivery.Reliable)]
+    private void ResponsePlayerStateMachineStateFromServerRpc(PlayerState playerState, ulong clientId)
+    {
+        // Recieve the player state machine from the server
+        if(clientId != NetworkManager.LocalClientId) return; // not caller
+    
+        playerStateMachine.ChangeStateWithPlayerState(playerState);
+        Debug.Log($"RESPONSE RESYNC PLAYER STATE MACHINE - {gameObject.name} - State: {playerStateMachine.CurrentPlayerState} - Caller: {clientId}");
+    }
 
     private void InitializeOwner()
     {
@@ -506,6 +513,16 @@ public class PlayerThrower : NetworkBehaviour
         }
         // Debug.Log($"PlayerThrower - Changing Player State to: {playerState} - Old State Was: {playerStateMachine.CurrentState} - GameObject: {gameObject.name}");
         playerStateMachine.ChangeStateWithPlayerState(playerState);
+        PassStateToServerRpc(playerState);
+    }
+
+    [Rpc(SendTo.Server, Delivery =  RpcDelivery.Reliable)]
+    private void PassStateToServerRpc(PlayerState playerState)
+    {
+        if(IsHost) return; //Only DS
+        
+        playerStateMachine.ChangeStateWithPlayerState(playerState);
+        Debug.Log($"UPDATING PLAYER STATE MACHINE - {gameObject.name} - State In Server: {playerStateMachine.CurrentPlayerState}");
     }
     
     //DEBUG
