@@ -103,6 +103,8 @@ public class PlayerGetUp : NetworkBehaviour
     [Rpc(SendTo.NotOwner, RequireOwnership = false, Delivery = RpcDelivery.Reliable)]
     private void PassOwnerPositionToNotOwnerRpc(Vector3 position)
     {
+        if(IsServer && !IsHost) return; //DS
+        
         Debug.Log($"GETUP - NOT Owner Recieved Last Pos: {position} - {gameObject.name}");
         lastCalculatedPosition = position;
     }
