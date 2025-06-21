@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Unity.Cinemachine;
 using Unity.Netcode;
 using UnityEngine;
@@ -20,6 +22,12 @@ public class CameraManager : NetworkBehaviour
     private BaseTurnManager turnManager;
     private BasePlayersPublicInfoManager publicInfoManager;
     private CameraGlobalFollow cameraGlobalFollow;
+    private BaseTimerManager timerManager;
+    
+    /// <summary>
+    /// Used to trigger just once the OnValueChanged, the camera must follow based on Item Callbacks and not states
+    /// </summary>
+    private bool firstPlayableStateChangedTrigger = false; 
     
     public Transform CameraObjectToFollow => cameraObjectToFollow;
     public CameraZoom CameraZoom => cameraZoom;
@@ -28,6 +36,9 @@ public class CameraManager : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         cameraGlobalFollow = ServiceLocator.Get<CameraGlobalFollow>();
+        publicInfoManager = ServiceLocator.Get<BasePlayersPublicInfoManager>();
+        turnManager = ServiceLocator.Get<BaseTurnManager>();
+        timerManager = ServiceLocator.Get<BaseTimerManager>();
     }
 
     public void InitializeOwner()
@@ -43,30 +54,91 @@ public class CameraManager : NetworkBehaviour
             cameraMain = ServiceLocator.Get<Camera>();
         }
 
-        turnManager = ServiceLocator.Get<BaseTurnManager>();
-        publicInfoManager = ServiceLocator.Get<BasePlayersPublicInfoManager>();
-
         cameraMovement.InitializeOwner();
         cameraZoom.InitializeOwner();
+        
+        // CameraGoToEnemy();
 
         // turnManager.CurrentPlayableState.OnValueChanged += HandleOnPlayableStateChanged;
+        
+        // timerManager.OnTurnTimesUp += TimerManagerOnOnTurnTimesUp;
     }
 
-    public void HandleOnDisabledRagdoll()
+    private void TimerManagerOnOnTurnTimesUp()
+    {
+        // CameraGoToActivePlayer();
+    }
+
+    private void HandleOnPlayableStateChanged(PlayableState previousValue, PlayableState newValue)
+    {
+        // if(firstPlayableStateChangedTrigger) return;
+        // firstPlayableStateChangedTrigger = true;
+        //
+        // CameraGoToActivePlayer();
+    }
+
+    private void CameraGoToEnemy()
+    {
+        foreach (PlayerThrower playerThrower in publicInfoManager.GetAllPlayerThrowers().Values)
+        {
+            if (this.playerThrower != playerThrower) 
+            {
+                CameraGoToPlayer(playerThrower.gameObject);
+            }
+        }
+    }
+
+    public void CameraGoToActivePlayer()
     {
         if(!IsOwner) return;
-        Debug.Log($"HandleOnDisabledRagdoll Called - Turn: {turnManager.LocalPlayableState} - This PlayableState: {playerThrower.ThisPlayableState.Value}");
-        enemyObject = publicInfoManager.GetOtherPlayerByMyPlayableState(turnManager.LocalPlayableState);
-        playerObject = publicInfoManager.GetPlayerObjectByPlayableState(turnManager.LocalPlayableState);
-
-        if (turnManager.LocalPlayableState == playerThrower.ThisPlayableState.Value)
+        // Debug.Log($"CameraGoToActivePlayer Called - Turn: {turnManager.LocalPlayableState} - This PlayableState: {playerThrower.ThisPlayableState.Value}");
+        // enemyObject = publicInfoManager.GetOtherPlayerByMyPlayableState(turnManager.LocalPlayableState);
+        // playerObject = publicInfoManager.GetPlayerObjectByPlayableState(turnManager.LocalPlayableState);
+        // Debug.Log($"Searching for Players active - {playerThrower.name} - {playerThrower.PlayerStateMachine.CurrentPlayerState} - {gameObject.transform.parent.name} - Is Owner: {IsOwner}");
+        Debug.Log($"CAMERA GO TO ACTIVE PLAYER - {playerThrower.name} - {playerThrower.PlayerStateMachine.CurrentPlayerState} - Is Owner: {IsOwner}");
+        if (playerThrower.PlayerStateMachine.CurrentPlayerState == PlayerState.MyTurnStarted || playerThrower.PlayerStateMachine.CurrentPlayerState == PlayerState.IdleMyTurn)
         {
-            CameraGoToPlayer(playerObject);
-        }
-        else
+            CameraGoToPlayer(playerThrower.gameObject);
+        } 
+        else if (playerThrower.PlayerStateMachine.CurrentPlayerState == PlayerState.IdleEnemyTurn || playerThrower.PlayerStateMachine.CurrentPlayerState == PlayerState.MyTurnEnded)
         {
-            CameraGoToPlayer(enemyObject);
+            foreach (PlayerThrower playerThrower in publicInfoManager.GetAllPlayerThrowers().Values)
+            {
+                if (this.playerThrower != playerThrower) 
+                {
+                    //Not this object
+                    CameraGoToPlayer(playerThrower.gameObject);
+                    return;
+                }
+            }
         }
+        // foreach (PlayerThrower playerThrower in publicInfoManager.GetAllPlayerThrowers().Values)
+        // {
+        //     Debug.Log($"Searching for Players active - {playerThrower.name} - {playerThrower.PlayerStateMachine.CurrentPlayerState} - {gameObject.transform.parent.name} - Is Owner: {IsOwner}");
+        //     if (playerThrower.PlayerStateMachine.CurrentPlayerState == PlayerState.MyTurnStarted)
+        //     {
+        //         CameraGoToPlayer(playerThrower.gameObject);
+        //         return;
+        //     }
+        // }
+        
+        // if (turnManager.LocalPlayableState == playerThrower.ThisPlayableState.Value)
+        // {
+        //     CameraGoToPlayer(playerObject);
+        // }
+        // else
+        // {
+        //     CameraGoToPlayer(enemyObject);
+        // }
+        
+        // if (turnManager.LocalPlayableState == playerThrower.ThisPlayableState.Value)
+        // {
+        //     CameraGoToPlayer(playerObject);
+        // }
+        // else
+        // {
+        //     CameraGoToPlayer(enemyObject);
+        // }
     }
 
     public void HandleOnPlayerStateMachineStateChanged(PlayerState playerState)
@@ -118,7 +190,6 @@ public class CameraManager : NetworkBehaviour
     
     private void CameraGoToPlayer(GameObject player)
     {
-        
         SetCameraModules(false, false);
         cameraGlobalFollow.FollowObject(player.transform, 3f, true, onComplete: () =>
         {

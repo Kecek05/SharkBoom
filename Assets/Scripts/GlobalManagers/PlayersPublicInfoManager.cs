@@ -15,6 +15,7 @@ public class PlayersPublicInfoManager : BasePlayersPublicInfoManager
         if (playerPlayableState == PlayableState.None) return; //Dont add None to the dictionary
 
         playerStateToGameObject.TryAdd(playerPlayableState, playerGameObject);
+        playerStateToPlayerThrower.TryAdd(playerPlayableState, playerGameObject.GetComponent<PlayerThrower>());
 
         //Debug.Log($"Added player to playersDictionary, PlayableState: {playerPlayableState} - GameObject: {playerGameObject.name}");
 
@@ -51,6 +52,11 @@ public class PlayersPublicInfoManager : BasePlayersPublicInfoManager
     public override Dictionary<PlayableState, GameObject> GetAllPlayers()
     {
         return playerStateToGameObject;
+    }
+    
+    public override Dictionary<PlayableState, PlayerThrower> GetAllPlayerThrowers()
+    {
+        return playerStateToPlayerThrower;
     }
 
     public override void RandomizePlayerItems()

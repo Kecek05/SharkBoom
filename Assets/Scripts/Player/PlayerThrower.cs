@@ -74,7 +74,9 @@ public class PlayerThrower : NetworkBehaviour
         {
             HandleOwnerEvents();
             InitializeOwner();
-            ResyncOwner();
+            
+            if(gameStateManager.CurrentGameState.Value == GameState.GameStarted)
+                ResyncOwner();
         }
     }
 
@@ -105,7 +107,7 @@ public class PlayerThrower : NetworkBehaviour
     private void ResyncOwner()
     {
         // turnManager.HandleOnPlayableStateValueChanged(PlayableState.None, turnManager.CurrentPlayableState.Value);
-        cameraManager.HandleOnDisabledRagdoll();
+        cameraManager.CameraGoToActivePlayer();
     }
 
     private void InitializeOwner()
@@ -133,12 +135,6 @@ public class PlayerThrower : NetworkBehaviour
     private void HandleOwnerEvents()
     {
         Debug.Log($"Events - HandleOwnerEvents - {gameObject.name}");
-        
-        // turnManager.OnMyTurnStarted += GameFlowManager_OnMyTurnStarted;
-        //
-        // turnManager.OnMyTurnEnded += GameFlowManager_OnMyTurnEnded;
-        //
-        // turnManager.OnMyTurnJumped += GameFlowManager_OnMyTurnJumped;
         
         playerLauncher.OnItemLaunched += HandleOnItemLaunched;
         playerInventoryUI.OnItemSelectedByUI += HandleOnItemSelectedByUI;
@@ -414,7 +410,7 @@ public class PlayerThrower : NetworkBehaviour
     {
         playerDetectFacingDirection.FaceOtherPlayer();
         playerRotateToAim.OnRagdollDisabled();
-        cameraManager.HandleOnDisabledRagdoll();
+        cameraManager.CameraGoToActivePlayer();
     }
 
     private void HandleOnPlayerGetUp()
@@ -442,23 +438,25 @@ public class PlayerThrower : NetworkBehaviour
     private void GameFlowManager_OnMyTurnJumped()
     {
         ChangePlayerState(PlayerState.IdleMyTurn);
-        /*playerStateMachine.TransitionTo(playerStateMachine.idleMyTurnState);
-        TransitionToIdleMyTurnStateServerRpc();*/
+        cameraManager.CameraGoToActivePlayer();
     }
 
     private void GameFlowManager_OnMyTurnEnded()
     {
+        // cameraManager.CameraGoToActivePlayer();
         ChangePlayerState(PlayerState.MyTurnEnded);
         playerIndicatorUI.HidePlayerIndicator();
     }
 
     private void GameFlowManager_OnMyTurnStarted()
     {
+        Debug.Log($"Searching - My Turn Started - {gameObject.name} - State: {playerStateMachine.CurrentPlayerState} - Owner: {IsOwner}");
         if (IsOwner)
         {
             //Im the owner of this object, the event recieved is right
             ChangePlayerState(PlayerState.MyTurnStarted);
             playerIndicatorUI.ShowPlayerIndicator();
+            cameraManager.CameraGoToActivePlayer();
         }
         else
         {
@@ -468,9 +466,11 @@ public class PlayerThrower : NetworkBehaviour
     
     private void GameFlowManager_OnEnemyTurnStarted()
     {
+        Debug.Log($"Searching - Enemy Turn Started - {gameObject.name} - State: {playerStateMachine.CurrentPlayerState} - Owner: {IsOwner}");
         if (IsOwner)
         {
             ChangePlayerState(PlayerState.IdleEnemyTurn);
+            cameraManager.CameraGoToActivePlayer();
         }
         else
         {
@@ -491,28 +491,21 @@ public class PlayerThrower : NetworkBehaviour
             Debug.LogWarning("Player State Machine is null, cannot change state.");
             return;
         }
-        
-        // Debug.Log($"PlayerThrower - Changing Player State to: {playerState} - Old State Was: {playerStateMachine.CurrentState} - GameObject: {gameObject.name}");
+        Debug.Log($"PlayerThrower - Changing Player State to: {playerState} - Old State Was: {playerStateMachine.CurrentState} - GameObject: {gameObject.name}");
         playerStateMachine.ChangeStateWithPlayerState(playerState);
-        
-        if(playerState != PlayerState.DragReleaseItem && playerState != PlayerState.DragReleaseJump)
-        {
-            //Dont sync DragRelease states, they are only for the owner
-            //TransitionToStateServerRpc(playerState);
-        }
     }
     
-    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
-    private void TransitionToStateServerRpc(PlayerState playerState)
-    {
-        TransitionToStateClientRpc(playerState);
-    }
-
-    [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
-    private void TransitionToStateClientRpc(PlayerState playerState)
-    {
-        playerStateMachine.ChangeStateWithPlayerState(playerState);
-    }
+    // [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    // private void TransitionToStateServerRpc(PlayerState playerState)
+    // {
+    //     TransitionToStateClientRpc(playerState);
+    // }
+    //
+    // [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
+    // private void TransitionToStateClientRpc(PlayerState playerState)
+    // {
+    //     playerStateMachine.ChangeStateWithPlayerState(playerState);
+    // }
     
     //DEBUG
     [Command("player-passTurn", MonoTargetType.All)]
@@ -572,7 +565,6 @@ public class PlayerThrower : NetworkBehaviour
 
     public override void OnLostOwnership()
     {
-        if(!IsOwner) return;
         Debug.Log($"Events - OnLostOwnership - {gameObject.name} - Owner: {IsOwner}");
         UnInitializeOwner();
         UnHandleOwnerEvents();

@@ -8,7 +8,7 @@ public abstract class BaseTimerManager : NetworkBehaviour
 {
     public event Action OnTurnTimesUp;
 
-    [Unit(" s")][SerializeField] protected int turnTime = 30000;
+    [Unit(" s")][SerializeField] protected int turnTime = 30;
     protected NetworkVariable<int> timerTurn = new(0);
 
     protected Coroutine timerCoroutine;

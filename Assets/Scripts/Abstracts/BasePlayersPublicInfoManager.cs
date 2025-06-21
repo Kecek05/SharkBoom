@@ -14,6 +14,7 @@ public abstract class BasePlayersPublicInfoManager : MonoBehaviour
 
     public abstract void Initialize(ItemsListSO itemsListSO);
 
+    protected Dictionary<PlayableState, PlayerThrower> playerStateToPlayerThrower = new();
     protected Dictionary<PlayableState, GameObject> playerStateToGameObject = new Dictionary<PlayableState, GameObject>();
     protected Dictionary<PlayableState, PlayerVisualType> playerVisualByState = new Dictionary<PlayableState, PlayerVisualType>();
 
@@ -23,6 +24,8 @@ public abstract class BasePlayersPublicInfoManager : MonoBehaviour
 
     public abstract GameObject GetOtherPlayerByMyPlayableState(PlayableState myPlayableState);
     public abstract Dictionary<PlayableState, GameObject> GetAllPlayers();
+    
+    public abstract Dictionary<PlayableState, PlayerThrower> GetAllPlayerThrowers();
 
     public abstract Dictionary<PlayableState, PlayerVisualType> GetPlayerVisualTypes();
 

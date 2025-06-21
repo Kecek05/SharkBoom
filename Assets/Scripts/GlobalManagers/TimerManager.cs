@@ -28,7 +28,7 @@ public class TimerManager : BaseTimerManager
     public override void HandleOnPlayableStateValueChanged(PlayableState previousValue, PlayableState newValue)
     {
         if(!IsServer) return;
-
+        
         if (gameStateManager.CurrentGameState.Value == GameState.GameEnded) return;
 
         if (newValue == PlayableState.Player1Playing || newValue == PlayableState.Player2Playing)

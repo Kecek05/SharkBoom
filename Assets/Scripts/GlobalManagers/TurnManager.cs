@@ -28,13 +28,14 @@ public class TurnManager : BaseTurnManager
         if(previousValue == newValue) return;
 
         // if (gameStateManager.CurrentGameState.Value == GameState.GameEnded) return;
-
-        if (gameStateManager.CurrentGameState.Value != GameState.GameStarted)
-        {
-            Debug.LogWarning($"Trying to handle PlayableState on turn manager and isnt at GameStarted. It is at: {gameStateManager.CurrentGameState.Value}");
-            return;
-        }
-
+        //
+        // if (gameStateManager.CurrentGameState.Value != GameState.GameStarted)
+        // {
+        //     Debug.LogWarning($"Trying to handle PlayableState on turn manager and isnt at GameStarted. It is at: {gameStateManager.CurrentGameState.Value}");
+        //     return;
+        // }
+        
+        Debug.Log($"HandleOnPlayableStateValueChanged - {newValue}");
         if (newValue == localPlayableState)
         {
             //Local Player can play
