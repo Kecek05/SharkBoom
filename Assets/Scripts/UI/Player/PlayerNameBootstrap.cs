@@ -30,7 +30,7 @@ public class PlayerNameBootstrap : MonoBehaviour
         else
         {
             loadingText.enabled = true;
-            Loader.LoadNoLoadingScreen(Loader.Scene.MainMenu);
+            Loader.LoadNoLoadingScreen(Loader.Scene.GameTutorial);
         }
     }
 
@@ -51,7 +51,7 @@ public class PlayerNameBootstrap : MonoBehaviour
         ClientSingleton.Instance.GameManager.UserData.SetPlayerName(await Save.LoadPlayerName(AuthenticationService.Instance.PlayerId));
         renameScreen.SetActive(false);
         loadingText.enabled = true;
-        Loader.LoadNoLoadingScreen(Loader.Scene.MainMenu);
+        Loader.LoadNoLoadingScreen(Loader.Scene.GameTutorial);
     }
 
     public void CloseErrorPanel()

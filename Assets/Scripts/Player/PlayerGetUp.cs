@@ -238,6 +238,8 @@ public class PlayerGetUp : NetworkBehaviour
         else
         {
             ApplyGetUp(finalPos);
+            Debug.Log($"GETUP - RESETED LAST CALCULATED POS");
+            lastCalculatedPosition = Vector3.zero;
         }
     }
 
