@@ -209,8 +209,6 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         await Reconnect.SetIsInMatch(userData.userAuthId, true);
 
         await Reconnect.SetPlayerMatchConnection(userData.userAuthId, serverIP, serverPort);
-        
-        await Reconnect.SetMatchEndTime(userData.userAuthId);
     }
 
     public async Task CancelMatchmakingAsync()
