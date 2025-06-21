@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerBodyPart : MonoBehaviour, IDamageable
+public class PlayerBodyPart : MonoBehaviour, IDamageable, ILocalDamageable
 {
     
     [SerializeField] private BodyPartEnum bodyPart;
@@ -8,5 +8,10 @@ public class PlayerBodyPart : MonoBehaviour, IDamageable
     public void TakeDamage(DamageableSO damageableSO)
     {
         playerHealth.PlayerTakeDamage(damageableSO, bodyPart);
+    }
+
+    public void TakeLocalDamage(DamageableSO damageableSO)
+    {
+        playerHealth.PlayerTakeLocalDamage(damageableSO, bodyPart);
     }
 }

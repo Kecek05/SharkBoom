@@ -8,6 +8,7 @@ public class CanDoDamageComponent : MonoBehaviour
     [SerializeField] private BaseCollisionController baseCollisionController;
     [SerializeField] private BaseItemThrowable baseItemThrowable;
     private bool damaged = false; //damage only once
+    private bool localDamaged = false;
     private DamageableSO selectedDamageableSO;
     
     private void OnEnable()
@@ -27,11 +28,26 @@ public class CanDoDamageComponent : MonoBehaviour
     private void BaseCollisionController_OnItemCollided(GameObject collidedObj)
     {
         //if(!IsOwner) return;
-        if(!baseItemThrowable.IsOwner) return;
-        
-        if(collidedObj.TryGetComponent(out IDamageable damageable)) //Only on server
+        if (baseItemThrowable.IsOwner)
         {
-            TakeDamage(damageable);
+            if(collidedObj.TryGetComponent(out IDamageable damageable)) //Only on server
+            {
+                TakeDamage(damageable);
+            }  
+        }
+        
+        if(collidedObj.TryGetComponent(out ILocalDamageable localDamageable)) //Only on server
+        {
+            LocalTakeDamage(localDamageable);
+        }
+    }
+
+    public void LocalTakeDamage(ILocalDamageable localDamageable)
+    {
+        if (!localDamaged)
+        {
+            localDamaged = true;
+            localDamageable.TakeLocalDamage(selectedDamageableSO);
         }
     }
 

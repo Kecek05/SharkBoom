@@ -8,42 +8,44 @@ public class HealthComponent : NetworkBehaviour
 {
     private event Action OnDie;
 
+    private event Action OnLocalDie;
+    
     [BetterHeader("Settings")]
     [SerializeField] protected float maxHealth;
     protected NetworkVariable<float> currentHealth = new();
+    protected float localCurrentHealth;
 
     protected NetworkVariable<bool> isDead = new(false);
-
+    protected bool localIsDead = false;
+    
+    public bool LocalIsDead => localIsDead;
+    
     public NetworkVariable<float> CurrentHealth => currentHealth;
 
     public float MaxHealth => maxHealth;
     public override void OnNetworkSpawn()
     {
-        if (!IsServer) return; // Only the server should be able to change the health
-
-        currentHealth.Value = maxHealth;
-
-    }
-
-
-    [Command("health-heal")]
-    protected void Heal(float healthToHeal) //only server
-    {
-        if (!IsServer) return;
-
-        if (isDead.Value) return;
-
-        ModifyHealthServerRpc(healthToHeal);
-
-        currentHealth.Value += healthToHeal;
-        currentHealth.Value = Mathf.Clamp(currentHealth.Value, 0, maxHealth);
-
-        if (currentHealth.Value > maxHealth)
+        if (IsServer)
         {
+            // Only the server should be able to change the health
             currentHealth.Value = maxHealth;
         }
+        
+        currentHealth.OnValueChanged += OnValueChanged;
+        OnValueChanged(0f, currentHealth.Value);
     }
-    
+
+    public override void OnNetworkDespawn()
+    {
+        currentHealth.OnValueChanged -= OnValueChanged;
+    }
+
+    private void OnValueChanged(float previousValue, float newValue)
+    {
+        localCurrentHealth = newValue;
+    }
+
+
     [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
     protected void ModifyHealthServerRpc(float value) //only server
     {
@@ -60,6 +62,27 @@ public class HealthComponent : NetworkBehaviour
             isDead.Value = true;
             Die();
         }
+    }
+    
+    protected void ModifyLocalHealth(float value)
+    {
+        float newHealth = localCurrentHealth + value;
+
+        localCurrentHealth = Mathf.Clamp(newHealth, 0, maxHealth);
+
+        InvokeOnTakeLocalDamage();
+        Debug.Log($"Health: {localCurrentHealth}");
+
+        if (localCurrentHealth <= 0)
+        {
+            localIsDead = true;
+            OnLocalDie?.Invoke();
+        }
+    }
+
+    protected virtual void InvokeOnTakeLocalDamage()
+    {
+        
     }
     
     [Command("health-die")]
