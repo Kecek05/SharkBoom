@@ -49,6 +49,7 @@ public class LoadingPlayersUI : NetworkBehaviour
         ShowWaitingForPlayers();
 
         gameStateManager.CurrentGameState.OnValueChanged += GameState_OnValueChanged;
+        GameState_OnValueChanged(GameState.None, gameStateManager.CurrentGameState.Value);
         
         // if (gameStateManager.CurrentGameState.Value == GameState.ShowingPlayersInfo || gameStateManager.CurrentGameState.Value == GameState.GameStarted)
         // {
@@ -81,6 +82,7 @@ public class LoadingPlayersUI : NetworkBehaviour
 
     private void GameState_OnValueChanged(GameState previousValue, GameState newValue)
     {
+        if(IsServer && !IsHost) return; //DS dont need to do this
         if(newValue == GameState.CalculatingResults)
         {
             //All Connected

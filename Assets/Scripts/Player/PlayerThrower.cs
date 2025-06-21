@@ -155,10 +155,12 @@ public class PlayerThrower : NetworkBehaviour
         GameManager.OnClientOwnershipChanged += HandleOnClientOwnershipChanged;
 
         thisPlayableState.OnValueChanged += PlayableStateInitialize;
+        PlayableStateInitialize(PlayableState.None, thisPlayableState.Value);
         
         hitReceiveNetworked.OnHitReceive += HandleOnHitReceive;
         
         gameStateManager.CurrentGameState.OnValueChanged += HandleOnGameStateChanged;
+        HandleOnGameStateChanged(GameState.None, gameStateManager.CurrentGameState.Value);
 
         playerInventory.OnItemChanged += HandleOnItemChanged;
         playerInventory.OnItemSelected += HandleOnItemSelected;

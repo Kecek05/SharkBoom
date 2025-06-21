@@ -37,6 +37,7 @@ public class GameManager : NetworkBehaviour
     {
 
         gameStateManager.CurrentGameState.OnValueChanged += HandleOnGameStateChanged;
+        HandleOnGameStateChanged(GameState.None, gameStateManager.CurrentGameState.Value);
 
         gameTimerManager.OnGameTimerEnd += HandleOnGameTimerEnd;
 
@@ -45,9 +46,11 @@ public class GameManager : NetworkBehaviour
         PlayerHealth.OnPlayerDie += HandeOnPlayerDie;
 
         turnManager.CurrentPlayableState.OnValueChanged += HandleOnPlayableStateChanged;
+        HandleOnPlayableStateChanged(PlayableState.None, turnManager.CurrentPlayableState.Value);
 
         gameOverManager.LosedPlayer.OnValueChanged += HandleOnLosedPlayerChanged;
-
+        HandleOnLosedPlayerChanged(PlayableState.None, gameOverManager.LosedPlayer.Value);
+        
         timerManager.OnTurnTimesUp += HandleOnTurnTimesUp;
 
         if(IsServer)
