@@ -83,7 +83,7 @@ public class TimerManager : BaseTimerManager
             timerTurn.Value--;
         }
 
-        TriggerOnTurnTimesUp();
+        InvokeOnTurnTimesUp();
         TriggerOnTurnTimesUpClient();
         //time's up
 
@@ -95,9 +95,9 @@ public class TimerManager : BaseTimerManager
         TriggerOnTurnTimesUpClientRpc();
     }
 
-    [Rpc(SendTo.ClientsAndHost)]
+    [Rpc(SendTo.ClientsAndHost, Delivery = RpcDelivery.Reliable)]
     private void TriggerOnTurnTimesUpClientRpc()
     {
-        TriggerOnTurnTimesUp();
+        InvokeOnTurnTimesUp();
     }
 }

@@ -171,7 +171,8 @@ public class ServerGameManager : IDisposable
         {
             await Reconnect.SetIsInMatch(playerData.userData.userAuthId, false);
         }
-
+        
+        await Task.Delay(3000);
         ShutdownServer();
     }
 
