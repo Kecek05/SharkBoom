@@ -196,20 +196,12 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         if(matchmakingResult.result == MatchmakerPollingResult.Success)
         {
             Debug.Log("Match Found!");
-            //Set values to possible reconnect
-            await SetReconnectValues(userData, matchmakingResult.ip, matchmakingResult.port, matchmakingResult.);
-
+            await Reconnect.SetIsInMatch(userData.userAuthId, true);
+            
             StartMatchmakingClient(matchmakingResult.ip, matchmakingResult.port);
         }
 
         return matchmakingResult.result;
-    }
-
-    private async Task SetReconnectValues(UserData userData, string serverIP, int serverPort, int qServerPort)
-    {
-        await Reconnect.SetIsInMatch(userData.userAuthId, true);
-
-        await Reconnect.SetPlayerMatchConnection(userData.userAuthId, serverIP, serverPort, qServerPort);
     }
 
     public async Task CancelMatchmakingAsync()

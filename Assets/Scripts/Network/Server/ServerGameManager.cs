@@ -88,7 +88,7 @@ public class ServerGameManager : IDisposable
 
             await Reconnect.SetIsInMatch(player.Id, true);
 
-            await Reconnect.SetPlayerMatchConnection(player.Id, multiplayAllocationService.GetMultiplayService.ServerConfig.IpAddress, multiplayAllocationService.GetMultiplayService.ServerConfig.Port);
+            await Reconnect.SetPlayerMatchConnection(player.Id, multiplayAllocationService.GetMultiplayService.ServerConfig.IpAddress, multiplayAllocationService.GetMultiplayService.ServerConfig.Port, multiplayAllocationService.GetMultiplayService.ServerConfig.QueryPort);
 
             Debug.Log($"PlayerId: {player.Id} - Pearls: {pearls}");
 

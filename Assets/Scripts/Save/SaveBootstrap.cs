@@ -30,14 +30,14 @@ public class SaveBootstrap : MonoBehaviour
             int portMatch = await Reconnect.GetPortMatch(ClientSingleton.Instance.GameManager.UserData.userAuthId);
             int queryPortMatch = await Reconnect.GetPortMatch(ClientSingleton.Instance.GameManager.UserData.userAuthId);
 
-            if (await ServerConnectionTester.CheckServerAsync(ipMatch, portMatch))
+            if (await ServerConnectionTester.CheckServerAsync(ipMatch, queryPortMatch))
             {
-                // Debug.Log($"Server is Online or Client is offline!");
+                Debug.Log($"Server is Online or Client is offline!");
                 ClientSingleton.Instance.GameManager.StartMatchmakingClient(ipMatch, portMatch);
             }
             else
             {
-                // Debug.Log($"Server is Offline! Can Turn Off Reconect");
+                Debug.Log($"Server is Offline! Can Turn Off Reconect");
                 Reconnect.SetIsInMatch(ClientSingleton.Instance.GameManager.UserData.userAuthId, false); //Not in match anymore
                 Loader.LoadNoLoadingScreen(Loader.Scene.NameBootstrap);
             }
