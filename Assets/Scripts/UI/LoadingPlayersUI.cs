@@ -71,6 +71,7 @@ public class LoadingPlayersUI : NetworkBehaviour
     [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
     private void RequestDataToTheServerRpc(ulong senderClientID)
     {
+        Debug.Log($"REQUESTING DATA TOTHE SERVER LOADING PLAYERS UI - Sender ID: {senderClientID} - Players in Data: {NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas.Count}");
         //Send to clients
         foreach (PlayerData playerData in NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas)
         {
@@ -90,6 +91,14 @@ public class LoadingPlayersUI : NetworkBehaviour
         else if(newValue == GameState.ShowingPlayersInfo)
         {
             //Show UI
+            if (IsServer)
+            {
+                foreach (ulong connectedClientsId in NetworkManager.Singleton.ConnectedClientsIds)
+                {
+                    RequestDataToTheServerRpc(connectedClientsId);
+                }
+            }
+            
             RequestDataToTheServerRpc(NetworkManager.Singleton.LocalClientId);
             alreadyShowedPlayersInfo = true;
             // PassPlayersDataToClients();
@@ -128,6 +137,7 @@ public class LoadingPlayersUI : NetworkBehaviour
     {
         //Only called to the client who requested it
         if(senderClientId != NetworkManager.Singleton.LocalClientId) return;
+        
         basePlayerPublicInfoManager.SetPlayerVisualType(playableState, playerVisualType);
         Debug.Log("UpdatePlayerVisualTypeClientRpc - PlayerVisualType: " + playerVisualType + " PlayableState: " + playableState + " ClientId: " + NetworkManager.LocalClientId);
     }
@@ -160,6 +170,8 @@ public class LoadingPlayersUI : NetworkBehaviour
             HideWaitingForPlayers();
             StartCoroutine(CountDownHidePlayersInfo());
         }
+        
+        Debug.Log($"UpdatePlayersInfoClientRpc - Player Name: {playerName.ToString()} - Sender ID: {senderClientId} - Count: {updatedPlayersInfoOnClient}");
     }
 
     private IEnumerator CountDownHidePlayersInfo()
