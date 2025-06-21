@@ -56,46 +56,13 @@ public class CameraManager : NetworkBehaviour
 
         cameraMovement.InitializeOwner();
         cameraZoom.InitializeOwner();
-        
-        // CameraGoToEnemy();
-
-        // turnManager.CurrentPlayableState.OnValueChanged += HandleOnPlayableStateChanged;
-        
-        // timerManager.OnTurnTimesUp += TimerManagerOnOnTurnTimesUp;
-    }
-
-    private void TimerManagerOnOnTurnTimesUp()
-    {
-        // CameraGoToActivePlayer();
-    }
-
-    private void HandleOnPlayableStateChanged(PlayableState previousValue, PlayableState newValue)
-    {
-        // if(firstPlayableStateChangedTrigger) return;
-        // firstPlayableStateChangedTrigger = true;
-        //
-        // CameraGoToActivePlayer();
-    }
-
-    private void CameraGoToEnemy()
-    {
-        foreach (PlayerThrower playerThrower in publicInfoManager.GetAllPlayerThrowers().Values)
-        {
-            if (this.playerThrower != playerThrower) 
-            {
-                CameraGoToPlayer(playerThrower.gameObject);
-            }
-        }
     }
 
     public void CameraGoToActivePlayer()
     {
         if(!IsOwner) return;
-        // Debug.Log($"CameraGoToActivePlayer Called - Turn: {turnManager.LocalPlayableState} - This PlayableState: {playerThrower.ThisPlayableState.Value}");
-        // enemyObject = publicInfoManager.GetOtherPlayerByMyPlayableState(turnManager.LocalPlayableState);
-        // playerObject = publicInfoManager.GetPlayerObjectByPlayableState(turnManager.LocalPlayableState);
-        // Debug.Log($"Searching for Players active - {playerThrower.name} - {playerThrower.PlayerStateMachine.CurrentPlayerState} - {gameObject.transform.parent.name} - Is Owner: {IsOwner}");
-        Debug.Log($"CAMERA GO TO ACTIVE PLAYER - {playerThrower.name} - {playerThrower.PlayerStateMachine.CurrentPlayerState} - Is Owner: {IsOwner}");
+
+        // Debug.Log($"CAMERA GO TO ACTIVE PLAYER - {playerThrower.name} - {playerThrower.PlayerStateMachine.CurrentPlayerState} - Is Owner: {IsOwner}");
         if (playerThrower.PlayerStateMachine.CurrentPlayerState == PlayerState.MyTurnStarted || playerThrower.PlayerStateMachine.CurrentPlayerState == PlayerState.IdleMyTurn)
         {
             CameraGoToPlayer(playerThrower.gameObject);
@@ -112,33 +79,6 @@ public class CameraManager : NetworkBehaviour
                 }
             }
         }
-        // foreach (PlayerThrower playerThrower in publicInfoManager.GetAllPlayerThrowers().Values)
-        // {
-        //     Debug.Log($"Searching for Players active - {playerThrower.name} - {playerThrower.PlayerStateMachine.CurrentPlayerState} - {gameObject.transform.parent.name} - Is Owner: {IsOwner}");
-        //     if (playerThrower.PlayerStateMachine.CurrentPlayerState == PlayerState.MyTurnStarted)
-        //     {
-        //         CameraGoToPlayer(playerThrower.gameObject);
-        //         return;
-        //     }
-        // }
-        
-        // if (turnManager.LocalPlayableState == playerThrower.ThisPlayableState.Value)
-        // {
-        //     CameraGoToPlayer(playerObject);
-        // }
-        // else
-        // {
-        //     CameraGoToPlayer(enemyObject);
-        // }
-        
-        // if (turnManager.LocalPlayableState == playerThrower.ThisPlayableState.Value)
-        // {
-        //     CameraGoToPlayer(playerObject);
-        // }
-        // else
-        // {
-        //     CameraGoToPlayer(enemyObject);
-        // }
     }
 
     public void HandleOnPlayerStateMachineStateChanged(PlayerState playerState)

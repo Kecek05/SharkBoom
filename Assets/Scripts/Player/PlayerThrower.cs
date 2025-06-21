@@ -274,11 +274,6 @@ public class PlayerThrower : NetworkBehaviour
             playerDragController.InvokeOnDragRelease();
         });
     }
-    
-    // private void HandleOnDragRelease()
-    // {
-    //
-    // }
 
     private void HandleOnPlayerDetectFacingDirectionRotationChanged(bool isRight)
     {
@@ -450,7 +445,7 @@ public class PlayerThrower : NetworkBehaviour
 
     private void GameFlowManager_OnMyTurnStarted()
     {
-        Debug.Log($"Searching - My Turn Started - {gameObject.name} - State: {playerStateMachine.CurrentPlayerState} - Owner: {IsOwner}");
+        // Debug.Log($"Searching - My Turn Started - {gameObject.name} - State: {playerStateMachine.CurrentPlayerState} - Owner: {IsOwner}");
         if (IsOwner)
         {
             //Im the owner of this object, the event recieved is right
@@ -466,7 +461,7 @@ public class PlayerThrower : NetworkBehaviour
     
     private void GameFlowManager_OnEnemyTurnStarted()
     {
-        Debug.Log($"Searching - Enemy Turn Started - {gameObject.name} - State: {playerStateMachine.CurrentPlayerState} - Owner: {IsOwner}");
+        // Debug.Log($"Searching - Enemy Turn Started - {gameObject.name} - State: {playerStateMachine.CurrentPlayerState} - Owner: {IsOwner}");
         if (IsOwner)
         {
             ChangePlayerState(PlayerState.IdleEnemyTurn);
@@ -491,21 +486,9 @@ public class PlayerThrower : NetworkBehaviour
             Debug.LogWarning("Player State Machine is null, cannot change state.");
             return;
         }
-        Debug.Log($"PlayerThrower - Changing Player State to: {playerState} - Old State Was: {playerStateMachine.CurrentState} - GameObject: {gameObject.name}");
+        // Debug.Log($"PlayerThrower - Changing Player State to: {playerState} - Old State Was: {playerStateMachine.CurrentState} - GameObject: {gameObject.name}");
         playerStateMachine.ChangeStateWithPlayerState(playerState);
     }
-    
-    // [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
-    // private void TransitionToStateServerRpc(PlayerState playerState)
-    // {
-    //     TransitionToStateClientRpc(playerState);
-    // }
-    //
-    // [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
-    // private void TransitionToStateClientRpc(PlayerState playerState)
-    // {
-    //     playerStateMachine.ChangeStateWithPlayerState(playerState);
-    // }
     
     //DEBUG
     [Command("player-passTurn", MonoTargetType.All)]
