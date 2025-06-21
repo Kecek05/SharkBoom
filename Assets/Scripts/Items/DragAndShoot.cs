@@ -118,7 +118,6 @@ public class DragAndShoot : NetworkBehaviour
     }
     public void InitializeOwner()
     {
-        if(!IsOwner) return;
         //Owner initialize code
         inputReader.OnTouchPressEvent += InputReader_OnTouchPressEvent;
         inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;

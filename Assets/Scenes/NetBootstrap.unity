@@ -960,7 +960,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4845276930943762971, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.000045776367
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4845637959249703711, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1386,14 +1386,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1620598475}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 98d9db9626104da59357651088226725, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_PresetAsset: {fileID: 0}
   m_PresetReference:
-    rid: 5957158843308048604
+    rid: 5957158877521772660
   m_Scenario:
     rid: -2
   m_IsScenarioSettingsFolded: 0
@@ -1403,17 +1403,15 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 5957158843308048604
+    - rid: 5957158877521772660
       type: {class: NetworkSimulatorPreset, ns: Unity.Multiplayer.Tools.NetworkSimulator.Runtime, asm: Unity.Multiplayer.Tools.NetworkSimulator.Runtime}
       data:
-        <Name>k__BackingField: 'Mobile 2G [CDMA & GSM, ''00]'
-        <Description>k__BackingField: Extremely poor connection, completely unsuitable
-          for synchronous multiplayer gaming due to exceptionally high ping. Turn
-          based games may work.
-        <PacketDelayMs>k__BackingField: 520
-        <PacketJitterMs>k__BackingField: 50
+        <Name>k__BackingField: None
+        <Description>k__BackingField: 
+        <PacketDelayMs>k__BackingField: 0
+        <PacketJitterMs>k__BackingField: 0
         <PacketLossInterval>k__BackingField: 0
-        <PacketLossPercent>k__BackingField: 7
+        <PacketLossPercent>k__BackingField: 0
 --- !u!1 &1638480745
 GameObject:
   m_ObjectHideFlags: 0

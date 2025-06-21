@@ -35,7 +35,6 @@ public class CameraZoom : NetworkBehaviour
 
     public void InitializeOwner()
     {
-        if (!IsOwner) return;
 
         inputReader.OnSecondaryTouchContactEvent += InputReader_OnSecondaryTouchContactEvent;
         inputReader.OnPrimaryFingerPositionEvent += InputReader_OnPrimaryFingerPositionEvent;

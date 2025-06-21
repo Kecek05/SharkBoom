@@ -27,20 +27,10 @@ public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDete
 
     public void DoOnInitializeOnwer()
     {
-        SetupDetectFacingDirection();
-
-        delayStartFaceOtherPlayerCoroutine = StartCoroutine(DelayStartFaceOtherPlayer());
-    }
-
-    public void SetupDetectFacingDirection()
-    {
-       // turnManager = ServiceLocator.Get<BaseTurnManager>();
-        
         if(delayStartFaceOtherPlayerCoroutine != null)
-        {
             StopCoroutine(delayStartFaceOtherPlayerCoroutine);
-            delayStartFaceOtherPlayerCoroutine = null;
-        }
+        
+        delayStartFaceOtherPlayerCoroutine = StartCoroutine(DelayStartFaceOtherPlayer());
     }
     
     public void DoOnDragChange(float forcePercent, float andlePercent)
@@ -74,6 +64,8 @@ public class PlayerDetectFacingDirection : DragListener, IInitializeOnwer, IDete
         //Wait for the end of the frame before executing the code to ensure that all scripts subscribe to the event OnRotationChanged
         yield return new WaitForSeconds(0.2f);
         FaceOtherPlayer();
+        delayStartFaceOtherPlayerCoroutine = null;
+        Debug.Log($"Delay Start Face Other Player - this Playable State: {playerThrower.ThisPlayableState.Value}");
     }
 
     public void FaceOtherPlayer()

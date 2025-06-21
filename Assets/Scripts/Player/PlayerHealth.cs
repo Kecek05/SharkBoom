@@ -28,6 +28,7 @@ public class PlayerHealth : HealthComponent
         if(IsClient)
         {
             currentHealth.OnValueChanged += CurrentHealth_OnValueChanged;
+            CurrentHealth_OnValueChanged(0f, currentHealth.Value);
         }
     }
 
