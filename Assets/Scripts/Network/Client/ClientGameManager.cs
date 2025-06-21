@@ -47,12 +47,12 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         //Authenticate player
 
         //Debugging code FOR DEDICATED SERVER
-        InitializationOptions initializationOptions = new InitializationOptions();
-        initializationOptions.SetProfile(UnityEngine.Random.Range(0, 10000).ToString());
-        await UnityServices.InitializeAsync(initializationOptions);
+        // InitializationOptions initializationOptions = new InitializationOptions();
+        // initializationOptions.SetProfile(UnityEngine.Random.Range(0, 10000).ToString());
+        // await UnityServices.InitializeAsync(initializationOptions);
         //
 
-        // await UnityServices.InitializeAsync();
+        await UnityServices.InitializeAsync();
 
         networkClient = new NetworkClient(NetworkManager.Singleton);
         matchmaker = new();
@@ -71,7 +71,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
 
             string playerName = await Save.LoadPlayerName(AuthenticationService.Instance.PlayerId);
 
-            // Debug.Log($"Player Name: {playerName} - {authState}");
+            Debug.Log($"Player Name: {playerName} - {authState} - {AuthenticationService.Instance.PlayerId}");
 
 
             userData = new UserData
@@ -92,11 +92,11 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
 
     public void StartMatchmakingClient(string ip, int port)
     {
-        Debug.Log($"StartMatchmakingClient, IP: {ip} - PORT: {port}");
+        // Debug.Log($"StartMatchmakingClient, IP: {ip} - PORT: {port}");
         SetIsDedicatedServerGame(true);
         UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
         transport.SetConnectionData(ip, (ushort)port);
-        Debug.Log("StartMatchmakingClient");
+        // Debug.Log("StartMatchmakingClient");
         Loader.LoadClient();
     }
 
