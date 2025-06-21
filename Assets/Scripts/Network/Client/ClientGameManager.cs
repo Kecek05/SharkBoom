@@ -197,7 +197,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         {
             Debug.Log("Match Found!");
             //Set values to possible reconnect
-            await SetReconnectValues(userData, matchmakingResult.ip, matchmakingResult.port);
+            await SetReconnectValues(userData, matchmakingResult.ip, matchmakingResult.port, matchmakingResult.);
 
             StartMatchmakingClient(matchmakingResult.ip, matchmakingResult.port);
         }
@@ -205,11 +205,11 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         return matchmakingResult.result;
     }
 
-    private async Task SetReconnectValues(UserData userData, string serverIP, int serverPort)
+    private async Task SetReconnectValues(UserData userData, string serverIP, int serverPort, int qServerPort)
     {
         await Reconnect.SetIsInMatch(userData.userAuthId, true);
 
-        await Reconnect.SetPlayerMatchConnection(userData.userAuthId, serverIP, serverPort);
+        await Reconnect.SetPlayerMatchConnection(userData.userAuthId, serverIP, serverPort, qServerPort);
     }
 
     public async Task CancelMatchmakingAsync()

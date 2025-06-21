@@ -55,7 +55,7 @@ public static class Reconnect
         }
     }
 
-    public static async Task SetPlayerMatchConnection(string userAuthId, string ip, int port)
+    public static async Task SetPlayerMatchConnection(string userAuthId, string ip, int port, int qPort)
     {
         //Save to cloud
 
@@ -64,7 +64,8 @@ public static class Reconnect
             { CloudCodeRefs.ARGUMENT_PROJECT_ID, CloudCodeRefs.PROJECT_ID },
             { CloudCodeRefs.ARGUMENT_IP, ip },
             { CloudCodeRefs.ARGUMENT_PLAYERID, userAuthId },
-            { CloudCodeRefs.ARGUMENT_PORT, port }
+            { CloudCodeRefs.ARGUMENT_PORT, port },
+            { CloudCodeRefs.ARGUMENT_QPORT, qPort }
         };
 
         bool setted = false;
@@ -75,7 +76,7 @@ public static class Reconnect
             {
                 await CloudCodeService.Instance.CallEndpointAsync(CloudCodeRefs.SET_PLAYER_MATCH_CONNECTION_ENDPOINT, arguments);
                 setted = true;
-                Debug.Log($"Setted Match Connection: IP: {ip} - PORT: {port}");
+                Debug.Log($"Setted Match Connection: IP: {ip} - PORT: {port} - QPORT: {qPort}");
             }
             catch (CloudCodeException e)
             {
@@ -118,6 +119,27 @@ public static class Reconnect
             int portMatch = await CloudCodeService.Instance.CallEndpointAsync<int>(CloudCodeRefs.GET_PLAYER_PORT_SERVER_ENDPOINT, arguments);
             Debug.Log($"Port Match: {portMatch}");
             return portMatch;
+        }
+        catch (CloudCodeException e)
+        {
+            Debug.LogError($"Error getting IsInMatch: {e.Message}, Closing Game");
+            Application.Quit();
+            return 0;
+        }
+    }
+    
+    public static async Task<int> GetQueryPortMatch(string userAuthId)
+    {
+        var arguments = new Dictionary<string, object>
+        {
+            { CloudCodeRefs.ARGUMENT_PROJECT_ID, CloudCodeRefs.PROJECT_ID },
+            { CloudCodeRefs.ARGUMENT_PLAYERID, userAuthId }
+        };
+        try
+        {
+            int qPortMatch = await CloudCodeService.Instance.CallEndpointAsync<int>(CloudCodeRefs.GET_PLAYER_QPORT_SERVER_ENDPOINT, arguments);
+            Debug.Log($"QPort Match: {qPortMatch}");
+            return qPortMatch;
         }
         catch (CloudCodeException e)
         {

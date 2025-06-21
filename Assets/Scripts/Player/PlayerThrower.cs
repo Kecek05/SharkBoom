@@ -58,7 +58,7 @@ public class PlayerThrower : NetworkBehaviour
         gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
         turnManager = ServiceLocator.Get<BaseTurnManager>();
         
-        playerStateMachine = new PlayerStateMachine(this, playerDragController, playerInventory, false);
+        CreatePlayerStateMachine();
         
         HandleEvents();
         Initialize();
@@ -94,6 +94,9 @@ public class PlayerThrower : NetworkBehaviour
         playerRotateToAim.InitializeOwner();
         playerDragController.Initialize(itemJumpSO.rb);
         
+        if(playerStateMachine == null)
+            CreatePlayerStateMachine();
+        
         playerStateMachine.Initialize(PlayerState.IdleEnemyTurn);
         
         // Debug.Log($"SPAWNED PLAYER STATE MACHINE: {playerStateMachine} - CURRENT STATE: {playerStateMachine.CurrentState} - OBJ: {gameObject.name}");
@@ -115,6 +118,9 @@ public class PlayerThrower : NetworkBehaviour
 
     private void Resync()
     {
+        if(playerStateMachine == null)
+            CreatePlayerStateMachine();
+        
         RequestPlayerStateMachineStateFromServerRpc(NetworkManager.LocalClientId);
     }
 
@@ -133,6 +139,9 @@ public class PlayerThrower : NetworkBehaviour
         // Recieve the player state machine from the server
         if(clientId != NetworkManager.LocalClientId) return; // not caller
     
+        if(playerStateMachine == null)
+            CreatePlayerStateMachine();
+        
         playerStateMachine.ChangeStateWithPlayerState(playerState);
         Debug.Log($"RESPONSE RESYNC PLAYER STATE MACHINE - {gameObject.name} - State: {playerStateMachine.CurrentPlayerState} - Caller: {clientId}");
     }
@@ -142,6 +151,8 @@ public class PlayerThrower : NetworkBehaviour
         Debug.Log($"Events - InitializeOwner - {gameObject.name}");
         //Owner initialize code
         
+        if(playerStateMachine == null)
+            CreatePlayerStateMachine();
         playerStateMachine.ChangeOwnership(IsOwner);
         
         PlayableStateInitialize(thisPlayableState.Value, thisPlayableState.Value);
@@ -203,6 +214,9 @@ public class PlayerThrower : NetworkBehaviour
         playerRagdollEnabler.OnRagdollDisabled += HandleOnRagdollDisabled;
 
         playerLauncher.OnLastItemSynced += HandleOnLastItemSynced;
+
+        if (playerStateMachine == null)
+            CreatePlayerStateMachine();
         
         playerStateMachine.OnStateChanged += HandleOnStateChanged;
         
@@ -300,6 +314,12 @@ public class PlayerThrower : NetworkBehaviour
             }
             playerDragController.InvokeOnDragRelease();
         });
+    }
+
+    private void CreatePlayerStateMachine()
+    {
+        Debug.Log($"PLAYER STATE MACHINE CREATED - {gameObject.name} - Owner: {IsOwner}");
+        playerStateMachine = new PlayerStateMachine(this, playerDragController, playerInventory, IsOwner);
     }
 
     private void HandleOnPlayerDetectFacingDirectionRotationChanged(bool isRight)

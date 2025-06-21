@@ -28,8 +28,9 @@ public class SaveBootstrap : MonoBehaviour
             //Is in match, reconnect
             string ipMatch = await Reconnect.GetIpMatch(ClientSingleton.Instance.GameManager.UserData.userAuthId);
             int portMatch = await Reconnect.GetPortMatch(ClientSingleton.Instance.GameManager.UserData.userAuthId);
+            int queryPortMatch = await Reconnect.GetPortMatch(ClientSingleton.Instance.GameManager.UserData.userAuthId);
 
-            if (await ServerConnectionTester.CheckServerAsync(ipMatch, (ushort)portMatch))
+            if (await ServerConnectionTester.CheckServerAsync(ipMatch, portMatch))
             {
                 // Debug.Log($"Server is Online or Client is offline!");
                 ClientSingleton.Instance.GameManager.StartMatchmakingClient(ipMatch, portMatch);
