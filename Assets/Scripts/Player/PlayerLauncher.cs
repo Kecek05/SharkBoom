@@ -96,7 +96,7 @@ public class PlayerLauncher : NetworkBehaviour
     [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
     public void TriggerUseItemOnClientRpc(ItemReconcileData reconcileData)
     {
-        if(IsServer && !IsHost) return; //DS
+        //if(IsServer && !IsHost) return; //DS
         
         if(waitCorrectPositionToActivate != null)
             StopCoroutine(waitCorrectPositionToActivate);
@@ -209,7 +209,7 @@ public class PlayerLauncher : NetworkBehaviour
     [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
     private void SyncItemLauncherDataClientRpc(ItemLauncherData itemLauncherData, Vector3 aimPos)
     {
-        if(IsServer && !IsHost) return; //DS
+       // if(IsServer && !IsHost) return; //DS
         
         lastItemLauncherData = itemLauncherData;
         Debug.Log($"STEPS CLIENT 1 - ITEM LAUNCHER DATA RECIEVED - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Shoot Pos: {lastItemLauncherData.shootPosition} - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
