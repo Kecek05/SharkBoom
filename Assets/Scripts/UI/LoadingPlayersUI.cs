@@ -130,9 +130,9 @@ public class LoadingPlayersUI : NetworkBehaviour
                 switch (visualType)
                 {
                     case PlayerVisualType.Shark:
-                        return sharkRenderL;
+                        return sharkRenderR;
                     case PlayerVisualType.Orca:
-                        return orcaRenderL;
+                        return orcaRenderR;
                 }
                 break;
 
@@ -140,9 +140,9 @@ public class LoadingPlayersUI : NetworkBehaviour
                 switch (visualType)
                 {
                     case PlayerVisualType.Shark:
-                        return sharkRenderR;
+                        return sharkRenderL;
                     case PlayerVisualType.Orca:
-                        return orcaRenderR;
+                        return orcaRenderL;
                 }
                 break;
         }
