@@ -81,6 +81,7 @@ public class LoadingPlayersUI : NetworkBehaviour
 
     private void GameState_OnValueChanged(GameState previousValue, GameState newValue)
     {
+        Debug.Log($"GameState_OnValueChanged - Previous Value: {previousValue} - New Value: {newValue} - {gameObject.name} - Is Owner: {IsOwner} - Client ID: {NetworkManager.LocalClientId}");
          if(newValue == GameState.ShowingPlayersInfo) 
          {
             //Show UI
