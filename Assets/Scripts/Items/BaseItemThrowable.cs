@@ -157,7 +157,8 @@ public abstract class BaseItemThrowable : MonoBehaviour
     {
         itemReleased = true;
 
-        StartCoroutine(DelayChangeCollision(itemLauncherData.ownerPlayableState));
+        SetCollision(itemLauncherData.ownerPlayableState);
+        // StartCoroutine(DelayChangeCollision(itemLauncherData.ownerPlayableState));
 
         thisItemLaucherData = itemLauncherData;
 
@@ -165,11 +166,11 @@ public abstract class BaseItemThrowable : MonoBehaviour
         rb.isKinematic = false;
     }
 
-    private IEnumerator DelayChangeCollision(PlayableState playableState)
-    {
-        yield return waitToChangeCollision;
-        SetCollision(playableState);
-    }
+    // private IEnumerator DelayChangeCollision(PlayableState playableState)
+    // {
+    //     yield return waitToChangeCollision;
+    //     SetCollision(playableState);
+    // }
 
     private void SetCollision(PlayableState playableState)
     {

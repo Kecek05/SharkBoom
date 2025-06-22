@@ -23,6 +23,7 @@ public class BananaItemThrowable : BaseItemThrowableActivable
     {
         base.OnEnable();
         bananaMesh.SetActive(true); // Ensure the banana mesh is active when the item is enabled
+        rb.isKinematic = false;
     }
 
     public override void ItemReleased(ItemLauncherData itemLauncherData, bool isOwner)
@@ -72,6 +73,7 @@ public class BananaItemThrowable : BaseItemThrowableActivable
         bananaReturnCoroutine = null;
 
         bananaMesh.SetActive(false);
+        rb.isKinematic = true;
         yield return waitToDestroy;
 
         DestroyItem();
@@ -96,5 +98,7 @@ public class BananaItemThrowable : BaseItemThrowableActivable
             StopCoroutine(bananaReturnCoroutine);
             bananaReturnCoroutine = null;
         }
+        bananaMesh.SetActive(true); // Ensure the banana mesh is active when the item is enabled
+        rb.isKinematic = false;
     }
 }

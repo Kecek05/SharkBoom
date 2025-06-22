@@ -46,20 +46,21 @@ public class PlayerHealth : HealthComponent
 
     private void BaseItemThrowableOnOnItemCallbackAction(bool isOwnerOfItem)
     {
-        Debug.Log($"HEALTH - Item Callback - Syncronized This turn is false - {gameObject.name}");
+        // if(IsHost) return; //Host is always synced
+        Debug.Log($"HEALTH 1 - Item Callback - Syncronized This turn is false - {gameObject.name}");
 
         //Sync local health with localTargetHealth;
         SetLocalHealth(localTargetHealth);
     }
 
-    //Its possible to recieve the callback of an item before the value change of the CUrrent health, FIX THIS
+    //Its possible to recieve the callback of an item before the value change of the Current health, FIX THIS
     
     private void CurrentHealth_OnValueChanged(float previousValue, float newValue)
     {
         //Syncronize localhealth with currentHealth
         // if(localCurrentHealth == newValue) return; 
         
-        Debug.Log($"HEALTH - CurrentHealth_OnValueChanged - Syncronized This turn is true - localTargetHealth is: {newValue} - {gameObject.name}");
+        Debug.Log($"HEALTH 2 - CurrentHealth_OnValueChanged - Syncronized This turn is true - localTargetHealth is: {newValue} - {gameObject.name}");
         localTargetHealth = newValue;
 
         // OnPlayerTakeDamage?.Invoke(this, new OnPlayerTakeDamageArgs { playableState = player.ThisPlayableState.Value, playerCurrentHealth = currentHealth.Value, playerMaxHealth = maxHealth });
@@ -80,7 +81,7 @@ public class PlayerHealth : HealthComponent
         ModifyLocalHealth(-(damageableSO.damage * localSelectedMultiplier));
     }
 
-    protected override void InvokeOnTakeLocalDamage()
+    protected override void InvokeOnLocalHealthChanged()
     {
         OnPlayerTakeDamage?.Invoke(this, new OnPlayerTakeDamageArgs { playableState = player.ThisPlayableState.Value, playerCurrentHealth = localCurrentHealth, playerMaxHealth = maxHealth });
     }

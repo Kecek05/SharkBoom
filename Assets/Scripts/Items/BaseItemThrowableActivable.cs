@@ -135,16 +135,33 @@ public abstract class BaseItemThrowableActivable : BaseItemThrowable
     /// <summary>
     /// Try To Activate the item. If cant, will do nothing.
     /// </summary>
-    public void TryActivate()
+    public void TryActivate(Action<bool> sucessCallback = null)
     {
-        if(gameObject.activeInHierarchy == false) return; //If the item is not active, don't activate it
+        if (gameObject.activeInHierarchy == false)
+        {
+            sucessCallback?.Invoke(false);
+            return; //If the item is not active, don't activate it
+        }
+
+        if (ownerPlayableState != turnManager.LocalPlayableState)
+        {
+            sucessCallback?.Invoke(false);
+            return; // Trying to activate an item that is not owned by the local player
+        }
+
+        if (itemActivated)
+        {
+            sucessCallback?.Invoke(false);
+            return;
+        }
+
+        if (!itemCanBeActivated)
+        {
+            sucessCallback?.Invoke(false);
+            return;
+        }
         
-        if(ownerPlayableState != turnManager.LocalPlayableState) return; // Trying to activate an item that is not owned by the local player
-        
-        if (itemActivated) return;
-        
-        if(!itemCanBeActivated) return;
-        
+        sucessCallback?.Invoke(true);
         TriggerActivation();
     }
 

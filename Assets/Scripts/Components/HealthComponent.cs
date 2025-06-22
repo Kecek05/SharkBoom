@@ -75,7 +75,7 @@ public class HealthComponent : NetworkBehaviour
 
         localCurrentHealth = Mathf.Clamp(newHealth, 0, maxHealth);
 
-        InvokeOnTakeLocalDamage();
+        InvokeOnLocalHealthChanged();
         Debug.Log($"HEALTH - Local Health: {localCurrentHealth} - Recieved Value: {value} - {gameObject.name}");
         
         if (localCurrentHealth <= 0)
@@ -88,11 +88,12 @@ public class HealthComponent : NetworkBehaviour
     protected void SetLocalHealth(float value)
     {
         localCurrentHealth = Mathf.Clamp(value, 0, maxHealth);
+        InvokeOnLocalHealthChanged();
         OnLocalHealthSynced?.Invoke(localCurrentHealth);
         Debug.Log($"HEALTH - Set LocalHealth to: {localCurrentHealth} - {gameObject.name}");
     }
 
-    protected virtual void InvokeOnTakeLocalDamage()
+    protected virtual void InvokeOnLocalHealthChanged()
     {
         
     }

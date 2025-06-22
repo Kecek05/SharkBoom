@@ -72,8 +72,11 @@ public class PlayerLauncher : NetworkBehaviour
     {
         if (lastItemThrowableActivable != null)
         {
-            lastItemThrowableActivable.TryActivate();
-            TriggerUseItemOnServerRpc(lastItemThrowableActivable.GetReconcileData());
+            lastItemThrowableActivable.TryActivate((bool success) =>
+            {
+                if(success)
+                    TriggerUseItemOnServerRpc(lastItemThrowableActivable.GetReconcileData());
+            });
         }
     }
 

@@ -66,7 +66,6 @@ public class ItemSpawner : MonoBehaviour
 
             if(lastActivableProjectile != null)
             {
-
                 lastActivableProjectile.TryActivate();
             }
         }
