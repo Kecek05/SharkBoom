@@ -30,9 +30,11 @@ MonoBehaviour:
   - {fileID: 8300000, guid: ecb8a8824a72af94f91d66f6d46dffea, type: 3}
   itemSpawn:
   - {fileID: 8300000, guid: d51edd2c3b07dd34abed432cb95cafca, type: 3}
-  launchItem:
+  itemDespawn:
+  - {fileID: 8300000, guid: 1d5fafcab238b6346a64c34362ddcc7e, type: 3}
+  itemLaunched:
+  - {fileID: 8300000, guid: ecb8a8824a72af94f91d66f6d46dffea, type: 3}
+  itemActivable:
+  - {fileID: 8300000, guid: d51edd2c3b07dd34abed432cb95cafca, type: 3}
+  itemHit:
   - {fileID: 8300000, guid: 3b2a997a54f1afe43bc08e7a66357ccf, type: 3}
-  activeItem:
-  - {fileID: 8300000, guid: d6d5dcd99b9a4e6409928a32bf8ce519, type: 3}
-  hitObject:
-  - {fileID: 8300000, guid: d6d5dcd99b9a4e6409928a32bf8ce519, type: 3}

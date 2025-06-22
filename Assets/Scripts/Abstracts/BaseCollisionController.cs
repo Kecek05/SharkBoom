@@ -17,6 +17,8 @@ public abstract class BaseCollisionController : MonoBehaviour
     /// </summary>
     public event Action<GameObject> OnCollidedWithoutPlayer;
 
+    public static event Action<Transform> OnCollidedSound;
+
     protected void OnCollisionEnter(Collision collision)
     {
         HandleCollision(collision.collider);
@@ -37,6 +39,7 @@ public abstract class BaseCollisionController : MonoBehaviour
     protected void TriggerOnCollided(GameObject collidedObject)
     {
         OnCollided?.Invoke(collidedObject);
+        OnCollidedSound?.Invoke(collidedObject.transform);
     }
 
     protected void TriggerOnCollidedWithoutPlayer(GameObject collidedObject)

@@ -181,8 +181,8 @@ public class DragAndShoot : NetworkBehaviour
                 SetIsDragging(false);
                 OnDragCancelable?.Invoke(true);
                 player.ChangePlayerState(PlayerState.IdleMyTurn);
-               // player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleMyTurnState);
-               // player.TransitionToIdleMyTurnStateServerRpc();
+                // player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleMyTurnState);
+                // player.TransitionToIdleMyTurnStateServerRpc();
                 return;
             }
             else
