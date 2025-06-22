@@ -1,4 +1,6 @@
 
+using UnityEngine;
+
 public class FollowSelectedSocketComponent : FollowTransformComponent
 {
     public void HandleOnPlayerSpawnItemOnHandOnItemSocketSelected(ItemSocket selectedSocket)
