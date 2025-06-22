@@ -28,7 +28,7 @@ public class CanDoDamageComponent : MonoBehaviour
 
     private void BaseCollisionController_OnItemCollided(GameObject collidedObj)
     {
-        Debug.Log($"BaseCollisionController_OnItemCollided: {collidedObj.name}");
+        // Debug.Log($"BaseCollisionController_OnItemCollided: {collidedObj.name}");
         //if(!IsOwner) return;
         if (baseItemThrowable.IsOwner)
         {

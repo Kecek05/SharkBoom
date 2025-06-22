@@ -6,7 +6,7 @@ public class GameOverManager : BaseGameOverManager
     
     private BaseTurnManager turnManager;
     private BasePlayersPublicInfoManager playersPublicInfoManager;
-
+    
     private void Start()
     {
         turnManager = ServiceLocator.Get<BaseTurnManager>();

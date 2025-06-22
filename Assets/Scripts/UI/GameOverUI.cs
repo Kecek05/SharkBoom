@@ -1,12 +1,17 @@
+using System;
+using System.Collections;
 using QFSW.QC;
 using Sortify;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
 public class GameOverUI : MonoBehaviour
 {
+    public static event Action OnRecievedAllGameOverUIInfo;
+    
     [BetterHeader("References")]
     [SerializeField] private GameObject gameOverBackground;
     [SerializeField] private TextMeshProUGUI resultTitleText;
@@ -17,6 +22,7 @@ public class GameOverUI : MonoBehaviour
     [SerializeField] private Image returnBtnImage;
     [SerializeField] private Image animateBackground;
     [SerializeField] private VideoPlayer gameOverVideoPlayer;
+    [SerializeField] private Button okButton;
     [BetterHeader("Renders")]
     [SerializeField] private VideoClip orcaWin;
     [SerializeField] private VideoClip orcaLose;
@@ -42,6 +48,7 @@ public class GameOverUI : MonoBehaviour
     
 
     private bool alreadyChanged = false; //Prevent double change when losting connection
+    private bool localDieTriggered = false;
 
     private BaseGameOverManager gameOverManager;
     private BasePearlsManager pearlsManager;
@@ -66,8 +73,22 @@ public class GameOverUI : MonoBehaviour
 
         gameOverManager.OnWin += GameStateManager_OnWin;
         gameOverManager.OnLose += GameStateManager_OnLose;
+        HealthComponent.OnLocalDie += HealthComponentOnOnLocalDie;
+        PearlsManager.OnFinishedCalculationsOnServer += PearlsManagerOnOnFinishedCalculationsOnServer;
 
         pearlsManager.OnPearlsChanged += PearlsManager_OnPearlsChanged;
+    }
+
+    private void PearlsManagerOnOnFinishedCalculationsOnServer()
+    {
+        //Can only click Ok Button when the host is shuttdonw. If not like this, host can click OK and close server before the client even see game over
+        if (NetworkManager.Singleton.IsHost)
+            okButton.interactable = true;
+    }
+
+    private void HealthComponentOnOnLocalDie()
+    {
+        localDieTriggered = true;
     }
 
     public void ReturnToMenu()
@@ -80,8 +101,29 @@ public class GameOverUI : MonoBehaviour
     }
     private void PearlsManager_OnPearlsChanged(int pearlsToShow)
     {
+        if (NetworkManager.Singleton.IsHost)
+            okButton.interactable = false;
+        
         SetupPearlsResult(pearlsToShow);
+        StartCoroutine(WaitUIToBeChanged());
+        // Show();
+    }
+
+    private IEnumerator WaitUIToBeChanged()
+    {
+        while (!alreadyChanged || !localDieTriggered)
+        {
+            // Debug.Log($"GAME OVER UI - WAITING CHANGE UI - Already Changed: {alreadyChanged} - LocalDieTriggered: {localDieTriggered}");
+            yield return null;
+        }
         Show();
+        InvokeOnRecievedAllGameOverUIInfoOnServerRpc();
+    }
+
+    [Rpc(SendTo.Server, RequireOwnership = false, Delivery = RpcDelivery.Reliable)]
+    private void InvokeOnRecievedAllGameOverUIInfoOnServerRpc()
+    {
+        OnRecievedAllGameOverUIInfo?.Invoke();
     }
 
     private void SetupPearlsResult(int pearlsDelta)
@@ -113,7 +155,7 @@ public class GameOverUI : MonoBehaviour
         //Win UI Code
         Win();
 
-        Debug.Log("Change GameOverUI to WIN");
+        // Debug.Log("Change GameOverUI to WIN");
     }
 
     private void GameStateManager_OnLose(bool isDraw)
@@ -132,7 +174,7 @@ public class GameOverUI : MonoBehaviour
             Lose();
         }
 
-        Debug.Log("Change GameOverUI to Lose");
+        // Debug.Log("Change GameOverUI to Lose");
     }
 
     private void Hide()
@@ -149,7 +191,7 @@ public class GameOverUI : MonoBehaviour
     private void Win()
     {
         gameOverVideoPlayer.clip = GetGameOverRender(playersPublicInfoManager.GetPlayerVisualTypes()[turnManager.LocalPlayableState], GameResult.Win);
-        gameOverVideoPlayer.Play();
+        // gameOverVideoPlayer.Play();
 
         ChangeUI($"{TEXTANIMATOR_WIN}You Win!{TEXTANIMATOR_WIN}", "VICTORY!", winBackground, winPearlsBackground, winReturnButton, winBackgroundMaterial);
     }
@@ -157,7 +199,7 @@ public class GameOverUI : MonoBehaviour
     private void Lose()
     {
         gameOverVideoPlayer.clip = GetGameOverRender(playersPublicInfoManager.GetPlayerVisualTypes()[turnManager.LocalPlayableState], GameResult.Lose);
-        gameOverVideoPlayer.Play();
+        // gameOverVideoPlayer.Play();
 
         ChangeUI($"{TEXTANIMATOR_LOSE}You Lose!{TEXTANIMATOR_LOSE}", "DEFEAT!", loseBackground, losePearlsBackground, loseReturnButton, loseBackgroundMaterial);
     }
@@ -165,7 +207,7 @@ public class GameOverUI : MonoBehaviour
     private void Tie()
     {
         gameOverVideoPlayer.clip = GetGameOverRender(playersPublicInfoManager.GetPlayerVisualTypes()[turnManager.LocalPlayableState], GameResult.Tie);
-        gameOverVideoPlayer.Play();
+        // gameOverVideoPlayer.Play();
 
         ChangeUI("Time's Up!", "TIE!", tieBackground, tiePearlsBackground, tieReturnButton, tieBackgroundMaterial);
     }
@@ -213,6 +255,7 @@ public class GameOverUI : MonoBehaviour
         gameOverManager.OnWin -= GameStateManager_OnWin;
         gameOverManager.OnLose -= GameStateManager_OnLose;
         pearlsManager.OnPearlsChanged -= PearlsManager_OnPearlsChanged;
+        PearlsManager.OnFinishedCalculationsOnServer -= PearlsManagerOnOnFinishedCalculationsOnServer;
     }
 }
 

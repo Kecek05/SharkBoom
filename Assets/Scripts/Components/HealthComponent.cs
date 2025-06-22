@@ -4,11 +4,10 @@ using System;
 using Unity.Netcode;
 using UnityEngine;
 
-public class HealthComponent : NetworkBehaviour
+public abstract class HealthComponent : NetworkBehaviour
 {
-    private event Action OnDie;
 
-    private event Action OnLocalDie;
+    public static event Action OnLocalDie;
 
     /// <summary>
     /// Called when LocalHealth is synced with network. Pass the LocalHealth
@@ -25,9 +24,6 @@ public class HealthComponent : NetworkBehaviour
     protected float localTargetHealth; 
 
     protected NetworkVariable<bool> isDead = new(false);
-    protected bool localIsDead = false;
-    
-    public bool LocalIsDead => localIsDead;
     
     public NetworkVariable<float> CurrentHealth => currentHealth;
 
@@ -47,7 +43,7 @@ public class HealthComponent : NetworkBehaviour
     {
         localCurrentHealth = newValue;
         localTargetHealth = newValue;
-        Debug.Log($"HEALTH - Changing Local Current Health: {localCurrentHealth} - Local Target Health: {localTargetHealth} - {gameObject.name}");
+        // Debug.Log($"HEALTH - Changing Local Current Health: {localCurrentHealth} - Local Target Health: {localTargetHealth} - {gameObject.name}");
     }
 
 
@@ -60,7 +56,7 @@ public class HealthComponent : NetworkBehaviour
 
         currentHealth.Value = Mathf.Clamp(newHealth, 0, maxHealth);
 
-        Debug.Log($"HEALTH - Health: {currentHealth.Value} - {gameObject.name}");
+        // Debug.Log($"HEALTH - Health: {currentHealth.Value} - {gameObject.name}");
 
         if (currentHealth.Value <= 0)
         {
@@ -76,13 +72,7 @@ public class HealthComponent : NetworkBehaviour
         localCurrentHealth = Mathf.Clamp(newHealth, 0, maxHealth);
 
         InvokeOnLocalHealthChanged();
-        Debug.Log($"HEALTH - Local Health: {localCurrentHealth} - Recieved Value: {value} - {gameObject.name}");
-        
-        if (localCurrentHealth <= 0)
-        {
-            localIsDead = true;
-            OnLocalDie?.Invoke();
-        }
+        // Debug.Log($"HEALTH - Local Health: {localCurrentHealth} - Recieved Value: {value} - {gameObject.name}");
     }
 
     protected void SetLocalHealth(float value)
@@ -90,20 +80,17 @@ public class HealthComponent : NetworkBehaviour
         localCurrentHealth = Mathf.Clamp(value, 0, maxHealth);
         InvokeOnLocalHealthChanged();
         OnLocalHealthSynced?.Invoke(localCurrentHealth);
-        Debug.Log($"HEALTH - Set LocalHealth to: {localCurrentHealth} - {gameObject.name}");
+        // Debug.Log($"HEALTH - Set LocalHealth to: {localCurrentHealth} - {gameObject.name}");
     }
 
-    protected virtual void InvokeOnLocalHealthChanged()
+    protected void InvokeOnLocalDie()
     {
-        
+        // Debug.Log($"HEALTH - Local Die Triggered");
+        OnLocalDie?.Invoke();
     }
-    
+
+    protected abstract void InvokeOnLocalHealthChanged();
+
     [Command("health-die")]
-     protected virtual void Die()
-     {
-        if(!IsServer) return;
-        
-        OnDie?.Invoke();
-        
-     } 
+    protected abstract void Die();
 }

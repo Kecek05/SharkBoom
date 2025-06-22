@@ -84,7 +84,7 @@ public class GameManager : NetworkBehaviour
     // Player Die
     private void HandeOnPlayerDie()
     {
-        Debug.Log($"DIE - HandeOnPlayerDie");
+        // Debug.Log($"DIE - HandeOnPlayerDie");
         gameStateManager.HandeOnPlayerDie();
 
         PlayerHealth.OnPlayerDie -= HandeOnPlayerDie;

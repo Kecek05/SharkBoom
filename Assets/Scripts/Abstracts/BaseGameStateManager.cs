@@ -62,7 +62,6 @@ public abstract class BaseGameStateManager : NetworkBehaviour
     public abstract void HandeOnPlayerDie();
 
     public abstract void HandleOnPlayerGainOwnership(ulong clientId);
-
 }
 
 /// <summary>

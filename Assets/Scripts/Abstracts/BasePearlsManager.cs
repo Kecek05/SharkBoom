@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Unity.Netcode;
 
 public abstract class BasePearlsManager : NetworkBehaviour
@@ -21,5 +22,9 @@ public abstract class BasePearlsManager : NetworkBehaviour
 
     public abstract void HandleOnLosedPlayerChanged(PlayableState newValue);
 
-    protected abstract void SendGameResultsToClient(string authId, int valueToShow);
+    protected abstract void SendPearlsResultsToClient(string authId, int valueToShow);
+    
+    protected abstract void GameOverUIOnOnRecievedAllGameOverUIInfo();
+
+    protected abstract IEnumerator WaitTriggerOnFinishedCalculationsOnServer();
 }

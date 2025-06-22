@@ -1,8 +1,32 @@
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
 public class PearlsManager : BasePearlsManager
 {
+    private int gameOversSynced = 0;
+    private bool alreadyTriggeredFinishedCalculationOnServer = false;
+    private const int TIME_WAIT_LOCAL_PLAYERS_DIED = 8; //Wait in seconds
+    
+    public override void OnNetworkSpawn()
+    {
+        if(!IsServer) return;
+        
+        GameOverUI.OnRecievedAllGameOverUIInfo += GameOverUIOnOnRecievedAllGameOverUIInfo;
+    }
+
+    protected override void GameOverUIOnOnRecievedAllGameOverUIInfo()
+    {
+        gameOversSynced++;
+        // Debug.Log($"GAME OVER - GameOverUIOnOnRecievedAllGameOverUIInfo Count: {gameOversSynced}");
+        if (gameOversSynced >= 2)
+        {
+            if(alreadyTriggeredFinishedCalculationOnServer) return;
+            
+            alreadyTriggeredFinishedCalculationOnServer = true;
+            TriggerOnFinishedCalculationsOnServer();
+        }
+    }
 
     public override void HandleOnLosedPlayerChanged(PlayableState newValue)
     {
@@ -26,13 +50,13 @@ public class PearlsManager : BasePearlsManager
 
                 await CalculatePearls.ChangePearlsLoser(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1]);
 
-                SendGameResultsToClient
+                SendPearlsResultsToClient
                     (
                     NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId,
                     CalculatePearls.AuthIdToCalculatedPearls[NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId].PearlsToLose
                     );
 
-                SendGameResultsToClient
+                SendPearlsResultsToClient
                     (
                     NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId,
                     CalculatePearls.AuthIdToCalculatedPearls[NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId].PearlsToLose
@@ -41,12 +65,12 @@ public class PearlsManager : BasePearlsManager
 
             } else
             {
-                SendGameResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId, 0);
+                SendPearlsResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId, 0);
 
-                SendGameResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId, 0);
+                SendPearlsResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId, 0);
             }
 
-            TriggerOnFinishedCalculationsOnServer();
+            StartCoroutine(WaitTriggerOnFinishedCalculationsOnServer());
 
             Debug.Log("Tie, both lose");
             return;
@@ -64,13 +88,13 @@ public class PearlsManager : BasePearlsManager
                 await CalculatePearls.ChangePearlsLoser(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0]);
 
 
-                SendGameResultsToClient
+                SendPearlsResultsToClient
                     (
                     NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId,
                     CalculatePearls.AuthIdToCalculatedPearls[NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId].PearlsToLose
                     );
 
-                SendGameResultsToClient
+                SendPearlsResultsToClient
                     (
                     NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId,
                     CalculatePearls.AuthIdToCalculatedPearls[NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId].PearlsToWin
@@ -78,13 +102,10 @@ public class PearlsManager : BasePearlsManager
 
             } else
             {
-                SendGameResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId, 0);
+                SendPearlsResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId, 0);
 
-                SendGameResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId, 0);
+                SendPearlsResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId, 0);
             }
-
-
-
 
             Debug.Log($"Player {NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userName} Winner");
         }
@@ -99,39 +120,49 @@ public class PearlsManager : BasePearlsManager
 
                 await CalculatePearls.ChangePearlsLoser(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1]);
 
-                SendGameResultsToClient
+                SendPearlsResultsToClient
                     (
                     NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId,
                     CalculatePearls.AuthIdToCalculatedPearls[NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId].PearlsToWin
                     );
 
-                SendGameResultsToClient
+                SendPearlsResultsToClient
                     (
                     NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId,
                     CalculatePearls.AuthIdToCalculatedPearls[NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId].PearlsToLose
                     );
             } else
             {
-                SendGameResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId, 0);
+                SendPearlsResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userAuthId, 0);
 
-                SendGameResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId, 0);
+                SendPearlsResultsToClient(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1].userData.userAuthId, 0);
             }
 
 
 
-                Debug.Log($"Player {NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userName} Winner");
+            Debug.Log($"Player {NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0].userData.userName} Winner");
         }
 
-        TriggerOnFinishedCalculationsOnServer();
+        StartCoroutine(WaitTriggerOnFinishedCalculationsOnServer());
     }
 
-    protected override void SendGameResultsToClient(string authId, int valueToShow)
+    protected override IEnumerator WaitTriggerOnFinishedCalculationsOnServer()
     {
-        SendGameResultsToClientRpc(authId, valueToShow);
+        yield return new WaitForSeconds(TIME_WAIT_LOCAL_PLAYERS_DIED);
+        //Need to wait time or see if all already recieveed the RPC with UI infos
+
+        if (alreadyTriggeredFinishedCalculationOnServer) yield break;
+        TriggerOnFinishedCalculationsOnServer(); //This will shut down the server
+
     }
 
-    [Rpc(SendTo.ClientsAndHost)]
-    private void SendGameResultsToClientRpc(string authId, int valueToShow)
+    protected override void SendPearlsResultsToClient(string authId, int valueToShow)
+    {
+        SendPearlsResultsToClientRpc(authId, valueToShow);
+    }
+
+    [Rpc(SendTo.ClientsAndHost, Delivery = RpcDelivery.Reliable)]
+    private void SendPearlsResultsToClientRpc(string authId, int valueToShow)
     {
         if (ClientSingleton.Instance == null) return;
 

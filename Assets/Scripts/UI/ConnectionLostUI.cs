@@ -10,7 +10,7 @@ public class ConnectionLostUI : MonoBehaviour
     [SerializeField] private GameObject connectionLostBackground;
 
     private BaseGameStateManager gameStateManager;
-
+    
     private void Awake()
     {
         Hide();
@@ -19,7 +19,6 @@ public class ConnectionLostUI : MonoBehaviour
     private void Start()
     {
         gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
-
         gameStateManager.OnLostConnectionInHost += GameStateManager_OnLostConnectionInHost;
     }
 
