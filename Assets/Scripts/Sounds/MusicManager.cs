@@ -11,6 +11,7 @@ public class MusicManager : MonoBehaviour
     [SerializeField] private AudioClip[] menuTracks;
     [SerializeField] private AudioClip[] gameTracks;
 
+    private AudioClip[] currentTracks;
     private Coroutine musicCoroutine;
     private static MusicManager instance;
 
@@ -32,6 +33,7 @@ public class MusicManager : MonoBehaviour
 
     private void Start()
     {
+        currentTracks = null;
         HandleOnCurrentSceneChanged(Loader.CurrentScene);
     }
 
@@ -52,15 +54,18 @@ public class MusicManager : MonoBehaviour
             chosenTracks = null;
         }
 
+        if (chosenTracks == currentTracks)
+            return;
+
+        currentTracks = chosenTracks;
+
         if (musicCoroutine != null)
-        {
             StopCoroutine(musicCoroutine);
-        }
-        musicCoroutine = StartCoroutine(PlayMusicsOnScene(chosenTracks));
 
-        if (chosenTracks == null) return;
+        if (currentTracks == null || currentTracks.Length == 0)
+            return;
 
-        
+        musicCoroutine = StartCoroutine(PlayMusicsOnScene(currentTracks));
     }
 
     private IEnumerator PlayMusicsOnScene(AudioClip[] musicTracks)
