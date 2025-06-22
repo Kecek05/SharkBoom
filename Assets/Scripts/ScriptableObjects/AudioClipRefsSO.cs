@@ -11,12 +11,14 @@ public class AudioClipRefsSO : ScriptableObject
     // GameStates
     public AudioClip[] gameStart;
     public AudioClip[] gameEnd;
+
+    // GameOver
     public AudioClip[] gameWin;
     public AudioClip[] gameLose;
     public AudioClip[] gameTie;
 
     // Player Actions
-    public AudioClip[] drag;
+    public AudioClip[] itemSpawn;
     public AudioClip[] launchItem;
     public AudioClip[] activeItem;
     public AudioClip[] hitObject;
