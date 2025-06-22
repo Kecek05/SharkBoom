@@ -173,13 +173,15 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             return default;
         }
         
+        int clampedHitRigidbodyIndex = Mathf.Clamp(hitRigidbodyIndex, 0, ragdollRbsToKnockback.Length - 1);
+        
         Debug.Log(
-            $"KNOCKBACK - Knockback data calculated  - Index: {hitRigidbodyIndex} - Hit Pos: {hitPoint} - Rb Pos: {hitRigidbody.position} - Rb Rot: {hitRigidbody.rotation} - Hit Force: {force} - {gameObject.transform.parent.name}");
+            $"KNOCKBACK - Knockback data calculated  - Index: {clampedHitRigidbodyIndex} - Hit Pos: {hitPoint} - Rb Pos: {hitRigidbody.position} - Rb Rot: {hitRigidbody.rotation} - Hit Force: {force} - {gameObject.transform.parent.name}");
 
         return new KnockbackData
         {
             hitForce = force,
-            hitRigidbodyIndex = hitRigidbodyIndex,
+            hitRigidbodyIndex = clampedHitRigidbodyIndex,
             hitRagdollPosition = hitRigidbody.position,
             hitRagdollRotation = hitRigidbody.rotation,
         };

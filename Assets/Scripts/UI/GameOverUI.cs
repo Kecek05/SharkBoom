@@ -62,6 +62,7 @@ public class GameOverUI : MonoBehaviour
         gameOverManager = ServiceLocator.Get<BaseGameOverManager>();
         pearlsManager = ServiceLocator.Get<BasePearlsManager>();
         turnManager = ServiceLocator.Get<BaseTurnManager>();
+        playersPublicInfoManager = ServiceLocator.Get<BasePlayersPublicInfoManager>();
 
         gameOverManager.OnWin += GameStateManager_OnWin;
         gameOverManager.OnLose += GameStateManager_OnLose;
@@ -72,15 +73,15 @@ public class GameOverUI : MonoBehaviour
     public void ReturnToMenu()
     {
         if (ClientSingleton.Instance != null)
+        {
             gameOverVideoPlayer.Stop();
             ClientSingleton.Instance.GameManager.Disconnect();
+        }
     }
     private void PearlsManager_OnPearlsChanged(int pearlsToShow)
     {
         SetupPearlsResult(pearlsToShow);
         Show();
-
-        playersPublicInfoManager = ServiceLocator.Get<BasePlayersPublicInfoManager>();
     }
 
     private void SetupPearlsResult(int pearlsDelta)

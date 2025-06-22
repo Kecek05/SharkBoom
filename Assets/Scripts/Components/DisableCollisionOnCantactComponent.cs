@@ -18,27 +18,8 @@ public class DisableCollisionOnCantactComponent : MonoBehaviour
 
     private void HandleItemCollidedWithPlayer(PlayerThrower playerThrower)
     {
-        //if(!IsOwner) return;
-        
-        //DisableCollisionsServerRpc();
-        
         DisableCollisions();
     }
-
-    /*[Rpc(SendTo.Server)]
-    private void DisableCollisionsServerRpc()
-    {
-        DisableCollisionsClientRpc();
-    }
-
-    [Rpc(SendTo.ClientsAndHost)]
-    private void DisableCollisionsClientRpc()
-    {
-        foreach (Collider itemCol in itemColliders)
-        {
-            itemCol.enabled = false;
-        }
-    }*/
     
     public void DisableCollisions()
     {
