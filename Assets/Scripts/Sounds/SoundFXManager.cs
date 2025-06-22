@@ -1,9 +1,11 @@
 using UnityEngine;
+using UnityEngine.Audio;
 
-public class SoundManager : MonoBehaviour
+public class SoundFXManager : MonoBehaviour
 {
     [SerializeField] private AudioClipRefsSO audioClipRefsSO;
     [SerializeField] private Transform mainCamera;
+    [SerializeField] private AudioSource audioSource;
 
     private void Start()
     {
@@ -103,15 +105,25 @@ public class SoundManager : MonoBehaviour
     private void PlayOnItemOnCollidedSound(Transform transform)
     {
         PlaySound(audioClipRefsSO.itemHit, transform.position);
+        Debug.Log("SOUND - PlayOnItemOnCollidedSound");
     }
 
 
 
-    public static void PlaySound(AudioClip[] audioClipArray, Vector3 position, float volume = 1f)
+    public void PlaySound(AudioClip[] audioClipArray, Vector3 position, float volume = 1f)
     {
         if (audioClipArray == null || audioClipArray.Length == 0) return;
 
-        AudioSource.PlayClipAtPoint(audioClipArray[Random.Range(0, audioClipArray.Length)], position, volume);
+        if(position == null)
+        {
+            position = mainCamera.position;
+            Debug.Log("SOUND - Deu play fora da pos correta");
+        }
+
+        audioSource.transform.position = position;
+        audioSource.clip = audioClipArray[Random.Range(0, audioClipArray.Length)];
+        audioSource.volume = volume;
+        audioSource.Play();
     }
 
     private void OnDestroy()
