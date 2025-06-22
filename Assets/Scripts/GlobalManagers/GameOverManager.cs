@@ -1,9 +1,13 @@
+using System;
 using Unity.Netcode;
 using UnityEngine;
 
 public class GameOverManager : BaseGameOverManager
 {
-    
+    public static event Action OnGameWinSound;
+    public static event Action OnGameLoseSound;
+    public static event Action OnGameTieSound;
+
     private BaseTurnManager turnManager;
     private BasePlayersPublicInfoManager playersPublicInfoManager;
     
@@ -19,14 +23,17 @@ public class GameOverManager : BaseGameOverManager
         if (losedPlayer.Value == turnManager.LocalPlayableState)
         {
             TriggerOnLose(false);
+            OnGameLoseSound?.Invoke();
         }
         else if (losedPlayer.Value == PlayableState.Tie)
         {
             TriggerOnLose(true);
+            OnGameTieSound?.Invoke();
         }
         else
         {
             TriggerOnWin();
+            OnGameWinSound?.Invoke();
         }
     }
 

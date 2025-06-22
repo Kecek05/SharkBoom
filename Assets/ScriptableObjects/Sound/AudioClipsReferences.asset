@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63365352fd001e9449bfb6399d1df4a7, type: 3}
+  m_Name: AudioClipsReferences
+  m_EditorClassIdentifier: 
+  startYourTurn:
+  - {fileID: 8300000, guid: 1d5fafcab238b6346a64c34362ddcc7e, type: 3}
+  startEnemyTurn:
+  - {fileID: 8300000, guid: ecb8a8824a72af94f91d66f6d46dffea, type: 3}
+  finishTurn:
+  - {fileID: 8300000, guid: d51edd2c3b07dd34abed432cb95cafca, type: 3}
+  gameStart:
+  - {fileID: 8300000, guid: 3b2a997a54f1afe43bc08e7a66357ccf, type: 3}
+  gameEnd:
+  - {fileID: 8300000, guid: d6d5dcd99b9a4e6409928a32bf8ce519, type: 3}
+  gameWin:
+  - {fileID: 8300000, guid: 1d5fafcab238b6346a64c34362ddcc7e, type: 3}
+  gameLose:
+  - {fileID: 8300000, guid: d51edd2c3b07dd34abed432cb95cafca, type: 3}
+  gameTie:
+  - {fileID: 8300000, guid: ecb8a8824a72af94f91d66f6d46dffea, type: 3}
+  itemSpawn:
+  - {fileID: 8300000, guid: d51edd2c3b07dd34abed432cb95cafca, type: 3}
+  launchItem:
+  - {fileID: 8300000, guid: 3b2a997a54f1afe43bc08e7a66357ccf, type: 3}
+  activeItem:
+  - {fileID: 8300000, guid: d6d5dcd99b9a4e6409928a32bf8ce519, type: 3}
+  hitObject:
+  - {fileID: 8300000, guid: d6d5dcd99b9a4e6409928a32bf8ce519, type: 3}

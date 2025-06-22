@@ -1,13 +1,19 @@
 using QFSW.QC;
+using System;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public static class Loader
 {
+    public static event Action<Scene> OnCurrentSceneChanged;
+
     private static Scene targetScene;
 
+    private static Scene currentScene;
+
     private static LoadType loadType;
+    public static Scene CurrentScene => currentScene;
 
     public enum Scene
     {
@@ -35,9 +41,12 @@ public static class Loader
     public static void Load(Scene scene)
     {
         targetScene = scene;
+        currentScene = Scene.Loading;
+
         loadType = LoadType.None;
 
         SceneManager.LoadScene(Scene.Loading.ToString());
+        OnCurrentSceneChanged?.Invoke(currentScene);
     }
 
     /// <summary>
@@ -47,8 +56,10 @@ public static class Loader
     public static void LoadClient()
     {
         loadType = LoadType.Client;
+        currentScene = Scene.Loading;
 
         SceneManager.LoadScene(Scene.Loading.ToString());
+        OnCurrentSceneChanged?.Invoke(currentScene);
     }
 
     /// <summary>
@@ -73,15 +84,20 @@ public static class Loader
     {
         loadType = LoadType.Host;
         targetScene = scene;
+        currentScene = Scene.Loading;
 
         NetworkManager.Singleton.SceneManager.LoadScene(Scene.Loading.ToString(), LoadSceneMode.Single);
+        OnCurrentSceneChanged?.Invoke(currentScene);
     }
 
     [Command("loadScene")]
     public static void LoadNoLoadingScreen(Scene scene)
     {
         loadType = LoadType.None;
+        currentScene = scene;
+
         SceneManager.LoadScene(scene.ToString());
+        OnCurrentSceneChanged?.Invoke(currentScene);
     }
 
     public static void LoadCallback()
@@ -90,15 +106,20 @@ public static class Loader
         {
             case LoadType.None:
                 SceneManager.LoadScene(targetScene.ToString());
+                currentScene = targetScene;
                 break;
             case LoadType.Client:
                 Debug.Log($"Load Callback Client Connect");
                 ClientSingleton.Instance.GameManager.ConnectClient(); //Connect client in Loading Scene
+                currentScene = Scene.GameNetCodeTest;
                 break;
             case LoadType.Host:
                 NetworkManager.Singleton.SceneManager.LoadScene(targetScene.ToString(), LoadSceneMode.Single);
+                currentScene = targetScene;
                 break;
-        } 
+        }
+
+        OnCurrentSceneChanged?.Invoke(currentScene);
     }
 
 

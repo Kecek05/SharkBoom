@@ -32,12 +32,15 @@ public abstract class BaseWarning : MonoBehaviour
     {
         warningPanel.gameObject.SetActive(true);
         warningFeel?.PlayFeedbacks();
+        PlayWarningSound();
     }
 
     protected void HideWarning()
     {
         warningPanel.gameObject.SetActive(false);
     }
+
+    protected abstract void PlayWarningSound();
 
     protected abstract void OnDestroy();
 }
