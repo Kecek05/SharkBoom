@@ -290,6 +290,7 @@ public class PlayerThrower : NetworkBehaviour
         playerLauncher.UnInitializeOwner();
         playerInventoryUI.UnHandleInitializeOwner();
         playerTutorialUI.UnInitializeOwner();
+        playerHealth.UnInitializeOwner();
     }
 
     private void UnInitialize()
@@ -454,6 +455,7 @@ public class PlayerThrower : NetworkBehaviour
     {
         playerDetectFacingDirection.FaceOtherPlayer();
         playerRotateToAim.OnRagdollDisabled();
+        cameraManager.CameraGoToActivePlayer();
     }
 
     private void HandleOnPlayerGetUp()

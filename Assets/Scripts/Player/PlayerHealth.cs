@@ -39,6 +39,11 @@ public class PlayerHealth : HealthComponent
         BaseItemThrowable.OnItemCallbackAction += BaseItemThrowableOnOnItemCallbackAction;
     }
 
+    public void UnInitializeOwner()
+    {
+        BaseItemThrowable.OnItemCallbackAction -= BaseItemThrowableOnOnItemCallbackAction;
+    }
+
     private void BaseItemThrowableOnOnItemCallbackAction(bool isOwnerOfItem)
     {
         Debug.Log($"HEALTH - Item Callback - Syncronized This turn is false - {gameObject.name}");
