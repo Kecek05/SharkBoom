@@ -960,7 +960,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4845276930943762971, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: 0.000045776367
       objectReference: {fileID: 0}
     - target: {fileID: 4845637959249703711, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1393,7 +1393,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_PresetAsset: {fileID: 0}
   m_PresetReference:
-    rid: 9090933052971679862
+    rid: 5957158911637979246
   m_Scenario:
     rid: -2
   m_IsScenarioSettingsFolded: 0
@@ -1403,7 +1403,7 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 9090933052971679862
+    - rid: 5957158911637979246
       type: {class: NetworkSimulatorPreset, ns: Unity.Multiplayer.Tools.NetworkSimulator.Runtime, asm: Unity.Multiplayer.Tools.NetworkSimulator.Runtime}
       data:
         <Name>k__BackingField: None
@@ -1713,6 +1713,7 @@ MonoBehaviour:
   serverPrefab: {fileID: 4020011943602186181, guid: 41e8c28a3e906034e96210512fda82b1, type: 3}
   networkServerProvider: {fileID: 1063465107228501867, guid: 6e10cb67116128e4cb6e3106fd35d58d, type: 3}
   applicationLifecyclePrefab: {fileID: 4308287610626045593, guid: 10db0be4e2787bc4790028e26c53e42f, type: 3}
+  musicManagerPrefab: {fileID: 7510280779378297332, guid: de80ca8fea614f84685e776e3c9fe958, type: 3}
   playerPrefab: {fileID: 6789602644162241133, guid: b0860533b3f34094e84f38ba033a6c4e, type: 3}
   isServerDebug: 0
 --- !u!1660057539 &9223372036854775807
