@@ -1,7 +1,9 @@
+using System;
 using UnityEngine;
 
 public class TimersUpUI : BaseWarning
 {
+    public static event Action OnTurnTimersUpSound;
     private BaseTimerManager timerManager;
 
     protected override void Start()
@@ -16,5 +18,8 @@ public class TimersUpUI : BaseWarning
         timerManager.OnTurnTimesUp -= StartWarning;
     }
 
-
+    protected override void PlayWarningSound()
+    {
+        OnTurnTimersUpSound?.Invoke();
+    }
 }
