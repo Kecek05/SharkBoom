@@ -25,9 +25,10 @@ public class SoundManager : MonoBehaviour
         BaseItemThrowable.OnItemSpawnSound += PlayOnItemSpawned;
         BaseItemThrowable.OnItemReleasedAction += PlayOnItemLaunchedSound;
         BaseItemThrowableActivable.OnItemActivatedSound += PlayOnItemActivableSound;
+        BaseCollisionController.OnCollidedSound += PlayOnItemOnCollidedSound;
     }
 
-
+   
 
     private void PlayYourTurnSound()
     {
@@ -99,6 +100,12 @@ public class SoundManager : MonoBehaviour
         PlaySound(audioClipRefsSO.itemActivable, itemTransform.position);
         Debug.Log("SOUND - PlayOnItemActivableSound");
     }
+    private void PlayOnItemOnCollidedSound(Transform transform)
+    {
+        PlaySound(audioClipRefsSO.itemHit, transform.position);
+    }
+
+
 
     public static void PlaySound(AudioClip[] audioClipArray, Vector3 position, float volume = 1f)
     { 
@@ -121,10 +128,11 @@ public class SoundManager : MonoBehaviour
         GameOverManager.OnGameLoseSound -= PlayOnGameLoseSound;
         GameOverManager.OnGameTieSound -= PlayOnGameTieSound;
 
-        // Players actions
+        // Item actions
         BaseItemThrowable.OnItemSpawnSound -= PlayOnItemSpawned;
         BaseItemThrowable.OnItemReleasedAction -= PlayOnItemLaunchedSound;
         BaseItemThrowableActivable.OnItemActivatedSound -= PlayOnItemActivableSound;
+        BaseCollisionController.OnCollidedSound -= PlayOnItemOnCollidedSound;
     }
 }
 
