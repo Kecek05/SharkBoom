@@ -106,7 +106,6 @@ public class GameOverUI : MonoBehaviour
         
         SetupPearlsResult(pearlsToShow);
         StartCoroutine(WaitUIToBeChanged());
-        // Show();
     }
 
     private IEnumerator WaitUIToBeChanged()
@@ -256,6 +255,7 @@ public class GameOverUI : MonoBehaviour
         gameOverManager.OnLose -= GameStateManager_OnLose;
         pearlsManager.OnPearlsChanged -= PearlsManager_OnPearlsChanged;
         PearlsManager.OnFinishedCalculationsOnServer -= PearlsManagerOnOnFinishedCalculationsOnServer;
+        HealthComponent.OnLocalDie -= HealthComponentOnOnLocalDie;
     }
 }
 

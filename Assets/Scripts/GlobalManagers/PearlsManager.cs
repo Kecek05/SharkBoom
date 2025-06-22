@@ -10,13 +10,17 @@ public class PearlsManager : BasePearlsManager
     
     public override void OnNetworkSpawn()
     {
-        if(!IsServer) return;
-        
         GameOverUI.OnRecievedAllGameOverUIInfo += GameOverUIOnOnRecievedAllGameOverUIInfo;
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        GameOverUI.OnRecievedAllGameOverUIInfo -= GameOverUIOnOnRecievedAllGameOverUIInfo;
     }
 
     protected override void GameOverUIOnOnRecievedAllGameOverUIInfo()
     {
+        if(!IsServer) return;
         gameOversSynced++;
         // Debug.Log($"GAME OVER - GameOverUIOnOnRecievedAllGameOverUIInfo Count: {gameOversSynced}");
         if (gameOversSynced >= 2)
