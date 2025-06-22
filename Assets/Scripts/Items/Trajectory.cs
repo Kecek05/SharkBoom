@@ -56,11 +56,11 @@ public class Trajectory : MonoBehaviour
         currentForce = forceApplied.magnitude;
         previousForce = lastForceApplied.magnitude;
         diff = currentForce - previousForce;
-
+        // Debug.Log($"TRAJECTORY - Current Force: {currentForce} - Previous Force: {previousForce} - Diff: {diff}");
         if (Mathf.Abs(diff) >= forceChangeThreshold)
         {
             int targetActiveDots = Mathf.Clamp(Mathf.RoundToInt((currentForce / maxForce) * dotsNumber), 0, dotsNumber);
-
+            // Debug.Log($"TRAJECTORY - Target Active: {targetActiveDots} - Current Force: {currentForce} - Max Force: {maxForce}");
             for (int i = 0; i < dotsNumber; i++)
             {
                 dotsList[i].gameObject.SetActive(i < targetActiveDots);

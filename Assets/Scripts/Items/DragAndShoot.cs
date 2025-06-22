@@ -217,7 +217,8 @@ public class DragAndShoot : NetworkBehaviour
 
             dragForce = dragDistance * forceAddMultiplier;
             dragForce = Mathf.Clamp(dragForce, minForce, maxForce);
-
+            
+            // Debug.Log($"TRAJECTORY - Direction: {directionOfDrag} - Drag Force: {dragForce} - Value Passed to Dots: {directionOfDrag * dragForce}");
             trajectory.UpdateDots(startTrajectoryPos.position, directionOfDrag * dragForce, maxForce, selectedRb);
 
             
