@@ -23,7 +23,6 @@ public class PlayerHealth : HealthComponent
     private float selectedMultiplier; //cache
     private float localSelectedMultiplier;
     [SerializeField] private PlayerThrower player;
-    private float delayLocalPlayerDie = 2f; //seconds
     
     public override void OnNetworkSpawn()
     {
@@ -106,16 +105,9 @@ public class PlayerHealth : HealthComponent
         if (localCurrentHealth <= 0)
         {
             //Died - Show Game UI
-            StartCoroutine(DelayToInvokeLocalDie());
+            InvokeOnLocalDie();
         }
     }
-
-    private IEnumerator DelayToInvokeLocalDie()
-    {
-        yield return new WaitForSecondsRealtime(delayLocalPlayerDie);
-        InvokeOnLocalDie();
-    }
-
     protected override void Die()
     {
         if (!IsServer) return;
