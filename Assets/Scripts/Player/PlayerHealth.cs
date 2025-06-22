@@ -21,8 +21,8 @@ public class PlayerHealth : HealthComponent
     private float selectedMultiplier; //cache
     private float localSelectedMultiplier;
     [SerializeField] private PlayerThrower player;
-    private bool syncronizedThisTurn = false;
-
+    private bool recievedLocalTargedHealth = false;
+    
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
@@ -42,25 +42,26 @@ public class PlayerHealth : HealthComponent
     private void BaseItemThrowableOnOnItemCallbackAction(bool isOwnerOfItem)
     {
         Debug.Log($"HEALTH - Item Callback - Syncronized This turn is false - {gameObject.name}");
-        syncronizedThisTurn = false;
+
+        //Sync local health with localTargetHealth;
+        SetLocalHealth(localTargetHealth);
     }
 
+    //Its possible to recieve the callback of an item before the value change of the CUrrent health, FIX THIS
+    
     private void CurrentHealth_OnValueChanged(float previousValue, float newValue)
     {
         //Syncronize localhealth with currentHealth
-        if(localCurrentHealth == newValue) return;
+        // if(localCurrentHealth == newValue) return; 
         
-        Debug.Log($"HEALTH - CurrentHealth_OnValueChanged - Syncronized This turn is true - Local Health is: {newValue} - {gameObject.name}");
-        localCurrentHealth = newValue;
-        syncronizedThisTurn = true;
+        Debug.Log($"HEALTH - CurrentHealth_OnValueChanged - Syncronized This turn is true - localTargetHealth is: {newValue} - {gameObject.name}");
+        localTargetHealth = newValue;
 
         // OnPlayerTakeDamage?.Invoke(this, new OnPlayerTakeDamageArgs { playableState = player.ThisPlayableState.Value, playerCurrentHealth = currentHealth.Value, playerMaxHealth = maxHealth });
     }
 
     public void PlayerTakeLocalDamage(DamageableSO damageableSO, BodyPartEnum bodyPart)
     {
-        if(syncronizedThisTurn) return; //Already the same as the Server
-        
         localSelectedMultiplier = bodyPart == BodyPartEnum.Head ? damageableSO.headMultiplier : bodyPart == BodyPartEnum.Body ? damageableSO.bodyMultiplier : bodyPart == BodyPartEnum.Foot ? damageableSO.footMultiplier : 0f; //0f error
 
         if(localSelectedMultiplier == 0f)

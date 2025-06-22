@@ -9,11 +9,20 @@ public class HealthComponent : NetworkBehaviour
     private event Action OnDie;
 
     private event Action OnLocalDie;
+
+    /// <summary>
+    /// Called when LocalHealth is synced with network. Pass the LocalHealth
+    /// </summary>
+    public event Action<float> OnLocalHealthSynced;
     
     [BetterHeader("Settings")]
     [SerializeField] protected float maxHealth;
     protected NetworkVariable<float> currentHealth = new();
     protected float localCurrentHealth;
+    /// <summary>
+    /// Health that localCurrentHealth must be at the end of the round. This is synced with Current Health
+    /// </summary>
+    protected float localTargetHealth; 
 
     protected NetworkVariable<bool> isDead = new(false);
     protected bool localIsDead = false;
@@ -37,7 +46,8 @@ public class HealthComponent : NetworkBehaviour
     private void UpdateLocalHealth(float newValue)
     {
         localCurrentHealth = newValue;
-        Debug.Log($"HEALTH - Changing Local Current Health: {localCurrentHealth} - {gameObject.name}");
+        localTargetHealth = newValue;
+        Debug.Log($"HEALTH - Changing Local Current Health: {localCurrentHealth} - Local Target Health: {localTargetHealth} - {gameObject.name}");
     }
 
 
@@ -67,12 +77,19 @@ public class HealthComponent : NetworkBehaviour
 
         InvokeOnTakeLocalDamage();
         Debug.Log($"HEALTH - Local Health: {localCurrentHealth} - Recieved Value: {value} - {gameObject.name}");
-
+        
         if (localCurrentHealth <= 0)
         {
             localIsDead = true;
             OnLocalDie?.Invoke();
         }
+    }
+
+    protected void SetLocalHealth(float value)
+    {
+        localCurrentHealth = Mathf.Clamp(value, 0, maxHealth);
+        OnLocalHealthSynced?.Invoke(localCurrentHealth);
+        Debug.Log($"HEALTH - Set LocalHealth to: {localCurrentHealth} - {gameObject.name}");
     }
 
     protected virtual void InvokeOnTakeLocalDamage()
