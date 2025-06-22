@@ -5,6 +5,8 @@ using UnityEngine;
 public abstract class BaseItemThrowableActivable : BaseItemThrowable
 {
     public event Action OnItemActivated;
+    public static event Action<Transform> OnItemActivatedSound;
+
     protected bool itemActivated = false;
     protected bool itemCanBeActivated = true;
     [SerializeField] protected KnockbackSO knockbackSOActivated;
@@ -177,7 +179,8 @@ public abstract class BaseItemThrowableActivable : BaseItemThrowable
         
         ActivateItem();
         OnItemActivated?.Invoke();
-        
+        OnItemActivatedSound?.Invoke(this.transform);
+
         // Debug.Log("RECONCILE - Trigger Activation called for item: " + itemSO.itemID);
     }
 

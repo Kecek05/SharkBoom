@@ -21,24 +21,30 @@ public class SoundManager : MonoBehaviour
         GameOverManager.OnGameLoseSound += PlayOnGameLoseSound;
         GameOverManager.OnGameTieSound += PlayOnGameTieSound;
 
-        // Players actions
-
+        // Item actions
+        BaseItemThrowable.OnItemSpawnSound += PlayOnItemSpawned;
+        BaseItemThrowable.OnItemReleasedAction += PlayOnItemLaunchedSound;
+        BaseItemThrowableActivable.OnItemActivatedSound += PlayOnItemActivableSound;
     }
-    
+
+
 
     private void PlayYourTurnSound()
     {
         PlaySound(audioClipRefsSO.startYourTurn, mainCamera.position);
+        Debug.Log("SOUND - PlayYourTurnSound");
     }
 
     private void PlayEnemyYourTurnSound()
     {
         PlaySound(audioClipRefsSO.startEnemyTurn, mainCamera.position);
+        Debug.Log("SOUND - PlayEnemyYourTurnSound");
     }
 
     private void PlayTurnTimersUpSound()
     {
         PlaySound(audioClipRefsSO.finishTurn, mainCamera.position);
+        Debug.Log("SOUND - PlayTurnTimersUpSound");
     }
 
 
@@ -46,11 +52,13 @@ public class SoundManager : MonoBehaviour
     private void PlayOnGameTimerStartSound()
     {
         PlaySound(audioClipRefsSO.gameStart, mainCamera.position);
+        Debug.Log("SOUND - PlayOnGameTimerStartSound");
     }
 
     private void PlayOnGameTimerEndSound()
     {
         PlaySound(audioClipRefsSO.gameEnd, mainCamera.position);
+        Debug.Log("SOUND - PlayOnGameTimerEndSound");
     }
 
 
@@ -58,19 +66,39 @@ public class SoundManager : MonoBehaviour
     private void PlayOnGameWinSound()
     {
         PlaySound(audioClipRefsSO.gameWin, mainCamera.position);
+        Debug.Log("SOUND - PlayOnGameWinSound");
     }
 
     private void PlayOnGameLoseSound()
     {
         PlaySound(audioClipRefsSO.gameLose, mainCamera.position);
+        Debug.Log("SOUND - PlayOnGameLoseSound");
     }
 
     private void PlayOnGameTieSound()
     {
         PlaySound(audioClipRefsSO.gameTie, mainCamera.position);
+        Debug.Log("SOUND - PlayOnGameTieSound");
     }
 
 
+
+    private void PlayOnItemSpawned(Transform itemTransform)
+    {
+        PlaySound(audioClipRefsSO.itemSpawn, itemTransform.position);
+        Debug.Log("SOUND - PlayOnDragStartSound");
+    }
+    private void PlayOnItemLaunchedSound(Transform itemTransform)
+    {
+        PlaySound(audioClipRefsSO.itemLaunched, itemTransform.position);
+        Debug.Log("SOUND - PlayOnDragReleaseSound");
+    }
+
+    private void PlayOnItemActivableSound(Transform itemTransform)
+    {
+        PlaySound(audioClipRefsSO.itemActivable, itemTransform.position);
+        Debug.Log("SOUND - PlayOnItemActivableSound");
+    }
 
     public static void PlaySound(AudioClip[] audioClipArray, Vector3 position, float volume = 1f)
     { 
@@ -94,6 +122,9 @@ public class SoundManager : MonoBehaviour
         GameOverManager.OnGameTieSound -= PlayOnGameTieSound;
 
         // Players actions
+        BaseItemThrowable.OnItemSpawnSound -= PlayOnItemSpawned;
+        BaseItemThrowable.OnItemReleasedAction -= PlayOnItemLaunchedSound;
+        BaseItemThrowableActivable.OnItemActivatedSound -= PlayOnItemActivableSound;
     }
 }
 

@@ -17,9 +17,10 @@ public class AudioClipRefsSO : ScriptableObject
     public AudioClip[] gameLose;
     public AudioClip[] gameTie;
 
-    // Player Actions
+    // Item Actions
     public AudioClip[] itemSpawn;
-    public AudioClip[] launchItem;
-    public AudioClip[] activeItem;
-    public AudioClip[] hitObject;
+    public AudioClip[] itemDespawn;
+    public AudioClip[] itemLaunched;
+    public AudioClip[] itemActivable;
+    public AudioClip[] itemHit;
 }

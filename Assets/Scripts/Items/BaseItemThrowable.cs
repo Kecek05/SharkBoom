@@ -21,6 +21,12 @@ public abstract class BaseItemThrowable : MonoBehaviour
     /// </summary>
     public static event Action<bool> OnItemCallbackAction;
 
+    /// <summary>
+    /// Called when the item is spawned in hand.
+    /// </summary>
+    public static event Action<Transform> OnItemSpawnSound;
+
+
     [BetterHeader("Base Item References")]
     [SerializeField] protected ItemSO itemSO;
     [SerializeField] protected Rigidbody rb;
@@ -91,6 +97,7 @@ public abstract class BaseItemThrowable : MonoBehaviour
 
         ResetConstraints();
         initialized = true;
+        OnItemSpawnSound?.Invoke(this.transform);
     }
 
     protected virtual void CollisionController_OnCollidedWithoutPlayer(GameObject collidedObject)
