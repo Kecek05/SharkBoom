@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2526829100030821761}
   - component: {fileID: 1576746122455352270}
+  - component: {fileID: 5251819645510456395}
   m_Layer: 0
   m_Name: TrajectoryDot2d
   m_TagString: Untagged
@@ -77,7 +78,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 100
   m_Sprite: {fileID: 21300000, guid: 3e9c54aa94328dd44918092ac78fdd34, type: 3}
-  m_Color: {r: 0.077162705, g: 0.1571613, b: 0.9622642, a: 1}
+  m_Color: {r: 0.083704144, g: 0.15928285, b: 0.9339623, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -87,3 +88,25 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &5251819645510456395
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 66968322209639492}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 33c9bf1255a98454989f1de9f7d0675c, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

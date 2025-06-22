@@ -1,3 +1,4 @@
+using System;
 using Sortify;
 using TMPro;
 using UnityEngine;
@@ -11,6 +12,7 @@ public class PlayerDragUi : DragListener, IDetectDragChange, IDetectDragRelease,
     [SerializeField] private LookAtCameraComponent lookAtCamera;
     [SerializeField] private GameObject leftSocket;
     [SerializeField] private GameObject rightSocket;
+    [SerializeField] private GameObject parent;
     
     public override void OnNetworkSpawn()
     {
@@ -20,7 +22,7 @@ public class PlayerDragUi : DragListener, IDetectDragChange, IDetectDragRelease,
 
     public void DoOnDragCancelable(bool cancelable)
     {
-        Debug.Log($"DRAG UI CANCELABLE CHANGED TO: {cancelable}");
+        // Debug.Log($"DRAG UI CANCELABLE CHANGED TO: {cancelable}");
         if (cancelable)
         {
             HideText();
@@ -36,11 +38,11 @@ public class PlayerDragUi : DragListener, IDetectDragChange, IDetectDragRelease,
     {
         if (isRight)
         {
-            background.transform.position = rightSocket.transform.position;
+            parent.transform.position = rightSocket.transform.position;
         }
         else
         {
-            background.transform.position = leftSocket.transform.position;
+            parent.transform.position = leftSocket.transform.position;
         }
     }
 
@@ -52,7 +54,7 @@ public class PlayerDragUi : DragListener, IDetectDragChange, IDetectDragRelease,
 
     private void ShowText()
     {
-        Debug.Log($"DRAG UI ON");
+        // Debug.Log($"DRAG UI ON");
         forceText.enabled = true;
         directionText.enabled = true;
         lookAtCamera.enabled = true; // we enable and disable because this script work on LateUpdate
@@ -61,7 +63,7 @@ public class PlayerDragUi : DragListener, IDetectDragChange, IDetectDragRelease,
 
     private void HideText()
     {
-        Debug.Log($"DRAG UI OFF");
+        // Debug.Log($"DRAG UI OFF");
         forceText.enabled = false;
         directionText.enabled = false;
         lookAtCamera.enabled = false;

@@ -81,8 +81,11 @@ public class BananaItemThrowable : BaseItemThrowableActivable
     {
         if(!itemActivated)
             spinObjectComponent.DisableComponent();
+        
+        //Dont allow to activate the item if collided
+        itemCanBeActivated = false;
     }
-
+    
     protected override void ResetItemThrowableState()
     {
         base.ResetItemThrowableState();
