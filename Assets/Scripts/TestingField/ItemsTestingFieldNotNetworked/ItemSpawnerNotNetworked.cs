@@ -1,12 +1,14 @@
+using System;
 using System.Collections;
 using Sortify;
 using Unity.Netcode;
 using UnityEngine;
 
-public class ItemSpawnerNotNetworked : NetworkBehaviour
+public class ItemSpawnerNotNetworked : MonoBehaviour
 {
     [SerializeField] private GameObject itemPrefab;
     [SerializeField] private Transform itemDirection;
+    [SerializeField] private ItemSO itemSO;
     
     [BetterHeader("Item Spawner Settings", 10)]
     [SerializeField] private float dragForce;
@@ -27,10 +29,8 @@ public class ItemSpawnerNotNetworked : NetworkBehaviour
         Gizmos.DrawLine(start, end);
     }
 
-    public override void OnNetworkSpawn()
+    private void Start()
     {
-        if(!IsServer) return;
-        // Start the coroutine to spawn the item
         StartCoroutine(SpawnItem());
     }
 
@@ -46,35 +46,23 @@ public class ItemSpawnerNotNetworked : NetworkBehaviour
             yield return delay;
 
             if (!canSpawn) continue;
-
+            
+                        
             ItemLauncherData itemLauncherData = new ItemLauncherData
             {
                 dragForce = this.dragForce,
                 dragDirection = itemDirection.position,
-                selectedItemID = 0, // irrelevant
-                ownerPlayableState = PlayableState.None, // irrelevant
+                selectedItemID = itemSO.itemID, 
+                ownerPlayableState = PlayableState.Player1Playing,
+                shootPosition = transform.position,
+                shootRotation = transform.rotation,
+                isRightSocket = true
             };
-
-            if(sync)
-                SpawnItemProjectileServerRpc(itemLauncherData);
-            else 
-                Spawn(itemLauncherData);
+            
+            Spawn(itemLauncherData);
             yield return delay; // wait to activate if possible
             
         }
-    }
-
-    [Rpc(SendTo.Server)]
-    private void SpawnItemProjectileServerRpc(ItemLauncherData launcherData)
-    {
-        
-        SpawnItemProjectileClientRpc(launcherData);
-    }
-    
-    [Rpc(SendTo.ClientsAndHost)]
-    private void SpawnItemProjectileClientRpc(ItemLauncherData launcherData)
-    {
-        Spawn(launcherData);
     }
     
     private void Spawn(ItemLauncherData launcherData)

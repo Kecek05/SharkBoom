@@ -179,10 +179,10 @@ public class DragAndShoot : NetworkBehaviour
                 //reset all
                 SetCanCancelDrag(false);
                 SetIsDragging(false);
+                OnDragCancelable?.Invoke(true);
                 player.ChangePlayerState(PlayerState.IdleMyTurn);
                // player.PlayerStateMachine.TransitionTo(player.PlayerStateMachine.idleMyTurnState);
                // player.TransitionToIdleMyTurnStateServerRpc();
-                OnDragCancelable?.Invoke(false);
                 return;
             }
             else
@@ -194,18 +194,6 @@ public class DragAndShoot : NetworkBehaviour
             }
         }
     }
-    
-    // [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
-    // private void TriggerOnDragStartServerRpc()
-    // {
-    //     TriggerOnDragStartClientRpc();
-    // }
-    //
-    // [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Reliable)]
-    // private void TriggerOnDragStartClientRpc()
-    // {
-    //     OnDragStart?.Invoke();
-    // }
 
     public void InvokeOnDragRelease()
     {

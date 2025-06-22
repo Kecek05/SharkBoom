@@ -327,6 +327,7 @@ public class PlayerThrower : NetworkBehaviour
         playerFlipGfx.HandleOnRotationChanged(isRight);
 
         playerSpawnItemOnHand.HandleOnRotationChanged(isRight);
+        playerDragUi.HandleOnRotationChanged(isRight);
     }
 
     private void HandleOnDragStart()
