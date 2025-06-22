@@ -36,8 +36,8 @@ public class PlayerDragUi : DragListener, IDetectDragStart, IDetectDragChange, I
 
     public void DoOnDragChange(float forcePercent, float andlePercent)
     {
-        forceText.text = $"Force: {Mathf.RoundToInt(forcePercent)}";
-        directionText.text = $"Direction: {Mathf.RoundToInt(andlePercent)}";
+        forceText.text = Mathf.RoundToInt(forcePercent).ToString();
+        directionText.text = Mathf.RoundToInt(andlePercent).ToString();
     }
 
     private void ShowText()

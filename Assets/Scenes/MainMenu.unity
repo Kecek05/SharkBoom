@@ -129,6 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 12395207}
   - component: {fileID: 12395209}
+  - component: {fileID: 12395210}
   m_Layer: 11
   m_Name: MainMenuCharacter
   m_TagString: Untagged
@@ -182,9 +183,24 @@ VideoPlayer:
   m_PlayOnAwake: 1
   m_SkipOnDrop: 1
   m_Looping: 1
-  m_WaitForFirstFrame: 1
+  m_WaitForFirstFrame: 0
   m_FrameReadyEventEnabled: 0
   m_VideoShaders: []
+--- !u!114 &12395210
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 12395206}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d62b48657ab7e1746bc57a2966b7a533, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sharkIdleVideoClip: {fileID: 32900000, guid: c9d466b4c75633a47b2a464cf943691d, type: 3}
+  orcaIdleVideoClip: {fileID: 32900000, guid: 6b1399ed22d3d9e48951576b1404d337, type: 3}
+  characterVideoPlayer: {fileID: 12395209}
 --- !u!1001 &20607133
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -399,7 +415,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4845276930943762971, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.000015258789
+      value: -0.000015258789
       objectReference: {fileID: 0}
     - target: {fileID: 4845637959249703711, guid: 2da3dcc22749e7f4280737786d898334, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1600,6 +1616,7 @@ GameObject:
   - component: {fileID: 198442749}
   - component: {fileID: 198442751}
   - component: {fileID: 198442750}
+  - component: {fileID: 198442752}
   m_Layer: 11
   m_Name: RenderImage
   m_TagString: Untagged
@@ -1661,6 +1678,40 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 198442748}
   m_CullTransparentMesh: 1
+--- !u!328 &198442752
+VideoPlayer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 198442748}
+  m_Enabled: 1
+  m_VideoClip: {fileID: 32900000, guid: c9d466b4c75633a47b2a464cf943691d, type: 3}
+  m_TargetCameraAlpha: 1
+  m_TargetCamera3DLayout: 0
+  m_TargetCamera: {fileID: 0}
+  m_TargetTexture: {fileID: 0}
+  m_TimeReference: 0
+  m_TargetMaterialRenderer: {fileID: 0}
+  m_TargetMaterialProperty: <noninit>
+  m_RenderMode: 2
+  m_AspectRatio: 2
+  m_DataSource: 0
+  m_TimeUpdateMode: 2
+  m_PlaybackSpeed: 1
+  m_AudioOutputMode: 2
+  m_TargetAudioSources: []
+  m_DirectAudioVolumes: []
+  m_Url: 
+  m_EnabledAudioTracks: 
+  m_DirectAudioMutes: 
+  m_ControlledAudioTrackCount: 0
+  m_PlayOnAwake: 1
+  m_SkipOnDrop: 1
+  m_Looping: 0
+  m_WaitForFirstFrame: 1
+  m_FrameReadyEventEnabled: 0
+  m_VideoShaders: []
 --- !u!1 &210823364
 GameObject:
   m_ObjectHideFlags: 0
@@ -3737,7 +3788,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -479.99994, y: -405}
+  m_AnchoredPosition: {x: -479.99988, y: -405}
   m_SizeDelta: {x: 800, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &582350576

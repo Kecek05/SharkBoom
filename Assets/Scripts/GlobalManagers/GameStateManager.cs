@@ -28,14 +28,12 @@ public class GameStateManager : BaseGameStateManager
                 break;
             case GameState.SpawningPlayers:
                 //All players connected
-
                 if(IsServer)
                 {
                     //ServiceLocator.Get<BasePlayersPublicInfoManager>().RandomizePlayerItems();
 
                     ChangeGameState(GameState.CalculatingResults);
                 }
-
                 break;
             case GameState.CalculatingResults:
                 if(IsServer)
@@ -49,7 +47,6 @@ public class GameStateManager : BaseGameStateManager
                         //Is DS, wait for a bit and then change state
                         ChangeGameState(GameState.ShowingPlayersInfo, DELAY_STARTGAME);
                     }
-
                 }
                 break;
             case GameState.ShowingPlayersInfo:
@@ -107,7 +104,7 @@ public class GameStateManager : BaseGameStateManager
         ChangeGameState(GameState.GameEnded);
     }
 
-    [Rpc(SendTo.Server)]
+    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
     private void SetGameStateServerRpc(GameState newState)
     {
         gameState.Value = newState;

@@ -8,7 +8,7 @@ public abstract class BaseTimerManager : NetworkBehaviour
 {
     public event Action OnTurnTimesUp;
 
-    [Unit(" s")][SerializeField] protected int turnTime = 30;
+    [Unit(" s")][SerializeField] protected int turnTime = 300;
     protected NetworkVariable<int> timerTurn = new(0);
 
     protected Coroutine timerCoroutine;
@@ -18,7 +18,7 @@ public abstract class BaseTimerManager : NetworkBehaviour
     public NetworkVariable<int> TimerTurn => timerTurn;
 
 
-    protected void TriggerOnTurnTimesUp() => OnTurnTimesUp?.Invoke();
+    protected void InvokeOnTurnTimesUp() => OnTurnTimesUp?.Invoke();
 
     public abstract void HandleOnPlayableStateValueChanged(PlayableState previousValue, PlayableState newValue);
 

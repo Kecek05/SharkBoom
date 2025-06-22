@@ -5,6 +5,7 @@ using UnityEngine;
 public class BananaItemThrowable : BaseItemThrowableActivable
 {
     [SerializeField] private BaseItemComponent spinObjectComponent;
+    [SerializeField] private GameObject bananaMesh;
 
     private Vector3 launchPosition;
     private Coroutine bananaReturnCoroutine; // Start "Boomerang" Courotine
@@ -15,6 +16,15 @@ public class BananaItemThrowable : BaseItemThrowableActivable
     [SerializeField] private float returnDuration = 1f;
     [Tooltip("Banana curve height, negative values make it curve for down")]
     [SerializeField] private float heightY = 3f;
+
+    private WaitForSecondsRealtime waitToDestroy = new WaitForSecondsRealtime(1.5f);
+
+    protected void OnEnable()
+    {
+        base.OnEnable();
+        bananaMesh.SetActive(true); // Ensure the banana mesh is active when the item is enabled
+    }
+
     public override void ItemReleased(ItemLauncherData itemLauncherData, bool isOwner)
     {
         base.ItemReleased(itemLauncherData, isOwner);
@@ -28,10 +38,10 @@ public class BananaItemThrowable : BaseItemThrowableActivable
     {
         Vector3 startReturnPosition = transform.position;
 
-        if (bananaReturnCoroutine != null)
-        {
-            StopCoroutine(bananaReturnCoroutine);
-        }
+        //if (bananaReturnCoroutine != null)
+        //{
+        //    StopCoroutine(bananaReturnCoroutine);
+        //}
 
         bananaReturnCoroutine = StartCoroutine(ReturnToPlayer(startReturnPosition, launchPosition));
     }
@@ -40,11 +50,12 @@ public class BananaItemThrowable : BaseItemThrowableActivable
     {
         float timer = 0f;
         Vector3 endPosition = targetPosition;
-        
+
         spinObjectComponent.StartComponentLogic();
         
         while (timer < returnDuration)
         {
+
             timer += Time.deltaTime;
             float linearTime = Mathf.Clamp01(timer / returnDuration);
 
@@ -52,13 +63,17 @@ public class BananaItemThrowable : BaseItemThrowableActivable
             float height = heightTime * heightY; 
 
             Vector3 curveMovePosition = Vector3.Lerp(startPosition, endPosition, linearTime);
+            curveMovePosition.z = startPosition.z; 
             transform.position = curveMovePosition + Vector3.up * height;
 
             yield return null;
         }
-
         transform.position = endPosition;
         bananaReturnCoroutine = null;
+
+        bananaMesh.SetActive(false);
+        yield return waitToDestroy;
+
         DestroyItem();
     }
 

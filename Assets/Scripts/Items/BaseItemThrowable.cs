@@ -45,7 +45,7 @@ public abstract class BaseItemThrowable : MonoBehaviour
     protected BaseTurnManager turnManager;
 
     protected bool itemReleased = false;
-    
+    private WaitForSeconds waitToChangeCollision = new(0.05f);
     protected PlayableState ownerPlayableState;
     
     protected bool isOwner = false;
@@ -157,11 +157,18 @@ public abstract class BaseItemThrowable : MonoBehaviour
     {
         itemReleased = true;
 
-        SetCollision(itemLauncherData.ownerPlayableState);
+        StartCoroutine(DelayChangeCollision(itemLauncherData.ownerPlayableState));
+
         thisItemLaucherData = itemLauncherData;
 
         OnItemReleasedAction?.Invoke(this.transform);
         rb.isKinematic = false;
+    }
+
+    private IEnumerator DelayChangeCollision(PlayableState playableState)
+    {
+        yield return waitToChangeCollision;
+        SetCollision(playableState);
     }
 
     private void SetCollision(PlayableState playableState)

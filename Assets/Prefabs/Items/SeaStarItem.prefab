@@ -490,6 +490,7 @@ MonoBehaviour:
   freezeRotationX: 1
   freezeRotationY: 1
   freezeRotationZ: 0
+  isFixedUpdate: 1
   spinObjectComponent: {fileID: 2134412629585974574}
 --- !u!1 &4767779204118326136 stripped
 GameObject:
@@ -544,6 +545,7 @@ MonoBehaviour:
   spinningSpeed: 300
   useInterpolation: 1
   interpolationSpeed: 300
+  resetRotationWhenStoped: 1
   isInverted: 0
 --- !u!199 &2260023391852683846
 ParticleSystemRenderer:

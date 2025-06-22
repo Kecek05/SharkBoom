@@ -31,4 +31,9 @@ public static class CloudCodeRefs
     public const string SET_PLAYER_NAME_ENDPOINT = "SetPlayerName";
     public const string GET_PLAYER_NAME_ENDPOINT = "GetPlayerName";
     public const string SET_PLAYER_NAME_ARGUMENT_NAME = "playerName";
+    
+    //End Match Time
+    public const string SET_PLAYER_END_MATCH_TIME_ENDPOINT = "SetPlayerEndMatchTime";
+    public const string GET_PLAYER_END_MATCH_TIME_ENDPOINT = "GetPlayerEndMatchTime";
+    public const string SET_PLAYER_END_MATCH_TIME_ARGUMENT_MATCH_TIME = "matchEndTime";
 }

@@ -61,6 +61,7 @@ public class GameOverManager : BaseGameOverManager
 
     public override void HandleOnLosedPlayerChanged(PlayableState newValue)
     {
+        Debug.Log($"DIE - DEFINED THE LOSER - HandleOnLosedPlayerChanged");
         if(IsClient)
         {
             GameOverClient();

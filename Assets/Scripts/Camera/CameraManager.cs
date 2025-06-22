@@ -133,6 +133,8 @@ public class CameraManager : NetworkBehaviour
         SetCameraModules(false, false);
         cameraGlobalFollow.FollowObject(player.transform, 3f, true, onComplete: () =>
         {
+            if(playerThrower.PlayerStateMachine == null) return;
+            
             PlayerState currentState = playerThrower.PlayerStateMachine.CurrentState.State;
             if (currentState == PlayerState.IdleMyTurn || currentState == PlayerState.IdleEnemyTurn)
             {

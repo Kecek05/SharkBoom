@@ -71,7 +71,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
 
             string playerName = await Save.LoadPlayerName(AuthenticationService.Instance.PlayerId);
 
-            // Debug.Log($"Player Name: {playerName} - {authState}");
+            Debug.Log($"Player Name: {playerName} - {authState} - {AuthenticationService.Instance.PlayerId}");
 
 
             userData = new UserData
@@ -92,11 +92,11 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
 
     public void StartMatchmakingClient(string ip, int port)
     {
-        Debug.Log($"StartMatchmakingClient, IP: {ip} - PORT: {port}");
+        // Debug.Log($"StartMatchmakingClient, IP: {ip} - PORT: {port}");
         SetIsDedicatedServerGame(true);
         UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
         transport.SetConnectionData(ip, (ushort)port);
-        Debug.Log("StartMatchmakingClient");
+        // Debug.Log("StartMatchmakingClient");
         Loader.LoadClient();
     }
 
@@ -140,6 +140,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         if (!result)
         {
             Debug.LogError("Failed to start client: StartClient returned false.");
+            Application.Quit();
         }
     }
 
@@ -196,15 +197,14 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         if(matchmakingResult.result == MatchmakerPollingResult.Success)
         {
             Debug.Log("Match Found!");
-            //Set values to possible reconnect
             await SetReconnectValues(userData, matchmakingResult.ip, matchmakingResult.port);
-
+            
             StartMatchmakingClient(matchmakingResult.ip, matchmakingResult.port);
         }
 
         return matchmakingResult.result;
     }
-
+    
     private async Task SetReconnectValues(UserData userData, string serverIP, int serverPort)
     {
         await Reconnect.SetIsInMatch(userData.userAuthId, true);

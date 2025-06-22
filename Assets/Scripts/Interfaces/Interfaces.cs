@@ -6,6 +6,11 @@ public interface IDamageable
     public void TakeDamage(DamageableSO damageableSO);
 }
 
+public interface ILocalDamageable
+{
+    public void TakeLocalDamage(DamageableSO damageableSO);
+}
+
 public interface IDraggable
 {
     public void Release(float force, Vector3 direction);

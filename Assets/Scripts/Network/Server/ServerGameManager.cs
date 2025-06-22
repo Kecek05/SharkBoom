@@ -90,6 +90,8 @@ public class ServerGameManager : IDisposable
 
             await Reconnect.SetPlayerMatchConnection(player.Id, multiplayAllocationService.GetMultiplayService.ServerConfig.IpAddress, multiplayAllocationService.GetMultiplayService.ServerConfig.Port);
 
+            // await Reconnect.SetMatchEndTime(player.Id);
+
             Debug.Log($"PlayerId: {player.Id} - Pearls: {pearls}");
 
         }
@@ -169,7 +171,8 @@ public class ServerGameManager : IDisposable
         {
             await Reconnect.SetIsInMatch(playerData.userData.userAuthId, false);
         }
-
+        
+        await Task.Delay(3000);
         ShutdownServer();
     }
 

@@ -25,7 +25,7 @@ public class LoadingPlayersUI : NetworkBehaviour
     [SerializeField] private TextMeshProUGUI player1NameText;
     [SerializeField] private TextMeshProUGUI player1PearlsText;
     [SerializeField] private VideoPlayer player1VideoPlayer;
-
+    
     [BetterHeader("References Player 2")]
     [SerializeField] private TextMeshProUGUI player2NameText;
     [SerializeField] private TextMeshProUGUI player2PearlsText;
@@ -69,11 +69,22 @@ public class LoadingPlayersUI : NetworkBehaviour
     [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
     private void RequestDataToTheServerRpc(ulong senderClientID)
     {
-        Debug.Log($"REQUESTING DATA TOTHE SERVER LOADING PLAYERS UI - Sender ID: {senderClientID} - Players in Data: {NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas.Count}");
+        Debug.Log($"REQUESTING DATA TO THE SERVER LOADING PLAYERS UI - Sender ID: {senderClientID} - Players in Data: {NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas.Count}");
+        StartCoroutine(WaitAllPlayersData(senderClientID));
+    }
+
+    private IEnumerator WaitAllPlayersData(ulong senderClientID)
+    {
+        while (NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas.Count < 2)
+        {
+            Debug.Log($"WAITING FOR PLAYERS DATA - CURRENT: {NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas.Count}");
+            yield return null;
+        }
+        Debug.Log($"Server Recieved both players Data sending it to: {senderClientID}");
         //Send to clients
         foreach (PlayerData playerData in NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas)
         {
-            Debug.Log($"GameState_OnValueChanged on Loading Players UI - Player Data: {playerData.userData.userAuthId} - Client Id: {playerData.clientId}");
+            Debug.Log($"RequestDataToTheServerRpc on Loading Players UI - Player Data: {playerData.userData.userAuthId} - Client Id: {playerData.clientId} - Sender: {senderClientID}");
             UpdatePlayerVisualTypeClientRpc(playerData.playableState, basePlayerPublicInfoManager.GetPlayerVisualTypes()[playerData.playableState], senderClientID);
             UpdatePlayersInfoClientRpc(playerData.userData.userName, playerData.userData.userPearls, playerData.playableState, senderClientID);
         }
@@ -81,39 +92,39 @@ public class LoadingPlayersUI : NetworkBehaviour
 
     private void GameState_OnValueChanged(GameState previousValue, GameState newValue)
     {
-        if(newValue == GameState.CalculatingResults)
-        {
-            //All Connected
-
-        }
-        else if(newValue == GameState.ShowingPlayersInfo)
-        {
+        Debug.Log($"GameState_OnValueChanged - Previous Value: {previousValue} - New Value: {newValue} - {gameObject.name} - Is Owner: {IsOwner} - Client ID: {NetworkManager.LocalClientId}");
+         if(newValue == GameState.ShowingPlayersInfo) 
+         {
             //Show UI
-            if (IsServer)
-            {
-                foreach (ulong connectedClientsId in NetworkManager.Singleton.ConnectedClientsIds)
-                {
-                    RequestDataToTheServerRpc(connectedClientsId);
-                }
-            }
+            // if (IsServer)
+            // {
+            //     foreach (ulong connectedClientsId in NetworkManager.ConnectedClientsIds)
+            //     {
+            //         if(IsServer && !IsHost && connectedClientsId == 0) continue; //Not send the id 0 if is DS
+            //         RequestDataToTheServerRpc(connectedClientsId);
+            //     }
+            // }
             
-            RequestDataToTheServerRpc(NetworkManager.Singleton.LocalClientId);
+            Debug.Log($"CLIENT REQUESTING DATA LOADING PLAYERS UI - {gameObject.name} - Is Owner: {IsOwner} - Client ID: {NetworkManager.LocalClientId} - Game State: {newValue}");
+            RequestDataToTheServerRpc(NetworkManager.LocalClientId);
             alreadyShowedPlayersInfo = true;
             // PassPlayersDataToClients();
 
             //ShowPlayersInfo();
             //HideWaitingForPlayers();
-        } else if (newValue == GameState.GameStarted)
-        {
+         } 
+         else if (newValue == GameState.GameStarted)
+         {
             if (!alreadyShowedPlayersInfo)
             {
-                RequestDataToTheServerRpc(NetworkManager.Singleton.LocalClientId);
+                Debug.Log($"CLIENT REQUESTING DATA LOADING PLAYERS UI - {gameObject.name} - Is Owner: {IsOwner} - Client ID: {NetworkManager.LocalClientId} - Game State: {newValue}");
+                RequestDataToTheServerRpc(NetworkManager.LocalClientId);
                 alreadyShowedPlayersInfo = true;
             }
             //Game Started
             // HidePlayersInfo();
             // HideWaitingForPlayers();
-        }
+         }
     }
 
     // private void PassPlayersDataToClients()
@@ -134,7 +145,7 @@ public class LoadingPlayersUI : NetworkBehaviour
     private void UpdatePlayerVisualTypeClientRpc(PlayableState playableState, PlayerVisualType playerVisualType, ulong senderClientId)
     {
         //Only called to the client who requested it
-        if(senderClientId != NetworkManager.Singleton.LocalClientId) return;
+        if(senderClientId != NetworkManager.LocalClientId) return;
         
         basePlayerPublicInfoManager.SetPlayerVisualType(playableState, playerVisualType);
         Debug.Log("UpdatePlayerVisualTypeClientRpc - PlayerVisualType: " + playerVisualType + " PlayableState: " + playableState + " ClientId: " + NetworkManager.LocalClientId);
@@ -144,7 +155,7 @@ public class LoadingPlayersUI : NetworkBehaviour
     private void UpdatePlayersInfoClientRpc(FixedString32Bytes playerName, int playerPearls, PlayableState playableState, ulong senderClientId)
     {
         //Only called to the client who requested it
-        if(senderClientId != NetworkManager.Singleton.LocalClientId) return;
+        if(senderClientId != NetworkManager.LocalClientId) return;
         
         updatedPlayersInfoOnClient++;
         

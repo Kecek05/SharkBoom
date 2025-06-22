@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerHealth : HealthComponent
 {
     public static event EventHandler<OnPlayerTakeDamageArgs> OnPlayerTakeDamage;
-
+    
     public class OnPlayerTakeDamageArgs : EventArgs
     {
         public PlayableState playableState;
@@ -19,6 +19,7 @@ public class PlayerHealth : HealthComponent
     public static event Action OnPlayerDie;
 
     private float selectedMultiplier; //cache
+    private float localSelectedMultiplier;
     [SerializeField] private PlayerThrower player;
 
     public override void OnNetworkSpawn()
@@ -27,17 +28,38 @@ public class PlayerHealth : HealthComponent
 
         if(IsClient)
         {
-            currentHealth.OnValueChanged += CurrentHealth_OnValueChanged;
-            CurrentHealth_OnValueChanged(0f, currentHealth.Value);
+            // currentHealth.OnValueChanged += CurrentHealth_OnValueChanged;
+            // CurrentHealth_OnValueChanged(0f, currentHealth.Value);
         }
     }
 
-    private void CurrentHealth_OnValueChanged(float previousValue, float newValue)
+    // private void CurrentHealth_OnValueChanged(float previousValue, float newValue)
+    // {
+    //     OnPlayerTakeDamage?.Invoke(this, new OnPlayerTakeDamageArgs { playableState = player.ThisPlayableState.Value, playerCurrentHealth = currentHealth.Value, playerMaxHealth = maxHealth });
+    // }
+
+    public void PlayerTakeLocalDamage(DamageableSO damageableSO, BodyPartEnum bodyPart)
     {
-        OnPlayerTakeDamage?.Invoke(this, new OnPlayerTakeDamageArgs { playableState = player.ThisPlayableState.Value, playerCurrentHealth = currentHealth.Value, playerMaxHealth = maxHealth });
+
+        localSelectedMultiplier = bodyPart == BodyPartEnum.Head ? damageableSO.headMultiplier : bodyPart == BodyPartEnum.Body ? damageableSO.bodyMultiplier : bodyPart == BodyPartEnum.Foot ? damageableSO.footMultiplier : 0f; //0f error
+
+        if(localSelectedMultiplier == 0f)
+        {
+            Debug.LogWarning("Bodypart not found");
+            return;
+        }
+
+        Debug.Log($"HEALTH - Damage LOCAL: {damageableSO.damage} in: {bodyPart} with multiplier: {localSelectedMultiplier} total: {damageableSO.damage * localSelectedMultiplier} damageableSO: {damageableSO} - {gameObject.name}");
+
+        ModifyLocalHealth(-(damageableSO.damage * localSelectedMultiplier));
+
+        
     }
 
-
+    protected override void InvokeOnTakeLocalDamage()
+    {
+        OnPlayerTakeDamage?.Invoke(this, new OnPlayerTakeDamageArgs { playableState = player.ThisPlayableState.Value, playerCurrentHealth = localCurrentHealth, playerMaxHealth = maxHealth });
+    }
 
     public void PlayerTakeDamage(DamageableSO damageableSO, BodyPartEnum bodyPart)
     {
@@ -51,7 +73,7 @@ public class PlayerHealth : HealthComponent
                 return;
             }
 
-            Debug.Log($"Damage: {damageableSO.damage} in: {bodyPart} with multiplier: {selectedMultiplier} total: {damageableSO.damage * selectedMultiplier} damageableSO: {damageableSO}");
+            Debug.Log($"HEALTH - Damage: {damageableSO.damage} in: {bodyPart} with multiplier: {selectedMultiplier} total: {damageableSO.damage * selectedMultiplier} damageableSO: {damageableSO} - {gameObject.name}");
 
             ModifyHealthServerRpc(-(damageableSO.damage * selectedMultiplier));
 
@@ -72,7 +94,7 @@ public class PlayerHealth : HealthComponent
     {
         if (IsClient)
         {
-            currentHealth.OnValueChanged -= CurrentHealth_OnValueChanged;
+            // currentHealth.OnValueChanged -= CurrentHealth_OnValueChanged;
         }
 
     }

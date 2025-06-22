@@ -58,11 +58,14 @@ public class PlayerThrower : NetworkBehaviour
         gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
         turnManager = ServiceLocator.Get<BaseTurnManager>();
         
-        playerStateMachine = new PlayerStateMachine(this, playerDragController, playerInventory, false);
+        CreatePlayerStateMachine();
         
         HandleEvents();
         Initialize();
-        //DEBUG
+        
+        
+        if(gameStateManager.CurrentGameState.Value == GameState.GameStarted)
+            Resync();
         
     }
 
@@ -91,7 +94,8 @@ public class PlayerThrower : NetworkBehaviour
         playerRotateToAim.InitializeOwner();
         playerDragController.Initialize(itemJumpSO.rb);
         
-        playerStateMachine.Initialize(PlayerState.IdleEnemyTurn);
+        if(playerStateMachine == null)
+            CreatePlayerStateMachine();
         
         // Debug.Log($"SPAWNED PLAYER STATE MACHINE: {playerStateMachine} - CURRENT STATE: {playerStateMachine.CurrentState} - OBJ: {gameObject.name}");
         
@@ -110,11 +114,43 @@ public class PlayerThrower : NetworkBehaviour
         cameraManager.CameraGoToActivePlayer();
     }
 
+    private void Resync()
+    {
+        if(playerStateMachine == null)
+            CreatePlayerStateMachine();
+        
+        RequestPlayerStateMachineStateFromServerRpc(NetworkManager.LocalClientId);
+    }
+
+    [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
+    private void RequestPlayerStateMachineStateFromServerRpc(ulong clientID)
+    {
+        //Request Player State machine to the server   
+        Debug.Log($"REQUEST RESYNC PLAYER STATE MACHINE - {gameObject.name} - State In Server: {playerStateMachine.CurrentPlayerState} - Caller: {clientID}");
+        ResponsePlayerStateMachineStateFromServerRpc(playerStateMachine.CurrentPlayerState, clientID);
+    }
+    
+    
+    [Rpc(SendTo.ClientsAndHost, Delivery = RpcDelivery.Reliable)]
+    private void ResponsePlayerStateMachineStateFromServerRpc(PlayerState playerState, ulong clientId)
+    {
+        // Recieve the player state machine from the server
+        if(clientId != NetworkManager.LocalClientId) return; // not caller
+    
+        if(playerStateMachine == null)
+            CreatePlayerStateMachine();
+        
+        playerStateMachine.ChangeStateWithPlayerState(playerState);
+        Debug.Log($"RESPONSE RESYNC PLAYER STATE MACHINE - {gameObject.name} - State: {playerStateMachine.CurrentPlayerState} - Caller: {clientId}");
+    }
+
     private void InitializeOwner()
     {
         Debug.Log($"Events - InitializeOwner - {gameObject.name}");
         //Owner initialize code
         
+        if(playerStateMachine == null)
+            CreatePlayerStateMachine();
         playerStateMachine.ChangeOwnership(IsOwner);
         
         PlayableStateInitialize(thisPlayableState.Value, thisPlayableState.Value);
@@ -176,6 +212,9 @@ public class PlayerThrower : NetworkBehaviour
         playerRagdollEnabler.OnRagdollDisabled += HandleOnRagdollDisabled;
 
         playerLauncher.OnLastItemSynced += HandleOnLastItemSynced;
+
+        if (playerStateMachine == null)
+            CreatePlayerStateMachine();
         
         playerStateMachine.OnStateChanged += HandleOnStateChanged;
         
@@ -273,6 +312,13 @@ public class PlayerThrower : NetworkBehaviour
             }
             playerDragController.InvokeOnDragRelease();
         });
+    }
+
+    private void CreatePlayerStateMachine()
+    {
+        Debug.Log($"PLAYER STATE MACHINE CREATED - {gameObject.name} - Owner: {IsOwner}");
+        playerStateMachine = new PlayerStateMachine(this, playerDragController, playerInventory, IsOwner);
+        playerStateMachine.Initialize(PlayerState.IdleEnemyTurn);
     }
 
     private void HandleOnPlayerDetectFacingDirectionRotationChanged(bool isRight)
@@ -486,6 +532,16 @@ public class PlayerThrower : NetworkBehaviour
         }
         // Debug.Log($"PlayerThrower - Changing Player State to: {playerState} - Old State Was: {playerStateMachine.CurrentState} - GameObject: {gameObject.name}");
         playerStateMachine.ChangeStateWithPlayerState(playerState);
+        PassStateToServerRpc(playerState);
+    }
+
+    [Rpc(SendTo.Server, Delivery =  RpcDelivery.Reliable)]
+    private void PassStateToServerRpc(PlayerState playerState)
+    {
+        if(IsHost) return; //Only DS
+        
+        playerStateMachine.ChangeStateWithPlayerState(playerState);
+        Debug.Log($"UPDATING PLAYER STATE MACHINE - {gameObject.name} - State In Server: {playerStateMachine.CurrentPlayerState}");
     }
     
     //DEBUG

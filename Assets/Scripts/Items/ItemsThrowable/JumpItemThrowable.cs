@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using DG.Tweening;
 using UnityEngine;
 
 public class JumpItemThrowable : BaseItemThrowable
@@ -60,6 +58,7 @@ public class JumpItemThrowable : BaseItemThrowable
             objectToFollowTransform.position = Vector3.Lerp(objectToFollowTransform.position, targetPos, Time.deltaTime * followSpeed);
 
             currentFollowingTime += Time.deltaTime;
+
             yield return null;
         }
     }

@@ -116,11 +116,15 @@ public class PlayerGetUp : NetworkBehaviour
         PassOwnerPositionToOwnerRpc(position);
     }
     
-    [Rpc(SendTo.Owner, RequireOwnership = false, Delivery = RpcDelivery.Reliable)]
+    [Rpc(SendTo.Everyone, RequireOwnership = false, Delivery = RpcDelivery.Reliable)]
     private void PassOwnerPositionToOwnerRpc(Vector3 position)
     {
-        Debug.Log($"GETUP - Owner Recieved Last Pos: {position} - {gameObject.name}");
-        lastCalculatedPosition = position;
+        if (IsOwner || (IsServer && !IsHost))
+        {
+            //Owner or DS
+            Debug.Log($"GETUP - Owner Recieved Last Pos: {position} - {gameObject.name}");
+            lastCalculatedPosition = position;
+        }
     }
     private Vector3 GetPlayerFreePos(bool isSyncServer = false)
     {
@@ -234,6 +238,8 @@ public class PlayerGetUp : NetworkBehaviour
         else
         {
             ApplyGetUp(finalPos);
+            Debug.Log($"GETUP - RESETED LAST CALCULATED POS");
+            lastCalculatedPosition = Vector3.zero;
         }
     }
 
@@ -253,7 +259,7 @@ public class PlayerGetUp : NetworkBehaviour
             Debug.Log($"GETUP - WAITING RPC WITH POS - {gameObject.name} - Owner: {IsOwner}");
             yield return null;
         }
-        
+        Debug.Log($"GETUP - FINISHED WAITING FOR RPC - {gameObject.name} - Pos: {lastCalculatedPosition} - Owner: {IsOwner}");
         ApplyGetUp(lastCalculatedPosition);
         lastCalculatedPosition = Vector3.zero;
         

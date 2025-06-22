@@ -17,6 +17,7 @@ public static class Loader
         AuthBootstrap,
         SaveBootstrap,
         NameBootstrap,
+        GameTutorial,
     }
 
     public enum LoadType
