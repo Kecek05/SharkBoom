@@ -3,12 +3,13 @@ using UnityEngine;
 public class ItemActivableCallbackVFXComponent : MonoBehaviour
 {
     [SerializeField] private BaseItemThrowableActivable ItemThrowable;
-    [SerializeField] private ParticleSystem particleSystemOnActivated;
+    [SerializeField] private ParticleSystem[] particleSystemOnActivated;
 
     private void OnEnable()
     {
         ItemThrowable.OnItemActivated += BaseItemThrowableActivable_OnItemActivated;
-        particleSystemOnActivated.Clear();
+
+        ParticleSystemClear();
     }
 
     private void BaseItemThrowableActivable_OnItemActivated()
@@ -18,8 +19,8 @@ public class ItemActivableCallbackVFXComponent : MonoBehaviour
 
     private void PlayVFX()
     {
-        particleSystemOnActivated.Clear();
-        particleSystemOnActivated.Play();
+        ParticleSystemClear();
+        ParticleSystemPlay();
     }
     
     //
@@ -36,6 +37,22 @@ public class ItemActivableCallbackVFXComponent : MonoBehaviour
     //     particleSystemOnActivated.Play();
     // }
 
+    private void ParticleSystemClear()
+    {
+        foreach (ParticleSystem particleSystem in particleSystemOnActivated)
+        {
+            particleSystem.Clear();
+        }
+    }
+
+    private void ParticleSystemPlay()
+    {
+        foreach (ParticleSystem particleSystem in particleSystemOnActivated)
+        {
+            particleSystem.Play();
+        }
+    }
+        
     private void OnDisable()
     {
         ItemThrowable.OnItemActivated -= BaseItemThrowableActivable_OnItemActivated;
