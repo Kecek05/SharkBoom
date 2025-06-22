@@ -21,6 +21,7 @@ public class PlayerHealth : HealthComponent
     private float selectedMultiplier; //cache
     private float localSelectedMultiplier;
     [SerializeField] private PlayerThrower player;
+    private bool syncronizedThisTurn = false;
 
     public override void OnNetworkSpawn()
     {
@@ -28,19 +29,38 @@ public class PlayerHealth : HealthComponent
 
         if(IsClient)
         {
-            // currentHealth.OnValueChanged += CurrentHealth_OnValueChanged;
-            // CurrentHealth_OnValueChanged(0f, currentHealth.Value);
+            currentHealth.OnValueChanged += CurrentHealth_OnValueChanged;
+            CurrentHealth_OnValueChanged(0f, currentHealth.Value);
         }
     }
 
-    // private void CurrentHealth_OnValueChanged(float previousValue, float newValue)
-    // {
-    //     OnPlayerTakeDamage?.Invoke(this, new OnPlayerTakeDamageArgs { playableState = player.ThisPlayableState.Value, playerCurrentHealth = currentHealth.Value, playerMaxHealth = maxHealth });
-    // }
+    public void InitializeOwner()
+    {
+        BaseItemThrowable.OnItemCallbackAction += BaseItemThrowableOnOnItemCallbackAction;
+    }
+
+    private void BaseItemThrowableOnOnItemCallbackAction(bool isOwnerOfItem)
+    {
+        Debug.Log($"HEALTH - Item Callback - Syncronized This turn is false - {gameObject.name}");
+        syncronizedThisTurn = false;
+    }
+
+    private void CurrentHealth_OnValueChanged(float previousValue, float newValue)
+    {
+        //Syncronize localhealth with currentHealth
+        if(localCurrentHealth == newValue) return;
+        
+        Debug.Log($"HEALTH - CurrentHealth_OnValueChanged - Syncronized This turn is true - Local Health is: {newValue} - {gameObject.name}");
+        localCurrentHealth = newValue;
+        syncronizedThisTurn = true;
+
+        // OnPlayerTakeDamage?.Invoke(this, new OnPlayerTakeDamageArgs { playableState = player.ThisPlayableState.Value, playerCurrentHealth = currentHealth.Value, playerMaxHealth = maxHealth });
+    }
 
     public void PlayerTakeLocalDamage(DamageableSO damageableSO, BodyPartEnum bodyPart)
     {
-
+        if(syncronizedThisTurn) return; //Already the same as the Server
+        
         localSelectedMultiplier = bodyPart == BodyPartEnum.Head ? damageableSO.headMultiplier : bodyPart == BodyPartEnum.Body ? damageableSO.bodyMultiplier : bodyPart == BodyPartEnum.Foot ? damageableSO.footMultiplier : 0f; //0f error
 
         if(localSelectedMultiplier == 0f)
@@ -52,8 +72,6 @@ public class PlayerHealth : HealthComponent
         Debug.Log($"HEALTH - Damage LOCAL: {damageableSO.damage} in: {bodyPart} with multiplier: {localSelectedMultiplier} total: {damageableSO.damage * localSelectedMultiplier} damageableSO: {damageableSO} - {gameObject.name}");
 
         ModifyLocalHealth(-(damageableSO.damage * localSelectedMultiplier));
-
-        
     }
 
     protected override void InvokeOnTakeLocalDamage()

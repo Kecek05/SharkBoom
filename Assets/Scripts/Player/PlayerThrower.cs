@@ -32,6 +32,7 @@ public class PlayerThrower : NetworkBehaviour
     [SerializeField] private PlayerTutorialController playerTutorialController;
     [SerializeField] private PlayerTutorialUi playerTutorialUI;
     [SerializeField] private PlayerIndicatorUI playerIndicatorUI;
+    [SerializeField] private PlayerHealth playerHealth;
 
     private PlayerStateMachine playerStateMachine;
 
@@ -166,6 +167,7 @@ public class PlayerThrower : NetworkBehaviour
 
         playerInventoryUI.InitializeOwner();
         playerTutorialUI.InitializeOwner();
+        playerHealth.InitializeOwner();
     }
 
     private void HandleOwnerEvents()
