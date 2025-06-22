@@ -108,7 +108,9 @@ public class SoundManager : MonoBehaviour
 
 
     public static void PlaySound(AudioClip[] audioClipArray, Vector3 position, float volume = 1f)
-    { 
+    {
+        if (audioClipArray == null || audioClipArray.Length == 0) return;
+
         AudioSource.PlayClipAtPoint(audioClipArray[Random.Range(0, audioClipArray.Length)], position, volume);
     }
 
