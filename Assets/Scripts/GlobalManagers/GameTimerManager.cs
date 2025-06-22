@@ -1,9 +1,12 @@
 using QFSW.QC;
+using System;
 using System.Collections;
 using Unity.Netcode;
 
 public class GameTimerManager : BaseGameTimerManager
 {
+    public static event Action OnGameTimerStartSound;
+    public static event Action OnGameTimerEndSound;
 
     public override void HandleOnGameStateChanged(GameState gameState)
     {
@@ -14,6 +17,7 @@ public class GameTimerManager : BaseGameTimerManager
             if (gameTimerCoroutine == null)
             {
                 gameTimerCoroutine = StartCoroutine(GameTimerTicks());
+                OnGameTimerStartSound?.Invoke();
             }
 
         }
@@ -23,6 +27,7 @@ public class GameTimerManager : BaseGameTimerManager
             {
                 StopCoroutine(gameTimerCoroutine);
                 gameTimerCoroutine = null;
+                OnGameTimerEndSound?.Invoke();
             }
         }
     }
