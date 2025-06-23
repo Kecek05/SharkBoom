@@ -12105,6 +12105,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 3873209594310504747, guid: 7b8e86d3faaf55e47adc3ea5b3cecaa1, type: 3}
+      propertyPath: tutorialParent
+      value: 
+      objectReference: {fileID: 4602763708739110786}
     - target: {fileID: 4850609182189403967, guid: 7b8e86d3faaf55e47adc3ea5b3cecaa1, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -12237,6 +12241,11 @@ MonoBehaviour:
 --- !u!224 &4481097879294298772 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4850609182189403967, guid: 7b8e86d3faaf55e47adc3ea5b3cecaa1, type: 3}
+  m_PrefabInstance: {fileID: 9034464521094329771}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4602763708739110786 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4791989060787122729, guid: 7b8e86d3faaf55e47adc3ea5b3cecaa1, type: 3}
   m_PrefabInstance: {fileID: 9034464521094329771}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &5233387307745232000 stripped
