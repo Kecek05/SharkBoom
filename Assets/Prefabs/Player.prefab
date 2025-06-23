@@ -3825,7 +3825,7 @@ MonoBehaviour:
   followPosition: 1
   followRotation: 1
   positionOffset: {x: 0, y: 0, z: 0}
-  positionThreshold: 1.1
+  positionThreshold: 0
   rotationThreshold: 6
   moveDuration: 0.1
   tweenEase: 9
@@ -4423,7 +4423,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5805403087200263490}
-  - component: {fileID: 8743499761240112839}
+  - component: {fileID: 6128396374805994240}
   m_Layer: 0
   m_Name: AimCoconutTrajectorySocketL
   m_TagString: Untagged
@@ -4446,7 +4446,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 404351203417288681}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
---- !u!114 &8743499761240112839
+--- !u!114 &6128396374805994240
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4455,7 +4455,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6164990449671634799}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e7144ffcf7603be428f565c2b921a69c, type: 3}
+  m_Script: {fileID: 11500000, guid: 633f60b4376dd944aacd07902762ba7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   targetTransform: {fileID: 1589477270824695465}
@@ -4463,7 +4463,7 @@ MonoBehaviour:
   followPosition: 1
   followRotation: 1
   followScale: 0
-  positionOffset: {x: 0.947, y: 2.494, z: -0.829}
+  positionOffset: {x: -1.04, y: 1.02, z: -0.18}
   eulerRotationOffset: {x: 0, y: 0, z: 0}
   useInterpolation: 0
   interpolationSpeed: 5

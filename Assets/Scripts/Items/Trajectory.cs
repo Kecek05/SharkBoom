@@ -66,8 +66,8 @@ public class Trajectory : MonoBehaviour
             // Debug.Log($"TRAJECTORY - Target Active: {targetActiveDots} - Current Force: {currentForce} - Max Force: {maxForce}");
             for (int i = 0; i < dotsNumber; i++)
             {
-                dotsList[i].gameObject.SetActive(true);
-                // dotsList[i].gameObject.SetActive(i < targetActiveDots);
+                // dotsList[i].gameObject.SetActive(true);
+                dotsList[i].gameObject.SetActive(i < targetActiveDots);
             }
 
             lastForceApplied = percentForceApplied;
@@ -129,6 +129,8 @@ public class Trajectory : MonoBehaviour
         for (int i = 0; i < dotsNumber; i++)
         {
             float timeStep = Time.fixedDeltaTime;
+            Physics.Simulate(timeStep);
+            Physics.Simulate(timeStep);
             Physics.Simulate(timeStep);
             Physics.Simulate(timeStep);
             ghostPos.Add(ghostObj.transform.position);
