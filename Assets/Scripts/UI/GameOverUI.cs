@@ -48,6 +48,7 @@ public class GameOverUI : MonoBehaviour
     
 
     private bool alreadyChanged = false; //Prevent double change when losting connection
+    private bool alreadyChangedTie = false;
     private bool localDieTriggered = false;
 
     private BaseGameOverManager gameOverManager;
@@ -110,9 +111,13 @@ public class GameOverUI : MonoBehaviour
 
     private IEnumerator WaitUIToBeChanged()
     {
+        
         while (!alreadyChanged || !localDieTriggered)
         {
+            if (alreadyChangedTie)
+                break; // exits the while loop
             // Debug.Log($"GAME OVER UI - WAITING CHANGE UI - Already Changed: {alreadyChanged} - LocalDieTriggered: {localDieTriggered}");
+
             yield return null;
         }
         Show();
@@ -209,6 +214,8 @@ public class GameOverUI : MonoBehaviour
         // gameOverVideoPlayer.Play();
 
         ChangeUI("Time's Up!", "TIE!", tieBackground, tiePearlsBackground, tieReturnButton, tieBackgroundMaterial);
+
+        alreadyChangedTie = true;
     }
 
     private void ChangeUI(string resultTxt, string resultTitleTxt, Sprite backgroundSprite, Sprite pearlsSprite, Sprite buttonSprite, Material animateMaterial)
