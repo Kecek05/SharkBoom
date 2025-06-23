@@ -75,14 +75,14 @@ public class PlayerSpawner : IPlayerSpawner
             }
         }
 
-        Debug.Log($"Spawning Player, PlayableState: {GetPlayableStateByCount()} Selected Random SpawnPoint: {randomSpawnPointSelected.name} - Player Spawned: {PlayerCount}");
+        // Debug.Log($"Spawning Player, PlayableState: {GetPlayableStateByCount()} Selected Random SpawnPoint: {randomSpawnPointSelected.name} - Player Spawned: {PlayerCount}");
 
         OnPlayerSpawned?.Invoke(playerSpawned);
     }
 
     public PlayableState GetPlayableStateByCount()
     {
-        Debug.Log($"GetPlayableStateByCount - {PlayerCount}");
+        // Debug.Log($"GetPlayableStateByCount - {PlayerCount}");
 
         if (PlayerCount == 1)
         {

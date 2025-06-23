@@ -127,7 +127,7 @@ public abstract class BaseItemThrowable : MonoBehaviour
     /// <param name="direction"></param>
     public virtual void ItemReleased(ItemLauncherData itemLauncherData, bool isOwner)
     {
-        Debug.Log($"STEPS - ITEM RELEASED - IS OWNER: {isOwner} - Owner State: {itemLauncherData.ownerPlayableState}");
+        // Debug.Log($"STEPS - ITEM RELEASED - IS OWNER: {isOwner} - Owner State: {itemLauncherData.ownerPlayableState}");
         this.isOwner = isOwner;
         ownerPlayableState = itemLauncherData.ownerPlayableState;
         turnManager = ServiceLocator.Get<BaseTurnManager>();

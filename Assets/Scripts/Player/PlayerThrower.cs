@@ -86,7 +86,7 @@ public class PlayerThrower : NetworkBehaviour
 
     private void Initialize()
     {
-        Debug.Log($"Events - Initialize - {gameObject.name}");
+        // Debug.Log($"Events - Initialize - {gameObject.name}");
         
         PlayableStateInitialize(thisPlayableState.Value, thisPlayableState.Value);
         
@@ -127,7 +127,7 @@ public class PlayerThrower : NetworkBehaviour
     private void RequestPlayerStateMachineStateFromServerRpc(ulong clientID)
     {
         //Request Player State machine to the server   
-        Debug.Log($"REQUEST RESYNC PLAYER STATE MACHINE - {gameObject.name} - State In Server: {playerStateMachine.CurrentPlayerState} - Caller: {clientID}");
+        // Debug.Log($"REQUEST RESYNC PLAYER STATE MACHINE - {gameObject.name} - State In Server: {playerStateMachine.CurrentPlayerState} - Caller: {clientID}");
         ResponsePlayerStateMachineStateFromServerRpc(playerStateMachine.CurrentPlayerState, clientID);
     }
     
@@ -142,12 +142,12 @@ public class PlayerThrower : NetworkBehaviour
             CreatePlayerStateMachine();
         
         playerStateMachine.ChangeStateWithPlayerState(playerState);
-        Debug.Log($"RESPONSE RESYNC PLAYER STATE MACHINE - {gameObject.name} - State: {playerStateMachine.CurrentPlayerState} - Caller: {clientId}");
+        // Debug.Log($"RESPONSE RESYNC PLAYER STATE MACHINE - {gameObject.name} - State: {playerStateMachine.CurrentPlayerState} - Caller: {clientId}");
     }
 
     private void InitializeOwner()
     {
-        Debug.Log($"Events - InitializeOwner - {gameObject.name}");
+        // Debug.Log($"Events - InitializeOwner - {gameObject.name}");
         //Owner initialize code
         
         if(playerStateMachine == null)
@@ -171,7 +171,7 @@ public class PlayerThrower : NetworkBehaviour
 
     private void HandleOwnerEvents()
     {
-        Debug.Log($"Events - HandleOwnerEvents - {gameObject.name}");
+        // Debug.Log($"Events - HandleOwnerEvents - {gameObject.name}");
         
         playerLauncher.OnItemLaunched += HandleOnItemLaunched;
         playerInventoryUI.OnItemSelectedByUI += HandleOnItemSelectedByUI;
@@ -302,14 +302,14 @@ public class PlayerThrower : NetworkBehaviour
         playerRotateToAim.SyncAimPosition(aimPosition, () =>
         {
             //Finished Lerp Aim Position
-            Debug.Log($"STEPS CLIENT 2 - AIM POSITION SYNCED - AIM POSITION: {aimPosition} - {gameObject.name} - Current SM Player: {playerStateMachine.CurrentPlayerState}");
+            // Debug.Log($"STEPS CLIENT 2 - AIM POSITION SYNCED - AIM POSITION: {aimPosition} - {gameObject.name} - Current SM Player: {playerStateMachine.CurrentPlayerState}");
 
             if (playerStateMachine.CurrentPlayerState != PlayerState.DraggingItem &&
                 playerStateMachine.CurrentPlayerState != PlayerState.DraggingJump)
             {
 
                 ChangePlayerState(PlayerState.DraggingItem);
-                Debug.LogWarning($"STEPS CLIENT 2.1 - AIM POSITION SYNCED - SETTING PLAYER SM TO DRAGGING ITEM AIM POSITION: {aimPosition} - {gameObject.name} - Current SM Player: {playerStateMachine.CurrentPlayerState}");
+                // Debug.LogWarning($"STEPS CLIENT 2.1 - AIM POSITION SYNCED - SETTING PLAYER SM TO DRAGGING ITEM AIM POSITION: {aimPosition} - {gameObject.name} - Current SM Player: {playerStateMachine.CurrentPlayerState}");
             }
             playerDragController.InvokeOnDragRelease();
         });
@@ -317,7 +317,7 @@ public class PlayerThrower : NetworkBehaviour
 
     private void CreatePlayerStateMachine()
     {
-        Debug.Log($"PLAYER STATE MACHINE CREATED - {gameObject.name} - Owner: {IsOwner}");
+        // Debug.Log($"PLAYER STATE MACHINE CREATED - {gameObject.name} - Owner: {IsOwner}");
         playerStateMachine = new PlayerStateMachine(this, playerDragController, playerInventory, IsOwner);
         playerStateMachine.Initialize(PlayerState.IdleEnemyTurn);
     }

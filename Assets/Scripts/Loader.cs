@@ -110,7 +110,7 @@ public static class Loader
                 currentScene = targetScene;
                 break;
             case LoadType.Client:
-                Debug.Log($"Load Callback Client Connect");
+                // Debug.Log($"Load Callback Client Connect");
                 ClientSingleton.Instance.GameManager.ConnectClient(); //Connect client in Loading Scene
                 currentScene = Scene.GameNetCodeTest;
                 break;

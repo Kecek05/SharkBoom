@@ -25,7 +25,7 @@ public class NetworkClient : IDisposable //Actual Client Game Logic
 
     private void SceneManager_OnSceneEvent(SceneEvent sceneEvent)
     {
-        Debug.Log($"Scene Event: {sceneEvent.SceneEventType}");
+        // Debug.Log($"Scene Event: {sceneEvent.SceneEventType}");
     }
 
     private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
@@ -64,7 +64,7 @@ public class NetworkClient : IDisposable //Actual Client Game Logic
         Debug.Log("I Disconnected from DS");
         if(SceneManager.GetActiveScene().name == Loader.Scene.Loading.ToString())
         {
-            Debug.LogWarning("Disconnected in LoadingScene, closing the game");
+            // Debug.LogWarning("Disconnected in LoadingScene, closing the game");
             Disconnect();
             Loader.Load(Loader.Scene.NoNetwork);
             return;
@@ -77,7 +77,7 @@ public class NetworkClient : IDisposable //Actual Client Game Logic
             if (ServiceLocator.Get<BaseGameStateManager>().CurrentGameState.Value != GameState.GameEnded)
             {
                 //Game not ended yet
-                Debug.LogWarning("Disconnected in Game DS, closing the game");
+                // Debug.LogWarning("Disconnected in Game DS, closing the game");
                 Disconnect();
                 Loader.Load(Loader.Scene.NoNetwork);
             }
@@ -99,7 +99,7 @@ public class NetworkClient : IDisposable //Actual Client Game Logic
         }
 
         if(networkManager.IsConnectedClient)
-            Debug.Log("NETCLIENT - Call shutdown on manager, but network client");
+            // Debug.Log("NETCLIENT - Call shutdown on manager, but network client");
             networkManager.Shutdown();
 
         if (SceneManager.GetActiveScene().name != Loader.Scene.MainMenu.ToString())

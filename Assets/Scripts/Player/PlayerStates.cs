@@ -128,7 +128,7 @@ public class DraggingJump : IState
 
     private void PlayerDragController_OnDragRelease()
     { 
-        Debug.Log($"STEPS CLIENT 4 - DRAGGING JUMP TO DRAG RELEASE JUMP - {player.gameObject.name}");
+        // Debug.Log($"STEPS CLIENT 4 - DRAGGING JUMP TO DRAG RELEASE JUMP - {player.gameObject.name}");
         player.ChangePlayerState(PlayerState.DragReleaseJump);
     }
 
@@ -164,13 +164,13 @@ public class DraggingItem : IState
     }
     public void Enter()
     {
-        Debug.Log($"STEPS SUBSCRIBING TO DRAGGING ITEM - {player.gameObject.name} - {playerDragController.gameObject.name}");
+        // Debug.Log($"STEPS SUBSCRIBING TO DRAGGING ITEM - {player.gameObject.name} - {playerDragController.gameObject.name}");
         playerDragController.OnDragRelease += PlayerDragController_OnDragRelease;
     }
 
     private void PlayerDragController_OnDragRelease()
     {
-        Debug.Log($"STEPS CLIENT 4 - DRAGGING ITEM TO DRAG RELEASE ITEM - {player.gameObject.name}");
+        // Debug.Log($"STEPS CLIENT 4 - DRAGGING ITEM TO DRAG RELEASE ITEM - {player.gameObject.name}");
         player.ChangePlayerState(PlayerState.DragReleaseItem);
     }
 
@@ -181,7 +181,7 @@ public class DraggingItem : IState
 
     public void Exit()
     {
-        Debug.Log($"STEPS UNSUBSCRIBING TO DRAGGING ITEM - {player.gameObject.name} - {playerDragController.gameObject.name}");
+        // Debug.Log($"STEPS UNSUBSCRIBING TO DRAGGING ITEM - {player.gameObject.name} - {playerDragController.gameObject.name}");
         playerDragController.OnDragRelease -= PlayerDragController_OnDragRelease;
     }
 
@@ -288,7 +288,7 @@ public class MyTurnEndedState : IState
     public void ChangeOwnership(bool isOwner)
     {
         this.isOwner = isOwner;
-        Debug.Log($"MyTurnEndedState ChangeOwnership: {this.isOwner} - {player.gameObject.name}");
+        // Debug.Log($"MyTurnEndedState ChangeOwnership: {this.isOwner} - {player.gameObject.name}");
     }
 
     private async void MyTurnEndedCallback()

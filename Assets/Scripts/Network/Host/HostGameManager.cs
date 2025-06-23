@@ -116,15 +116,15 @@ public class HostGameManager : IDisposable //Actual Logic to interact with UGS (
         while(SceneManager.GetActiveScene().name != Loader.Scene.GameNetCodeTest.ToString())
         {
             //Not in game
-            Debug.Log("Not in game scene");
+            // Debug.Log("Not in game scene");
             await Task.Delay(100);
         }
 
-        Debug.Log("Loaded game scene");
-        Debug.Log($"Loaded game scene, the game state is: {ServiceLocator.Get<BaseGameStateManager>().CurrentGameState.Value}");
+        // Debug.Log("Loaded game scene");
+        // Debug.Log($"Loaded game scene, the game state is: {ServiceLocator.Get<BaseGameStateManager>().CurrentGameState.Value}");
 
         await Task.Delay(2000);
-        Debug.Log("Waited to spawn players in host");
+        // Debug.Log("Waited to spawn players in host");
 
         networkServer.PlayerSpawner.SpawnPlayer();
 

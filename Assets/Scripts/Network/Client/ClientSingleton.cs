@@ -56,13 +56,13 @@ public class ClientSingleton : MonoBehaviour //Responsable for the client logic
 
     private void OnDestroy()
     {
-        Debug.Log("On Destroy");
+        // Debug.Log("On Destroy");
         GameManager?.Dispose();
     }
 
     private void OnApplicationQuit()
     {
-        Debug.Log("Application Quit");
+        // Debug.Log("Application Quit");
         GameManager?.Dispose();
     }
 

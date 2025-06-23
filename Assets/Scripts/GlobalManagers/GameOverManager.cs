@@ -19,7 +19,7 @@ public class GameOverManager : BaseGameOverManager
 
     public override void GameOverClient()
     {
-        Debug.Log($"DIE - GameOverClient - Losed Player Value {losedPlayer.Value}");
+        // Debug.Log($"DIE - GameOverClient - Losed Player Value {losedPlayer.Value}");
         if (losedPlayer.Value == turnManager.LocalPlayableState)
         {
             TriggerOnLose(false);
@@ -63,12 +63,12 @@ public class GameOverManager : BaseGameOverManager
             //Player 1 loses
             losedPlayer.Value = PlayableState.Player1Playing;
         }
-        Debug.Log($"DIE - DEFINED THE LOSER - LOSER IS {losedPlayer.Value}");
+        // Debug.Log($"DIE - DEFINED THE LOSER - LOSER IS {losedPlayer.Value}");
     }
 
     public override void HandleOnLosedPlayerChanged(PlayableState newValue)
     {
-        Debug.Log($"DIE - DEFINED THE LOSER - HandleOnLosedPlayerChanged");
+        // Debug.Log($"DIE - DEFINED THE LOSER - HandleOnLosedPlayerChanged");
         if(IsClient)
         {
             GameOverClient();

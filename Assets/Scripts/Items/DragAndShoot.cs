@@ -198,7 +198,7 @@ public class DragAndShoot : NetworkBehaviour
 
     public void InvokeOnDragRelease()
     {
-        Debug.Log($"STEPS CLIENT 3 - ON DRAG RELEASED - {gameObject.name}");
+        // Debug.Log($"STEPS CLIENT 3 - ON DRAG RELEASED - {gameObject.name}");
         OnDragRelease?.Invoke();
     }
     

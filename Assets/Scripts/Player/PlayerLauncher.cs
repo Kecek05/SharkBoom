@@ -137,7 +137,7 @@ public class PlayerLauncher : NetworkBehaviour
     public void HandleOnItemOnHandSpawned(BaseItemThrowable throwable)
     {
         lastProjectile = throwable;
-        Debug.Log($"ITEM SPAWNED ON HAND {lastProjectile.gameObject.name}");
+        // Debug.Log($"ITEM SPAWNED ON HAND {lastProjectile.gameObject.name}");
     }
 
     public void HandleOnItemOnHandDespawned(BaseItemThrowable throwable)
@@ -191,11 +191,11 @@ public class PlayerLauncher : NetworkBehaviour
             
             SyncItemLauncherDataServerRpc(lastItemLauncherData, playerRotateToAim.AimTransform.position);
             
-            Debug.Log($"STEPS OWNER 1 - OWNER CREATED LAUNCHER DATA - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Position: {lastItemLauncherData.shootPosition} - Rotation: {lastItemLauncherData.shootRotation} - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
+            // Debug.Log($"STEPS OWNER 1 - OWNER CREATED LAUNCHER DATA - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Position: {lastItemLauncherData.shootPosition} - Rotation: {lastItemLauncherData.shootRotation} - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
         }
         
         SpawnProjectile(lastItemLauncherData); 
-         Debug.Log($"STEPS LAST - ITEM LAUNCHED - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Position: {lastProjectile.transform} - Rotation: {lastProjectile.transform.rotation} - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
+         // Debug.Log($"STEPS LAST - ITEM LAUNCHED - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Position: {lastProjectile.transform} - Rotation: {lastProjectile.transform.rotation} - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
         
         OnItemLaunched?.Invoke(playerInventory.SelectedItemID); //pass itemInventoryIndex
         waitSpawnItem = null;
@@ -215,7 +215,7 @@ public class PlayerLauncher : NetworkBehaviour
        // if(IsServer && !IsHost) return; //DS
         
         lastItemLauncherData = itemLauncherData;
-        Debug.Log($"STEPS CLIENT 1 - ITEM LAUNCHER DATA RECIEVED - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Shoot Pos: {lastItemLauncherData.shootPosition} - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
+        // Debug.Log($"STEPS CLIENT 1 - ITEM LAUNCHER DATA RECIEVED - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Shoot Pos: {lastItemLauncherData.shootPosition} - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
 
         if (waitCoroutine != null)
             StopCoroutine(waitCoroutine);
@@ -225,7 +225,7 @@ public class PlayerLauncher : NetworkBehaviour
 
     private IEnumerator WaitItemSpawn(ItemLauncherData itemLauncherData, Vector3 aimPos)
     {
-        Debug.Log($"STEPS CLIENT 1.1 - ITEM LAUNCHER START WAITING - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Shoot Pos: {lastItemLauncherData.shootPosition}  - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
+        // Debug.Log($"STEPS CLIENT 1.1 - ITEM LAUNCHER START WAITING - Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Shoot Pos: {lastItemLauncherData.shootPosition}  - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
             
         playerSpawnItemOnHand.OnItemOnHandSpawned += ItemSpawned;
         
@@ -254,7 +254,7 @@ public class PlayerLauncher : NetworkBehaviour
         playerSpawnItemOnHand.OnItemOnHandSpawned -= ItemSpawned;
         itemSpawnedCallback = false;
         
-        Debug.Log($"STEPS CLIENT 1.2 - ITEM SPAWNED- Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Shoot Pos: {lastItemLauncherData.shootPosition}  - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
+        // Debug.Log($"STEPS CLIENT 1.2 - ITEM SPAWNED- Item ID: {lastItemLauncherData.selectedItemID}, Force: {lastItemLauncherData.dragForce}, Direction: {lastItemLauncherData.dragDirection} - Shoot Pos: {lastItemLauncherData.shootPosition}  - Owner: {lastItemLauncherData.ownerPlayableState} - {gameObject.name}");
         OnLastItemSynced?.Invoke(aimPos);
         waitCoroutine = null;
     }
