@@ -54,14 +54,14 @@ public class PlayerGetUp : NetworkBehaviour
 
             if (IsOwner)
             {
-                Debug.Log($"GETUP - Is Owner Of the Item - Owner of the SCRIPT- Will pass to the Not Owner the lastPosition - Found Free Pos: {foundPos} - {gameObject.name}");
+                // Debug.Log($"GETUP - Is Owner Of the Item - Owner of the SCRIPT- Will pass to the Not Owner the lastPosition - Found Free Pos: {foundPos} - {gameObject.name}");
                 PassOwnerPositionToNotOwnerServerRpc(foundPos);
             }
             else if (!IsOwner)
             {
                 //Im not owner of THIS script, pass the position to the owner 
                 //Who could get Hit
-                Debug.Log($"GETUP - Is Owner Of the Item - NOT owner of the SCRIPT - Will pass to the Owner the lastPosition - Found Free Pos: {foundPos} - {gameObject.name}");
+                // Debug.Log($"GETUP - Is Owner Of the Item - NOT owner of the SCRIPT - Will pass to the Owner the lastPosition - Found Free Pos: {foundPos} - {gameObject.name}");
                 PassOwnerPositionToOwnerServerRpc(foundPos);
             }
         }
@@ -76,7 +76,7 @@ public class PlayerGetUp : NetworkBehaviour
                 //Who could get hit
                 
                 //Use the lastCalculatedPosition Recieved from the other game
-                Debug.Log($"GETUP - NOT Is Owner Of the Item - Owner of the Script - Using Last Calculated Pos: {lastCalculatedPosition} - {gameObject.name}");
+                // Debug.Log($"GETUP - NOT Is Owner Of the Item - Owner of the Script - Using Last Calculated Pos: {lastCalculatedPosition} - {gameObject.name}");
                 TryGetUp(lastCalculatedPosition);
             }
             else
@@ -85,7 +85,7 @@ public class PlayerGetUp : NetworkBehaviour
                 //The owner of the throw
                 
                 //Use the lastCalculatedPosition Recieved from the other game
-                Debug.Log($"GETUP - NOT Is Owner Of the Item - NOT Owner of the SCRIPT - Using Last Calculated Pos: {lastCalculatedPosition} - {gameObject.name}");
+                // Debug.Log($"GETUP - NOT Is Owner Of the Item - NOT Owner of the SCRIPT - Using Last Calculated Pos: {lastCalculatedPosition} - {gameObject.name}");
                 TryGetUp(lastCalculatedPosition);
             }
         }
@@ -103,7 +103,7 @@ public class PlayerGetUp : NetworkBehaviour
     [Rpc(SendTo.NotOwner, RequireOwnership = false, Delivery = RpcDelivery.Reliable)]
     private void PassOwnerPositionToNotOwnerRpc(Vector3 position)
     {
-        Debug.Log($"GETUP - NOT Owner Recieved Last Pos: {position} - {gameObject.name}");
+        // Debug.Log($"GETUP - NOT Owner Recieved Last Pos: {position} - {gameObject.name}");
         lastCalculatedPosition = position;
     }
 
@@ -122,7 +122,7 @@ public class PlayerGetUp : NetworkBehaviour
         if (IsOwner || (IsServer && !IsHost))
         {
             //Owner or DS
-            Debug.Log($"GETUP - Owner Recieved Last Pos: {position} - {gameObject.name}");
+            // Debug.Log($"GETUP - Owner Recieved Last Pos: {position} - {gameObject.name}");
             lastCalculatedPosition = position;
         }
     }
@@ -138,7 +138,7 @@ public class PlayerGetUp : NetworkBehaviour
         //Instantiate(CubeStartCalcPosDEBUG, playerRagdollPosition, Quaternion.identity);
         Vector3 foundFinalPosition = CalculatedFreePosition(playerRagdollPosition);
 
-        Debug.Log($"GETUP POS: {foundFinalPosition} - {gameObject.name} - Owner: {IsOwner} - From Server: {isSyncServer}");
+        // Debug.Log($"GETUP POS: {foundFinalPosition} - {gameObject.name} - Owner: {IsOwner} - From Server: {isSyncServer}");
         
         return foundFinalPosition;
     }
@@ -224,7 +224,7 @@ public class PlayerGetUp : NetworkBehaviour
 
     private void TryGetUp(Vector3 finalPos)
     {
-        Debug.Log($"GETUP - TRY APPLY Pos {finalPos} - {gameObject.name} - Owner: {IsOwner}");
+        // Debug.Log($"GETUP - TRY APPLY Pos {finalPos} - {gameObject.name} - Owner: {IsOwner}");
 
         if (finalPos == Vector3.zero)
         {
@@ -238,14 +238,14 @@ public class PlayerGetUp : NetworkBehaviour
         else
         {
             ApplyGetUp(finalPos);
-            Debug.Log($"GETUP - RESETED LAST CALCULATED POS");
+            // Debug.Log($"GETUP - RESETED LAST CALCULATED POS");
             lastCalculatedPosition = Vector3.zero;
         }
     }
 
     private void ApplyGetUp(Vector3 finalPos)
     {
-        Debug.Log($"GETUP - APPLY Pos {finalPos} - {gameObject.name} - Owner: {IsOwner}");
+        // Debug.Log($"GETUP - APPLY Pos {finalPos} - {gameObject.name} - Owner: {IsOwner}");
         rootTransform.position = finalPos;
 
         OnPlayerGetUp?.Invoke();
@@ -256,10 +256,10 @@ public class PlayerGetUp : NetworkBehaviour
         while (lastCalculatedPosition == Vector3.zero)
         {
             //Didnt Recieved the RPC with the Positions, waiting for it
-            Debug.Log($"GETUP - WAITING RPC WITH POS - {gameObject.name} - Owner: {IsOwner}");
+            // Debug.Log($"GETUP - WAITING RPC WITH POS - {gameObject.name} - Owner: {IsOwner}");
             yield return null;
         }
-        Debug.Log($"GETUP - FINISHED WAITING FOR RPC - {gameObject.name} - Pos: {lastCalculatedPosition} - Owner: {IsOwner}");
+        // Debug.Log($"GETUP - FINISHED WAITING FOR RPC - {gameObject.name} - Pos: {lastCalculatedPosition} - Owner: {IsOwner}");
         ApplyGetUp(lastCalculatedPosition);
         lastCalculatedPosition = Vector3.zero;
         

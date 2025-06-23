@@ -54,7 +54,7 @@ public class CameraGlobalFollow : NetworkBehaviour
     }
     private IEnumerator FollowPositionCoroutine(float duration, bool followByDuration, Action onComplete, bool isInterpolate)    
     {
-        Debug.Log($"CAMERA GO TO - Follow: {followTargetTransform.name} - Follow By Duration: {followByDuration}");
+        // Debug.Log($"CAMERA GO TO - Follow: {followTargetTransform.name} - Follow By Duration: {followByDuration}");
         float timer = 0f;
         if (!followByDuration)
         {

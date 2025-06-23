@@ -25,7 +25,7 @@ public class JumpItemThrowable : BaseItemThrowable
        // if (!IsOwner) return;
 
         objectToFollowTransform = ServiceLocator.Get<BasePlayersPublicInfoManager>().GetPlayerObjectByPlayableState(thisItemLaucherData.ownerPlayableState).transform;
-        Debug.Log($"JUMP OBJECT TO FOLLOW: {objectToFollowTransform} - Owner: {thisItemLaucherData.ownerPlayableState}");
+        // Debug.Log($"JUMP OBJECT TO FOLLOW: {objectToFollowTransform} - Owner: {thisItemLaucherData.ownerPlayableState}");
         lockedZ = objectToFollowTransform.position.z;
         
         followCoroutine ??= StartCoroutine(PlayerFollowJump());

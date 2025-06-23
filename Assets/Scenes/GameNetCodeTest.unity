@@ -6182,7 +6182,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &861394535
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10029,6 +10029,7 @@ GameObject:
   - component: {fileID: 1417789128}
   - component: {fileID: 1417789130}
   - component: {fileID: 1417789129}
+  - component: {fileID: 1417789131}
   m_Layer: 5
   m_Name: LoadingPlayersUI
   m_TagString: Untagged
@@ -10106,6 +10107,19 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
+--- !u!114 &1417789131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1417789127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c97f98c74a94eea459129790cbff53d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leaveLobby: {fileID: 861394534}
 --- !u!1001 &1424601001
 PrefabInstance:
   m_ObjectHideFlags: 0

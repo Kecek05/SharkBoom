@@ -224,7 +224,7 @@ public class PlayerAnimator : NetworkBehaviour
     /// </summary>
     public void AnimationFinished()
     {
-        Debug.Log("AnimationFinished");
+        // Debug.Log("AnimationFinished");
         //if (!IsOwner) return;
         if(playerState == PlayerState.DragReleaseItem)
         {
