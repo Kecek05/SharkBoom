@@ -34,12 +34,12 @@ public abstract class BaseCollisionController : MonoBehaviour
     protected void TriggerOnCollidedWithPlayer(PlayerThrower playerThrower)
     {
         OnCollidedWithPlayer?.Invoke(playerThrower);
+        OnCollidedSound?.Invoke(playerThrower.transform);
     }
 
     protected void TriggerOnCollided(GameObject collidedObject)
     {
         OnCollided?.Invoke(collidedObject);
-        OnCollidedSound?.Invoke(collidedObject.transform);
     }
 
     protected void TriggerOnCollidedWithoutPlayer(GameObject collidedObject)
