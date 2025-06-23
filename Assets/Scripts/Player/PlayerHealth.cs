@@ -28,19 +28,10 @@ public class PlayerHealth : HealthComponent
     {
         base.OnNetworkSpawn();
 
+        BaseItemThrowable.OnItemCallbackAction += BaseItemThrowableOnOnItemCallbackAction;
         
         currentHealth.OnValueChanged += CurrentHealth_OnValueChanged;
         CurrentHealth_OnValueChanged(0f, currentHealth.Value);
-    }
-
-    public void InitializeOwner()
-    {
-        BaseItemThrowable.OnItemCallbackAction += BaseItemThrowableOnOnItemCallbackAction;
-    }
-
-    public void UnInitializeOwner()
-    {
-        BaseItemThrowable.OnItemCallbackAction -= BaseItemThrowableOnOnItemCallbackAction;
     }
 
     private void BaseItemThrowableOnOnItemCallbackAction(bool isOwnerOfItem)
@@ -49,6 +40,7 @@ public class PlayerHealth : HealthComponent
         // Debug.Log($"HEALTH 1 - Item Callback - Syncronized This turn is false - {gameObject.name}");
 
         //Sync local health with localTargetHealth;
+        if(!IsOwner) return;
         SetLocalHealth(localTargetHealth);
     }
 
@@ -124,6 +116,7 @@ public class PlayerHealth : HealthComponent
     public override void OnNetworkDespawn()
     {
         currentHealth.OnValueChanged -= CurrentHealth_OnValueChanged;
+        BaseItemThrowable.OnItemCallbackAction -= BaseItemThrowableOnOnItemCallbackAction;
     }
 }
 

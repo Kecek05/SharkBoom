@@ -167,7 +167,6 @@ public class PlayerThrower : NetworkBehaviour
 
         playerInventoryUI.InitializeOwner();
         playerTutorialUI.InitializeOwner();
-        playerHealth.InitializeOwner();
     }
 
     private void HandleOwnerEvents()
@@ -290,7 +289,6 @@ public class PlayerThrower : NetworkBehaviour
         playerLauncher.UnInitializeOwner();
         playerInventoryUI.UnHandleInitializeOwner();
         playerTutorialUI.UnInitializeOwner();
-        playerHealth.UnInitializeOwner();
     }
 
     private void UnInitialize()
