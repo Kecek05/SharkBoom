@@ -67,7 +67,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
 
     private IEnumerator WaitKnockbackData(float knockbackStrength, Vector3 hitPoint)
     {
-        Debug.Log($"KNOCKBACK - WaitKnockbackData - Owner: {IsOwner}");
+        // Debug.Log($"KNOCKBACK - WaitKnockbackData - Owner: {IsOwner}");
         if (IsOwner)
         {
             // RpcDebugServerRpc();
@@ -76,13 +76,13 @@ public class PlayerRagdollEnabler : NetworkBehaviour
             {
                 //Wait to recieve the KnockbackData from the other player that throwed the item. 
                 //This shouldnt cause any Jitter because there is an delay between throwing an Item and recieving the data.
-                Debug.Log("KNOCKBACK - Waiting for knockback data");
+                // Debug.Log("KNOCKBACK - Waiting for knockback data");
                 yield return null;
             }
 
-            Debug.Log(
-                $"KNOCKBACK - Knockback data received  - Index: {lastKnockbackData.hitRigidbodyIndex} - Hit Force: {lastKnockbackData.hitForce} - Rb Pos: {lastKnockbackData.hitRagdollPosition} - Rb Rot: {lastKnockbackData.hitRagdollRotation} - {gameObject.transform.parent.name}");
-            
+            // Debug.Log(
+            //     $"KNOCKBACK - Knockback data received  - Index: {lastKnockbackData.hitRigidbodyIndex} - Hit Force: {lastKnockbackData.hitForce} - Rb Pos: {lastKnockbackData.hitRagdollPosition} - Rb Rot: {lastKnockbackData.hitRagdollRotation} - {gameObject.transform.parent.name}");
+            //
             EnableRagdoll();
             //Do knockback based on data
             DoKnockbackOnRagdoll(lastKnockbackData);
@@ -128,14 +128,14 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     [Rpc(SendTo.Server, RequireOwnership = false, Delivery = RpcDelivery.Reliable)]
     private void PassKnockbackDataToServerRpc(KnockbackData knockbackData)
     {
-        Debug.Log($"KNOCKBACK - Passing Knockback through Server");
+        // Debug.Log($"KNOCKBACK - Passing Knockback through Server");
         PassKnockbackDataToClientRpc(knockbackData);
     }
 
     [Rpc(SendTo.Owner, RequireOwnership = false, Delivery = RpcDelivery.Reliable)]
     private void PassKnockbackDataToClientRpc(KnockbackData knockbackData)
     {
-        Debug.Log($"KNOCKBACK - Knockback Recieved RPC - Owner: {IsOwner} - {gameObject.transform.parent.name}");
+        // Debug.Log($"KNOCKBACK - Knockback Recieved RPC - Owner: {IsOwner} - {gameObject.transform.parent.name}");
         lastKnockbackData = knockbackData;
         recievedKnockbackData = true;
     }
@@ -175,8 +175,8 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         
         int clampedHitRigidbodyIndex = Mathf.Clamp(hitRigidbodyIndex, 0, ragdollRbsToKnockback.Length - 1);
         
-        Debug.Log(
-            $"KNOCKBACK - Knockback data calculated  - Index: {clampedHitRigidbodyIndex} - Hit Pos: {hitPoint} - Rb Pos: {hitRigidbody.position} - Rb Rot: {hitRigidbody.rotation} - Hit Force: {force} - {gameObject.transform.parent.name}");
+        // Debug.Log(
+        //     $"KNOCKBACK - Knockback data calculated  - Index: {clampedHitRigidbodyIndex} - Hit Pos: {hitPoint} - Rb Pos: {hitRigidbody.position} - Rb Rot: {hitRigidbody.rotation} - Hit Force: {force} - {gameObject.transform.parent.name}");
 
         return new KnockbackData
         {
@@ -194,7 +194,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
     /// <param name="hitPoint"> Position of the hit</param>
     public void TriggerKnockback(float knockbackStrength, Vector3 hitPoint)
     {
-        Debug.Log($"KNOCKBACK - TRIGGER RAGDOLL - {gameObject.transform.parent.name} - Already Knocked: {alreadyKnockbacked}");
+        // Debug.Log($"KNOCKBACK - TRIGGER RAGDOLL - {gameObject.transform.parent.name} - Already Knocked: {alreadyKnockbacked}");
         
         if(alreadyKnockbacked) return;
         
@@ -216,7 +216,7 @@ public class PlayerRagdollEnabler : NetworkBehaviour
         //Set Ragdoll position
         hitRigidbody.position = knockbackData.hitRagdollPosition;
         hitRigidbody.rotation = knockbackData.hitRagdollRotation;
-        Debug.Log($"KNOCKBACK - Do Knockback - Index: {knockbackData.hitRigidbodyIndex} - Rb Pos: {hitRigidbody.position} - Rb Rot: {hitRigidbody.rotation} - Hit Force: {knockbackData.hitForce} - {gameObject.transform.parent.name}");
+        // Debug.Log($"KNOCKBACK - Do Knockback - Index: {knockbackData.hitRigidbodyIndex} - Rb Pos: {hitRigidbody.position} - Rb Rot: {hitRigidbody.rotation} - Hit Force: {knockbackData.hitForce} - {gameObject.transform.parent.name}");
         
         hitRigidbody.AddForce(knockbackData.hitForce, ForceMode.Impulse);
         

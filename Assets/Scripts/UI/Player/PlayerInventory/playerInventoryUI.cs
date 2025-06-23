@@ -26,6 +26,7 @@ public class PlayerInventoryUI : NetworkBehaviour
     [SerializeField] private ItemsListSO itemsListSO;
     [SerializeField] private Canvas inventoryCanvas;
     [SerializeField] private GameObject tutorialParent;
+    [SerializeField] private GameObject tutorialButton;
 
     private Camera cameraUI;
     private List<PlayerItemSingleUI> playerItemSingleUIs = new();
@@ -37,6 +38,7 @@ public class PlayerInventoryUI : NetworkBehaviour
         HideInventoryParent();
         SetupInventoryWorldCamera();
         tutorialParent.SetActive(false);
+        tutorialButton.SetActive(false);
         Debug.Log($"HIDE INVENTOR - {gameObject.transform.parent.parent.name}");
     }
 
@@ -192,6 +194,7 @@ public class PlayerInventoryUI : NetworkBehaviour
         ShowInventory();
         ShowInventoryButton();
         tutorialParent.SetActive(true);
+        tutorialButton.SetActive(true);
         // Debug.Log($"OWNERSHIP INVENTOR - {gameObject.transform.parent.parent.name}");
     }
 
