@@ -17,6 +17,7 @@ public abstract class BaseTurnManager : NetworkBehaviour
     [BetterHeader("Settings")]
     [Tooltip("in ms")][SerializeField] protected int delayBetweenTurns = 3000;
 
+    
     protected PlayableState localPlayableState = new();
     protected PlayableState localPlayedState = new();
     protected PlayableState enemyPlayableState = new();
