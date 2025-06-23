@@ -544,7 +544,7 @@ public class PlayerThrower : NetworkBehaviour
         if(IsHost) return; //Only DS
         
         playerStateMachine.ChangeStateWithPlayerState(playerState);
-        Debug.Log($"UPDATING PLAYER STATE MACHINE - {gameObject.name} - State In Server: {playerStateMachine.CurrentPlayerState}");
+        // Debug.Log($"UPDATING PLAYER STATE MACHINE - {gameObject.name} - State In Server: {playerStateMachine.CurrentPlayerState}");
     }
     
     //DEBUG

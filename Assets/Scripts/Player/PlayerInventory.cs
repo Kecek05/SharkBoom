@@ -250,7 +250,7 @@ public class PlayerInventory : NetworkBehaviour
         });
         
         //OnItemAdded?.Invoke(playerItemsInventory.Find(item => item.itemID == newItemID));
-        Debug.Log($"PlayerInventory - Item Added Ite SO ID {newItemID} - Player Items Inventory Index: {playerItemsInventory.Count}");
+        // Debug.Log($"PlayerInventory - Item Added Ite SO ID {newItemID} - Player Items Inventory Index: {playerItemsInventory.Count}");
         
         /*AddItemIDToList(newItemID);
         AddPlayerItemsServerRpc(newItemID);*/
@@ -286,7 +286,7 @@ public class PlayerInventory : NetworkBehaviour
     public void SelectItemDataByItemInventoryID(int itemInventoryID = 0) // Select a item to use, UI will call this, default (0) its Jump
     {
         if(!IsOwner) return; //Only Owner can chose items
-        Debug.Log($"SelectItemDataByItemInventoryID - {itemInventoryID} - CanInteractWithInventory: {canInteractWithInventory}");
+        // Debug.Log($"SelectItemDataByItemInventoryID - {itemInventoryID} - CanInteractWithInventory: {canInteractWithInventory}");
         if (!canInteractWithInventory) return;
 
 
@@ -346,7 +346,7 @@ public class PlayerInventory : NetworkBehaviour
         {
             if (checkItemInventoryData.itemID == itemID)
             {
-                Debug.Log($"Checking Item ID: {itemID} - Can be used: {checkItemInventoryData.itemCanBeUsed}");
+                // Debug.Log($"Checking Item ID: {itemID} - Can be used: {checkItemInventoryData.itemCanBeUsed}");
                 return checkItemInventoryData.itemCanBeUsed;
             }
         }
@@ -428,7 +428,7 @@ public class PlayerInventory : NetworkBehaviour
 
         OnItemSelectedSO?.Invoke(GetItemSOByItemID(selectedItemID));
         
-        Debug.Log($"SetItem - Selected Item ID: {selectedItemID} - CanInteractWithInventory: {canInteractWithInventory} - {gameObject.name}");
+        // Debug.Log($"SetItem - Selected Item ID: {selectedItemID} - CanInteractWithInventory: {canInteractWithInventory} - {gameObject.name}");
     }
 
     public override void OnNetworkDespawn()
