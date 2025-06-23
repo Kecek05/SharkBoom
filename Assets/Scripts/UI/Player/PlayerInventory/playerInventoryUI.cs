@@ -134,7 +134,7 @@ public class PlayerInventoryUI : NetworkBehaviour
     public void SelecItem(int itemID)
     {
         OnItemSelectedByUI?.Invoke(itemID); //Notify the player that an item was selected by UI
-        Debug.Log($"Trying to select item with ID: {itemID}");
+        // Debug.Log($"Trying to select item with ID: {itemID}");
     }
 
     public void UpdateOpenInventoryButton(Sprite itemIcon)

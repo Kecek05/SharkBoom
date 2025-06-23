@@ -30,7 +30,7 @@ public class PlayerItemSingleUI : MonoBehaviour
     public void ButtonSelectThisItem()
     {
         playerInventoryUI.SelecItem(myItemID);
-        Debug.Log($"ButtonSelectThisItem - Item ID: {myItemID} - PlayerInventoryUI: {playerInventoryUI}");
+        // Debug.Log($"ButtonSelectThisItem - Item ID: {myItemID} - PlayerInventoryUI: {playerInventoryUI}");
     }
 
     public void Setup(string itemName, Sprite itemIcon, int itemCooldown, bool itemCanBeUsed, int itemID, float itemDamage ,PlayerInventoryUI _playerInventoryUI)
