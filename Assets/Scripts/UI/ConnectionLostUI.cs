@@ -32,6 +32,11 @@ public class ConnectionLostUI : MonoBehaviour
     {
         if(HostSingleton.Instance != null)
             HostSingleton.Instance.GameManager.ShutdownAsync();
+        
+        if (ClientSingleton.Instance != null)
+        {
+            ClientSingleton.Instance.GameManager.Disconnect();
+        }
     }
 
     private void GameStateManager_OnLostConnectionInHost()
