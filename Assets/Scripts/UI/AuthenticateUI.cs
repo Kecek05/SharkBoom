@@ -64,13 +64,13 @@ public class AuthenticateUI : MonoBehaviour
     private void Update()
     {
         //Change later
-        authStateTxt.text = AuthenticationWrapper.AuthState.ToString();
+        //authStateTxt.text = AuthenticationWrapper.AuthState.ToString();
     }
 
     private void AuthenticationWrapper_OnSignInFail()
     {
         HideTxt();
-        ShowButtons();
+        //ShowButtons();
     }
 
     private void HideTxt()
