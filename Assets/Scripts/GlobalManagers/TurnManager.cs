@@ -35,7 +35,7 @@ public class TurnManager : BaseTurnManager
         //     return;
         // }
         
-        Debug.Log($"HandleOnPlayableStateValueChanged - {newValue}");
+        // Debug.Log($"HandleOnPlayableStateValueChanged - {newValue}");
         if (newValue == localPlayableState)
         {
             //Local Player can play
