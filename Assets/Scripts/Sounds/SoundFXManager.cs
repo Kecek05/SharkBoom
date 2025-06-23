@@ -35,19 +35,16 @@ public class SoundFXManager : MonoBehaviour
     private void PlayYourTurnSound()
     {
         PlaySound(audioClipRefsSO.startYourTurn, mainCamera.position);
-        Debug.Log("SOUND - PlayYourTurnSound");
     }
 
     private void PlayEnemyYourTurnSound()
     {
         PlaySound(audioClipRefsSO.startEnemyTurn, mainCamera.position);
-        Debug.Log("SOUND - PlayEnemyYourTurnSound");
     }
 
     private void PlayTurnTimersUpSound()
     {
         PlaySound(audioClipRefsSO.finishTurn, mainCamera.position);
-        Debug.Log("SOUND - PlayTurnTimersUpSound");
     }
 
 
@@ -55,13 +52,11 @@ public class SoundFXManager : MonoBehaviour
     private void PlayOnGameTimerStartSound()
     {
         PlaySound(audioClipRefsSO.gameStart, mainCamera.position);
-        Debug.Log("SOUND - PlayOnGameTimerStartSound");
     }
 
     private void PlayOnGameTimerEndSound()
     {
         PlaySound(audioClipRefsSO.gameEnd, mainCamera.position);
-        Debug.Log("SOUND - PlayOnGameTimerEndSound");
     }
 
 
@@ -69,19 +64,16 @@ public class SoundFXManager : MonoBehaviour
     private void PlayOnGameWinSound()
     {
         PlaySound(audioClipRefsSO.gameWin, mainCamera.position);
-        Debug.Log("SOUND - PlayOnGameWinSound");
     }
 
     private void PlayOnGameLoseSound()
     {
         PlaySound(audioClipRefsSO.gameLose, mainCamera.position);
-        Debug.Log("SOUND - PlayOnGameLoseSound");
     }
 
     private void PlayOnGameTieSound()
     {
         PlaySound(audioClipRefsSO.gameTie, mainCamera.position);
-        Debug.Log("SOUND - PlayOnGameTieSound");
     }
 
 
@@ -89,23 +81,19 @@ public class SoundFXManager : MonoBehaviour
     private void PlayOnItemSpawned(Transform itemTransform)
     {
         PlaySound(audioClipRefsSO.itemSpawn, itemTransform.position);
-        Debug.Log("SOUND - PlayOnDragStartSound");
     }
     private void PlayOnItemLaunchedSound(Transform itemTransform)
     {
         PlaySound(audioClipRefsSO.itemLaunched, itemTransform.position);
-        Debug.Log("SOUND - PlayOnDragReleaseSound");
     }
 
     private void PlayOnItemActivableSound(Transform itemTransform)
     {
         PlaySound(audioClipRefsSO.itemActivable, itemTransform.position);
-        Debug.Log("SOUND - PlayOnItemActivableSound");
     }
     private void PlayOnItemOnCollidedSound(Transform transform)
     {
         PlaySound(audioClipRefsSO.itemHit, transform.position);
-        Debug.Log("SOUND - PlayOnItemOnCollidedSound");
     }
 
 
@@ -117,7 +105,6 @@ public class SoundFXManager : MonoBehaviour
         if(position == null)
         {
             position = mainCamera.position;
-            Debug.Log("SOUND - Deu play fora da pos correta");
         }
 
         audioSource.transform.position = position;
