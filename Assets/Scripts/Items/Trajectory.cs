@@ -14,7 +14,7 @@ public class Trajectory : MonoBehaviour
     [SerializeField] private int dotsNumber;
     [RangeStep(0.01f, 1f, 0.01f)]
     [SerializeField] private float dotSpacing;
-    [SerializeField] private float forceChangeThreshold = 0.1f;
+    [SerializeField] private float forcePercentChangeThreshold = 1f;
 
     private Transform[] dotsList;
     private GameObject dotsParent;
@@ -24,9 +24,9 @@ public class Trajectory : MonoBehaviour
 
     
     
-    private Vector3 lastForceApplied = Vector3.zero;
-    private float currentForce;
-    private float previousForce;
+    private float lastForceApplied;
+    private float currentForcePercent;
+    private float previousForcePercent;
     private float diff;
 
     public void Initialize(Transform dotsParentTransform)
@@ -48,25 +48,29 @@ public class Trajectory : MonoBehaviour
         }
     }
 
-    public void UpdateDots(Vector3 objectPos, Vector3 forceApplied, float maxForce, Rigidbody rb) 
+    public void UpdateDots(Vector3 objectPos, Vector3 forceApplied, float maxForce, Rigidbody rb, float percentForceApplied) 
     {
         trajectoryPoints.Add(objectPos);
         SimulateTrajectory(objectPos, forceApplied, rb);
 
-        currentForce = forceApplied.magnitude;
-        previousForce = lastForceApplied.magnitude;
-        diff = currentForce - previousForce;
+        currentForcePercent = percentForceApplied;
+        previousForcePercent = lastForceApplied;
+        diff = currentForcePercent - previousForcePercent;
+
+        float percentForceAppliedInDecimals = percentForceApplied / 100;
+        
         // Debug.Log($"TRAJECTORY - Current Force: {currentForce} - Previous Force: {previousForce} - Diff: {diff}");
-        if (Mathf.Abs(diff) >= forceChangeThreshold)
+        if (Mathf.Abs(diff) >= forcePercentChangeThreshold)
         {
-            int targetActiveDots = Mathf.Clamp(Mathf.RoundToInt((currentForce / maxForce) * dotsNumber), 0, dotsNumber);
+            // int targetActiveDots = Mathf.Clamp(Mathf.RoundToInt((currentForce / maxForce) * dotsNumber), 0, dotsNumber);
+            int targetActiveDots = Mathf.Clamp(Mathf.RoundToInt(dotsNumber * percentForceAppliedInDecimals), 0, dotsNumber);
             // Debug.Log($"TRAJECTORY - Target Active: {targetActiveDots} - Current Force: {currentForce} - Max Force: {maxForce}");
             for (int i = 0; i < dotsNumber; i++)
             {
                 dotsList[i].gameObject.SetActive(i < targetActiveDots);
             }
 
-            lastForceApplied = forceApplied;
+            lastForceApplied = percentForceApplied;
         }
 
         for (int i = 0; i < dotsNumber && i < trajectoryPoints.Count; i++)

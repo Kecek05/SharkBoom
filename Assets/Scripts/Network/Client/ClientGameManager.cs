@@ -11,6 +11,7 @@ using Unity.Services.Lobbies.Models;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ClientGameManager : IDisposable //Actual Logic to interact with UGS (Relay, Lobby, etc)
 {
@@ -140,7 +141,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         if (!result)
         {
             Debug.LogError("Failed to start client: StartClient returned false.");
-            Application.Quit();
+            Loader.Load(Loader.Scene.NoNetwork);
         }
     }
 

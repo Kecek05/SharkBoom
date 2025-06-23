@@ -66,7 +66,7 @@ public class NetworkClient : IDisposable //Actual Client Game Logic
         {
             Debug.LogWarning("Disconnected in LoadingScene, closing the game");
             Disconnect();
-            Application.Quit();
+            Loader.Load(Loader.Scene.NoNetwork);
             return;
         }
 
@@ -79,7 +79,7 @@ public class NetworkClient : IDisposable //Actual Client Game Logic
                 //Game not ended yet
                 Debug.LogWarning("Disconnected in Game DS, closing the game");
                 Disconnect();
-                Application.Quit();
+                Loader.Load(Loader.Scene.NoNetwork);
             }
         }
         else

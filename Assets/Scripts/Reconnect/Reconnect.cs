@@ -24,7 +24,7 @@ public static class Reconnect
         catch (CloudCodeException e)
         {
             Debug.LogError($"Error getting IsInMatch: {e.Message}, Closing Game");
-            Application.Quit();
+            Loader.Load(Loader.Scene.NoNetwork);
             return false;
         }
     }
@@ -104,7 +104,7 @@ public static class Reconnect
         catch (CloudCodeException e)
         {
             Debug.LogError($"Error getting Ip Match: {e.Message}, Closing Game");
-            Application.Quit();
+            Loader.Load(Loader.Scene.NoNetwork);
             return "NoIp";
         }
     }
@@ -125,7 +125,7 @@ public static class Reconnect
         catch (CloudCodeException e)
         {
             Debug.LogError($"Error getting IsInMatch: {e.Message}, Closing Game");
-            Application.Quit();
+            Loader.Load(Loader.Scene.NoNetwork);
             return 0;
         }
     }

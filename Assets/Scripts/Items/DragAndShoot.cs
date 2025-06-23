@@ -219,7 +219,7 @@ public class DragAndShoot : NetworkBehaviour
             dragForce = Mathf.Clamp(dragForce, minForce, maxForce);
             
             // Debug.Log($"TRAJECTORY - Direction: {directionOfDrag} - Drag Force: {dragForce} - Value Passed to Dots: {directionOfDrag * dragForce}");
-            trajectory.UpdateDots(startTrajectoryPos.position, directionOfDrag * dragForce, maxForce, selectedRb);
+            trajectory.UpdateDots(startTrajectoryPos.position, directionOfDrag * dragForce, maxForce, selectedRb, GetForcePercentage());
 
             
             OnDragChange?.Invoke(GetForcePercentage(), GetAngle());
@@ -279,7 +279,7 @@ public class DragAndShoot : NetworkBehaviour
     protected void ResetDrag()
     {
         // Reset the dots position
-        trajectory.UpdateDots(startTrajectoryPos.position, directionOfDrag * minForce, maxForce, selectedRb);
+        trajectory.UpdateDots(startTrajectoryPos.position, directionOfDrag * minForce, maxForce, selectedRb, GetForcePercentage());
         SetIsDragging(false);
     }
 
@@ -331,7 +331,7 @@ public class DragAndShoot : NetworkBehaviour
 
     public float GetForcePercentage()
     {
-        float forceValue = Mathf.InverseLerp(minForce, maxForce, dragDistance);
+        float forceValue = Mathf.InverseLerp(minForce, maxForce, dragForce);
         return forceValue * 100f;
     }
 

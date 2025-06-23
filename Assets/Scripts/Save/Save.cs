@@ -60,7 +60,7 @@ public static class Save
         } catch (CloudCodeException e)
         {
             Debug.LogError($"Error loading pearls: {e.Message}, Closing Game");
-            Application.Quit();
+            Loader.Load(Loader.Scene.NoNetwork);
             return 0;
         }
     }
@@ -81,7 +81,7 @@ public static class Save
         catch (CloudCodeException e)
         {
             Debug.LogError($"Error loading player name: {e.Message}, Closing Game");
-            Application.Quit();
+            Loader.Load(Loader.Scene.NoNetwork);
             return "";
         }
     }
