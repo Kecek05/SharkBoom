@@ -137,18 +137,15 @@ public abstract class BaseItemThrowable : MonoBehaviour
         transform.position = new Vector3(transform.position.x, transform.position.y, ITEM_Z_POSITION);
         
         UpdateOnRelease(itemLauncherData);
+        
         rb.AddForce(itemLauncherData.dragDirection * itemLauncherData.dragForce, ForceMode.Impulse);
 
         if(lifetimeTriggerItemComponent)
             lifetimeTriggerItemComponent.StartLifetime();
     }
 
-    public bool isFixedUpdate = true;
-
     protected void FixedUpdate()
     {
-        if(!isFixedUpdate) return;
-        
         if (itemReleased)
         {
             //Force the item to not rotate in X and Y and force the Z pos

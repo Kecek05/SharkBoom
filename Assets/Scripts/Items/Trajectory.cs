@@ -13,7 +13,6 @@ public class Trajectory : MonoBehaviour
     [Range(3, 50)]
     [SerializeField] private int dotsNumber;
     [RangeStep(1f, 10f, 0.1f)]
-    [SerializeField] private float dotSpacingOffsetMultiply;
     [SerializeField] private float forcePercentChangeThreshold = 1f;
 
     private Transform[] dotsList;
@@ -77,7 +76,7 @@ public class Trajectory : MonoBehaviour
         for (int i = 0; i < dotsNumber && i < trajectoryPoints.Count; i++)
         {
             dotsList[i].position = trajectoryPoints[i];
-            dotsList[i].localPosition = new Vector3(0f, dotsList[i].localPosition.y * dotSpacingOffsetMultiply, dotsList[i].localPosition.z * dotSpacingOffsetMultiply);
+            dotsList[i].localPosition = new Vector3(0f, dotsList[i].localPosition.y, dotsList[i].localPosition.z);
         }
     }
 
@@ -91,8 +90,7 @@ public class Trajectory : MonoBehaviour
     {
         foreach (Vector3 pos in ghostPos)
         {
-            Vector3 newPos = new Vector3(0f, pos.y, pos.z);
-            GameObject cube = Instantiate(cubeDebug, newPos, Quaternion.identity);
+            GameObject cube = Instantiate(cubeDebug, pos, Quaternion.identity);
             cubes.Add(cube);
         }
     }
@@ -107,7 +105,7 @@ public class Trajectory : MonoBehaviour
         cubes.Clear();
     }
     
-    private void SimulateTrajectory(Vector3 objectPos, float dragForce, Vector3 directionOfDragNormalized, Rigidbody rb)
+    private void SimulateTrajectory(Vector3 objectPos, float dragForce, Vector2 directionOfDragNormalized, Rigidbody rb)
     {
         if (!isSimulating) return;
         ghostPos.Clear();
@@ -116,12 +114,14 @@ public class Trajectory : MonoBehaviour
         GameObject ghostObj = new GameObject("Ghost");
         Rigidbody ghost = ghostObj.AddComponent<Rigidbody>();
 
-        ghost.mass = rb.mass;
-        ghost.linearDamping = rb.linearDamping;
-        ghost.angularDamping = rb.angularDamping;
-        ghost.useGravity = rb.useGravity;
+        // Match transform
         ghost.position = objectPos;
-        ghost.isKinematic = false;
+        ghost.rotation = rb.rotation;
+
+        // Copy Rigidbody state from original
+        CopyRigidbodyState(rb, ghost);
+
+        // Apply impulse after copying
         ghost.AddForce(directionOfDragNormalized * dragForce, ForceMode.Impulse);
 
         trajectoryPoints.Clear();
@@ -130,6 +130,7 @@ public class Trajectory : MonoBehaviour
         {
             float timeStep = Time.fixedDeltaTime;
             Physics.Simulate(timeStep);
+            Physics.Simulate(timeStep);
             ghostPos.Add(ghostObj.transform.position);
             trajectoryPoints.Add(ghost.position);
         }
@@ -137,6 +138,38 @@ public class Trajectory : MonoBehaviour
         Physics.simulationMode = SimulationMode.FixedUpdate;
         Destroy(ghostObj);
 
+    }
+    
+    private void CopyRigidbodyState(Rigidbody source, Rigidbody clone)
+    {
+        // Core physical properties
+        clone.mass = source.mass;
+        clone.useGravity = source.useGravity;
+        clone.isKinematic = source.isKinematic;
+        clone.interpolation = source.interpolation;
+        clone.collisionDetectionMode = source.collisionDetectionMode;
+        clone.constraints = source.constraints;
+
+        // Unity 6-specific damping
+        clone.linearDamping = source.linearDamping;
+        clone.angularDamping = source.angularDamping;
+
+        // Velocity and spin
+        clone.linearVelocity = source.linearVelocity;
+        clone.angularVelocity = source.angularVelocity;
+
+        // Inertia and center of mass (optional but improves realism)
+        clone.ResetCenterOfMass();
+        clone.ResetInertiaTensor();
+        clone.centerOfMass = source.centerOfMass;
+        clone.inertiaTensor = source.inertiaTensor;
+        clone.inertiaTensorRotation = source.inertiaTensorRotation;
+
+        // Copy sleep/wake state
+        if (source.IsSleeping())
+            clone.Sleep();
+        else
+            clone.WakeUp();
     }
 
 
