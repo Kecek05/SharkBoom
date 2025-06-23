@@ -57,7 +57,7 @@ public class Trajectory : MonoBehaviour
         previousForcePercent = lastForceApplied;
         diff = currentForcePercent - previousForcePercent;
 
-        float percentForceAppliedInDecimals = percentForceApplied / 100;
+        float percentForceAppliedInDecimals = percentForceApplied / 200;
         
         // Debug.Log($"TRAJECTORY - Current Force: {currentForce} - Previous Force: {previousForce} - Diff: {diff}");
         if (Mathf.Abs(diff) >= forcePercentChangeThreshold)
