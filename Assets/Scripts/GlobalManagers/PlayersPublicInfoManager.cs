@@ -3,7 +3,8 @@ using UnityEngine;
 
 public class PlayersPublicInfoManager : BasePlayersPublicInfoManager
 {
-    private const int JUMP_ITEM_ID = 0; 
+    private const int JUMP_ITEM_ID = 0;
+    // private const int COCONUT_ITEM_ID = 5;
     
     public override void Initialize(ItemsListSO itemsListSO)
     {
@@ -61,7 +62,6 @@ public class PlayersPublicInfoManager : BasePlayersPublicInfoManager
 
     public override void RandomizePlayerItems()
     {
-        //int itemsInInventory = UnityEngine.Random.Range(2, itemsListSO.allItemsSOList.Count); //Random qtd of items for now
         //List<ItemSO> itemsInInventoryPool = itemsListSO.allItemsSOList; //all items
         List<ItemSO> itemsAdded = new List<ItemSO>();
 
@@ -70,10 +70,16 @@ public class PlayersPublicInfoManager : BasePlayersPublicInfoManager
         {
             playerInventory.AddPlayerItemsServerRpc(JUMP_ITEM_ID);
         }
+        
+        // foreach (PlayerInventory playerInventory in FindObjectsByType<PlayerInventory>(FindObjectsSortMode.None))
+        // {
+        //     playerInventory.AddPlayerItemsServerRpc(COCONUT_ITEM_ID);
+        // }
 
         int itemsAddedToInventory = 0;
-        int itemsToAddToInventory = itemsListSO.allItemsSOList.Count - 1; //-1 because we already added Jump item
-
+        // int itemsToAddToInventory = itemsListSO.allItemsSOList.Count - 1; //-1 because we already added Jump item
+        int itemsToAddToInventory = 5; 
+        
         while(itemsAddedToInventory < itemsToAddToInventory)
         {
             int randomItemIndex = Random.Range(1, itemsListSO.allItemsSOList.Count); //start from 1 to skip Jump item

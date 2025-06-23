@@ -38,7 +38,6 @@ public class GameStateManager : BaseGameStateManager
             case GameState.CalculatingResults:
                 if(IsServer)
                 {
-                    //if(!IsHost)  //REFACTOR
                     //CalculatePearls.CalculatePossibleResults(NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[0], NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas[1]);
                     ServiceLocator.Get<BasePlayersPublicInfoManager>().RandomizePlayerItems();
 
@@ -52,7 +51,6 @@ public class GameStateManager : BaseGameStateManager
             case GameState.ShowingPlayersInfo:
                 if (IsServer)
                 {
-
                     //ServiceLocator.Get<BasePlayersPublicInfoManager>().RandomizePlayerItems();
                     ChangeGameState(GameState.GameStarted, DELAY_CLOSE_PLAYERSINFO); //Show Players Info delay
                 }
