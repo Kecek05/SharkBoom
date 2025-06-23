@@ -28,11 +28,9 @@ public class PlayerHealth : HealthComponent
     {
         base.OnNetworkSpawn();
 
-        if(IsClient)
-        {
-            currentHealth.OnValueChanged += CurrentHealth_OnValueChanged;
-            CurrentHealth_OnValueChanged(0f, currentHealth.Value);
-        }
+        
+        currentHealth.OnValueChanged += CurrentHealth_OnValueChanged;
+        CurrentHealth_OnValueChanged(0f, currentHealth.Value);
     }
 
     public void InitializeOwner()
@@ -125,10 +123,7 @@ public class PlayerHealth : HealthComponent
 
     public override void OnNetworkDespawn()
     {
-        if (IsClient)
-        {
-            currentHealth.OnValueChanged -= CurrentHealth_OnValueChanged;
-        }
+        currentHealth.OnValueChanged -= CurrentHealth_OnValueChanged;
     }
 }
 
