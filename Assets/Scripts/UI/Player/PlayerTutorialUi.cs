@@ -14,6 +14,11 @@ public class PlayerTutorialUi : NetworkBehaviour
 
     private TutorialData defaultTutorialData;
 
+    private void Awake()
+    {
+        tutorialVideoPlayer.Prepare();
+    }
+
     public override void OnNetworkSpawn()
     {
         HideTutorialPanel();
