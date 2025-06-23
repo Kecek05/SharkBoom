@@ -979,7 +979,7 @@ MonoBehaviour:
   cameraManager: {fileID: 3009684404041675309}
   maxForce: 50
   minForce: 1
-  forceAddMultiplier: 1.4
+  forceAddMultiplier: 3
   zoomIncreasingDragSpeed: 25
   zoomDecreasingDragSpeed: 15
   zoomAmountToChange: 7
@@ -1000,9 +1000,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dotPrefab2D: {fileID: 66968322209639492, guid: e513424720fa4e748a1a76b936898672, type: 3}
   dragAndShoot: {fileID: 5120579722876303172}
-  dotsNumber: 20
-  dotSpacing: 0.049999997
-  forceChangeThreshold: 0.1
+  dotsNumber: 50
+  dotSpacingOffsetMultiply: 1.8000001
+  forcePercentChangeThreshold: 1
+  cubeDebug: {fileID: 2804248509602817314, guid: 130fa52a08ec5034bb681e58615e9596, type: 3}
+  ghostPos: []
+  cubes: []
 --- !u!114 &2518838509862417992
 MonoBehaviour:
   m_ObjectHideFlags: 0

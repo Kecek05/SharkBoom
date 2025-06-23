@@ -225,7 +225,7 @@ public class DragAndShoot : NetworkBehaviour
             
             // Debug.Log($"TRAJECTORY - Drag Distance: {dragDistance} - Raw Drag Distance: {rawDragDistance} - Drag Force: {dragForce}");
             // Debug.Log($"TRAJECTORY - Direction: {directionOfDrag} - Drag Force: {dragForce} - Value Passed to Dots: {directionOfDrag * dragForce}");
-            trajectory.UpdateDots(startTrajectoryPos.position, directionOfDragNormalized * dragForce, maxForce, selectedRb, GetForcePercentage());
+            trajectory.UpdateDots(startTrajectoryPos.position, dragForce, directionOfDragNormalized, selectedRb, GetForcePercentage());
 
             
             OnDragChange?.Invoke(GetForcePercentage(), GetAngle());
@@ -285,7 +285,7 @@ public class DragAndShoot : NetworkBehaviour
     protected void ResetDrag()
     {
         // Reset the dots position
-        trajectory.UpdateDots(startTrajectoryPos.position, directionOfDragNormalized * minForce, maxForce, selectedRb, GetForcePercentage());
+        trajectory.UpdateDots(startTrajectoryPos.position, minForce, directionOfDragNormalized, selectedRb, GetForcePercentage());
         SetIsDragging(false);
     }
 

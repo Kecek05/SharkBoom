@@ -82,8 +82,7 @@ public class GameOverUI : MonoBehaviour
     private void PearlsManagerOnOnFinishedCalculationsOnServer()
     {
         //Can only click Ok Button when the host is shuttdonw. If not like this, host can click OK and close server before the client even see game over
-        if (NetworkManager.Singleton.IsHost)
-            okButton.interactable = true;
+        okButton.interactable = true;
     }
 
     private void HealthComponentOnOnLocalDie()

@@ -48,10 +48,10 @@ public class Trajectory : MonoBehaviour
         }
     }
 
-    public void UpdateDots(Vector3 objectPos, Vector3 forceApplied, float maxForce, Rigidbody rb, float percentForceApplied) 
+    public void UpdateDots(Vector3 objectPos, float dragForce, Vector3 directionOfDragNormalized, Rigidbody rb, float percentForceApplied) 
     {
         trajectoryPoints.Add(objectPos);
-        SimulateTrajectory(objectPos, forceApplied, rb);
+        SimulateTrajectory(objectPos, dragForce, directionOfDragNormalized, rb);
 
         currentForcePercent = percentForceApplied;
         previousForcePercent = lastForceApplied;
@@ -67,7 +67,8 @@ public class Trajectory : MonoBehaviour
             // Debug.Log($"TRAJECTORY - Target Active: {targetActiveDots} - Current Force: {currentForce} - Max Force: {maxForce}");
             for (int i = 0; i < dotsNumber; i++)
             {
-                dotsList[i].gameObject.SetActive(i < targetActiveDots);
+                dotsList[i].gameObject.SetActive(true);
+                // dotsList[i].gameObject.SetActive(i < targetActiveDots);
             }
 
             lastForceApplied = percentForceApplied;
@@ -80,10 +81,36 @@ public class Trajectory : MonoBehaviour
         }
     }
 
-    private void SimulateTrajectory(Vector3 objectPos, Vector3 forceApplied, Rigidbody rb)
+    public GameObject cubeDebug;
+    
+    public List<Vector3> ghostPos = new List<Vector3>();
+    public List<GameObject> cubes = new List<GameObject>();
+    
+    [Button("SpawnCubes")]
+    public void SpawnCubes()
+    {
+        foreach (Vector3 pos in ghostPos)
+        {
+            Vector3 newPos = new Vector3(0f, pos.y, pos.z);
+            GameObject cube = Instantiate(cubeDebug, newPos, Quaternion.identity);
+            cubes.Add(cube);
+        }
+    }
+
+    [Button("Destroy Cubes")]
+    public void DestroyCubes()
+    {
+        foreach (GameObject cube in cubes)
+        {
+            Destroy(cube);
+        }
+        cubes.Clear();
+    }
+    
+    private void SimulateTrajectory(Vector3 objectPos, float dragForce, Vector3 directionOfDragNormalized, Rigidbody rb)
     {
         if (!isSimulating) return;
-
+        ghostPos.Clear();
         Physics.simulationMode = SimulationMode.Script;
 
         GameObject ghostObj = new GameObject("Ghost");
@@ -94,17 +121,17 @@ public class Trajectory : MonoBehaviour
         ghost.angularDamping = rb.angularDamping;
         ghost.useGravity = rb.useGravity;
         ghost.position = objectPos;
-        ghost.linearVelocity = forceApplied / ghost.mass;
         ghost.isKinematic = false;
+        ghost.AddForce(directionOfDragNormalized * dragForce, ForceMode.Impulse);
 
         trajectoryPoints.Clear();
-        
 
         for (int i = 0; i < dotsNumber; i++)
         {
             float timeStep = Time.fixedDeltaTime;
-            trajectoryPoints.Add(ghost.position);
             Physics.Simulate(timeStep);
+            ghostPos.Add(ghostObj.transform.position);
+            trajectoryPoints.Add(ghost.position);
         }
 
         Physics.simulationMode = SimulationMode.FixedUpdate;
