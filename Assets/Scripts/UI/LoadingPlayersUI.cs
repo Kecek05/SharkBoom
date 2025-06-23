@@ -38,6 +38,12 @@ public class LoadingPlayersUI : NetworkBehaviour
 
     private int updatedPlayersInfoOnClient = 0;
 
+    private void Awake()
+    {
+        player1VideoPlayer.Prepare();
+        player2VideoPlayer.Prepare();
+    }
+
     public override void OnNetworkSpawn()
     {
         gameStateManager = ServiceLocator.Get<BaseGameStateManager>();

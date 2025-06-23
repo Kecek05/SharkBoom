@@ -60,6 +60,7 @@ public class GameOverUI : MonoBehaviour
 
     private void Awake()
     {
+        gameOverVideoPlayer.Prepare();
         Hide();
         alreadyChanged = false;
     }

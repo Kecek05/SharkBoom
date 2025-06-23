@@ -10,8 +10,9 @@ public class MainMenuCharacterController : MonoBehaviour
     [SerializeField] private VideoClip orcaIdleVideoClip;
     [SerializeField] private VideoPlayer characterVideoPlayer;
 
-    private void Start()
+    private void Awake()
     {
+        characterVideoPlayer.Prepare();
         int randomPlayer = Random.Range(0, 2);
         if (randomPlayer == 0)
         {
