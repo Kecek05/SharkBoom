@@ -179,7 +179,7 @@ public class PlayerLauncher : NetworkBehaviour
             ItemLauncherData itemLauncherData = new ItemLauncherData
             {
                 dragForce = playerDragController.DragForce, 
-                dragDirection = playerDragController.DirectionOfDrag,
+                dragDirection = playerDragController.DirectionOfDragNormalized,
                 selectedItemID = playerInventory.SelectedItemID, 
                 ownerPlayableState = playerThrower.ThisPlayableState.Value,
                 shootPosition = lastProjectile.transform.position,

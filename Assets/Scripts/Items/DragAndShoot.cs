@@ -46,7 +46,7 @@ public class DragAndShoot : NetworkBehaviour
     [SerializeField] private float minForce = 1f;
 
     [Tooltip("Value to be add to not need to drag too far from the object")]
-    [RangeStep(1.1f, 5f, 0.2f)]
+    [RangeStep(1f, 50f, 0.1f)]
     [SerializeField] private float forceAddMultiplier = 0.1f;
 
     [BetterHeader("Zoom Settings")]
@@ -61,14 +61,15 @@ public class DragAndShoot : NetworkBehaviour
     [Tooltip("Will only detect the distance if exceeds threshold")]
     [SerializeField] private int detectDistanceThreshold = 2;
 
-    private Vector3 endPosDrag;
-    private Vector3 directionOfDrag;
+    private Vector3 fingerInWorldSpace;
+    private Vector3 directionOfDragNormalized;
     private float dragForce;
     private float lastDragDistance;
 
     private bool isDragging = false;
     private bool canDrag = false;
     private float dragDistance;
+    private float rawDragDistance;
 
 
     private Plane plane; // Cache for the clicks
@@ -84,8 +85,8 @@ public class DragAndShoot : NetworkBehaviour
 
     //Publics
 
-    public Vector3 DirectionOfDrag => directionOfDrag;
-    public Vector3 EndPosDrag => endPosDrag;
+    public Vector3 DirectionOfDragNormalized => directionOfDragNormalized;
+    public Vector3 FingerInWorldSpace => fingerInWorldSpace;
 
     public float DragDistance => dragDistance;
     public float LastDragDistance => lastDragDistance;
@@ -211,15 +212,20 @@ public class DragAndShoot : NetworkBehaviour
         if (plane.Raycast(rayStartFingerPos, out outDistancePlane) && Input.touchCount == 1)
         {
 
-            endPosDrag = rayStartFingerPos.GetPoint(outDistancePlane);
-            directionOfDrag = (startTrajectoryPos.position - endPosDrag).normalized; // on Vector3
-            dragDistance = Vector3.Distance(startTrajectoryPos.position, endPosDrag); // on Float
+            fingerInWorldSpace = rayStartFingerPos.GetPoint(outDistancePlane);
+
+            
+            directionOfDragNormalized = (startTrajectoryPos.position - fingerInWorldSpace).normalized; // on Vector3
+            rawDragDistance = Vector3.Distance(startTrajectoryPos.position, fingerInWorldSpace); // on Float
+            dragDistance  = Mathf.Max(0f, rawDragDistance - canceDragDistance);
+            // dragDistance = Vector3.Distance(startTrajectoryPos.position, fingerInWorldSpace); // on Float
 
             dragForce = dragDistance * forceAddMultiplier;
             dragForce = Mathf.Clamp(dragForce, minForce, maxForce);
             
+            // Debug.Log($"TRAJECTORY - Drag Distance: {dragDistance} - Raw Drag Distance: {rawDragDistance} - Drag Force: {dragForce}");
             // Debug.Log($"TRAJECTORY - Direction: {directionOfDrag} - Drag Force: {dragForce} - Value Passed to Dots: {directionOfDrag * dragForce}");
-            trajectory.UpdateDots(startTrajectoryPos.position, directionOfDrag * dragForce, maxForce, selectedRb, GetForcePercentage());
+            trajectory.UpdateDots(startTrajectoryPos.position, directionOfDragNormalized * dragForce, maxForce, selectedRb, GetForcePercentage());
 
             
             OnDragChange?.Invoke(GetForcePercentage(), GetAngle());
@@ -261,7 +267,7 @@ public class DragAndShoot : NetworkBehaviour
 
     private void CheckCancelDrag()
     {
-        if (Mathf.Abs(dragDistance) <= canceDragDistance)
+        if (Mathf.Abs(rawDragDistance) <= canceDragDistance)
         {
             SetCanCancelDrag(true);
             trajectory.Hide();
@@ -279,7 +285,7 @@ public class DragAndShoot : NetworkBehaviour
     protected void ResetDrag()
     {
         // Reset the dots position
-        trajectory.UpdateDots(startTrajectoryPos.position, directionOfDrag * minForce, maxForce, selectedRb, GetForcePercentage());
+        trajectory.UpdateDots(startTrajectoryPos.position, directionOfDragNormalized * minForce, maxForce, selectedRb, GetForcePercentage());
         SetIsDragging(false);
     }
 
@@ -322,7 +328,7 @@ public class DragAndShoot : NetworkBehaviour
 
     public float GetAngle()
     {
-        float normalAngle = Mathf.Atan2(directionOfDrag.y, directionOfDrag.x) * Mathf.Rad2Deg;
+        float normalAngle = Mathf.Atan2(directionOfDragNormalized.y, directionOfDragNormalized.x) * Mathf.Rad2Deg;
         float absAngle = Mathf.Abs(normalAngle);
         float correctionAngle = 90f - Mathf.Abs(normalAngle - 90f) * 0.5f;
 
@@ -337,7 +343,7 @@ public class DragAndShoot : NetworkBehaviour
 
     public Vector3 GetOpositeFingerPos()
     {
-        return (startTrajectoryPos.position - endPosDrag) + startTrajectoryPos.position;
+        return (startTrajectoryPos.position - fingerInWorldSpace) + startTrajectoryPos.position;
     }
 
     public override void OnNetworkDespawn()

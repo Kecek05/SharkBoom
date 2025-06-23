@@ -12,8 +12,8 @@ public class Trajectory : MonoBehaviour
     [BetterHeader("Settings")]
     [Range(3, 50)]
     [SerializeField] private int dotsNumber;
-    [RangeStep(0.01f, 1f, 0.01f)]
-    [SerializeField] private float dotSpacing;
+    [RangeStep(1f, 10f, 0.1f)]
+    [SerializeField] private float dotSpacingOffsetMultiply;
     [SerializeField] private float forcePercentChangeThreshold = 1f;
 
     private Transform[] dotsList;
@@ -76,7 +76,7 @@ public class Trajectory : MonoBehaviour
         for (int i = 0; i < dotsNumber && i < trajectoryPoints.Count; i++)
         {
             dotsList[i].position = trajectoryPoints[i];
-            dotsList[i].localPosition = new Vector3(0f, dotsList[i].localPosition.y, dotsList[i].localPosition.z);
+            dotsList[i].localPosition = new Vector3(0f, dotsList[i].localPosition.y * dotSpacingOffsetMultiply, dotsList[i].localPosition.z * dotSpacingOffsetMultiply);
         }
     }
 
