@@ -22,6 +22,7 @@ public class GameOverUI : MonoBehaviour
     [SerializeField] private Image returnBtnImage;
     [SerializeField] private Image animateBackground;
     [SerializeField] private VideoPlayer gameOverVideoPlayer;
+    [SerializeField] private GameObject loadingGameOver;
     [SerializeField] private Button okButton;
     [BetterHeader("Renders")]
     [SerializeField] private VideoClip orcaWin;
@@ -64,9 +65,9 @@ public class GameOverUI : MonoBehaviour
     {
         hasPreparedGameOver = false;
         gameOverVideoPlayer.prepareCompleted += HandleOnGameOverVideoPrepared;
-        gameOverVideoPlayer.Prepare();
 
         Hide();
+        HideLoadingGameOver();
         alreadyChanged = false;
     }
 
@@ -199,6 +200,17 @@ public class GameOverUI : MonoBehaviour
     private void Show()
     {
         gameOverBackground.SetActive(true);
+        loadingGameOver.SetActive(true);
+    }
+
+    private void HideLoadingGameOver()
+    {
+        loadingGameOver.SetActive(false);
+    }
+
+    private void ShowLoadingGameOver()
+    {
+        loadingGameOver.SetActive(true);
     }
 
     private void Win()
@@ -234,10 +246,14 @@ public class GameOverUI : MonoBehaviour
 
     private IEnumerator WaitUntilGameOverVideoAndShow()
     {
+        ShowLoadingGameOver();
+        Show();
+
+
         while (!hasPreparedGameOver)
             yield return null;
 
-        Show();
+        HideLoadingGameOver();
         gameOverVideoPlayer.Play();
     }
 
