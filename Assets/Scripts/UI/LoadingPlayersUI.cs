@@ -1,5 +1,6 @@
 using QFSW.QC;
 using Sortify;
+using System;
 using System.Collections;
 using TMPro;
 using Unity.Collections;
@@ -38,14 +39,33 @@ public class LoadingPlayersUI : NetworkBehaviour
 
     private int updatedPlayersInfoOnClient = 0;
 
-    private void Awake()
+    private bool hasPreparedPlayer1 = false;
+    private bool hasPreparedPlayer2 = false;
+
+    private void HandleOnPlayer1VideoPlayerPrepared(VideoPlayer source)
     {
-        player1VideoPlayer.Prepare();
-        player2VideoPlayer.Prepare();
+        hasPreparedPlayer1 = true;
     }
+
+    private void HandleOnPlayer2VideoPlayerPrepared(VideoPlayer source)
+    {
+        hasPreparedPlayer2 = true;
+    }
+
+    
 
     public override void OnNetworkSpawn()
     {
+        hasPreparedPlayer1 = false;
+        hasPreparedPlayer2 = false;
+
+        player1VideoPlayer.Prepare();
+        player2VideoPlayer.Prepare();
+
+        player1VideoPlayer.prepareCompleted += HandleOnPlayer1VideoPlayerPrepared;
+        player2VideoPlayer.prepareCompleted += HandleOnPlayer2VideoPlayerPrepared;
+
+
         gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
         basePlayerPublicInfoManager = ServiceLocator.Get<BasePlayersPublicInfoManager>();
         
@@ -181,16 +201,20 @@ public class LoadingPlayersUI : NetworkBehaviour
     
         if(updatedPlayersInfoOnClient >= 2)
         {
-            ShowPlayersInfo();
-            HideWaitingForPlayers();
-            StartCoroutine(CountDownHidePlayersInfo());
+            StartCoroutine(WaitUntilVideosPreparedAndShow());
         }
         
         // Debug.Log($"UpdatePlayersInfoClientRpc - Player Name: {playerName.ToString()} - Sender ID: {senderClientId} - Count: {updatedPlayersInfoOnClient}");
     }
 
-    private IEnumerator CountDownHidePlayersInfo()
+    private IEnumerator WaitUntilVideosPreparedAndShow()
     {
+        while (!hasPreparedPlayer1 || !hasPreparedPlayer2)
+            yield return null;
+
+        ShowPlayersInfo();
+        HideWaitingForPlayers();
+
         yield return DELAY_CLOSE_PLAYERSINFO;
         HidePlayersInfo();
         HideWaitingForPlayers();
@@ -256,6 +280,8 @@ public class LoadingPlayersUI : NetworkBehaviour
     public override void OnNetworkDespawn()
     {
         gameStateManager.CurrentGameState.OnValueChanged -= GameState_OnValueChanged;
+        player1VideoPlayer.prepareCompleted -= HandleOnPlayer1VideoPlayerPrepared;
+        player2VideoPlayer.prepareCompleted -= HandleOnPlayer2VideoPlayerPrepared;
     }
 
 }
