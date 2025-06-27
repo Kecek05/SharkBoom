@@ -9,13 +9,15 @@ public class GameTutorialHandler : MonoBehaviour
 
     private void Awake()
     {
+        loadingPanel.SetActive(true);
+
         videoPlayer.Prepare();
         videoPlayer.prepareCompleted += HandleOnVideoPlayerPrepared;
     }
 
     private void HandleOnVideoPlayerPrepared(VideoPlayer source)
     {
-        Debug.Log("Teste");
+        Debug.Log("Teste"); 
         loadingPanel.SetActive(false);
         source.Play();
     }
