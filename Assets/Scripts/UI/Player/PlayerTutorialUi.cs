@@ -2,6 +2,7 @@ using System;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Video;
 
 public class PlayerTutorialUi : NetworkBehaviour
@@ -11,13 +12,9 @@ public class PlayerTutorialUi : NetworkBehaviour
     [SerializeField] private TextMeshProUGUI tutorialTitle;
     [SerializeField] private GameObject tutorialPanel;
     [SerializeField] private TutorialInfoSO defaultTutorial;
+    [SerializeField] private Button tutorialButton;
 
     private TutorialData defaultTutorialData;
-
-    private void Awake()
-    {
-        tutorialVideoPlayer.Prepare();
-    }
 
     public override void OnNetworkSpawn()
     {
@@ -26,6 +23,7 @@ public class PlayerTutorialUi : NetworkBehaviour
     public void InitializeOwner()
     {
         playerTutorialController.OnTutorialSelected += HandleOnTutorialSelected;
+        tutorialVideoPlayer.prepareCompleted += HandleOnTutorialPrepared;
 
         defaultTutorialData = new TutorialData
         {
@@ -36,6 +34,13 @@ public class PlayerTutorialUi : NetworkBehaviour
         HandleOnTutorialSelected(defaultTutorialData);
     }
 
+    private void HandleOnTutorialPrepared(VideoPlayer source)
+    {
+        tutorialVideoPlayer.Play();
+        tutorialPanel.SetActive(true);
+        tutorialButton.interactable = true;
+    }
+
     private void HandleOnTutorialSelected(TutorialData tutorialData)
     {
         tutorialVideoPlayer.clip = tutorialData.tutorialVideo;
@@ -44,8 +49,8 @@ public class PlayerTutorialUi : NetworkBehaviour
 
     public void ShowTutorialPanel()
     {
-        tutorialPanel.SetActive(true);
-        tutorialVideoPlayer.Play();
+        tutorialVideoPlayer.Prepare();
+        tutorialButton.interactable = false;
     }
 
     public void HideTutorialPanel()
@@ -57,5 +62,6 @@ public class PlayerTutorialUi : NetworkBehaviour
     public void UnInitializeOwner()
     {
         playerTutorialController.OnTutorialSelected -= HandleOnTutorialSelected;
+        tutorialVideoPlayer.prepareCompleted -= HandleOnTutorialPrepared;
     }
 }
