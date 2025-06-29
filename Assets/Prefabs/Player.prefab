@@ -12105,6 +12105,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 3594950335244774963, guid: 7b8e86d3faaf55e47adc3ea5b3cecaa1, type: 3}
+      propertyPath: m_Alpha
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3873209594310504747, guid: 7b8e86d3faaf55e47adc3ea5b3cecaa1, type: 3}
       propertyPath: tutorialButton
       value: 
@@ -12194,12 +12198,32 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6144535302851717940, guid: 7b8e86d3faaf55e47adc3ea5b3cecaa1, type: 3}
+      propertyPath: tutorialButton
+      value: 
+      objectReference: {fileID: 5968950372204895465}
+    - target: {fileID: 6144535302851717940, guid: 7b8e86d3faaf55e47adc3ea5b3cecaa1, type: 3}
+      propertyPath: tutorialCanvasGroup
+      value: 
+      objectReference: {fileID: 5513261183406037912}
+    - target: {fileID: 6144535302851717940, guid: 7b8e86d3faaf55e47adc3ea5b3cecaa1, type: 3}
       propertyPath: playerTutorialController
       value: 
       objectReference: {fileID: 8494855486462609902}
+    - target: {fileID: 6222414619345304410, guid: 7b8e86d3faaf55e47adc3ea5b3cecaa1, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6281465879254543199, guid: 7b8e86d3faaf55e47adc3ea5b3cecaa1, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6329666524629476910, guid: 7b8e86d3faaf55e47adc3ea5b3cecaa1, type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6329666524629476910, guid: 7b8e86d3faaf55e47adc3ea5b3cecaa1, type: 3}
+      propertyPath: m_WaitForFirstFrame
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8059052312601099466, guid: 7b8e86d3faaf55e47adc3ea5b3cecaa1, type: 3}
       propertyPath: m_Name
@@ -12261,6 +12285,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cdf513345ab791542a5ee29402e8a64d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!225 &5513261183406037912 stripped
+CanvasGroup:
+  m_CorrespondingSourceObject: {fileID: 3594950335244774963, guid: 7b8e86d3faaf55e47adc3ea5b3cecaa1, type: 3}
+  m_PrefabInstance: {fileID: 9034464521094329771}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5968950372204895465 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3437694712528972098, guid: 7b8e86d3faaf55e47adc3ea5b3cecaa1, type: 3}
+  m_PrefabInstance: {fileID: 9034464521094329771}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8204505334391654032}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &7506314524237905732 stripped
