@@ -13,6 +13,7 @@ public class PlayerTutorialUi : NetworkBehaviour
     [SerializeField] private GameObject tutorialPanel;
     [SerializeField] private TutorialInfoSO defaultTutorial;
     [SerializeField] private Button tutorialButton;
+    [SerializeField] private CanvasGroup tutorialCanvasGroup;
 
     private TutorialData defaultTutorialData;
 
@@ -37,8 +38,8 @@ public class PlayerTutorialUi : NetworkBehaviour
     private void HandleOnTutorialPrepared(VideoPlayer source)
     {
         tutorialVideoPlayer.Play();
-        tutorialPanel.SetActive(true);
         tutorialButton.interactable = true;
+        tutorialCanvasGroup.alpha = 1;
     }
 
     private void HandleOnTutorialSelected(TutorialData tutorialData)
@@ -49,6 +50,8 @@ public class PlayerTutorialUi : NetworkBehaviour
 
     public void ShowTutorialPanel()
     {
+        tutorialCanvasGroup.alpha = 0;
+        tutorialPanel.SetActive(true);
         tutorialVideoPlayer.Prepare();
         tutorialButton.interactable = false;
     }
