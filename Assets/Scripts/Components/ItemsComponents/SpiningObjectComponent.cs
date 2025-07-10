@@ -39,9 +39,9 @@ public class SpiningObjectComponent : BaseItemComponent
         isSpinning = true;
         while (true)
         {
-
+    
             spinDirection = 0f;
-
+    
             if (rb != null)
             {
                 Vector2 velocity = rb.linearVelocity;
@@ -50,15 +50,15 @@ public class SpiningObjectComponent : BaseItemComponent
                     spinDirection = Mathf.Sign(velocity.normalized.x);
                 }
             }
-
+    
             float directionMultiplier = isInverted ? 1f : -1f;
             float rotationAmount = spinningSpeed * Time.deltaTime * directionMultiplier;
-
+    
             if (spinDirection < 0f)
             {
                 rotationAmount *= -1f;
             }
-
+    
             if (useInterpolation)
             {
                 Quaternion targetRotation = Quaternion.Euler(0f, 0f, transform.eulerAngles.z + rotationAmount);
@@ -68,7 +68,7 @@ public class SpiningObjectComponent : BaseItemComponent
             {
                 transform.Rotate(0f, 0f, rotationAmount);
             }
-
+    
             yield return waitForFixedUpdate;
         }
         spinCoroutine = null;
