@@ -10,9 +10,14 @@ public class FlipTowardsSpeedComponent : BaseItemComponent
     [SerializeField] private Transform objectToFlip;
     [Space(5)]
     [SerializeField] private bool inverted = false;
+
+    [BetterHeader("Settings")] 
+    [SerializeField] private float movementThreshold = 0.01f;
     
-    private Coroutine flipCoroutine;
-    private bool isFlipping = false;
+    private Coroutine _flipCoroutine;
+    private WaitForSeconds _waitForSpawnTime = new WaitForSeconds(1f);
+    private WaitForFixedUpdate _waitForFixedUpdate = new WaitForFixedUpdate();
+    
     protected override void OnEnableComponent()
     {
         StopFlipCoroutine();
@@ -20,7 +25,7 @@ public class FlipTowardsSpeedComponent : BaseItemComponent
 
     protected override void DoComponentLogic()
     {
-        flipCoroutine ??= StartCoroutine(DoFlipCheck()); //if not null start the coroutine and assign it to spinCoroutine
+        _flipCoroutine ??= StartCoroutine(DoFlipCheck()); //if not null start the coroutine and assign it to spinCoroutine
 
     }
 
@@ -34,23 +39,23 @@ public class FlipTowardsSpeedComponent : BaseItemComponent
 
     private IEnumerator DoFlipCheck()
     {
+        yield return _waitForFixedUpdate;
+        
         bool isFacingRight = true;
-        while (true)
+        
+        Debug.Log($"SWORD - LinearVelocity: {Mathf.Abs(rb.linearVelocity.x)}");  
+        if (Mathf.Abs(rb.linearVelocity.x) > movementThreshold)
         {
-
-            // if (Mathf.Abs(rb.linearVelocity.x) < 0.01f) continue; // ignore small movements
-
             bool shouldFaceRight = rb.linearVelocity.x > 0f;
 
             if (shouldFaceRight != isFacingRight)
             {
                 Flip(shouldFaceRight);
-                Debug.Log($"IsRight: {isFacingRight}, Velocity: {rb.linearVelocity.x}");
+                Debug.Log("SWORD - Flip");  
                 isFacingRight = shouldFaceRight;
             }
-
-            yield return new WaitForFixedUpdate();
         }
+        yield return _waitForSpawnTime;
     }
     
     private bool faceRightAtZeroRotation = true; 
@@ -70,11 +75,10 @@ public class FlipTowardsSpeedComponent : BaseItemComponent
     
     public void StopFlipCoroutine()
     {
-        if (flipCoroutine != null)
+        if (_flipCoroutine != null)
         {
-            StopCoroutine(flipCoroutine);
-            flipCoroutine = null;
+            StopCoroutine(_flipCoroutine);
+            _flipCoroutine = null;
         }
-        isFlipping = false;
     }
 }
