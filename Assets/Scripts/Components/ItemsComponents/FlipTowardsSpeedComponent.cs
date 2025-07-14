@@ -57,13 +57,15 @@ public class FlipTowardsSpeedComponent : BaseItemComponent
 
     private void Flip(bool faceRight)
     {
-        float yRotation = faceRightAtZeroRotation 
-            ? (faceRight ? 0f : 180f)
-            : (faceRight ? 180f : 0f);
-
-        Vector3 euler = transform.eulerAngles;
-        euler.y = yRotation;
-        transform.eulerAngles = euler;
+        objectToFlip.localScale = new Vector3(faceRight ? 1f : -1f, objectToFlip.localScale.y, objectToFlip.localScale.z);
+        
+        // float yRotation = faceRightAtZeroRotation 
+        //     ? (faceRight ? 0f : 180f)
+        //     : (faceRight ? 180f : 0f);
+        //
+        // Vector3 euler = transform.eulerAngles;
+        // euler.y = yRotation;
+        // transform.eulerAngles = euler;
     }
     
     public void StopFlipCoroutine()
