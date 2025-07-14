@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using Sortify;
 using UnityEngine;
@@ -9,7 +8,7 @@ public class FlipTowardsSpeedComponent : BaseItemComponent
     [SerializeField] private Rigidbody rb;
     [SerializeField] private Transform objectToFlip;
     [Space(5)]
-    [SerializeField] private bool inverted = false;
+    [SerializeField] private bool inverted;
 
     [BetterHeader("Settings")] 
     [SerializeField] private float movementThreshold = 0.01f;
@@ -39,11 +38,11 @@ public class FlipTowardsSpeedComponent : BaseItemComponent
 
     private IEnumerator DoFlipCheck()
     {
-        yield return _waitForFixedUpdate;
+        yield return _waitForFixedUpdate; // Ensure that physics will be updated before checking the velocity
         
         bool isFacingRight = true;
         
-        Debug.Log($"SWORD - LinearVelocity: {Mathf.Abs(rb.linearVelocity.x)}");  
+        Debug.Log($"SWORD - LinearVelocity: {rb.linearVelocity.x}");  
         if (Mathf.Abs(rb.linearVelocity.x) > movementThreshold)
         {
             bool shouldFaceRight = rb.linearVelocity.x > 0f;
@@ -52,17 +51,22 @@ public class FlipTowardsSpeedComponent : BaseItemComponent
             {
                 Flip(shouldFaceRight);
                 Debug.Log("SWORD - Flip");  
-                isFacingRight = shouldFaceRight;
             }
         }
         yield return _waitForSpawnTime;
     }
     
-    private bool faceRightAtZeroRotation = true; 
+   // private bool faceRightAtZeroRotation = true; 
 
     private void Flip(bool faceRight)
     {
-        objectToFlip.localScale = new Vector3(faceRight ? 1f : -1f, objectToFlip.localScale.y, objectToFlip.localScale.z);
+        float yRotation = faceRight ? 0f : -180f;
+
+        Vector3 euler = transform.eulerAngles;
+        euler.y = yRotation;
+        transform.eulerAngles = euler;
+        
+        //objectToFlip.localRotation = new Vector3(faceRight ? 1f : -1f, objectToFlip.localScale.y, objectToFlip.localScale.z);
         
         // float yRotation = faceRightAtZeroRotation 
         //     ? (faceRight ? 0f : 180f)
