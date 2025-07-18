@@ -25,33 +25,25 @@ public class FlipTowardsSpeedComponent : BaseItemComponent
     protected override void DoComponentLogic()
     {
         _flipCoroutine ??= StartCoroutine(DoFlipCheck()); //if not null start the coroutine and assign it to spinCoroutine
-
     }
 
     protected override void OnDisableComponent()
     {
         StopFlipCoroutine();
-        Vector3 euler = transform.eulerAngles;
-        euler.y = 0f;
-        transform.eulerAngles = euler;
+        objectToFlip.localScale = Vector3.one;
     }
 
     private IEnumerator DoFlipCheck()
     {
         yield return _waitForFixedUpdate; // Ensure that physics will be updated before checking the velocity
         
-        bool isFacingRight = true;
+        Debug.Log($"SWORD - {transform.eulerAngles}");
         
-        Debug.Log($"SWORD - LinearVelocity: {rb.linearVelocity.x}");  
         if (Mathf.Abs(rb.linearVelocity.x) > movementThreshold)
         {
             bool shouldFaceRight = rb.linearVelocity.x > 0f;
-
-            if (shouldFaceRight != isFacingRight)
-            {
-                Flip(shouldFaceRight);
-                Debug.Log("SWORD - Flip");  
-            }
+            Flip(shouldFaceRight);
+            Debug.Log($"SWORD - LinearVelocity: {rb.linearVelocity.x}, ShouldFaceRight: {shouldFaceRight}");  
         }
         yield return _waitForSpawnTime;
     }
@@ -60,21 +52,9 @@ public class FlipTowardsSpeedComponent : BaseItemComponent
 
     private void Flip(bool faceRight)
     {
-        float yRotation = faceRight ? 0f : -180f;
-
-        Vector3 euler = transform.eulerAngles;
-        euler.y = yRotation;
-        transform.eulerAngles = euler;
-        
-        //objectToFlip.localRotation = new Vector3(faceRight ? 1f : -1f, objectToFlip.localScale.y, objectToFlip.localScale.z);
-        
-        // float yRotation = faceRightAtZeroRotation 
-        //     ? (faceRight ? 0f : 180f)
-        //     : (faceRight ? 180f : 0f);
-        //
-        // Vector3 euler = transform.eulerAngles;
-        // euler.y = yRotation;
-        // transform.eulerAngles = euler;
+        Vector3 scale = objectToFlip.localScale;
+        scale.x = Mathf.Abs(scale.x) * (faceRight ? 1f : -1f);
+        objectToFlip.localScale = scale;
     }
     
     public void StopFlipCoroutine()
