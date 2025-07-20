@@ -41,7 +41,7 @@ public class MusicManager : MonoBehaviour
     {
         AudioClip[] chosenTracks;
 
-        if (scene == Loader.Scene.MainMenu || scene == Loader.Scene.NameBootstrap || scene == Loader.Scene.GameTutorial)
+        if (scene == Loader.Scene.MainMenu)
         {
             chosenTracks = menuTracks;
         }
