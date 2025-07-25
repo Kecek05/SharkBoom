@@ -21,14 +21,14 @@ public class AuthenticateUI : MonoBehaviour
 
     private void Awake()
     {
-        ShowButtons();
-        HideTxt();
+        // ShowButtons();
+        // HideTxt();
 
 #if UNITY_ANDROID
         authBtn.onClick.AddListener(async () =>
         {
             //Loggin with Google Play
-            HideButtons();
+            // HideButtons();
             //ShowTxt();
             await ClientSingleton.Instance.AuthAndroid();
             authAndroidTxt.text = $"Token: {AuthenticationWrapper.GooglePlayToken} name: {PlayGamesPlatform.Instance.GetUserDisplayName()} ID: {PlayGamesPlatform.Instance.GetUserId()}";
@@ -37,7 +37,7 @@ public class AuthenticateUI : MonoBehaviour
 
         authAnonymouslyBtn.onClick.AddListener(async () =>
         {
-            HideButtons();
+            // HideButtons();
             //ShowTxt();
             await ClientSingleton.Instance.AuthClientAnonymously();
         });
@@ -61,15 +61,16 @@ public class AuthenticateUI : MonoBehaviour
 #endif
     }
 
-    private void Update()
-    {
-        //Change later
-        //authStateTxt.text = AuthenticationWrapper.AuthState.ToString();
-    }
+    // private void Update()
+    // {
+    //     //Change later
+    //     //authStateTxt.text = AuthenticationWrapper.AuthState.ToString();
+    // }
 
     private void AuthenticationWrapper_OnSignInFail()
     {
-        HideTxt();
+        // HideTxt();
+        Loader.LoadNoLoadingScreen(Loader.Scene.NoNetwork);
         //ShowButtons();
     }
 

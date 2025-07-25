@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
@@ -11,7 +10,7 @@ using Unity.Services.Lobbies.Models;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using WebSocketSharp;
 
 public class ClientGameManager : IDisposable //Actual Logic to interact with UGS (Relay, Lobby, etc)
 {
@@ -48,12 +47,12 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
         //Authenticate player
 
         //Debugging code FOR DEDICATED SERVER
-         InitializationOptions initializationOptions = new InitializationOptions();
-         initializationOptions.SetProfile(UnityEngine.Random.Range(0, 10000).ToString());
-         await UnityServices.InitializeAsync(initializationOptions);
+         // InitializationOptions initializationOptions = new InitializationOptions();
+         // initializationOptions.SetProfile(UnityEngine.Random.Range(0, 10000).ToString());
+         // await UnityServices.InitializeAsync(initializationOptions);
         //
 
-        // await UnityServices.InitializeAsync();
+        await UnityServices.InitializeAsync();
 
         networkClient = new NetworkClient(NetworkManager.Singleton);
         matchmaker = new();
@@ -103,7 +102,7 @@ public class ClientGameManager : IDisposable //Actual Logic to interact with UGS
 
     public async Task<bool> StartRelayClientAsync(string joinCode)
     {
-        if (joinCode == null || joinCode == string.Empty) return false;
+        if (joinCode.IsNullOrEmpty()) return false;
 
         SetIsDedicatedServerGame(false);
         HostSingleton.Instance.GameManager.ClearJoinCode();

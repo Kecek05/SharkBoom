@@ -76,8 +76,8 @@ public class PlayersPublicInfoManager : BasePlayersPublicInfoManager
         // }
 
         int itemsAddedToInventory = 0;
-        int itemsToAddToInventory = itemsListSO.allItemsSOList.Count - 1; //-1 because we already added Jump item
-        // int itemsToAddToInventory = 5; 
+        int itemsToAddToInventory = 5; 
+        // int itemsToAddToInventory = itemsListSO.allItemsSOList.Count - 1; //-1 because we already added Jump item //DEBUG
         
         while(itemsAddedToInventory < itemsToAddToInventory)
         {

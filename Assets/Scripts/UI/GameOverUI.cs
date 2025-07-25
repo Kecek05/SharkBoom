@@ -64,16 +64,10 @@ public class GameOverUI : MonoBehaviour
     private void Awake()
     {
         hasPreparedGameOver = false;
-        gameOverVideoPlayer.prepareCompleted += HandleOnGameOverVideoPrepared;
 
         Hide();
         HideLoadingGameOver();
         alreadyChanged = false;
-    }
-
-    private void HandleOnGameOverVideoPrepared(VideoPlayer source)
-    {
-        hasPreparedGameOver = true;
     }
 
     private void Start()
@@ -139,6 +133,12 @@ public class GameOverUI : MonoBehaviour
     {
         OnRecievedAllGameOverUIInfo?.Invoke();
     }
+    
+    private void HandleOnGameOverVideoPrepared(VideoPlayer source)
+    {
+        hasPreparedGameOver = true;
+        gameOverVideoPlayer.prepareCompleted -= HandleOnGameOverVideoPrepared;
+    }
 
     private void SetupPearlsResult(int pearlsDelta)
     {
@@ -200,7 +200,6 @@ public class GameOverUI : MonoBehaviour
     private void Show()
     {
         gameOverBackground.SetActive(true);
-        loadingGameOver.SetActive(true);
     }
 
     private void HideLoadingGameOver()
@@ -216,8 +215,7 @@ public class GameOverUI : MonoBehaviour
     private void Win()
     {
         gameOverVideoPlayer.clip = GetGameOverRender(playersPublicInfoManager.GetPlayerVisualTypes()[turnManager.LocalPlayableState], GameResult.Win);
-        hasPreparedGameOver = false;
-        gameOverVideoPlayer.Prepare();
+        PrepareVideo();
 
         ChangeUI($"{TEXTANIMATOR_WIN}You Win!{TEXTANIMATOR_WIN}", "VICTORY!", winBackground, winPearlsBackground, winReturnButton, winBackgroundMaterial);
         StartCoroutine(WaitUntilGameOverVideoAndShow());
@@ -226,8 +224,7 @@ public class GameOverUI : MonoBehaviour
     private void Lose()
     {
         gameOverVideoPlayer.clip = GetGameOverRender(playersPublicInfoManager.GetPlayerVisualTypes()[turnManager.LocalPlayableState], GameResult.Lose);
-        hasPreparedGameOver = false;
-        gameOverVideoPlayer.Prepare();
+        PrepareVideo();
 
         ChangeUI($"{TEXTANIMATOR_LOSE}You Lose!{TEXTANIMATOR_LOSE}", "DEFEAT!", loseBackground, losePearlsBackground, loseReturnButton, loseBackgroundMaterial);
         StartCoroutine(WaitUntilGameOverVideoAndShow());
@@ -236,25 +233,30 @@ public class GameOverUI : MonoBehaviour
     private void Tie()
     {
         gameOverVideoPlayer.clip = GetGameOverRender(playersPublicInfoManager.GetPlayerVisualTypes()[turnManager.LocalPlayableState], GameResult.Tie);
-        hasPreparedGameOver = false;
-        gameOverVideoPlayer.Prepare();
+        PrepareVideo();
 
         ChangeUI("Time's Up!", "TIE!", tieBackground, tiePearlsBackground, tieReturnButton, tieBackgroundMaterial);
-        StartCoroutine(WaitUntilGameOverVideoAndShow());
         alreadyChangedTie = true;
+        StartCoroutine(WaitUntilGameOverVideoAndShow());
+    }
+
+    private void PrepareVideo()
+    {
+        hasPreparedGameOver = false;
+        gameOverVideoPlayer.prepareCompleted += HandleOnGameOverVideoPrepared;
+        ShowLoadingGameOver();
+        Show();
+        gameOverVideoPlayer.Prepare();
+        
     }
 
     private IEnumerator WaitUntilGameOverVideoAndShow()
     {
-        ShowLoadingGameOver();
-        Show();
-
-
         while (!hasPreparedGameOver)
             yield return null;
 
-        HideLoadingGameOver();
         gameOverVideoPlayer.Play();
+        HideLoadingGameOver();
     }
 
     private void ChangeUI(string resultTxt, string resultTitleTxt, Sprite backgroundSprite, Sprite pearlsSprite, Sprite buttonSprite, Material animateMaterial)
@@ -302,7 +304,6 @@ public class GameOverUI : MonoBehaviour
         pearlsManager.OnPearlsChanged -= PearlsManager_OnPearlsChanged;
         PearlsManager.OnFinishedCalculationsOnServer -= PearlsManagerOnOnFinishedCalculationsOnServer;
         HealthComponent.OnLocalDie -= HealthComponentOnOnLocalDie;
-        gameOverVideoPlayer.prepareCompleted -= HandleOnGameOverVideoPrepared;
     }
 }
 

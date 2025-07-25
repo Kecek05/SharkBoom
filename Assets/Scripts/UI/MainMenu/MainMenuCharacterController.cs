@@ -15,7 +15,6 @@ public class MainMenuCharacterController : MonoBehaviour
     private void Awake()
     {
         loadingPanel.SetActive(true);
-
         characterVideoPlayer.prepareCompleted += HandleOnVideoPlayerPrepared;
         
         int randomPlayer = Random.Range(0, 2);
@@ -34,7 +33,7 @@ public class MainMenuCharacterController : MonoBehaviour
 
     private void HandleOnVideoPlayerPrepared(VideoPlayer source)
     {
-        Debug.Log("Teste");
+        // Debug.Log("Teste");
         source.Play();
         loadingPanel.SetActive(false);
     }

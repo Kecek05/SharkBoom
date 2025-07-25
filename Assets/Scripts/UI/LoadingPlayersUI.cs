@@ -26,12 +26,14 @@ public class LoadingPlayersUI : NetworkBehaviour
     [SerializeField] private TextMeshProUGUI player1NameText;
     [SerializeField] private TextMeshProUGUI player1PearlsText;
     [SerializeField] private VideoPlayer player1VideoPlayer;
+    [SerializeField] private Animator player1Animator;
     
     [BetterHeader("References Player 2")]
     [SerializeField] private TextMeshProUGUI player2NameText;
     [SerializeField] private TextMeshProUGUI player2PearlsText;
     [SerializeField] private VideoPlayer player2VideoPlayer;
-
+    [SerializeField] private Animator player2Animator;
+    
     private bool alreadyShowedPlayersInfo = false;
 
     private BaseGameStateManager gameStateManager;
@@ -45,13 +47,13 @@ public class LoadingPlayersUI : NetworkBehaviour
     private void HandleOnPlayer1VideoPlayerPrepared(VideoPlayer source)
     {
         hasPreparedPlayer1 = true;
-        Debug.Log($"Player 1 prepared: {hasPreparedPlayer1}");
+        // Debug.Log($"Player 1 prepared: {hasPreparedPlayer1}");
     }
 
     private void HandleOnPlayer2VideoPlayerPrepared(VideoPlayer source)
     {
         hasPreparedPlayer2 = true;
-        Debug.Log($"Player 2 prepared: {hasPreparedPlayer2}");
+        // Debug.Log($"Player 2 prepared: {hasPreparedPlayer2}");
     }
 
     
@@ -67,27 +69,12 @@ public class LoadingPlayersUI : NetworkBehaviour
         gameStateManager = ServiceLocator.Get<BaseGameStateManager>();
         basePlayerPublicInfoManager = ServiceLocator.Get<BasePlayersPublicInfoManager>();
         
-        HidePlayersInfo();
         ShowWaitingForPlayers();
+        ShowPlayersInfoBackground();
 
         gameStateManager.CurrentGameState.OnValueChanged += GameState_OnValueChanged;
         GameState_OnValueChanged(GameState.None, gameStateManager.CurrentGameState.Value);
         
-        // if (gameStateManager.CurrentGameState.Value == GameState.ShowingPlayersInfo || gameStateManager.CurrentGameState.Value == GameState.GameStarted)
-        // {
-        //     //Game already started, reconnected
-        //     if(IsClient)
-        //         RequestDataToTheServerRpc();
-        // }
-        //
-        // if(gameStateManager.CurrentGameState.Value != GameState.CalculatingResults && gameStateManager.CurrentGameState.Value != GameState.WaitingForPlayers && gameStateManager.CurrentGameState.Value != GameState.SpawningPlayers)
-        // {
-        //     // //Game already started, reconnected
-        //     // if(IsClient)
-        //     //     RequestDataToTheServerRpc();
-        //     // HidePlayersInfo();
-        //     // HideWaitingForPlayers();
-        // }
     }
 
     [Rpc(SendTo.Server, Delivery = RpcDelivery.Reliable)]
@@ -119,23 +106,10 @@ public class LoadingPlayersUI : NetworkBehaviour
         // Debug.Log($"GameState_OnValueChanged - Previous Value: {previousValue} - New Value: {newValue} - {gameObject.name} - Is Owner: {IsOwner} - Client ID: {NetworkManager.LocalClientId}");
          if(newValue == GameState.ShowingPlayersInfo) 
          {
-            //Show UI
-            // if (IsServer)
-            // {
-            //     foreach (ulong connectedClientsId in NetworkManager.ConnectedClientsIds)
-            //     {
-            //         if(IsServer && !IsHost && connectedClientsId == 0) continue; //Not send the id 0 if is DS
-            //         RequestDataToTheServerRpc(connectedClientsId);
-            //     }
-            // }
             
             // Debug.Log($"CLIENT REQUESTING DATA LOADING PLAYERS UI - {gameObject.name} - Is Owner: {IsOwner} - Client ID: {NetworkManager.LocalClientId} - Game State: {newValue}");
             RequestDataToTheServerRpc(NetworkManager.LocalClientId);
             alreadyShowedPlayersInfo = true;
-            // PassPlayersDataToClients();
-
-            //ShowPlayersInfo();
-            //HideWaitingForPlayers();
          } 
          else if (newValue == GameState.GameStarted)
          {
@@ -145,25 +119,8 @@ public class LoadingPlayersUI : NetworkBehaviour
                 RequestDataToTheServerRpc(NetworkManager.LocalClientId);
                 alreadyShowedPlayersInfo = true;
             }
-            //Game Started
-            // HidePlayersInfo();
-            // HideWaitingForPlayers();
          }
     }
-
-    // private void PassPlayersDataToClients()
-    // {
-    //     if (IsServer)
-    //     {
-    //         // //Send to clients
-    //         // foreach (PlayerData playerData in NetworkServerProvider.Instance.CurrentNetworkServer.ServerAuthenticationService.PlayerDatas)
-    //         // {
-    //         //     Debug.Log($"GameState_OnValueChanged on Loading Players UI - Player Data: {playerData.userData.userAuthId} - Client Id: {playerData.clientId}");
-    //         //     UpdatePlayerVisualTypeClientRpc(playerData.playableState, basePlayerPublicInfoManager.GetPlayerVisualTypes()[playerData.playableState]);
-    //         //     UpdatePlayersInfoClientRpc(playerData.userData.userName, playerData.userData.userPearls, playerData.playableState);
-    //         // }
-    //     }
-    // }
     
     [Rpc(SendTo.ClientsAndHost, Delivery = RpcDelivery.Reliable)]
     private void UpdatePlayerVisualTypeClientRpc(PlayableState playableState, PlayerVisualType playerVisualType, ulong senderClientId)
@@ -209,11 +166,15 @@ public class LoadingPlayersUI : NetworkBehaviour
 
     private IEnumerator WaitUntilVideosPreparedAndShow()
     {
-        ShowPlayersInfo();
 
         while (!hasPreparedPlayer1 && !hasPreparedPlayer2)
             yield return null;
 
+        //Cant prepare a disabled video player
+        player1VideoPlayer.Play();
+        player2VideoPlayer.Play();
+        player1Animator.SetTrigger("fade");
+        player2Animator.SetTrigger("fade");
         HideWaitingForPlayers();
 
         yield return DELAY_CLOSE_PLAYERSINFO;
@@ -260,11 +221,9 @@ public class LoadingPlayersUI : NetworkBehaviour
     }
 
     [Command("showPlayersInfo")]
-    private void ShowPlayersInfo()
+    private void ShowPlayersInfoBackground()
     {
         backgroundPlayersInfo.SetActive(true);
-        player1VideoPlayer.Play();
-        player2VideoPlayer.Play();
     }
 
     private void HideWaitingForPlayers()
