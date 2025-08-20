@@ -8,6 +8,7 @@ public class MainMenuController : MonoBehaviour
 {
     [SerializeField] private GameObject creditsPanel;
     [SerializeField] private GameObject settingsPanel;
+    [SerializeField] private AchievementDataSO achievementDataSO;
     public static event Action OnLoadMainMenu;
 
 
@@ -16,7 +17,7 @@ public class MainMenuController : MonoBehaviour
         OnLoadMainMenu?.Invoke();
 
         HostGameManager.OnFailToStartHost += HostGameManager_OnFailToStartHost;
-
+        AchievementManager.UnlockAchievement(achievementDataSO.AchievementData);
     }
 
     public void ShowCredits()

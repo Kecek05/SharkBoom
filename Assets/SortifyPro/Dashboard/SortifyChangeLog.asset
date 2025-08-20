@@ -101,3 +101,10 @@ MonoBehaviour:
       the project, go to Settings \u2192 Save In Project.\n\u2022 Fixed an issue
       where newly added elements in SDictionary were not displayed correctly in the
       code."
+  - version: 1.45
+    year: 2025
+    month: 5
+    day: 21
+    details: "\u2022 Improved JSON save reliability.\n\u2022 Implemented per-file
+      backups (up to 3 versions) with automatic recovery on corruption.\n\u2022 Fixed
+      the problem of losing settings when recompiling the script."

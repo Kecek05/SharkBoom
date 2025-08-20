@@ -1,4 +1,5 @@
 #if UNITY_EDITOR && SORTIFY
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -36,6 +37,11 @@ namespace Sortify
             EditorSceneManager.sceneClosing += OnSceneClosing;
             EditorSceneManager.sceneOpened += OnSceneOpened;
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+
+#if UNITY_2019_1_OR_NEWER
+            AssemblyReloadEvents.beforeAssemblyReload += OnBeforeAssemblyReload;
+            AssemblyReloadEvents.afterAssemblyReload += OnAfterAssemblyReload;
+#endif
         }
 
         private static void OnSceneSaving(Scene scene, string path)
@@ -67,6 +73,18 @@ namespace Sortify
             }
         }
 
+        private static void OnBeforeAssemblyReload()
+        {
+            SaveObjectsToFile();
+        }
+
+        private static void OnAfterAssemblyReload()
+        {
+            _dataLoaded = false;
+            LoadDataIfNeeded();
+            EditorApplication.RepaintHierarchyWindow();
+        }
+
         #region Icons
         public static string LoadCustomIcon(GameObject obj)
         {
@@ -90,6 +108,7 @@ namespace Sortify
             EditorApplication.RepaintHierarchyWindow();
         }
 
+        //TODO: Fix background switching when clicked.
         public static void DrawCustomIcon(GameObject obj, Rect selectionRect)
         {
             Rect fullRowRect = new Rect(0, selectionRect.y, EditorGUIUtility.currentViewWidth, selectionRect.height);
@@ -238,6 +257,12 @@ namespace Sortify
 
         private static void SaveObjectsToFile()
         {
+            if (IsParrelSyncClone())
+            {
+                Debug.Log("[Sortify] ParrelSync clone detected – skipping data save.");
+                return;
+            }
+
             var iconsData = new List<CustomIconItem>();
             foreach (var item in _cachedIcons)
             {
@@ -286,6 +311,12 @@ namespace Sortify
             loadedData.objectsData.RemoveAll(data => data.sceneName == currentSceneName);
             loadedData.objectsData.Add(currentSceneData);
             SortifyFileManager.SaveToFile(OBJECTS_FILE_NAME, loadedData);
+        }
+
+        private static bool IsParrelSyncClone()
+        {
+            string psChild = Environment.GetEnvironmentVariable("PS_CHILD");
+            return !string.IsNullOrEmpty(psChild);
         }
 
         private static void LoadObjectsDataFromFile()

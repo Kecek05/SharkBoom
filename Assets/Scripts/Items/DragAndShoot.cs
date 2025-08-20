@@ -60,7 +60,8 @@ public class DragAndShoot : NetworkBehaviour
 
     [Tooltip("Will only detect the distance if exceeds threshold")]
     [SerializeField] private int detectDistanceThreshold = 2;
-
+    
+    [SerializeField] private AchievementDataSO _firstThrowAchievement;
     private Vector3 fingerInWorldSpace;
     private Vector3 directionOfDragNormalized;
     private float dragForce;
@@ -189,6 +190,7 @@ public class DragAndShoot : NetworkBehaviour
             else
             {
                 //shoot
+                AchievementManager.UnlockAchievement(_firstThrowAchievement.AchievementData);
                 SetIsDragging(false);
                 trajectory.SetSimulation(false);
                 OnDragRelease?.Invoke();
