@@ -1,6 +1,11 @@
 using System.Collections;
 using UnityEngine;
 
+/// <summary>
+/// Component that rotates a rigidbody object to face its velocity direction.
+/// Commonly used for projectiles like spears/harpoons to maintain realistic orientation during flight.
+/// Includes jitter prevention through rotation threshold to avoid micro-rotations from small velocity changes.
+/// </summary>
 public class RotateTowardsVelocityComponent : BaseItemComponent
 {
     [Tooltip("How fast the spear rotates to align with its velocity.")]
