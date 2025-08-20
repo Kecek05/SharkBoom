@@ -20,45 +20,20 @@ public class SaveBootstrap : MonoBehaviour
 
     private async Task CheckInMatch()
     {
-        //Check if is in match
-        if (await Reconnect.GetIsInMatch(ClientSingleton.Instance.GameManager.UserData.userAuthId))
+        //Check if player can safely reconnect to a match
+        if (await Reconnect.CanSafelyReconnect(ClientSingleton.Instance.GameManager.UserData.userAuthId))
         {
-            //Was in match, first check if the server is online
-
-            //Is in match, reconnect
+            //All checks passed - reconnect to the match
             string ipMatch = await Reconnect.GetIpMatch(ClientSingleton.Instance.GameManager.UserData.userAuthId);
             int portMatch = await Reconnect.GetPortMatch(ClientSingleton.Instance.GameManager.UserData.userAuthId);
 
-            Debug.Log($"Match in progress, rejoin it...");
+            Debug.Log($"Match validation passed, reconnecting to {ipMatch}:{portMatch}");
             ClientSingleton.Instance.GameManager.StartMatchmakingClient(ipMatch, portMatch);
-            
-            // if (await ServerConnectionTester.CheckIsOnline())
-            // {
-            //     Debug.Log($"Match in progress, rejoin it...");
-            //     ClientSingleton.Instance.GameManager.StartMatchmakingClient(ipMatch, portMatch);
-            //     
-            //     if (await Reconnect.CanRejoinInMatch(ClientSingleton.Instance.GameManager.UserData.userAuthId))
-            //     {
-            //         //Match in progress, join it
-            //         Debug.Log($"Match in progress, rejoin it...");
-            //         ClientSingleton.Instance.GameManager.StartMatchmakingClient(ipMatch, portMatch);
-            //     }
-            //     else
-            //     {
-            //         //Match is over
-            //         Debug.Log($"Match is over, going to menu.");
-            //         Reconnect.SetIsInMatch(ClientSingleton.Instance.GameManager.UserData.userAuthId, false); //Not in match anymore
-            //         Loader.LoadNoLoadingScreen(Loader.Scene.NameBootstrap);
-            //     }
-            // }
-            // else
-            // {
-            //     Debug.Log($"Client is Offline!");
-            //     ClientSingleton.Instance.GameManager.StartMatchmakingClient(ipMatch, portMatch);
-            // }
-        } else
+        } 
+        else
         {
-            //Not in match, go to Name Bootstrap
+            //Not in match or reconnect validation failed, go to Name Bootstrap
+            Debug.Log("No valid match to reconnect to, proceeding to menu");
             Loader.LoadNoLoadingScreen(Loader.Scene.NameBootstrap);
         }
     }

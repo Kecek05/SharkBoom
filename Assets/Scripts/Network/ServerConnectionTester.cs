@@ -46,6 +46,43 @@ public class ServerConnectionTester
             return false;
         }
     }
+
+    /// <summary>
+    /// Check if a specific game server is reachable and responsive
+    /// </summary>
+    /// <param name="serverIP">The IP address of the game server</param>
+    /// <param name="serverPort">The port of the game server</param>
+    /// <returns>True if server is reachable, false otherwise</returns>
+    public static async Task<bool> CheckGameServerHealth(string serverIP, int serverPort)
+    {
+        if (string.IsNullOrEmpty(serverIP) || serverIP == "NoIp" || serverPort <= 0)
+        {
+            Debug.LogWarning($"Invalid server connection details: IP={serverIP}, Port={serverPort}");
+            return false;
+        }
+
+        try
+        {
+            Debug.Log($"Checking game server health: {serverIP}:{serverPort}");
+            bool isReachable = await IsPortReachableAsync(serverIP, serverPort, TIME_OUT);
+            
+            if (isReachable)
+            {
+                Debug.Log($"Game server {serverIP}:{serverPort} is responsive");
+            }
+            else
+            {
+                Debug.LogWarning($"Game server {serverIP}:{serverPort} is not responsive");
+            }
+            
+            return isReachable;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Error checking game server health {serverIP}:{serverPort}: {e.Message}");
+            return false;
+        }
+    }
     
     /// <summary>
     /// Lightweight TCP probe – true if <paramref name="host"/>:<paramref name="port"/> accepts a socket within <paramref name="timeout"/> ms.
