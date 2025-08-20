@@ -23,6 +23,7 @@ public class ServerConnectionTester
     private const ushort REFERENCE_PORT = 53;
 
     private const int TIME_OUT = 6000; // Max wait per network call (ms)
+    private const int GAME_SERVER_TIMEOUT = 3000; // Shorter timeout for game server health checks (ms)
 
 
     /// <summary>
@@ -64,7 +65,7 @@ public class ServerConnectionTester
         try
         {
             Debug.Log($"Checking game server health: {serverIP}:{serverPort}");
-            bool isReachable = await IsPortReachableAsync(serverIP, serverPort, TIME_OUT);
+            bool isReachable = await IsPortReachableAsync(serverIP, serverPort, GAME_SERVER_TIMEOUT);
             
             if (isReachable)
             {

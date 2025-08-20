@@ -10,6 +10,12 @@ public static class Reconnect
     
     public static async Task<bool> GetIsInMatch(string userAuthId)
     {
+        if (string.IsNullOrEmpty(userAuthId))
+        {
+            Debug.LogError("GetIsInMatch called with null or empty userAuthId");
+            return false;
+        }
+
         var arguments = new Dictionary<string, object>
         {
             { CloudCodeRefs.ARGUMENT_PROJECT_ID, CloudCodeRefs.PROJECT_ID },
@@ -200,6 +206,13 @@ public static class Reconnect
     /// <returns>True if player can reconnect, false otherwise</returns>
     public static async Task<bool> CanSafelyReconnect(string userAuthId)
     {
+        // Validate input
+        if (string.IsNullOrEmpty(userAuthId))
+        {
+            Debug.LogError("CanSafelyReconnect called with null or empty userAuthId");
+            return false;
+        }
+
         try
         {
             // First check if player is marked as in match
@@ -245,6 +258,30 @@ public static class Reconnect
                 Debug.LogError($"Failed to clear reconnect flag: {clearError.Message}");
             }
             return false;
+        }
+    }
+
+    /// <summary>
+    /// Clears all reconnection data for a player when they leave a match or game ends
+    /// This ensures clean state and prevents stale reconnection attempts
+    /// </summary>
+    /// <param name="userAuthId">Player's authentication ID</param>
+    public static async Task ClearReconnectionData(string userAuthId)
+    {
+        if (string.IsNullOrEmpty(userAuthId))
+        {
+            Debug.LogError("ClearReconnectionData called with null or empty userAuthId");
+            return;
+        }
+
+        try
+        {
+            await SetIsInMatch(userAuthId, false);
+            Debug.Log($"Cleared reconnection data for player {userAuthId}");
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Error clearing reconnection data for player {userAuthId}: {e.Message}");
         }
     }
 

@@ -46,6 +46,12 @@ public class ApplicationLifecycle : MonoBehaviour
         if (client != null && client.GameManager != null)
         {
             await client.GameManager.CancelMatchmakingAsync();
+            
+            // Clear reconnection data when the application is closing or pausing
+            if (client.GameManager.UserData != null && !string.IsNullOrEmpty(client.GameManager.UserData.userAuthId))
+            {
+                await Reconnect.ClearReconnectionData(client.GameManager.UserData.userAuthId);
+            }
         }
         else
         {
