@@ -7,9 +7,12 @@ public class RotateTowardsVelocityComponent : BaseItemComponent
     [SerializeField] private float rotationSpeed = 10f;
     [SerializeField] private Rigidbody rb;
     [SerializeField] private float velocityThreshold = 4f; // Minimum velocity to consider for rotation
+    [Tooltip("Minimum angle difference in degrees before rotation is updated (prevents jittering).")]
+    [SerializeField] private float rotationThreshold = 5f; // Minimum angle difference to consider for rotation
     private WaitForFixedUpdate WaitForFixedUpdate = new WaitForFixedUpdate();
     
     private Coroutine rotateCoroutine;
+    private float previousTargetAngle = float.NaN; // Track the previous target angle
 
     protected override void OnEnableComponent()
     {
@@ -21,10 +24,14 @@ public class RotateTowardsVelocityComponent : BaseItemComponent
             rotateCoroutine = null;
         }*/
 
+        // Reset previous angle tracking when component is enabled
+        previousTargetAngle = float.NaN;
+
         if (rb.linearVelocity.sqrMagnitude > velocityThreshold)
         {
             float angle = Mathf.Atan2(rb.linearVelocity.y, rb.linearVelocity.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward); // Aplica imediatamente
+            previousTargetAngle = angle; // Store initial angle
         }
     }
 
@@ -42,8 +49,14 @@ public class RotateTowardsVelocityComponent : BaseItemComponent
             Vector3 vel = rb.linearVelocity;
             if (vel.sqrMagnitude > velocityThreshold)
             {
-                float angle = Mathf.Atan2(vel.y, vel.x) * Mathf.Rad2Deg;
-                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.AngleAxis(angle, Vector3.forward), rotationSpeed * Time.fixedDeltaTime);
+                float targetAngle = Mathf.Atan2(vel.y, vel.x) * Mathf.Rad2Deg;
+                
+                // Only rotate if this is the first time or if the angle difference is significant
+                if (float.IsNaN(previousTargetAngle) || Mathf.Abs(Mathf.DeltaAngle(previousTargetAngle, targetAngle)) > rotationThreshold)
+                {
+                    transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.AngleAxis(targetAngle, Vector3.forward), rotationSpeed * Time.fixedDeltaTime);
+                    previousTargetAngle = targetAngle;
+                }
 
                 //transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
             }
@@ -59,6 +72,9 @@ public class RotateTowardsVelocityComponent : BaseItemComponent
             StopCoroutine(rotateCoroutine);
             rotateCoroutine = null;
         }
+        
+        // Reset angle tracking when component is disabled
+        previousTargetAngle = float.NaN;
     }
 
 }
