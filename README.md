@@ -287,12 +287,6 @@ This is a learning project showcasing modern Unity multiplayer architecture. Fee
 
 ---
 
-## 📄 License
-
-[Add your license information here]
-
----
-
 ## 🙏 Acknowledgments
 
 - Unity Technologies for Unity Gaming Services
