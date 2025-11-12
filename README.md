@@ -1,4 +1,4 @@
-# Shark'Boom (BattleOcean)
+# Shark'Boom
 
 ![Unity Version](https://img.shields.io/badge/Unity-6000.0.35f1-blue.svg)
 ![Platform](https://img.shields.io/badge/Platform-Mobile-green.svg)
@@ -6,7 +6,7 @@
 
 ## 🌊 Welcome to Shark'Boom!
 
-**Shark'Boom** (also known as **BattleOcean**) is a thrilling 3D multiplayer 1v1 PvP turn-based mobile game built with **Unity 6**. Dive into oceanic battles where strategy meets physics-based mayhem!
+**Shark'Boom** is a thrilling 3D multiplayer 1v1 PvP turn-based mobile game built with **Unity 6**. Dive into oceanic battles where strategy meets physics-based mayhem!
 
 ---
 
